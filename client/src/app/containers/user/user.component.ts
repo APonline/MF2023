@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../types/user';
+import { User } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs';
@@ -35,13 +35,13 @@ export class UserContainer implements OnInit {
     private authenticationService: AuthenticationService,
     private user: UserService
   ) {
-    this.user.subscribeToUsers();
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
   async ngOnInit() {
-    this.user.users.subscribe(user => {
-      this.userList = user.data.User;
+    this.user.getAll().subscribe(user => {
+      console.log(user)
+      this.userList = user;
     });
   }
 

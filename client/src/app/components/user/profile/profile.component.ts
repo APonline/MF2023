@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/types/user';
+import { User } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-profile',
@@ -25,15 +25,15 @@ export class ProfileComponent implements OnInit {
     private user: UserService,
     private alertService: AlertService
   ) {
-    this.user.subscribeToUsers();
     this.currentUser = this.authenticationService.currentUserValue;
 
-    this.user.users.subscribe(user => {
-      this.currentUser = user.data.User.filter(u => {
-        if (u.email === this.currentUser.email) {
-          return u;
-        }
-      })[0];
+    this.user.getAll().subscribe(user => {
+      console.log(user);
+      // this.currentUser = user.email.filter(u => {
+      //   if (u.email === this.currentUser.email) {
+      //     return u;
+      //   }
+      // })[0];
     });
 
   }
@@ -86,8 +86,11 @@ export class ProfileComponent implements OnInit {
       newUpdate[field] = this.profileForm.get(field).value;
     }
 
-    this.user.updateUser(newUpdate).then(() => {
-      this.alertService.success('Update successful.', true);
+    this.user.update(newUpdate.id, newUpdate).subscribe({
+      next: (res) => {
+        this.alertService.success('Update successful.', true);
+      },
+      error: (e) => console.error(e)
     });
   }
 

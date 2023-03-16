@@ -29,7 +29,6 @@ export class PasswordResetComponent implements OnInit {
     let email = this.route.snapshot.paramMap.get('email');
     let myUser = {};
 
-    this.user.subscribeToUsers();
     this.currentUser = this.authenticationService.currentUserValue;
 
     if (this.currentUser == null) { //Not logged in
@@ -89,13 +88,17 @@ export class PasswordResetComponent implements OnInit {
       email: reqEmail,
     };
 
-    this.user.requestPasswordReset(newUpdate).then((res) => {
-      if (res != null) {
-        this.router.navigate(['/login']);
-        this.alertService.success('Password Reset Request sent!', true);
-      } else {
-        this.alertService.error('That Email is not in the system.', true);
-      }
+
+    this.user.findByEmail(newUpdate).subscribe({
+      next: (res) => {
+        if (res != null) {
+          this.router.navigate(['/login']);
+          this.alertService.success('Password Reset Request sent!', true);
+        } else {
+          this.alertService.error('That Email is not in the system.', true);
+        }
+      },
+      error: (e) => console.error(e)
     });
   }
 
@@ -110,9 +113,12 @@ export class PasswordResetComponent implements OnInit {
         email: this.currentUser.email,
         password: passOriginal
       }
-      this.user.updateUser(newUpdate).then(() => {
-        this.alertService.success('Update successful.', true);
-        this.router.navigate(['/user/profile']);
+      this.user.update(newUpdate.id, newUpdate).subscribe({
+        next: (res) => {
+          this.alertService.success('Update successful.', true);
+          this.router.navigate(['/user/profile']);
+        },
+        error: (e) => console.error(e)
       });
     } else {
       this.alertService.error('The passwords did not match.', true);

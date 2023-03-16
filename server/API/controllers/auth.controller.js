@@ -21,8 +21,8 @@ exports.signup = async (req, res) => {
     // Save User to Database
     try {
         const user = await User.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
+            first_name: req.body.firstname,
+            last_name: req.body.lastname,
             username: req.body.username,
             email: req.body.email,
             phone: req.body.phone,
@@ -35,24 +35,25 @@ exports.signup = async (req, res) => {
             last_login: joinedDate,
             login_count: 1,
             profile_url: "@" + req.body.username + "",
-            profile_img: "images/defaultprofile.png"
+            profile_img: "images/defaultprofile.png",
+            tna: 0
         });
 
         if (req.body.roles) {
-        const roles = await Role.findAll({
-            where: {
-            name: {
-                [Op.or]: req.body.roles,
-            },
-            },
-        });
+            const roles = await Role.findAll({
+                where: {
+                name: {
+                    [Op.or]: req.body.roles,
+                },
+                },
+            });
 
-        const result = user.setRoles(roles);
-        if (result) res.send({ message: "User registered successfully!" });
+            const result = user.setRoles(roles);
+            if (result) res.send({ message: "User registered successfully!" });
         } else {
             // user has role = 1
             const result = user.setRoles([1]);
-        if (result) res.send({ message: "User registered successfully!" });
+            if (result) res.send({ message: "User registered successfully!" });
         }
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -63,7 +64,7 @@ exports.signin = async (req, res) => {
     try {
         const user = await User.findOne({
         where: {
-            username: req.body.username,
+            email: req.body.email,
         },
         });
 
@@ -76,6 +77,7 @@ exports.signin = async (req, res) => {
         user.password
         );
 
+        console.log('pass',passwordIsValid)
         if (!passwordIsValid) {
             return res.status(401).send({
                 message: "Invalid Password!",
@@ -96,8 +98,8 @@ exports.signin = async (req, res) => {
 
         return res.status(200).send({
             id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
+            firstname: user.first_name,
+            lastname: user.last_name,
             username: user.username,
             email: user.email,
             phone: user.phone,
@@ -108,6 +110,8 @@ exports.signin = async (req, res) => {
             profile_url: user.profile_url,
             profile_img: user.profile_img,
             roles: authorities,
+            tna: user.tna,
+            token: req.session.token
         });
     } catch (error) {
         return res.status(500).send({ message: error.message });

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
-import { User } from 'src/app/types/user';
+import { User } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-mainNav',

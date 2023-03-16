@@ -22,10 +22,12 @@ export class VerifyComponent implements OnInit {
         username,
         email
       }
-
-      this.user.verify(user).then((res) => {
-        console.log(res)
+      this.user.get(user.id).subscribe({
+        next: (res) => {
+          console.log(res)
         this.verified = res.tna;
+        },
+        error: (e) => console.error(e)
       });
     });
   }
