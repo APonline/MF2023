@@ -1,0 +1,15 @@
+<app-mainNav></app-mainNav>
+
+<!-- main app container v1 -->
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+        <app-alert id="alertMsg"></app-alert>
+        <div [@routerAnimation]="getRouteAnimation(route)">
+          <router-outlet #route="outlet"></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

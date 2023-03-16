@@ -1,0 +1,21 @@
+mat-card {
+  width: auto;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 200px);
+  background: none !important;
+  box-shadow: none !important;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #fff;
+
+    img {
+      margin: 0 auto;
+      text-align: center;
+    }
+  }
+}

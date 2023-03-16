@@ -1,0 +1,26 @@
+a {
+  cursor: pointer;
+}
+
+.alert {
+  padding:20px;
+  color:#fff;
+  border-top-left-radius: 10px;
+  letter-spacing:1px;
+}
+
+.alert-success {
+  background:linear-gradient(
+    to bottom right,
+    rgb(0, 75, 0),
+    rgb(0, 131, 0)
+  );
+}
+
+.alert-danger {
+  background:linear-gradient(
+    to bottom right,
+    rgb(75, 0, 0),
+    rgb(131, 0, 0)
+  );
+}

@@ -1,0 +1,36 @@
+<div class="glass">
+  <mat-card>
+    <h2>Login</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <mat-form-field class="example-full-width">
+          <mat-label for="email">Email</mat-label>
+          <input matInput formControlName="email" placeholder="Email"
+            [ngClass]="{ 'is-invalid': submitted && f.email.errors }">
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+          </div>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field class="example-full-width">
+          <mat-label for="password">Password</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Password"
+            [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+          </div>
+        </mat-form-field>
+      </div>
+    </form>
+      <div class="form-group button-group-center">
+        <button (click)="userLogin()" [disabled]="loading" mat-raised-button color="primary">
+          Login
+        </button>
+        <button (click)="registerUser()" mat-raised-button color="primary">
+          Register
+        </button>
+      </div>
+      <a id="forgotPassword" routerLink="/user/passwordReset" class="btn btn-link">Forgot your password?</a>
+  </mat-card>
+</div>

@@ -1,0 +1,12 @@
+#register {
+  background-image: url("/assets/signupbk.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  width: auto;
+  min-height: calc(100vh - 136px);
+  height: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}

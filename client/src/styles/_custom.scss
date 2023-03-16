@@ -1,0 +1,138 @@
+/*FONTS*/
+@font-face {
+  font-family: "Bold";
+  src: url("./fonts/code_pro_bold-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro_bold-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Bold_lc";
+  src: url("./fonts/code_pro_bold_lc-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro_bold_lc-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Reg";
+  src: url("./fonts/code_pro-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Reg_lc";
+  src: url("./fonts/code_pro_lc-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro_lc-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Thin";
+  src: url("./fonts/code_pro_light-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro_light-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Thin_lc";
+  src: url("./fonts/code_pro_light_lc-webfont.woff2") format("woff2"),
+    url("./fonts/code_pro_light_lc-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+/*FONTS*/
+
+body {
+  background: #000;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--alt-font);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+h4,
+h5 {
+  font-family: var(--extra-font);
+  margin-bottom: 0px;
+}
+h1 {
+  font-size: 2.5em;
+  font-weight: bold;
+  letter-spacing: 0px;
+}
+h2 {
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: 0px;
+}
+h3 {
+  font-size: 1.7em;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+h4 {
+  font-size: 1.5em;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+h5 {
+  font-size: 2em;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+label {
+  font-family: var(--main-font);
+}
+
+div {
+  font-family: "Reg_lc";
+}
+
+ul,
+li,
+p,
+a {
+  font-family: "Reg_lc";
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.1em;
+}
+
+input {
+  font-family: var(--main-font);
+  font-weight: 400;
+  font-size: 16px;
+}
+
+table {
+  font-family: var(--alt-font);
+}
+
+:root {
+  --main-color: "#b29c75";
+  --second-color: "#ffe1a9";
+  --alt-color: "#7f6e53";
+
+  --h1: 2.5rem;
+  --main-font: "Reg_lc";
+  --main-font-alt: "Reg_lc";
+  --secondary-font: "Bold_lc";
+  --secondary-font-alt: "Bold_lc";
+  --extra-font: "Thin_lc";
+  --extra-font-alt: "Thin_lc";
+  --alt-font: "Roboto", sans-serif;
+}
+
+$custom-typography: mat-typography-config(
+  $font-family: var(--main-font),
+);
+@include angular-material-typography($custom-typography);

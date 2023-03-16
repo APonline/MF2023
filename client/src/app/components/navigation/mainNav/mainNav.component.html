@@ -1,0 +1,11 @@
+<!-- nav -->
+<mat-toolbar color="primary">
+  <img src="/assets/logo.png" id="mainNavLogo" />
+  <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" routerLink="/">Home</a>
+      <a class="nav-item nav-link" routerLink="/user/profile">Profile</a>
+      <a class="nav-item nav-link" (click)="logout()">Logout</a>
+    </div>
+  </nav>
+</mat-toolbar>

@@ -1,0 +1,175 @@
+/*@import "components/hamburger";
+@import "components/section-page";
+@import "components/card";
+@import "components/button";
+@import "components/scroll-bar";
+@import "components/form-field";
+@import "components/dialog";
+@import "components/table";*/
+
+@mixin custom-component($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  * {
+    // firefox scrollbar color
+    scrollbar-color: mat-color($primary, lighter) rgba(0, 0, 0, 0.1);
+  }
+
+  &.primary-text {
+    color: mat-color($foreground, text);
+  }
+
+  .secondary-text {
+    color: mat-color($foreground, secondary-text);
+  }
+
+  &.bg-card {
+    background: mat-color($background, "card");
+  }
+
+  .bg-primary {
+    background-color: mat-color($primary) !important;
+  }
+
+  .bg-accent {
+    background-color: mat-color($primary, darker) !important;
+  }
+
+  .mat-elevation-primary {
+    @include mat-elevation(2, mat-color($primary, darker), 1);
+  }
+
+  &.page-wrapper {
+    color: mat-color($foreground, text);
+  }
+
+  #user-header {
+    border-bottom: 2px solid mat-color($primary, darker);
+  }
+
+  #proj-nav h2 {
+    color: mat-color($primary);
+  }
+
+  #main-nav {
+    a {
+      color: white;
+      &.mat-accent {
+        color: mat-color($accent);
+      }
+    }
+  }
+
+  .table th,
+  .table tr:before {
+    background-color: mat-color($primary);
+  }
+  td.highlightedDate {
+    background: mat-color($accent, lighter);
+    border-radius: 100%;
+  }
+  .theme-color {
+    background: mat-color($primary, lighter);
+    color: black;
+  }
+  .theme-color-parent {
+    background: mat-color($primary, darker);
+    color: white;
+  }
+
+  .mat-horizontal-stepper-header-container {
+    background: mat-color($background, "card");
+  }
+
+  .project-tab:hover {
+    background-color: mat-color($background, "card");
+  }
+
+  button.mat-raised-button.mat-accent,
+  button.mat-mini-fab.mat-accent {
+    color: white !important;
+  }
+
+  .mat-expansion-panel {
+    border-radius: 0;
+    margin-top: 5px;
+    .mat-expansion-panel-body {
+      padding: 5px;
+    }
+  }
+
+  .mat-card {
+    border-radius: 0;
+  }
+
+  .help-email a path {
+    fill: mat-color($primary);
+  }
+  .help-email a:hover {
+    path {
+      fill: mat-color($primary, darker);
+    }
+  }
+
+  // SCROLL BAR
+  ::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: mat-color($primary, lighter);
+  }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: mat-color($primary);
+  }
+  // SCROLL BAR END
+
+  //@include custom-hamburger(white);
+  //@include custom-flat-card(black, mat-color($primary, lighter));
+  //@include custom-table($foreground, $background);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.page {
+  min-height: calc(100vh - 136px);
+  padding: 40px 0;
+  margin-top: -17px;
+}
+
+#singleComponent {
+  display: flex;
+  justify-content: center;
+}
+
+.button-group-center {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.glass {
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.2)
+  );
+  padding: 20px;
+  backdrop-filter: blur(0.2rem);
+  -moz-backdrop-filter: blur(0.2rem);
+  height: auto;
+  min-height: 200px;
+  border-radius: 16px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}

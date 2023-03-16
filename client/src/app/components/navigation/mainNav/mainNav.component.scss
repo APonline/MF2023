@@ -1,0 +1,29 @@
+mat-toolbar {
+  background: url("/assets/navbar.png") !important;
+  background-size: 100% 73px !important;
+  background-repeat: no-repeat;
+  height: 73px;
+  z-index: 999;
+  position: relative;
+
+  .navbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 15px;
+    width: 100%;
+
+    .navbar-nav {
+      a {
+        color: #fff;
+        font-size: 14px;
+        padding: 0 10px;
+        letter-spacing: 1px;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+#mainNavLogo {
+  margin-top: -18px;
+}

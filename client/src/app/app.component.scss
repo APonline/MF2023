@@ -1,0 +1,11 @@
+#alertMsg {
+  position:fixed;
+  bottom:-666px;
+  right:0px;
+  width:400px;
+  transition: bottom ease-in-out .3s;
+}
+
+#alertMsg.alert {
+  bottom: 0px;
+}

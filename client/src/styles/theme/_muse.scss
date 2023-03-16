@@ -1,0 +1,79 @@
+@import "@angular/material/theming";
+
+// Be sure that you only ever include 'mat-core' mixin once!
+// it should not be included for each theme.
+@include mat-core();
+
+// define a real custom palette (using http://mcg.mbitson.com)
+$mat-mf: (
+  50: #f6f3ee,
+  100: #e8e1d6,
+  200: #d9ceba,
+  300: #c9ba9e,
+  400: #beab8a,
+  500: #b29c75,
+  600: #ab946d,
+  700: #a28a62,
+  800: #998058,
+  900: #8a6e45,
+  A100: #fff4e3,
+  A200: #ffdfb0,
+  A400: #ffca7d,
+  A700: #ffbf63,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+$mat-mf-accent: (
+  50: #eef1f6,
+  100: #d6dce8,
+  200: #bac5d9,
+  300: #9eaec9,
+  400: #8a9cbe,
+  500: #758bb2,
+  600: #6d83ab,
+  700: #6278a2,
+  800: #586e99,
+  900: #455b8a,
+  A100: #e3ecff,
+  A200: #b0c8ff,
+  A400: #7da5ff,
+  A700: #6394ff,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  ),
+);
+
+.mf-theme {
+  $primary: mat-palette($mat-mf, 500, 300, 800);
+  $accent: mat-palette($mat-mf-accent);
+  $warn: mat-palette($mat-pink);
+  @include light-dark-theme($primary, $accent, $warn);
+}
