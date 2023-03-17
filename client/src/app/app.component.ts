@@ -1,9 +1,8 @@
 import { animate, group, query, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
-import { SocketioService } from './services/socketio.service';
 import { User } from 'src/app/models/users.model';
 
 @Component({
@@ -28,23 +27,14 @@ import { User } from 'src/app/models/users.model';
   templateUrl: 'app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
     currentUser: User;
 
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
-        private socketService: SocketioService
     ) {
-        //this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-    }
-
-    ngOnInit() {
-      this.socketService.setupSocketConnection();
-    }
-
-    ngOnDestroy() {
-      this.socketService.disconnect();
+        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     logout() {

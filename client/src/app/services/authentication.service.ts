@@ -25,8 +25,23 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  login(email: any, password: any): Observable<User[]> {
-    return this.http.get<User[]>(`${baseUrl}/signin?email=${email}&password=${password}`);
+  login(email: any, password: any): Observable<any> {
+    let data = {
+      email,
+      password
+    }
+
+    const res = this.http.post(`${baseUrl}/signin`, data);
+    res.subscribe((result) => {
+      const user = result;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.currentUserSubject.next(user);
+    });
+
+    return res;
+
+
+    //return this.http.post(`${baseUrl}/signin`, data);
   }
 
   logout() {

@@ -66,11 +66,9 @@ export class RegisterComponent implements OnInit {
     this.userService.create(this.registerForm.value)
       .subscribe({
         next: (res) => {
-          console.log(res);
           this.alertService.success('Registration successful.', true);
           this.loading = true;
           this.submitted = true;
-
 
           this.authenticationService.login(this.f.email.value, this.f.password.value).subscribe({
             next: (res) => {
@@ -83,7 +81,6 @@ export class RegisterComponent implements OnInit {
           });
         },
         error: (e) => {
-          console.error(e);
           this.alertService.error('That Username & Email already exists.', true);
           this.loading = false;
         }

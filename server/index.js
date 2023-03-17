@@ -67,7 +67,8 @@ io.use((socket, next) => {
 });
   
 io.on('connection', (socket) => {
-    console.log('a user connected');
+  const user = socket.handshake.auth.user;
+    console.log(`${user.username} connected`);
   
     socket.on('disconnect', () => {
         console.log('user disconnected');

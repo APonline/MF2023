@@ -11,10 +11,11 @@ export class SocketioService {
 
   constructor() {   }
 
-  setupSocketConnection() {
+  setupSocketConnection(user) {
     this.socket = io(environment.SOCKET_ENDPOINT, {
       auth: {
-        token: 'cde'
+        token: 'cde',
+        user
       }
     });
 

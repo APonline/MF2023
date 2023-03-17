@@ -8,16 +8,16 @@ const Op = db.Sequelize.Op;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-exports.signup = async (req, res) => {
-    let datetime = new Date();
-    let joinedDate =
-    ("00" + (datetime.getMonth() + 1)).slice(-2) + "-" +
-    ("00" + datetime.getDate()).slice(-2) + "-" +
-    datetime.getFullYear() + " " +
-    ("00" + datetime.getHours()).slice(-2) + ":" +
-    ("00" + datetime.getMinutes()).slice(-2) + ":" +
-    ("00" + datetime.getSeconds()).slice(-2);
+let datetime = new Date();
+let lastLogin =
+("00" + (datetime.getMonth() + 1)).slice(-2) + "-" +
+("00" + datetime.getDate()).slice(-2) + "-" +
+datetime.getFullYear() + " " +
+("00" + datetime.getHours()).slice(-2) + ":" +
+("00" + datetime.getMinutes()).slice(-2) + ":" +
+("00" + datetime.getSeconds()).slice(-2);
 
+exports.signup = async (req, res) => {
     // Save User to Database
     try {
         const user = await User.create({
@@ -32,7 +32,7 @@ exports.signup = async (req, res) => {
             verified: 0,
             active: 1,
             date_joined: datetime.toISOString().slice(0,10),
-            last_login: joinedDate,
+            last_login: lastLogin,
             login_count: 1,
             profile_url: "@" + req.body.username + "",
             profile_img: "images/defaultprofile.png",
@@ -73,11 +73,10 @@ exports.signin = async (req, res) => {
         }
 
         const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
+            req.body.password,
+            user.password
         );
 
-        console.log('pass',passwordIsValid)
         if (!passwordIsValid) {
             return res.status(401).send({
                 message: "Invalid Password!",
@@ -85,8 +84,22 @@ exports.signin = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400, // 24 hours
+            expiresIn: 86400, // 24 hours
         });
+
+        const userLoginCount = await User.update(
+            {
+                login_count: user.login_count + 1,
+                last_login: lastLogin
+            },{
+                where: {
+                    id: user.id,
+                },
+            }
+        );
+        if (!userLoginCount) {
+            console.log('Login Count did not count');
+        }
 
         let authorities = [];
         const roles = await user.getRoles();

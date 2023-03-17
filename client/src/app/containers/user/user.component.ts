@@ -40,7 +40,6 @@ export class UserContainer implements OnInit {
 
   async ngOnInit() {
     this.user.getAll().subscribe(user => {
-      console.log(user)
       this.userList = user;
     });
   }
