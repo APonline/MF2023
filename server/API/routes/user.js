@@ -16,6 +16,10 @@ module.exports = function(app) {
     app.get("/api/users", controller.getAllUsers);
     app.get("/api/users/:id", controller.getUser);
 
+    app.get("/api/users/passwordReset", controller.requestPassword);
+
+    app.get("/api/users/verify", controller.verifyUser);
+
     app.get(
         "/api/test/user",
         [authJwt.verifyToken],

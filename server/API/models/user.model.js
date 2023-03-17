@@ -24,8 +24,20 @@ module.exports = (sequelize, Sequelize) => {
         password: {
             type: Sequelize.STRING
         },
+        age: {
+            type: Sequelize.INTEGER
+        },
+        gender: {
+            type: Sequelize.STRING
+        },
+        birthday: {
+            type: Sequelize.STRING
+        },
         verified: {
             type: Sequelize.INTEGER
+        },
+        verifiedDate: {
+            type: Sequelize.STRING
         },
         active: {
             type: Sequelize.INTEGER
@@ -47,6 +59,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         tna: {
             type: Sequelize.INTEGER
+        },
+        tnaDate: {
+            type: Sequelize.STRING
         },
     });
   

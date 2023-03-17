@@ -4,7 +4,8 @@
 <div class="jumbotron">
   <div class="container">
     <div class="row">
-      <div class="col-sm-6 offset-sm-3">
+      <!-- <div class="col-sm-6 offset-sm-3"></div> -->
+      <div>
         <app-alert id="alertMsg"></app-alert>
         <div [@routerAnimation]="getRouteAnimation(route)">
           <router-outlet #route="outlet"></router-outlet>

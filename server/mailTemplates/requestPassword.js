@@ -17,7 +17,7 @@ const requestPassword = (verifyId, email, username) => {
                 <style>
                     #mfEmail {
                         padding:40px;
-                        background:url(https://musefactory.app/assets/loginbk.jpg);
+                        background:url(https://musefactory.app/assets/images/loginbk.jpg);
                         background-size:cover;
                         color:#fff!important;
                     }
@@ -46,7 +46,7 @@ const requestPassword = (verifyId, email, username) => {
             </head>
             <body>
                 <div id="mfEmail">
-                    <a id='logo' href='https://musefactory.app'><img width="260px" src="https://musefactory.app/assets/logo.png" /></a>
+                    <a id='logo' href='https://musefactory.app'><img width="260px" src="https://musefactory.app/assets/images/logo.png" /></a>
                     <br/>
                     <h1 style='color:#fff!important;'>Muse Factory</h1>
                     <h3 style='color:#fff!important;'>Password Reset Request</h3>
@@ -61,7 +61,7 @@ const requestPassword = (verifyId, email, username) => {
                     <br/>
                     <br/>
                     <br/>
-                    <a id='logo2' href='https://musefactory.app' target='_new'><img width="100px" src="https://musefactory.app/assets/intrologo.png" /></a>
+                    <a id='logo2' href='https://musefactory.app' target='_new'><img width="100px" src="https://musefactory.app/assets/images/intrologo.png" /></a>
                 </div>
             </body>
         </html>

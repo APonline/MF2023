@@ -8,6 +8,9 @@ const Op = db.Sequelize.Op;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+import sendMailOut from '../../mailserver';
+import uniqueCredentials from '../../mailTemplates/signup';
+
 let datetime = new Date();
 let lastLogin =
 ("00" + (datetime.getMonth() + 1)).slice(-2) + "-" +
@@ -28,6 +31,9 @@ exports.signup = async (req, res) => {
             phone: req.body.phone,
             city: req.body.city,
             country: req.body.country,
+            age: (req.body.age ? req.body.age : 0),
+            gender: (req.body.gender ? req.body.gender : 0),
+            birthday: (req.body.birthday ? req.body.birthday : 0),
             password: bcrypt.hashSync(req.body.password, 8),
             verified: 0,
             active: 1,
@@ -38,6 +44,10 @@ exports.signup = async (req, res) => {
             profile_img: "images/defaultprofile.png",
             tna: 0
         });
+
+        // sendmail
+        let mailObj = uniqueCredentials(user.id, req.body.email, req.body.username);
+        sendMailOut(req.body.email, mailObj.subject, mailObj.plainText, mailObj.template);
 
         if (req.body.roles) {
             const roles = await Role.findAll({
@@ -63,9 +73,9 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         const user = await User.findOne({
-        where: {
-            email: req.body.email,
-        },
+            where: {
+                email: req.body.email,
+            },
         });
 
         if (!user) {
@@ -118,12 +128,16 @@ exports.signin = async (req, res) => {
             phone: user.phone,
             city: user.city,
             country: user.country,
+            age: user.age,
+            gender: user.gender,
+            birthday: user.birthday,
             date_joined: user.date_joined,
             last_login: user.last_login,
             profile_url: user.profile_url,
             profile_img: user.profile_img,
             roles: authorities,
             tna: user.tna,
+            verified: user.verified,
             token: req.session.token
         });
     } catch (error) {

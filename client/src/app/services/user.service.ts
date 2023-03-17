@@ -46,4 +46,12 @@ export class UserService {
     return this.http.get<User[]>(`${baseUrl}?email=${email}`);
   }
 
+  verify(data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/verify`, data);
+  }
+
+  passwordReset(data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/passwordReset`, data);
+  }
+
 }

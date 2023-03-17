@@ -89,7 +89,7 @@ export class PasswordResetComponent implements OnInit {
     };
 
 
-    this.user.findByEmail(newUpdate).subscribe({
+    this.user.passwordReset(newUpdate).subscribe({
       next: (res) => {
         if (res != null) {
           this.router.navigate(['/login']);

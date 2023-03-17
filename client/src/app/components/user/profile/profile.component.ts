@@ -26,16 +26,7 @@ export class ProfileComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
-
-    this.user.getAll().subscribe(user => {
-      console.log(user);
-      // this.currentUser = user.email.filter(u => {
-      //   if (u.email === this.currentUser.email) {
-      //     return u;
-      //   }
-      // })[0];
-    });
-
+    console.log(this.currentUser)
   }
 
    ngOnInit() {
@@ -45,12 +36,36 @@ export class ProfileComponent implements OnInit {
       username: ['', Validators.required],
       firstname: ['', Validators.required],
       lastname: ['', Validators.required],
+      phone: [''],
+      city: [''],
+      country: [''],
+      age: [''],
+      gender: [''],
+      birthday: [''],
+      verified: ['', Validators.required],
+      date_joined: ['', Validators.required],
+      last_login: ['', Validators.required],
+      login_count: ['', Validators.required],
+      profile_url: ['', Validators.required],
+      profile_img: ['', Validators.required],
     });
 
     this.profileForm.controls['email'].setValue(this.currentUser.email);
     this.profileForm.controls['username'].setValue(this.currentUser.username);
     this.profileForm.controls['firstname'].setValue(this.currentUser.firstname);
     this.profileForm.controls['lastname'].setValue(this.currentUser.lastname);
+    this.profileForm.controls['phone'].setValue(this.currentUser.phone);
+    this.profileForm.controls['city'].setValue(this.currentUser.city);
+    this.profileForm.controls['country'].setValue(this.currentUser.country);
+    this.profileForm.controls['age'].setValue(this.currentUser.age);
+    this.profileForm.controls['gender'].setValue(this.currentUser.gender);
+    this.profileForm.controls['birthday'].setValue(this.currentUser.birthday);
+    this.profileForm.controls['verified'].setValue(this.currentUser.verified);
+    this.profileForm.controls['date_joined'].setValue(this.currentUser.date_joined);
+    this.profileForm.controls['last_login'].setValue(this.currentUser.last_login);
+    this.profileForm.controls['login_count'].setValue(this.currentUser.login_count);
+    this.profileForm.controls['profile_url'].setValue(this.currentUser.profile_url);
+    this.profileForm.controls['lastname'].setValue(this.currentUser.profile_img);
   }
 
   // convenience getter for easy access to form fields
