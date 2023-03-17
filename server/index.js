@@ -8,28 +8,6 @@ const Role = db.role;
 
 db.sequelize.options.logging = false;
 db.sequelize.sync();
-// db.sequelize.sync({force: true}).then(() => {
-//   console.log('Drop and Resync Db');
-//   initial();
-// });
-
-function initial() {
-    Role.create({
-      id: 1,
-      name: "user"
-    });
-   
-    Role.create({
-      id: 2,
-      name: "moderator"
-    });
-   
-    Role.create({
-      id: 3,
-      name: "admin"
-    });
-  }
-
 
 // app server
 const app = express();
@@ -52,16 +30,55 @@ app.use(
 );
 
 // routes
-require('./API/routes/auth.routes')(app);
-require('./API/routes/user.routes')(app);
+require('./API/routes/auth')(app);
+require('./API/routes/user')(app);
 
 // simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to MuseFactory application." });
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+  cors: {
+    origins: [
+        "http://localhost:3001",
+        "http://localhost:3000",
+        "http://localhost:4200",
+        "http://localhost:8080",
+        "https://musefactory.app",
+    ],
+  }
 });
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+require("./API/routes")(app);
+
+// ---all routes
+app.all('/', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+
+app.get('/', (req, res) => {
+    res.send('<h1>Hey Socket.io</h1>');
+});
+
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    console.log('token', token);
+    next();
+});
+  
+io.on('connection', (socket) => {
+  const user = socket.handshake.auth.user;
+    console.log(`${user.username} connected`);
+  
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+
+    socket.on('my message', (msg) => {
+        io.emit('my broadcast', `server: ${msg}`);
+    });
+});
+  
+http.listen(3000, () => {
+    console.log('listening on *:3000');
 });

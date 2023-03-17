@@ -62,31 +62,29 @@ export class RegisterComponent implements OnInit {
     }
 
     this.loading = true;
-    this.userService.register(this.registerForm.value)
-      .then(
-        data => {
-          if (!data.hasOwnProperty('error')) {
-            this.alertService.success('Registration successful.', true);
-            this.loading = true;
-            this.authenticationService.login(data.email, this.registerForm.value.password)
-              .then(
-                data => {
-                  this._document.defaultView.location.reload();
-                },
-                error => {
-                  this.alertService.error(error);
-                  this.loading = false;
-                });
-          } else {
-            this.alertService.error('That Username & Email already exists.', true);
-            this.loading = false;
-          }
+
+    this.userService.create(this.registerForm.value)
+      .subscribe({
+        next: (res) => {
+          this.alertService.success('Registration successful.', true);
+          this.loading = true;
+          this.submitted = true;
+
+          this.authenticationService.login(this.f.email.value, this.f.password.value).subscribe({
+            next: (res) => {
+              this._document.defaultView.location.reload();
+            },
+            error: (e) => {
+              this.alertService.error(e.message);
+              this.loading = false;
+            }
+          });
         },
-        error => {
-          this.alertService.error(error);
+        error: (e) => {
+          this.alertService.error('That Username & Email already exists.', true);
           this.loading = false;
         }
-      );
+      });
   }
 
   registerUser() {

@@ -60,15 +60,16 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.email.value, this.f.password.value)
-      .then(
-        data => {
-          this._document.defaultView.location.reload();
-        },
-        error => {
-          this.alertService.error(error.graphQLErrors[0].message);
-          this.loading = false;
-        });
+
+    this.authenticationService.login(this.f.email.value, this.f.password.value).subscribe({
+      next: (res) => {
+        this._document.defaultView.location.reload();
+      },
+      error: (e) => {
+        this.alertService.error(e.message);
+        this.loading = false;
+      }
+    });
   }
 
   registerUser() {

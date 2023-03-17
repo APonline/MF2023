@@ -44,7 +44,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         profile_img: {
             type: Sequelize.STRING
-        }
+        },
+        tna: {
+            type: Sequelize.INTEGER
+        },
     });
   
     return User;

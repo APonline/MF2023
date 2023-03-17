@@ -42,6 +42,7 @@
     "ng-mat-select-infinite-scroll": "^2.1.1",
     "nodemon": "^2.0.7",
     "rxjs": "~6.6.3",
+    "socket.io-client": "^4.6.1",
     "subscriptions-transport-ws": "^0.11.0",
     "tslib": "^1.9.0",
     "zone.js": "~0.11.4"

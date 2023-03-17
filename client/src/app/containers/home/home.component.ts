@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../../types/user';
+import { User } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs';
+import { SocketioService } from 'src/app/services/socketio.service';
 
 @Component({
   selector: 'app-home',
@@ -15,15 +16,20 @@ export class HomeContainer implements OnInit {
 
   constructor(
     private authenticationService: AuthenticationService,
-    private user: UserService
+    private user: UserService,
+    private socketService: SocketioService
   ) {
-    this.user.subscribeToUsers();
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
   async ngOnInit() {
-    this.user.users.subscribe(user => {
-      this.userList = user.data.User;
+    this.socketService.setupSocketConnection(this.currentUser);
+    this.user.getAll().subscribe(user => {
+      this.userList = user.user;
     });
+  }
+
+  ngOnDestroy() {
+    this.socketService.disconnect();
   }
 }

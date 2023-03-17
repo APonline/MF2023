@@ -1,12 +1,13 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, Inject } from '@angular/core';
-import { Apollo } from 'apollo-angular';
-import gql from 'graphql-tag';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { User } from '../types/user';
-import { Query } from '../types/query'
+import { UserService } from './user.service';
+import { HttpClient } from '@angular/common/http';
+import { User } from '../models/users.model';
+import { environment } from 'src/environments/environment';
+
+const baseUrl = environment.apiUrl + 'auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -14,7 +15,7 @@ export class AuthenticationService {
   public currentUser: Observable<User>;
   use = '';
 
-  constructor(private apollo: Apollo, @Inject(DOCUMENT) private _document: Document) {
+  constructor(private http: HttpClient, @Inject(DOCUMENT) private _document: Document, private user: UserService) {
     this.use = localStorage.getItem('currentUser');
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(this.use));
     this.currentUser = this.currentUserSubject.asObservable();
@@ -24,39 +25,23 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  login(email, password) {
-    const variables = {
+  login(email: any, password: any): Observable<any> {
+    let data = {
       email,
       password
-    };
+    }
 
-    return this.apollo.query<Query>({
-      query: gql`
-          query Login($email: String, $password: String) {
-            Login(email: $email, password: $password) {
-              id
-              name
-              username
-              firstname
-              lastname
-              password
-              email
-              dateCreated {
-                formatted
-              }
-              active
-            }
-          }
-        `,
-      variables
-    }).pipe(
-      map(result => {
-        const user = result.data.Login;
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        return user;
-      })
-    ).toPromise();
+    const res = this.http.post(`${baseUrl}/signin`, data);
+    res.subscribe((result) => {
+      const user = result;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.currentUserSubject.next(user);
+    });
+
+    return res;
+
+
+    //return this.http.post(`${baseUrl}/signin`, data);
   }
 
   logout() {

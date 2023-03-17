@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
-import { User } from './types/user';
+import { User } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +32,7 @@ export class AppComponent {
 
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
     ) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }

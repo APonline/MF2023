@@ -38,6 +38,7 @@ import { MainNavComponent } from './components/navigation/mainNav/mainNav.compon
 import { SignupContainer } from './containers/signup/signup.component';
 import { SharedModule } from './shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SocketioService } from './services/socketio.service';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
   ],
   providers: [
+    SocketioService,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AlertService,
@@ -70,60 +72,4 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(apollo: Apollo) {
-
-    // HTTP for API
-    const httpLink = new HttpLink({
-      uri: `${environment.apiUrl}`,
-    });
-
-    // WS for subscription
-    const wsLink = new WebSocketLink({
-      uri: `${environment.apiSubUrl}`,
-      options: {
-        reconnect: true
-      }
-    });
-
-    // The split function takes three parameters:
-    //
-    // * A function that's called for each operation to execute
-    // * The Link to use for an operation if the function returns a "truthy" value
-    // * The Link to use for an operation if the function returns a "falsy" value
-    const splitLink = split(
-      ({ query }) => {
-        let definition = getMainDefinition(query);
-
-        return (
-          definition.kind === 'OperationDefinition' &&
-          definition.operation === 'subscription'
-        );
-      },
-      wsLink,
-      httpLink,
-    );
-
-
-    const namedLink = new ApolloLink((operation, forward) => {
-      operation.setContext(() => ({
-          uri: `${environment.apiUrl}?${operation.operationName}`,
-        })
-      );
-      return forward ? forward(operation) : null;
-    });
-
-
-    // Create clean Link
-    const httpLinkWithErrorHandling = ApolloLink.from([
-      namedLink,
-      splitLink
-    ]);
-    apollo.create({
-      link: httpLinkWithErrorHandling,
-      cache: new InMemoryCache({
-        addTypename: false
-      })
-    });
-  }
-}
+export class AppModule {}
