@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
+const qs = require('qs');
+const axios = require('axios');
 
 // db
 const db = require("./API/models");
-const Role = db.role;
 
 db.sequelize.options.logging = false;
 db.sequelize.sync();
@@ -20,7 +21,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-
+// yum cookies
 app.use(
   cookieSession({
     name: "bezkoder-session",
@@ -28,10 +29,6 @@ app.use(
     httpOnly: true
   })
 );
-
-// routes
-require('./API/routes/auth')(app);
-require('./API/routes/user')(app);
 
 // simple route
 const http = require('http').createServer(app);
@@ -56,6 +53,8 @@ app.all('/', function(req, res, next) {
     next();
 });
 
+
+// SOCKETING
 app.get('/', (req, res) => {
     res.send('<h1>Hey Socket.io</h1>');
 });
@@ -68,16 +67,36 @@ io.use((socket, next) => {
   
 io.on('connection', (socket) => {
   const user = socket.handshake.auth.user;
-    console.log(`${user.username} connected`);
-  
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+  console.log(`${user.username} connected`);
+  updateOnlineStatus(user, 1);
 
-    socket.on('my message', (msg) => {
-        io.emit('my broadcast', `server: ${msg}`);
-    });
+  socket.on('disconnect', () => {
+      console.log(`${user.username}disconnected`);
+      updateOnlineStatus(user, 0);
+  });
+
+  socket.on('my message', (msg) => {
+      io.emit('my broadcast', `server: ${msg}`);
+  });
 });
+
+// setonline status
+let updateOnlineStatus = (user, status) => {
+  user['online'] = status;
+  axios.put(`http://localhost:3000/api/v1/users/online/${user.id}`,
+    qs.stringify(user))
+    .then( (response) => {
+      if(status == 1) {
+        console.log(`${user.username} logged online...`);
+      }else{
+        console.log(`${user.username} logged offline...`);
+      }
+    })
+    .catch( (error) => {
+      console.log(`error with ${user.username} logging online status...`);
+    });
+};
+// SOCKETING
   
 http.listen(3000, () => {
     console.log('listening on *:3000');

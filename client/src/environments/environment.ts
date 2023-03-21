@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api/',
+  apiUrl: 'http://localhost:3000/api/v1/',
 	SOCKET_ENDPOINT: 'http://localhost:3000',
   version: 'v1.0.0'
 };

@@ -1,5 +1,8 @@
+let path = require('path');
+let scriptName = path.basename(__filename).split('.')[0];
+
 module.exports = (sequelize, Sequelize) => {
-    const Role = sequelize.define("roles", {
+    const ItemTopic = sequelize.define(`${scriptName}`, {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true
@@ -9,5 +12,5 @@ module.exports = (sequelize, Sequelize) => {
         }
     });
   
-    return Role;
-  };
+    return ItemTopic;
+};

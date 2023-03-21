@@ -4,7 +4,8 @@ module.exports = {
     PASSWORD: "root",
     DB: "MF2023",
     dialect: "mysql",
-    "logging": false,
+    logging: false,
+    synchronize: false,
     pool: {
       max: 5,
       min: 0,

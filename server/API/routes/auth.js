@@ -1,7 +1,10 @@
 const { verifySignUp } = require("../middleware");
-const controller = require("../controllers/auth.controller");
+let path = require('path');
+let itemTopic = path.basename(__filename).split('.')[0];
+const controller = require(`../controllers/${itemTopic}.controller`);
 
 module.exports = function(app) {
+    // defaults
     app.use(function(req, res, next) {
         res.header(
             "Access-Control-Allow-Headers",
@@ -9,17 +12,12 @@ module.exports = function(app) {
         );
         next();
     });
+    // defaults end
 
-    app.post(
-        "/api/auth/signup",
-        [
-        verifySignUp.checkDuplicateUsernameOrEmail,
-        verifySignUp.checkRolesExisted
-        ],
-        controller.signup
-    );
+    //register
+    app.post(`/api/v1/${itemTopic}/signup`, [verifySignUp.checkDuplicateUsernameOrEmail, verifySignUp.checkRolesExisted], controller.signup);
 
-    app.post("/api/auth/signin", controller.signin);
-
-    app.post("/api/auth/signout", controller.signout);
-};
+    // log in/out
+    app.post(`/api/v1/${itemTopic}/signin`, controller.signin);
+    app.post(`/api/v1/${itemTopic}/signout`, controller.signout);
+}

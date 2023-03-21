@@ -18,5 +18,6 @@ export class User {
   profile_img?: string;
   verified?: number;
   tna?: number;
+  online?: number;
   token?: string;
 }

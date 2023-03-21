@@ -1,5 +1,8 @@
+let path = require('path');
+let scriptName = path.basename(__filename).split('.')[0];
+
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("users", {
+    const ItemTopic = sequelize.define(`${scriptName}`, {
         first_name: {
             type: Sequelize.STRING
         },
@@ -63,7 +66,10 @@ module.exports = (sequelize, Sequelize) => {
         tnaDate: {
             type: Sequelize.STRING
         },
+        online: {
+            type: Sequelize.INTEGER
+        },
     });
   
-    return User;
+    return ItemTopic;
 };

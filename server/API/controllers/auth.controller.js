@@ -3,7 +3,7 @@ const config = require("../../config/auth.config");
 const User = db.user;
 const Role = db.role;
 
-const Op = db.Sequelize.Op;
+const Op = db.Sequelize.Op; 
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -138,6 +138,7 @@ exports.signin = async (req, res) => {
             roles: authorities,
             tna: user.tna,
             verified: user.verified,
+            online: user.online,
             token: req.session.token
         });
     } catch (error) {
