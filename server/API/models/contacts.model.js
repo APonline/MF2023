@@ -9,16 +9,31 @@ module.exports = (sequelize, Sequelize) => {
       owner_group: {
       type: Sequelize.INTEGER
     },
-      user_id: {
-      type: Sequelize.INTEGER
+      first_name: {
+      type: Sequelize.STRING
     },
-      artist_id: {
-      type: Sequelize.INTEGER
+      last_name: {
+      type: Sequelize.STRING
     },
-      active: {
-      type: Sequelize.INTEGER
+      nickname: {
+      type: Sequelize.STRING
     },
-      date_joined: {
+      relation: {
+      type: Sequelize.STRING
+    },
+      town: {
+      type: Sequelize.STRING
+    },
+      city: {
+      type: Sequelize.STRING
+    },
+      profile_url: {
+      type: Sequelize.STRING
+    },
+      phone: {
+      type: Sequelize.STRING
+    },
+      email: {
       type: Sequelize.STRING
     },
       createdAt: {
@@ -27,8 +42,8 @@ module.exports = (sequelize, Sequelize) => {
       updatedAt: {
       type: Sequelize.STRING
     },
-      profile_url: {
-      type: Sequelize.STRING
+      active: {
+      type: Sequelize.INTEGER
     },
  });
     

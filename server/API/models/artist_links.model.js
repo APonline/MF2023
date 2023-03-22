@@ -9,25 +9,25 @@ module.exports = (sequelize, Sequelize) => {
       owner_group: {
       type: Sequelize.INTEGER
     },
-      user_id: {
-      type: Sequelize.INTEGER
+      url: {
+      type: Sequelize.STRING
     },
-      artist_id: {
-      type: Sequelize.INTEGER
+      title: {
+      type: Sequelize.STRING
+    },
+      description: {
+      type: Sequelize.STRING
+    },
+      profile_url: {
+      type: Sequelize.STRING
     },
       active: {
       type: Sequelize.INTEGER
-    },
-      date_joined: {
-      type: Sequelize.STRING
     },
       createdAt: {
       type: Sequelize.STRING
     },
       updatedAt: {
-      type: Sequelize.STRING
-    },
-      profile_url: {
       type: Sequelize.STRING
     },
  });
