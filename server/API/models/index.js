@@ -33,15 +33,43 @@ let makeMyAPIForMe = () => {
       if(result[i] != 'index.js' &&
       result[i] != 'user_roles' && 
       result[i] != 'users' && 
-      result[i] != 'roles' && 
-      result[i] != 'artists'){
+      result[i] != 'roles' &&
+      result[i] != 'albums' &&
+      result[i] != 'artists' &&
+      result[i] != 'artists_links' &&
+      result[i] != 'artist_members' &&
+      result[i] != 'comments' &&
+      result[i] != 'contacts' &&
+      result[i] != 'documents' &&
+      result[i] != 'friends' &&
+      result[i] != 'images' &&
+      result[i] != 'socials' &&
+      result[i] != 'songs' &&
+      result[i] != 'videos'){
         let cols = await sequelize.query(`SELECT COLUMN_NAME, DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = 'MF2023' and table_name = '${result[i]}'`, { type: QueryTypes.SELECT });
         console.log(result[i]);
         console.log(cols);
 
+
+        if (fs.existsSync(`../client/src/app/services/${result[i]}.service.ts`)) {
+          fs.unlinkSync(`../client/src/app/services/${result[i]}.service.ts`);
+        }
+        if (fs.existsSync(`../client/src/app/models/${result[i]}.model.ts`)) {
+          fs.unlinkSync(`../client/src/app/models/${result[i]}.model.ts`);
+        }
+        if (fs.existsSync(`./API/routes/${result[i]}.js`)) {
+          fs.unlinkSync(`./API/routes/${result[i]}.js`);
+        }
+        if (fs.existsSync(`./API/models/${result[i]}.model.js`)) {
+          fs.unlinkSync(`./API/models/${result[i]}.model.js`);
+        }
+        if (fs.existsSync(`./API/controllers/${result[i]}.controller.js`)) {
+          fs.unlinkSync(`./API/controllers/${result[i]}.controller.js`);
+        }
+
         // CLIENTSIDE 
         // service
-        fs.copyFile(`../../../../client/src/app/services/tmp.service.ts`, `../../../../client/src/app/services/${result[i]}.service.ts`, (err) => {
+        fs.copyFile(`../client/src/app/services/tmp.service.ts`, `../client/src/app/services/${result[i]}.service.ts`, (err) => {
           if (err) throw err;
           console.log(`template.service was copied to ${result[i]}.service`);
         });
@@ -58,13 +86,15 @@ let makeMyAPIForMe = () => {
             newType = 'string';
           }else if(cols[k].DATA_TYPE == "datetime"){
             newType = 'string';
+          }else if(cols[k].DATA_TYPE == "text"){
+            newType = 'string';
           }
           
           front_model += `${cols[k].COLUMN_NAME}?: ${newType};\n`;
         }
         front_model += "}";
 
-        fs.appendFile(`../../../../client/src/app/models/${result[i]}.model.js`, front_model, function (err) {
+        fs.appendFile(`../client/src/app/models/${result[i]}.model.ts`, front_model, function (err) {
           if (err) throw err;
           console.log('File is created successfully.');
         });
@@ -72,7 +102,7 @@ let makeMyAPIForMe = () => {
 
         // SERVERSIDE 
         // routes
-        fs.copyFile(`./API/routes/artists.js`, `./API/routes/${result[i]}.js`, (err) => {
+        fs.copyFile(`./API/routes/tmp.js`, `./API/routes/${result[i]}.js`, (err) => {
           if (err) throw err;
           console.log(`template.route was copied to ${result[i]}.route`);
         });
@@ -80,8 +110,8 @@ let makeMyAPIForMe = () => {
         // models
         let start = "let path = require('path');\n";
         start += "let scriptName = path.basename(__filename);\n\n";
-        start += "  module.exports = (sequelize, Sequelize) => {\n";
-        start += "    const ItemTopic = sequelize.define(`${scriptName}`, {\n";
+        start += "module.exports = (sequelize, Sequelize) => {\n";
+        start += "  const ItemTopic = sequelize.define(`${scriptName}`, {\n";
 
         let col_names = '';
         for(let k=0; k<cols.length; k++){
@@ -93,18 +123,20 @@ let makeMyAPIForMe = () => {
               newType = 'STRING';
             }else if(cols[k].DATA_TYPE == "datetime"){
               newType = 'STRING';
+            }else if(cols[k].DATA_TYPE == "text"){
+              newType = 'TEXT';
             }
             
-            col_names += `${cols[k].COLUMN_NAME}: {
-              type: Sequelize.${newType}
-            },\n`;
+            col_names += `     ${cols[k].COLUMN_NAME}: {
+      type: Sequelize.${newType}
+    },\n`;
           }
         }
 
-        let end = `});
+        let end = ` });
     
-        return ItemTopic;
-        };`;
+  return ItemTopic;
+};`;
 
         let content = start + col_names + end;
 
@@ -114,7 +146,7 @@ let makeMyAPIForMe = () => {
         });
 
         // controllers
-        fs.copyFile(`./API/controllers/artists.controller.js`, `./API/controllers/${result[i]}.controller.js`, (err) => {
+        fs.copyFile(`./API/controllers/tmp.controller.js`, `./API/controllers/${result[i]}.controller.js`, (err) => {
           if (err) throw err;
           console.log(`template.controller was copied to ${result[i]}.controller`);
         });

@@ -3,22 +3,22 @@ let scriptName = path.basename(__filename);
 
 module.exports = (sequelize, Sequelize) => {
   const ItemTopic = sequelize.define(`${scriptName}`, {
+      owner_album: {
+      type: Sequelize.INTEGER
+    },
+      title: {
+      type: Sequelize.STRING
+    },
+      duration: {
+      type: Sequelize.STRING
+    },
       owner_user: {
       type: Sequelize.INTEGER
     },
-      owner_group: {
-      type: Sequelize.INTEGER
+      author: {
+      type: Sequelize.STRING
     },
-      user_id: {
-      type: Sequelize.INTEGER
-    },
-      artist_id: {
-      type: Sequelize.INTEGER
-    },
-      active: {
-      type: Sequelize.INTEGER
-    },
-      date_joined: {
+      profile_url: {
       type: Sequelize.STRING
     },
       createdAt: {
@@ -27,9 +27,22 @@ module.exports = (sequelize, Sequelize) => {
       updatedAt: {
       type: Sequelize.STRING
     },
-      profile_url: {
+      owner_group: {
+      type: Sequelize.INTEGER
+    },
+      active: {
+      type: Sequelize.INTEGER
+    },
+      tags: {
       type: Sequelize.STRING
     },
+      plays: {
+      type: Sequelize.INTEGER
+    },
+    location_url: {
+      type: Sequelize.STRING
+    },
+
  });
     
 return ItemTopic;

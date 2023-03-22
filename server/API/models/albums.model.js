@@ -1,35 +1,39 @@
 let path = require('path');
-let scriptName = path.basename(__filename).split('.')[0];
+let scriptName = path.basename(__filename);
 
 module.exports = (sequelize, Sequelize) => {
   const ItemTopic = sequelize.define(`${scriptName}`, {
-    owner_user: {
+      owner_user: {
       type: Sequelize.INTEGER
     },
-    owner_group: {
+      owner_group: {
       type: Sequelize.INTEGER
     },
-    name: {
+      title: {
       type: Sequelize.STRING
     },
-    record_label: {
+      record_label: {
       type: Sequelize.STRING
     },
-    release_year: {
+      release_year: {
       type: Sequelize.STRING
     },
-    track_count: {
+      track_count: {
       type: Sequelize.INTEGER
     },
-    active: {
+      active: {
       type: Sequelize.INTEGER
     },
-    createdAt: {
+      createdAt: {
       type: Sequelize.STRING
     },
-    updatedAt: {
+      updatedAt: {
       type: Sequelize.STRING
-    },});
-  
-  return ItemTopic;
+    },
+      profile_url: {
+      type: Sequelize.STRING
+    },
+ });
+    
+return ItemTopic;
 };

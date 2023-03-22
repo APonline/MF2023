@@ -9,16 +9,19 @@ module.exports = (sequelize, Sequelize) => {
       owner_group: {
       type: Sequelize.INTEGER
     },
-      user_id: {
-      type: Sequelize.INTEGER
+      title: {
+      type: Sequelize.STRING
     },
-      artist_id: {
-      type: Sequelize.INTEGER
+      description: {
+      type: Sequelize.STRING
     },
-      active: {
-      type: Sequelize.INTEGER
+      genre: {
+      type: Sequelize.STRING
     },
-      date_joined: {
+      extension: {
+      type: Sequelize.STRING
+    },
+      tags: {
       type: Sequelize.STRING
     },
       createdAt: {
@@ -27,7 +30,16 @@ module.exports = (sequelize, Sequelize) => {
       updatedAt: {
       type: Sequelize.STRING
     },
+      active: {
+      type: Sequelize.INTEGER
+    },
+      views: {
+      type: Sequelize.INTEGER
+    },
       profile_url: {
+      type: Sequelize.STRING
+    },
+    location_url: {
       type: Sequelize.STRING
     },
  });
