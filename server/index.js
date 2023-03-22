@@ -64,15 +64,36 @@ io.use((socket, next) => {
     console.log('token', token);
     next();
 });
+
+
+
+let onlineUsers = [];
   
 io.on('connection', (socket) => {
-  const user = socket.handshake.auth.user;
-  console.log(`${user.username} connected`);
-  updateOnlineStatus(user, 1);
+  let user = socket.handshake.auth.user;
+  
+  if (!onlineUsers.some((u) => u.id === user.id)) { 
+    user['socketId']=socket.id;
+    onlineUsers.push(user);
+    console.log(`${user.username} connected`);
+    updateOnlineStatus(user, 1);
+    updateOnlineUsers();
+  }
+  // send all active users to new user
+  io.emit("get-users", onlineUsers);
 
   socket.on('disconnect', () => {
-      console.log(`${user.username}disconnected`);
-      updateOnlineStatus(user, 0);
+    onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
+    console.log(`${user.username} disconnected`);
+    updateOnlineStatus(user, 0);
+    io.emit("get-users", onlineUsers);
+  });
+
+  socket.on("offline", () => {
+    onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
+    console.log(`${user.username}disconnected`);
+    updateOnlineStatus(user, 0);
+    io.emit("get-users", onlineUsers);
   });
 
   socket.on('my message', (msg) => {
@@ -91,6 +112,16 @@ let updateOnlineStatus = (user, status) => {
       }else{
         console.log(`${user.username} logged offline...`);
       }
+    })
+    .catch( (error) => {
+      console.log(`error with ${user.username} logging online status...`);
+    });
+};
+
+let updateOnlineUsers = () => {
+  axios.get(`http://localhost:3000/api/v1/users`)
+    .then( (response) => {
+      return response;
     })
     .catch( (error) => {
       console.log(`error with ${user.username} logging online status...`);

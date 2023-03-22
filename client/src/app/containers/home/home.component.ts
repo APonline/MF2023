@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
-import { Observable } from 'rxjs';
 import { SocketioService } from 'src/app/services/socketio.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,8 +11,9 @@ import { SocketioService } from 'src/app/services/socketio.service';
   styleUrls: ['home.component.scss']
 })
 export class HomeContainer implements OnInit {
+
   currentUser: User;
-  userList: any[];
+  userList$: any = [];
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -24,9 +25,17 @@ export class HomeContainer implements OnInit {
 
   async ngOnInit() {
     this.socketService.setupSocketConnection(this.currentUser);
-    this.user.getAll().subscribe(user => {
-      this.userList = user.user;
+    this.userList$ = [];
+
+    this.socketService.getNewUsers().subscribe(res => {
+      for(let i=0; i<res.length; i++){
+        if(res[i].username == this.currentUser.username){
+          res.splice(i, 1);
+        }
+      }
+      this.userList$ = res;
     });
+
   }
 
   ngOnDestroy() {

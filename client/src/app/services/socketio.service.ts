@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketioService {
+  public users$: BehaviorSubject<any> = new BehaviorSubject('');
 
   socket;
 
-  constructor() {   }
+  constructor() {}
 
   setupSocketConnection(user) {
     this.socket = io(environment.SOCKET_ENDPOINT, {
@@ -24,11 +26,23 @@ export class SocketioService {
     this.socket.on('my broadcast', (data: string) => {
         console.log(data);
     });
+
+    this.socket.on('get-users', (data: any) => {
+      this.users$.next(data);
+    });
   }
+
+  public getNewUsers = () => {
+    this.socket.on('get-users', (data: any) => {
+      this.users$.next(data);
+    });
+
+    return this.users$.asObservable();
+  };
 
   disconnect() {
     if (this.socket) {
         this.socket.disconnect();
     }
-}
+  }
 }
