@@ -39,6 +39,10 @@ module.exports = (sequelize, Sequelize) => {
       plays: {
       type: Sequelize.INTEGER
     },
+    location_url: {
+      type: Sequelize.STRING
+    },
+
  });
     
 return ItemTopic;

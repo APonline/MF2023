@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
       bio: {
-      type: Sequelize.
+      type: Sequelize.TEXT
     },
       location: {
       type: Sequelize.STRING

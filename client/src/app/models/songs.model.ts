@@ -12,4 +12,5 @@ owner_group?: number;
 active?: number;
 tags?: string;
 plays?: number;
+location_url?: string;
 }

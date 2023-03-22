@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER
     },
       comment_txt: {
-      type: Sequelize.
+      type: Sequelize.TEXT
     },
       tags: {
       type: Sequelize.STRING

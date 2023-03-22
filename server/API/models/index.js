@@ -86,6 +86,8 @@ let makeMyAPIForMe = () => {
             newType = 'string';
           }else if(cols[k].DATA_TYPE == "datetime"){
             newType = 'string';
+          }else if(cols[k].DATA_TYPE == "text"){
+            newType = 'string';
           }
           
           front_model += `${cols[k].COLUMN_NAME}?: ${newType};\n`;
@@ -121,9 +123,11 @@ let makeMyAPIForMe = () => {
               newType = 'STRING';
             }else if(cols[k].DATA_TYPE == "datetime"){
               newType = 'STRING';
+            }else if(cols[k].DATA_TYPE == "text"){
+              newType = 'TEXT';
             }
             
-            col_names += `      ${cols[k].COLUMN_NAME}: {
+            col_names += `     ${cols[k].COLUMN_NAME}: {
       type: Sequelize.${newType}
     },\n`;
           }

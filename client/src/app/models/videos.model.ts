@@ -12,4 +12,5 @@ updatedAt?: string;
 active?: number;
 views?: number;
 profile_url?: string;
+location_url?: string;
 }

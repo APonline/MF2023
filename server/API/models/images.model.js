@@ -39,6 +39,9 @@ module.exports = (sequelize, Sequelize) => {
       profile_url: {
       type: Sequelize.STRING
     },
+    location_url: {
+      type: Sequelize.STRING
+    },
  });
     
 return ItemTopic;

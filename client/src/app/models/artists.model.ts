@@ -3,7 +3,7 @@ id?: any;
 owner_user?: string;
 name?: string;
 description?: string;
-bio?: ;
+bio?: string;
 location?: string;
 active?: number;
 createdAt?: string;
