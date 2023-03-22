@@ -30,19 +30,47 @@ let makeMyAPIForMe = () => {
   .then(async (result) => {
     console.log(result);
     for(let i=0; i<result.length; i++){
-      if(result[i] != 'users.model.js' && 
-      result[i] != 'user.model.js' && 
+      if(result[i] != 'index.js' &&
       result[i] != 'user_roles' && 
       result[i] != 'users' && 
-      result[i] != 'roles.model.js' && 
       result[i] != 'roles' && 
-      result[i] != 'artists.model.js' &&
-      result[i] != 'artists' && 
-      result[i] != 'index.js'){
+      result[i] != 'artists'){
         let cols = await sequelize.query(`SELECT COLUMN_NAME, DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = 'MF2023' and table_name = '${result[i]}'`, { type: QueryTypes.SELECT });
         console.log(result[i]);
         console.log(cols);
 
+        // CLIENTSIDE 
+        // service
+        fs.copyFile(`../../../../client/src/app/services/tmp.service.ts`, `../../../../client/src/app/services/${result[i]}.service.ts`, (err) => {
+          if (err) throw err;
+          console.log(`template.service was copied to ${result[i]}.service`);
+        });
+
+        // model type
+        let front_model = `export class ${result[i]} {\n`;
+        for(let k=0; k<cols.length; k++) {
+          let newType='';
+          if(cols[k].COLUMN_NAME == 'id'){
+            newType = 'any';
+          }else if(cols[k].DATA_TYPE == "int"){
+            newType = 'number';
+          }else if(cols[k].DATA_TYPE == "varchar"){
+            newType = 'string';
+          }else if(cols[k].DATA_TYPE == "datetime"){
+            newType = 'string';
+          }
+          
+          front_model += `${cols[k].COLUMN_NAME}?: ${newType};\n`;
+        }
+        front_model += "}";
+
+        fs.appendFile(`../../../../client/src/app/models/${result[i]}.model.js`, front_model, function (err) {
+          if (err) throw err;
+          console.log('File is created successfully.');
+        });
+        
+
+        // SERVERSIDE 
         // routes
         fs.copyFile(`./API/routes/artists.js`, `./API/routes/${result[i]}.js`, (err) => {
           if (err) throw err;
