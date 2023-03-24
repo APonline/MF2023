@@ -4,6 +4,8 @@ const cookieSession = require("cookie-session");
 const qs = require('qs');
 const axios = require('axios');
 
+global.__basedir = __dirname;
+
 // db
 const db = require("./API/models");
 
