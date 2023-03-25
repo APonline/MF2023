@@ -4,11 +4,14 @@ const cookieSession = require("cookie-session");
 const qs = require('qs');
 const axios = require('axios');
 
+global.__basedir = __dirname;
+global.baseUrl = "http://localhost:3000";
+
 // db
 const db = require("./API/models");
 
 db.sequelize.options.logging = false;
-db.sequelize.sync();
+//db.sequelize.sync();
 
 // app server
 const app = express();
