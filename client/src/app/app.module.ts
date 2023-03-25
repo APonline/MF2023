@@ -10,10 +10,6 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ErrorInterceptor } from './helpers/error.interceptor';
 import { JwtInterceptor } from './helpers/jwt.interceptors';
 
-// Apollo
-import { ApolloModule, Apollo } from 'apollo-angular';
-
-
 // Services
 import { AlertService } from './services/alert.service';
 import { AuthenticationService } from './services/authentication.service';
@@ -72,7 +68,6 @@ import { UploadImagesComponent } from './components/upload/upload-images/upload-
     AppRoutingModule,
     HttpClientModule,
     SharedModule,
-    ApolloModule,
     UserModule,
     BrowserAnimationsModule,
     BrowserModule,
