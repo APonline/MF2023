@@ -1,4 +1,8 @@
 const uploadFile = require("../middleware/upload");
+const fs = require('fs');
+
+__basedir = global.__basedir;
+baseUrl = global.baseUrl;
 
 const upload = async (req, res) => {
   try {
@@ -33,7 +37,7 @@ const getListFiles = (req, res) => {
     files.forEach((file) => {
       fileInfos.push({
         name: file,
-        url: baseUrl + file,
+        url: baseUrl + '/api/v1/files/' + file,
       });
     });
 

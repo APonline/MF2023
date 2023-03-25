@@ -3,7 +3,7 @@ import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl + `documents`;
+const baseUrl = environment.apiUrl;
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,7 @@ export class FileUploadService {
 
     formData.append('file', file);
 
-    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
+    const req = new HttpRequest('POST', `${this.baseUrl}upload`, formData, {
       reportProgress: true,
       responseType: 'json'
     });
@@ -27,11 +27,11 @@ export class FileUploadService {
     return this.http.request(req);
   }
 
-  downloadFile(id: any): Observable<any> {
-    return this.http.get(`${this.baseUrl}/files/${id}`);
+  downloadFile(id: any, name: any): Observable<any> {
+    return this.http.get(`${this.baseUrl}files/${name}`);
   }
 
   getFiles(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/files`);
+    return this.http.get(`${this.baseUrl}files`);
   }
 }

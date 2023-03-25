@@ -28,6 +28,10 @@ export class UploadImagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.imageInfos = this.uploadService.getFiles();
+    this.imageInfos.subscribe((res) => {
+      console.log(res);
+    });
+    console.log(this.imageInfos);
   }
 
   selectFiles(event: any): void {
