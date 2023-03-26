@@ -44,7 +44,6 @@ import { AlertComponent } from './components/alert/alert.component';
 import { LandingContainer} from './containers/landing/landing.component';
 import { MainNavComponent } from './components/navigation/mainNav/mainNav.component';
 import { SignupContainer } from './containers/signup/signup.component';
-import { UploadImagesComponent } from './components/upload/upload-images/upload-images.component';
 import { UploadFilesComponent } from './components/upload/upload-multi/upload-multi.component';
 
 
@@ -63,7 +62,6 @@ import { UploadFilesComponent } from './components/upload/upload-multi/upload-mu
     RegisterComponent,
     AlertComponent,
     MainNavComponent,
-    UploadImagesComponent,
     UploadFilesComponent
   ],
   imports: [
