@@ -39,6 +39,7 @@ let makeMyAPIForMe = () => {
       result[i] != 'artists_links' &&
       result[i] != 'artist_members' &&
       result[i] != 'comments' &&
+      result[i] != 'gigs' &&
       result[i] != 'contacts' &&
       result[i] != 'documents' &&
       result[i] != 'friends' &&

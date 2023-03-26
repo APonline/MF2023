@@ -17,7 +17,7 @@ import { UserService } from './services/user.service';
 import { SocketioService } from './services/socketio.service';
 import { FileUploadService } from './services/file-upload.service';
 import { AlbumsService } from './services/albums.service';
-import { ArtistLinksService } from './services/artist_links.service';
+import { ArtistsLinksService } from './services/artist_links.service';
 import { ArtistMembersService } from './services/artist_members.service';
 import { ArtistsService } from './services/artists.service';
 import { CommentsService } from './services/comments.service';
@@ -28,6 +28,8 @@ import { ImagesService } from './services/images.service';
 import { SocialsService } from './services/socials.service';
 import { SongsService } from './services/songs.service';
 import { VidoesService } from './services/videos.service';
+import { gigsService } from './services/gigs.service';
+
 
 // Modules
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -44,7 +46,7 @@ import { AlertComponent } from './components/alert/alert.component';
 import { LandingContainer} from './containers/landing/landing.component';
 import { MainNavComponent } from './components/navigation/mainNav/mainNav.component';
 import { SignupContainer } from './containers/signup/signup.component';
-import { UploadFilesComponent } from './components/upload/upload-multi/upload-multi.component';
+import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 
 
 
@@ -81,7 +83,7 @@ import { UploadFilesComponent } from './components/upload/upload-multi/upload-mu
     UserService,
     FileUploadService,
     AlbumsService,
-    ArtistLinksService,
+    ArtistsLinksService,
     ArtistMembersService,
     ArtistsService,
     CommentsService,
@@ -91,7 +93,8 @@ import { UploadFilesComponent } from './components/upload/upload-multi/upload-mu
     ImagesService,
     SocialsService,
     SongsService,
-    VidoesService
+    VidoesService,
+    gigsService
   ],
   bootstrap: [AppComponent]
 })
