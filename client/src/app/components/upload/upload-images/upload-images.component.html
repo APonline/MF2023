@@ -18,7 +18,7 @@
 <div class="row">
   <div class="col-8">
     <label class="btn btn-default p-0">
-      <input type="file" accept="image/*" multiple (change)="selectFiles($event)" />
+      <input type="file" multiple (change)="selectFiles($event)" />
     </label>
   </div>
 
@@ -51,7 +51,7 @@
   >
     <li class="list-group-item">
       <p><a href="{{ image.url }}">{{ image.name }}</a></p>
-      <img src="{{ image.url }}" alt="{{ image.name }}" height="80px" />
+      <img src="{{ image.display }}" alt="{{ image.name }}" height="80px" />
     </li>
   </ul>
 </div>
