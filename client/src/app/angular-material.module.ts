@@ -26,6 +26,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTableModule } from '@angular/material/table';
+
+
 
 
 @NgModule({
@@ -60,6 +63,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
+    MatTableModule
   ]
 })
 export class AngularMaterialModule { }

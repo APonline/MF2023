@@ -1,0 +1,38 @@
+
+<div class="content">
+  <!-- dialog-box.component.html -->
+  <h1>Row Action :: <strong>{{action}}</strong></h1>
+  <br/>
+    <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">
+
+      <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+        <ng-container *ngIf="(disCol != 'id' && disCol != 'action'); else disabledTemplate">
+          <th mat-header-cell *matHeaderCellDef> {{disCol}}</th>
+          <td mat-cell *matCellDef="let element"  class="action-link">
+
+            <mat-form-field *ngIf="action != 'Delete'; else elseTemplate">
+              <input matInput [(ngModel)]="element[disCol]">
+            </mat-form-field>
+
+            <ng-template #elseTemplate>
+              Sure to delete <b>{{element[disCol]}}</b>?
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-template #disabledTemplate>
+          <th mat-header-cell *matHeaderCellDef> {{disCol}}</th>
+          <td mat-cell *matCellDef="let element"  class="action-link">
+            {{element[disCol]}}
+          </td>
+        </ng-template>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="doAction()">{{action}}</button>
+    <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+  </div>
+</div>

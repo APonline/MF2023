@@ -1,0 +1,14 @@
+<mat-dialog-content class="mat-typography">
+  <h1>{{title}}</h1>
+  <p *ngIf="type != 'adminUpdate'">{{body}}</p>
+
+  <!-- <app-contactFormDialog *ngIf="type == 'taskIssue'"></app-contactFormDialog> -->
+  <app-message *ngIf="type == 'notification'"></app-message>
+  <app-newItemUpdate [record]="body" *ngIf="type == 'adminUpdate'"></app-newItemUpdate>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>

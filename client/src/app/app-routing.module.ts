@@ -5,6 +5,8 @@ import { HomeContainer} from './containers/home/home.component';
 import { AuthGuard } from './helpers/auth.guard';
 import { LandingContainer } from './containers/landing/landing.component';
 import { SignupContainer } from './containers/signup/signup.component';
+import { NewitemComponent } from './containers/new-item/new-item.component';
+import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
 
 const routes: Routes = [
   { path: '', component: HomeContainer, canActivate: [AuthGuard], data: { animation: 'home', layer: 1 } },
@@ -13,6 +15,8 @@ const routes: Routes = [
   { path: 'user',
     loadChildren: () => import('./containers/user/user.module').then(mod => mod.UserModule)
   },
+  { path: 'items', component: NewitemComponent, canActivate: [AuthGuard] },
+  { path: 'items/new-edit/:id', component: NewItemFormComponent, canActivate: [AuthGuard] },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' }

@@ -28,7 +28,9 @@ import { ImagesService } from './services/images.service';
 import { SocialsService } from './services/socials.service';
 import { SongsService } from './services/songs.service';
 import { VidoesService } from './services/videos.service';
-import { gigsService } from './services/gigs.service';
+import { GigsService } from './services/gigs.service';
+import { DialogService } from './services/dialog.service';
+
 
 
 // Modules
@@ -47,11 +49,27 @@ import { LandingContainer} from './containers/landing/landing.component';
 import { MainNavComponent } from './components/navigation/mainNav/mainNav.component';
 import { SignupContainer } from './containers/signup/signup.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
+import { NewitemComponent } from './containers/new-item/new-item.component';
 
+// export const PICK_FORMATS = {
+//   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
+//   display: {
+//       dateInput: 'input',
+//       monthYearLabel: {year: 'numeric', month: 'short'},
+//       dateA11yLabel: {year: 'numeric', month: 'long', day: 'numeric'},
+//       monthYearA11yLabel: {year: 'numeric', month: 'long'}
+//   }
+// };
 
-
-
-
+// class PickDateAdapter extends NativeDateAdapter {
+//   format(date: Date, displayFormat: Object): string {
+//       if (displayFormat === 'input') {
+//           return formatDate(date,'yyyy-MM-dd',this.locale);;
+//       } else {
+//           return date.toDateString();
+//       }
+//   }
+// }
 
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
@@ -64,7 +82,9 @@ import { UploadFilesComponent } from './components/upload-multi/upload-multi.com
     RegisterComponent,
     AlertComponent,
     MainNavComponent,
-    UploadFilesComponent
+    UploadFilesComponent,
+    NewitemComponent,
+
   ],
   imports: [
     AppRoutingModule,
@@ -76,6 +96,8 @@ import { UploadFilesComponent } from './components/upload-multi/upload-multi.com
   ],
   providers: [
     SocketioService,
+    //{provide: DateAdapter, useClass: PickDateAdapter},
+    //{provide: MAT_DATE_FORMATS, useValue: PICK_FORMATS},
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AlertService,
@@ -94,7 +116,8 @@ import { UploadFilesComponent } from './components/upload-multi/upload-multi.com
     SocialsService,
     SongsService,
     VidoesService,
-    gigsService
+    GigsService,
+    DialogService
   ],
   bootstrap: [AppComponent]
 })

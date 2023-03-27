@@ -1,0 +1,11 @@
+<div class="page-content">
+  <h1>Admin</h1>
+
+
+  <ul class="page-top-cta">
+    <li *ngFor="let tool of tools">
+      <arc-button [routerLink]="['/admin/new-edit/', tool.value ]" type="filled" color="primary" size="medium">{{tool.name}}</arc-button>
+    </li>
+  </ul>
+
+</div>

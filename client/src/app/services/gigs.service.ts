@@ -9,7 +9,7 @@ const signup = environment.apiUrl + 'auth/signup';
 @Injectable({
   providedIn: 'root'
 })
-export class gigsService {
+export class GigsService {
 
   constructor(private http: HttpClient) { }
 
