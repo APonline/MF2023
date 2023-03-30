@@ -15,8 +15,8 @@ const routes: Routes = [
   { path: 'user',
     loadChildren: () => import('./containers/user/user.module').then(mod => mod.UserModule)
   },
-  { path: 'items', component: NewitemComponent, canActivate: [AuthGuard] },
-  { path: 'items/new-edit/:id', component: NewItemFormComponent, canActivate: [AuthGuard] },
+  { path: 'items', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items', layer: 4 } },
+  { path: 'items/new-edit/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'itemsEdit', layer: 5 } },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' }

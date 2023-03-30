@@ -1,48 +1,50 @@
-<div class="content glass">
-  <h1 style="text-transform: capitalize;">{{toolName}}</h1>
+<div id="newEditForm" class="page">
+  <div class="glass">
+    <h1 style="text-transform: capitalize;">{{toolName}}</h1>
 
-  <div class="page-top-cta">
-    <button routerLink="/admin" id="goBack">
-      <p>Go Back</p>
-    </button>
-  </div>
+    <div class="page-top-cta">
+      <button routerLink="/items" id="goBack">
+        <p>Go Back</p>
+      </button>
+    </div>
 
-  <div class="content">
-    <!-- app.component.html -->
-    <div class="container text-center">
+    <div class="content">
+      <!-- app.component.html -->
+      <div class="container text-center">
 
-      <button (click)="openDialog('Add',newRecord)" >Add Row</button>
-      <br/>
-      <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
+        <button (click)="openDialog('Add',newRecord)" >Add Row</button>
+        <br/>
+        <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
 
-        <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-          <ng-container *ngIf="disCol != 'action'; else actionTemplate">
-            <th mat-header-cell *matHeaderCellDef> {{disCol}}</th>
-            <td mat-cell *matCellDef="let element"  class="action-link">
-              {{element[disCol]}}
-            </td>
-          </ng-container>
-
-          <ng-template #actionTemplate>
-            <ng-container matColumnDef="action">
-              <th mat-header-cell *matHeaderCellDef> Action </th>
-              <td mat-cell *matCellDef="let element" class="action-link" style="display:flex; flex-direction: row;">
-                <ng-container *ngIf="element.id != 0; else noActionTemplate">
-                  <button (click)="openDialog('Update',element)">Edit</button>
-                  <button (click)="openDialog('Delete',element)">Delete</button>
-                </ng-container>
-                <ng-template #noActionTemplate>
-                  Rendering...
-                </ng-template>
+          <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+            <ng-container *ngIf="disCol != 'action'; else actionTemplate">
+              <th mat-header-cell *matHeaderCellDef> {{disCol}}</th>
+              <td mat-cell *matCellDef="let element"  class="action-link">
+                {{element[disCol]}}
               </td>
             </ng-container>
-          </ng-template>
-        </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+            <ng-template #actionTemplate>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let element" class="action-link" style="display:flex; flex-direction: row;">
+                  <ng-container *ngIf="element.id != 0; else noActionTemplate">
+                    <button (click)="openDialog('Update',element)">Edit</button>
+                    <button (click)="openDialog('Delete',element)">Delete</button>
+                  </ng-container>
+                  <ng-template #noActionTemplate>
+                    Rendering...
+                  </ng-template>
+                </td>
+              </ng-container>
+            </ng-template>
+          </ng-container>
 
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+      </div>
     </div>
   </div>
 </div>

@@ -11,6 +11,7 @@ const sequelize = new Sequelize(
     host: config.HOST,
     dialect: config.dialect,
     synchronize: false,
+    logging: true,
 
     pool: {
       max: config.pool.max,
@@ -110,7 +111,7 @@ let makeMyAPIForMe = () => {
 
         // models
         let start = "let path = require('path');\n";
-        start += "let scriptName = path.basename(__filename);\n\n";
+        start += "let scriptName = path.basename(__filename).split('.')[0];\n\n";
         start += "module.exports = (sequelize, Sequelize) => {\n";
         start += "  const ItemTopic = sequelize.define(`${scriptName}`, {\n";
 

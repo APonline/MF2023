@@ -11,15 +11,19 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class NewitemComponent implements OnInit {
 
     tools = [
-      {name:'Companies', value:'companies'},
-      {name:'Sub Companies', value:'sub_companies'},
-      {name:'Discipline Categories', value:'discipline_categories'},
-      {name:'Disciplines', value:'disciplines'},
-      {name:'Onboarding Material Type', value:'onboarding_material_type'},
-      // {name:'Onboarding Materials', value:'onboarding_materials'},
-      {name:'Permissions', value:'permissions'},
-      {name:'Special Roles', value:'special_roles'},
-      {name:'Statuses', value:'statuses'},
+      {name:'Artists', value:'artists'},
+      {name:'Artist Members', value:'artist_members'},
+      {name:'Artist Links', value:'artist_links'},
+      {name:'Albums', value:'albums'},
+      {name:'Songs', value:'songs'},
+      {name:'Comments', value:'comments'},
+      {name:'Contacts', value:'contacts'},
+      {name:'Documents', value:'documents'},
+      {name:'Friends', value:'friends'},
+      {name:'Gigs', value:'gigs'},
+      {name:'Images', value:'images'},
+      {name:'Socials', value:'socials'},
+      {name:'Videos', value:'videos'},
     ]
 
     constructor(

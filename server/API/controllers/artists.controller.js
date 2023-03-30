@@ -43,11 +43,12 @@ exports[`get${itemTopic}`] = async (req, res) => {
     }
 }
 exports[`getAll${itemTopic}s`] = async (req, res) => {
+    
     try{
         let result = await Item.findAll({ where: { active: 1 } });
 
         if (result) {
-            return res.status(200).send({ [`${itemTitle}`]: result });
+            return res.status(200).send({ result });
         }else{
             return res.status(500).send({ result: null });
         }

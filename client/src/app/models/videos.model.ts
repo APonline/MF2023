@@ -3,6 +3,7 @@ id?: any;
 owner_user?: number;
 owner_group?: number;
 title?: string;
+description?: string;
 duration?: string;
 genre?: string;
 extension?: string;

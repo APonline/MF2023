@@ -7,7 +7,21 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../new-item-update/new-item-update.component'
+import { NewItemUpdateComponent } from '../new-item-update/new-item-update.component';
+
+import { ImagesService } from 'src/app/services/images.service';
+import { AlbumsService } from 'src/app/services/albums.service';
+import { ArtistsLinksService } from 'src/app/services/artist_links.service';
+import { ArtistMembersService } from 'src/app/services/artist_members.service';
+import { ArtistsService } from 'src/app/services/artists.service';
+import { CommentsService } from 'src/app/services/comments.service';
+import { ContactsService } from 'src/app/services/contacts.service';
+import { DocumentsService } from 'src/app/services/documents.service';
+import { FriendsService } from 'src/app/services/friends.service';
+import { GigsService } from 'src/app/services/gigs.service';
+import { SocialsService } from 'src/app/services/socials.service';
+import { SongsService } from 'src/app/services/songs.service';
+import { VidoesService } from 'src/app/services/videos.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,16 +51,19 @@ export class NewItemFormComponent implements OnInit {
   delUser = false;
   projectTypeClicked = false;
 
-  companies: any = [];
-  subCompanies: any = [];
-  personnelCategories: any = [];
-  disciplines: any = [];
-  disciplineCategories: any = [];
-  specialRoles: any = [];
-  permissions: any = [];
-  statuses: any = [];
-  materialTypes: any = [];
-  materials: any = [];
+  albums: any = [];
+  artist_links: any = [];
+  artist_members: any = [];
+  artists: any = [];
+  comments: any = [];
+  contacts: any = [];
+  documents: any = [];
+  friends: any = [];
+  gigs: any = [];
+  images: any = [];
+  socials: any = [];
+  songs: any = [];
+  videos: any = [];
   myMaterials: any;
   thisUser: '';
   toolSet: any = [];
@@ -90,6 +107,19 @@ export class NewItemFormComponent implements OnInit {
         private router: Router,
         private DialogService: DialogService,
         private alertService: AlertService,
+        private imagesService: ImagesService,
+        private albumsService: AlbumsService,
+        private artistLinksSerivce: ArtistsLinksService,
+        private artistMemebersSerivce: ArtistMembersService,
+        private artistsService: ArtistsService,
+        private commentsService: CommentsService,
+        private contactsService: ContactsService,
+        private documentsService: DocumentsService,
+        private friendsService: FriendsService,
+        private gigsService: GigsService,
+        private socialsService: SocialsService,
+        private songsService: SongsService,
+        private videosService: VidoesService,
         private authenticationService: AuthenticationService
     ) {
       //this.currentUser = this.authenticationService.currentUserValue;
@@ -98,12 +128,7 @@ export class NewItemFormComponent implements OnInit {
 
     ngOnInit() {
 
-      if(this.root != "") {
-        this.tool = window.location.href.split('/')[7]; //uat site
-      }else{
-        this.tool = window.location.href.split('/')[5]; // local or domain root
-      }
-
+      this.tool = window.location.href.split('/')[5];
       this.toolName = this.tool.replace(/_/g," ");
 
 
@@ -111,76 +136,97 @@ export class NewItemFormComponent implements OnInit {
     }
 
     async loadData() {
-      // await this.companyService.getAll().subscribe(res => {
-      //   this.companies = res;
-      //   if (this.tool=="companies") {
-      //     this.toolSet = this.companies;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.subCompanyService.getAll().subscribe(res => {
-      //   this.subCompanies = res;
-      //   if (this.tool=="sub_companies") {
-      //     this.toolSet = this.subCompanies;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.personnelService.getAll().subscribe(res => {
-      //   this.personnelCategories = res;
-      //   if (this.tool=="personnel_categories") {
-      //     this.toolSet = this.personnelCategories;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.discplineService.getAll().subscribe(res => {
-      //   this.disciplines = res;
-      //   if (this.tool=="disciplines") {
-      //     this.toolSet = this.disciplines;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.discplineCatService.getAll().subscribe(res => {
-      //   this.disciplineCategories = res;
-      //   if (this.tool=="discipline_categories") {
-      //     this.toolSet = this.disciplineCategories;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.specialRoleService.getAll().subscribe(res => {
-      //   this.specialRoles = res;
-      //   if (this.tool=="special_roles") {
-      //     this.toolSet = this.specialRoles;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.permissionsService.getAll().subscribe(res => {
-      //   this.permissions = res;
-      //   if (this.tool=="permissions") {
-      //     this.toolSet = this.permissions;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.statusService.getAll().subscribe(res => {
-      //   this.statuses = res;
-      //   if (this.tool=="statuses") {
-      //     this.toolSet = this.statuses;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.onboardingMaterialTypeService.getAll().subscribe(res => {
-      //   this.materialTypes = res;
-      //   if (this.tool=="onboarding_material_type") {
-      //     this.toolSet = this.materialTypes;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
-      // await this.onboardingMaterialService.getAll().subscribe(res => {
-      //   this.materials = res;
-      //   if (this.tool=="onboarding_materials") {
-      //     this.toolSet = this.materials;
-      //     this.setSettings(this.toolSet);
-      //   }
-      // });
+      await this.artistsService.getAll().subscribe(res => {
+        this.artists = res;
+        if (this.tool=="artists") {
+          this.toolSet = this.artists.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.artistMemebersSerivce.getAll().subscribe(res => {
+        this.artist_members = res;
+        if (this.tool=="artist_members") {
+          this.toolSet = this.artist_members.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.artistLinksSerivce.getAll().subscribe(res => {
+        this.artist_links = res;
+        if (this.tool=="artist_links") {
+          this.toolSet = this.artist_links.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.albumsService.getAll().subscribe(res => {
+        this.albums = res;
+        if (this.tool=="albums") {
+          this.toolSet = this.albums.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.songsService.getAll().subscribe(res => {
+        this.songs = res;
+        if (this.tool=="songs") {
+          this.toolSet = this.songs.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.commentsService.getAll().subscribe(res => {
+        this.comments = res;
+        if (this.tool=="comments") {
+          this.toolSet = this.comments.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.contactsService.getAll().subscribe(res => {
+        this.contacts = res;
+        if (this.tool=="contacts") {
+          this.toolSet = this.contacts.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.documentsService.getAll().subscribe(res => {
+        this.documents = res;
+        if (this.tool=="documents") {
+          this.toolSet = this.documents.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.friendsService.getAll().subscribe(res => {
+        this.friends = res;
+        if (this.tool=="friends") {
+          this.toolSet = this.friends.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.gigsService.getAll().subscribe(res => {
+        this.gigs = res;
+        if (this.tool=="gigs") {
+          this.toolSet = this.gigs.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.imagesService.getAll().subscribe(res => {
+        this.images = res;
+        if (this.tool=="images") {
+          this.toolSet = this.images.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.socialsService.getAll().subscribe(res => {
+        this.socials = res;
+        if (this.tool=="socials") {
+          this.toolSet = this.socials.result;
+          this.setSettings(this.toolSet);
+        }
+      });
+      await this.videosService.getAll().subscribe(res => {
+        this.videos = res;
+        if (this.tool=="videos") {
+          this.toolSet = this.videos.result;
+          this.setSettings(this.toolSet);
+        }
+      });
 
     }
 
@@ -188,7 +234,13 @@ export class NewItemFormComponent implements OnInit {
       let form ={};
       let newForm ={}
 
-      Object.keys(formData[0]).map(res => {
+      let f = null;
+      if(formData.length == 0){
+        f = formData;
+      }else{
+        f = formData[0];
+      }
+      Object.keys(f).map(res => {
         if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
           this.displayedColumns.push(res);
           form[res] = new FormControl('');

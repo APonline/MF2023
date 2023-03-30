@@ -1,5 +1,7 @@
 let path = require('path');
 let scriptName = path.basename(__filename);
+scriptName = scriptName.split('.')[0];
+
 
 module.exports = (sequelize, Sequelize) => {
   const ItemTopic = sequelize.define(`${scriptName}`, {
@@ -10,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER
     },
       title: {
+      type: Sequelize.STRING
+    },
+      description: {
       type: Sequelize.STRING
     },
       duration: {

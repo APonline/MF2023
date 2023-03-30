@@ -1,6 +1,6 @@
 export class artists {
 id?: any;
-owner_user?: string;
+owner_user?: number;
 name?: string;
 description?: string;
 bio?: string;

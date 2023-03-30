@@ -6,4 +6,5 @@ status?: string;
 createdAt?: string;
 updatedAt?: string;
 date_joined?: string;
+active?: number;
 }

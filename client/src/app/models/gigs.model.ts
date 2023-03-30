@@ -1,7 +1,7 @@
 export class gigs {
 id?: any;
 owner_user?: number;
-owner_artist?: number;
+owner_group?: number;
 event?: string;
 day?: string;
 show_time?: string;
