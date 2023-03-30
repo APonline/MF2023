@@ -10,7 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 //import { MatSelectModule } from '@angular/material/select';
-import {MatSelectInfiniteScrollModule} from 'ng-mat-select-infinite-scroll';
+//import {MatSelectInfiniteScrollModule} from 'ng-mat-select-infinite-scroll';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -27,12 +27,45 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 
 
 
 
 @NgModule({
   imports: [
+    MatInputModule,
+    MatIconModule,
+    MatCardModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule,
+    MatPaginatorModule,
+    MatDialogModule,
+    MatMenuModule,
+    MatProgressSpinnerModule,
+    MatStepperModule,
+    MatSlideToggleModule,
+    MatCheckboxModule,
+    MatSelectModule,
+    MatCardModule,
+    MatSortModule,
+    // MatSelectInfiniteScrollModule,
+    MatGridListModule,
+    MatSidenavModule,
+    MatTooltipModule,
+    MatListModule,
+    MatTabsModule,
+    MatTreeModule,
+    MatAutocompleteModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatFormFieldModule,
+    MatTableModule,
   ],
   exports: [
     MatInputModule,
@@ -49,8 +82,10 @@ import { MatTableModule } from '@angular/material/table';
     MatStepperModule,
     MatSlideToggleModule,
     MatCheckboxModule,
-    //MatSelectModule,
-    MatSelectInfiniteScrollModule,
+    MatSelectModule,
+    MatCardModule,
+    MatSortModule,
+    // MatSelectInfiniteScrollModule,
     MatGridListModule,
     MatSidenavModule,
     MatTooltipModule,
@@ -63,7 +98,7 @@ import { MatTableModule } from '@angular/material/table';
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,
-    MatTableModule
+    MatTableModule,
   ]
 })
 export class AngularMaterialModule { }

@@ -12,7 +12,7 @@ import { NewItemUpdateComponent } from '../new-item-update/new-item-update.compo
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
-
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-newItemForm',
@@ -205,7 +205,7 @@ export class NewItemFormComponent implements OnInit {
         delete res.updatedAt;
       })
 
-      this.dataSource = this.toolSet;
+      this.dataSource = new MatTableDataSource(this.toolSet);
       this.newRecord = newForm;
       this.adminForm = new FormGroup(form);
     }

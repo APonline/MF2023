@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 // used to create fake backend
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -50,6 +50,7 @@ import { MainNavComponent } from './components/navigation/mainNav/mainNav.compon
 import { SignupContainer } from './containers/signup/signup.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 import { NewitemComponent } from './containers/new-item/new-item.component';
+import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -72,7 +73,7 @@ import { NewitemComponent } from './containers/new-item/new-item.component';
 // }
 
 @NgModule({
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
   declarations: [
     AppComponent,
     HomeContainer,
@@ -84,7 +85,7 @@ import { NewitemComponent } from './containers/new-item/new-item.component';
     MainNavComponent,
     UploadFilesComponent,
     NewitemComponent,
-
+    NewItemFormComponent
   ],
   imports: [
     AppRoutingModule,
