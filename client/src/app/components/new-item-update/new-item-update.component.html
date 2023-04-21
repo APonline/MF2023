@@ -1,7 +1,7 @@
 
 <div class="content">
   <!-- dialog-box.component.html -->
-  <h1>Row Action :: <strong>{{action}}</strong></h1>
+  <h1><strong>{{action}}</strong></h1>
   <br/>
     <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">
 
@@ -32,7 +32,8 @@
     </table>
 
   <div mat-dialog-actions>
-    <button mat-button (click)="doAction()">{{action}}</button>
-    <button mat-button (click)="closeDialog()" mat-flat-button color="warn">Cancel</button>
+    <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+    <button (click)="closeDialog()" mat-raised-button color="warn">Cancel</button>
+
   </div>
 </div>

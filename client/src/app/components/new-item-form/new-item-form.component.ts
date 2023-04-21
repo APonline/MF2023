@@ -240,6 +240,7 @@ export class NewItemFormComponent implements OnInit {
       }else{
         f = formData[0];
       }
+      this.displayedColumns.push('action');
       Object.keys(f).map(res => {
         if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
           this.displayedColumns.push(res);
@@ -247,9 +248,6 @@ export class NewItemFormComponent implements OnInit {
           newForm[res] = '';
         }
       });
-
-
-      this.displayedColumns.push('action');
 
       this.toolSet.map((res,i) => {
         delete res.active;
