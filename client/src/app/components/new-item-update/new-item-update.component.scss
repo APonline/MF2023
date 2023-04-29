@@ -1,3 +1,26 @@
+
+
+li {
+  display:flex;
+  flex-direction: row;
+
+  p {
+    width:250px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align:right;
+    font-size: 14px;
+    color: #0000008a;
+    margin-right: 15px;
+  }
+
+  div {
+    width:250px;
+  }
+
+}
+
 // .content {
 //   width:100%;
 //   min-height:450px;
@@ -87,3 +110,10 @@
 // td {
 //   width:100%;
 // }
+
+::ng-deep {
+
+  .mat-dialog-actions {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,14 @@
+<div id="messenger" [ngClass]="messenger ? 'active' : ''">
+  <div class="glassSolid">
+    <button id="messengerBtn" class="material-icons" title='Messenger' (click)="openMessenger()">
+      chat <span class="mat-icon-word">MF Messenger</span> <span><i class="material-icons">{{chaticon}}</i></span>
+    </button>
+
+    <h3>All users:</h3>
+    <ul>
+      <li *ngFor="let user of userList$">
+        {{user.username}} ({{user.firstname}} {{user.lastname}})
+      </li>
+    </ul>
+  </div>
+</div>

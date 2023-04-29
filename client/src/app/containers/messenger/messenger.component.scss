@@ -1,0 +1,59 @@
+#messenger {
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  max-height: 40px;
+  transition: max-height .5s ease-in-out;
+  width: 300px;
+  height: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  overflow-y:hidden;
+  z-index: 999;
+
+  .glass, .glassSolid{
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    min-height:initial;
+  }
+}
+
+#messenger.active {
+  transition: max-height .5s ease-in-out;
+  max-height: calc(100% - 150px);
+  overflow-y:auto;
+}
+
+
+#messengerBtn{
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position:absolute;
+  bottom:0px;
+  width:100%;
+  z-index:10;
+  left: 0px;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  line-height: 35px;
+  cursor:pointer;
+  background-color: #393939;
+  border: none;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+#messengerBtn:hover{
+  color:#bbbbbb;
+  background-color: #292929;
+}
+
+.mat-icon-word{
+  font-size: 14px;
+  direction: initial;
+  white-space: unset;
+  word-wrap: unset;
+  font-family: "Reg_lc";
+}

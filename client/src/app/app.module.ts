@@ -51,6 +51,8 @@ import { SignupContainer } from './containers/signup/signup.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 import { NewitemComponent } from './containers/new-item/new-item.component';
 import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
+import { MessengerContainer } from './containers/messenger/messenger.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -85,7 +87,9 @@ import { NewItemFormComponent } from './components/new-item-form/new-item-form.c
     MainNavComponent,
     UploadFilesComponent,
     NewitemComponent,
-    NewItemFormComponent
+    NewItemFormComponent,
+    MessengerContainer,
+    SettingsComponent
   ],
   imports: [
     AppRoutingModule,

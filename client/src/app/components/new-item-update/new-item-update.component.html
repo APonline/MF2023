@@ -1,9 +1,27 @@
 
-<div class="content">
+<div class="content mf-theme">
   <!-- dialog-box.component.html -->
-  <h1><strong>{{action}}</strong></h1>
+  <h1><strong>{{action}} {{tool}}</strong></h1>
   <br/>
-    <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">
+
+  <div *ngIf="action != 'Delete'; else elseTemplate">
+    <ul>
+      <li *ngFor="let row of displayedColumns">
+        <ng-container *ngIf="row != 'active' && row != 'action' && row != 'id' && row != 'date_joined' && row.indexOf('owner') === -1">
+            <p><span>{{row}}</span></p>
+            <div>
+              <mat-form-field>
+                <input matInput [(ngModel)]="local_data[0][row]">
+              </mat-form-field>
+            </div>
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+  <ng-template #elseTemplate>
+    Are you sure?
+  </ng-template>
+    <!-- <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">
 
       <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
         <ng-container *ngIf="(disCol != 'id' && disCol != 'action'); else disabledTemplate">
@@ -29,7 +47,7 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+    </table> -->
 
   <div mat-dialog-actions>
     <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>

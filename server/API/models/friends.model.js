@@ -14,12 +14,6 @@ module.exports = (sequelize, Sequelize) => {
       status: {
       type: Sequelize.STRING
     },
-      createdAt: {
-      type: Sequelize.STRING
-    },
-      updatedAt: {
-      type: Sequelize.STRING
-    },
       date_joined: {
       type: Sequelize.STRING
     },

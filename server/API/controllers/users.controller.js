@@ -21,11 +21,11 @@ let myClass = {};
 
 myClass[`get${itemTopic}`] = async (req, res) => {
     try{
-        let id =req.body.id;
+        let id =req.params.id;
         let result = await Item.findOne({ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
@@ -40,7 +40,7 @@ myClass[`getAll${itemTopic}s`] = async (req, res) => {
         let result = await Item.findAll({ where: { active: 1, online: 1 } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
@@ -58,7 +58,7 @@ myClass[`update${itemTopic}`] = async (req, res) => {
         let result = await Item.update( body,{ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
@@ -70,11 +70,11 @@ myClass[`update${itemTopic}`] = async (req, res) => {
 }
 myClass[`delete${itemTopic}`] = async (req, res) => {
     try{
-        let id =req.body.id;
-        let result = await Item.delete({ where: { id } });
+        let id =req.params.id;
+        let result = await Item.destroy({ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }

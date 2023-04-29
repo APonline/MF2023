@@ -80,16 +80,18 @@ let makeMyAPIForMe = () => {
         let front_model = `export class ${result[i]} {\n`;
         for(let k=0; k<cols.length; k++) {
           let newType='';
-          if(cols[k].COLUMN_NAME == 'id'){
-            newType = 'any';
-          }else if(cols[k].DATA_TYPE == "int"){
-            newType = 'number';
-          }else if(cols[k].DATA_TYPE == "varchar"){
-            newType = 'string';
-          }else if(cols[k].DATA_TYPE == "datetime"){
-            newType = 'string';
-          }else if(cols[k].DATA_TYPE == "text"){
-            newType = 'string';
+          if(cols[k].COLUMN_NAME != 'createdAt' && cols[k].COLUMN_NAME != 'updatedAt'){
+            if(cols[k].COLUMN_NAME == 'id'){
+              newType = 'any';
+            }else if(cols[k].DATA_TYPE == "int"){
+              newType = 'number';
+            }else if(cols[k].DATA_TYPE == "varchar"){
+              newType = 'string';
+            }else if(cols[k].DATA_TYPE == "datetime"){
+              newType = 'string';
+            }else if(cols[k].DATA_TYPE == "text"){
+              newType = 'string';
+            }
           }
           
           front_model += `${cols[k].COLUMN_NAME}?: ${newType};\n`;
@@ -119,14 +121,16 @@ let makeMyAPIForMe = () => {
         for(let k=0; k<cols.length; k++){
           if(cols[k].COLUMN_NAME != 'id'){
             let newType='';
-            if(cols[k].DATA_TYPE == "int"){
-              newType = 'INTEGER';
-            }else if(cols[k].DATA_TYPE == "varchar"){
-              newType = 'STRING';
-            }else if(cols[k].DATA_TYPE == "datetime"){
-              newType = 'STRING';
-            }else if(cols[k].DATA_TYPE == "text"){
-              newType = 'TEXT';
+            if(cols[k].COLUMN_NAME != 'createdAt' && cols[k].COLUMN_NAME != 'updatedAt'){
+              if(cols[k].DATA_TYPE == "int"){
+                newType = 'INTEGER';
+              }else if(cols[k].DATA_TYPE == "varchar"){
+                newType = 'STRING';
+              }else if(cols[k].DATA_TYPE == "datetime"){
+                newType = 'STRING';
+              }else if(cols[k].DATA_TYPE == "text"){
+                newType = 'TEXT';
+              }
             }
             
             col_names += `     ${cols[k].COLUMN_NAME}: {

@@ -1,0 +1,22 @@
+#settings {
+  background-image: url("/assets/images/settings.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  width: auto;
+  min-height: calc(100vh - 136px);
+  height: 100%;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+mat-card {
+  width: 300px;
+  margin: 0 auto;
+}
+
+mat-form-field {
+  width: 100%;
+}

@@ -1,9 +1,10 @@
 #alertMsg {
   position:fixed;
   bottom:-666px;
-  right:0px;
+  left:0px;
   width:400px;
   transition: bottom ease-in-out .3s;
+  z-index:9999;
 }
 
 #alertMsg.alert {

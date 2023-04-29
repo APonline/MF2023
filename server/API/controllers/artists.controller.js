@@ -12,27 +12,33 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { name: req.body.name } });
+        let item = await Item.findOne({ where: { name: req.body.name } }); 
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
             newItem['profile_url'] = req.body.name + "_" + num;
         }
 
-        return res.status(200).send({ newItem });
+        let result = await Item.create( newItem );
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
+            message: `Unable to create ${itemTopic}! ${error.message}`
         });
     }
 }
 exports[`get${itemTopic}`] = async (req, res) => {
     try{
-        let id =req.body.id;
-        let result = await User.findOne({ where: { id } });
+        let id =req.params.id;
+        let result = await Item.findOne({ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
@@ -48,7 +54,7 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
         let result = await Item.findAll({ where: { active: 1 } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
@@ -59,25 +65,26 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
     }
 }
 exports[`update${itemTopic}`] = async (req, res) => {
+    console.log(req.body);
     try{
         let id =req.body.id;
         let result = await Item.update( req.body,{ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to update ${itemTopic}!`
+            message: `Unable to update ${itemTopic}!  ${error.message}`
         });
     }
 }
 exports[`delete${itemTopic}`] = async (req, res) => {
     try{
-        let id =req.body.id;
-        let result = await Item.delete({ where: { id } });
+        let id =req.params.id;
+        let result = await Item.destroy({ where: { id } });
 
         if (result) {
             return res.status(200).send({ result });
@@ -86,7 +93,7 @@ exports[`delete${itemTopic}`] = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to delete ${itemTopic}!`
+            message: `Unable to delete ${itemTopic}!  ${error.message}`
         });
     }
 }

@@ -7,6 +7,7 @@ import { LandingContainer } from './containers/landing/landing.component';
 import { SignupContainer } from './containers/signup/signup.component';
 import { NewitemComponent } from './containers/new-item/new-item.component';
 import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 const routes: Routes = [
   { path: '', component: HomeContainer, canActivate: [AuthGuard], data: { animation: 'home', layer: 1 } },
@@ -17,6 +18,7 @@ const routes: Routes = [
   },
   { path: 'items', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items', layer: 4 } },
   { path: 'items/new-edit/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'itemsEdit', layer: 5 } },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { animation: 'settings', layer: 6 } },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' }

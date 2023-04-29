@@ -7,6 +7,4 @@ title?: string;
 description?: string;
 profile_url?: string;
 active?: number;
-createdAt?: string;
-updatedAt?: string;
 }

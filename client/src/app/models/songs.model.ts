@@ -6,8 +6,6 @@ duration?: string;
 owner_user?: number;
 author?: string;
 profile_url?: string;
-createdAt?: string;
-updatedAt?: string;
 owner_group?: number;
 active?: number;
 tags?: string;

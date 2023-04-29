@@ -143,9 +143,10 @@
 }
 
 .page {
-  min-height: calc(100vh - 136px);
+  min-height: calc(100vh - 160px);
   padding: 40px 0;
-  margin-top: -17px;
+  //margin-top: -17px;
+  padding-top: 120px;
 }
 
 #singleComponent {
@@ -160,9 +161,9 @@
 }
 
 .glass {
+  margin: 0 auto;
   box-sizing: border-box;
   min-width: 300px;
-  // width: 100%;
   max-width: 1200px;
   background: linear-gradient(
     to bottom right,
@@ -176,6 +177,16 @@
   min-height: 200px;
   border-radius: 16px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.glassSolid {
+  background-color: #151515;
+  padding: 20px;
+  height: auto;
+  min-height: 200px;
+  border-radius: 16px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index:5;
 }
 .sub-page {
   min-width: 300px;

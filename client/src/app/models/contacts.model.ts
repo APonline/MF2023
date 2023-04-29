@@ -11,7 +11,5 @@ city?: string;
 profile_url?: string;
 phone?: string;
 email?: string;
-createdAt?: string;
-updatedAt?: string;
 active?: number;
 }

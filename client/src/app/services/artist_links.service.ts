@@ -22,7 +22,7 @@ export class ArtistsLinksService {
   }
 
   create(data: any): Observable<any> {
-    return this.http.post(signup, data);
+    return this.http.post(baseUrl, data);
   }
 
   update(id: any, data: any): Observable<any> {

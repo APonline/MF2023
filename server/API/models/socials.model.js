@@ -38,12 +38,6 @@ module.exports = (sequelize, Sequelize) => {
       active: {
       type: Sequelize.INTEGER
     },
-      createdAt: {
-      type: Sequelize.STRING
-    },
-      updatedAt: {
-      type: Sequelize.STRING
-    },
  });
     
 return ItemTopic;

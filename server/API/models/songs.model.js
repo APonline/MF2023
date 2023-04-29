@@ -23,12 +23,6 @@ module.exports = (sequelize, Sequelize) => {
       profile_url: {
       type: Sequelize.STRING
     },
-      createdAt: {
-      type: Sequelize.STRING
-    },
-      updatedAt: {
-      type: Sequelize.STRING
-    },
       owner_group: {
       type: Sequelize.INTEGER
     },

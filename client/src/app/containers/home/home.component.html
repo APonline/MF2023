@@ -1,15 +1,7 @@
 <div id="home" class="page">
   <div class="glass">
     <h1>Hi {{currentUser.firstname}}!</h1>
-    <h3>All registered users:</h3>
-    <ul>
-      <li *ngFor="let user of userList$">
-        {{user.username}} ({{user.firstname}} {{user.lastname}})
-      </li>
-    </ul>
-
-    <br /><br />
-
-    <app-upload-multi></app-upload-multi>
   </div>
 </div>
+
+

@@ -4,7 +4,7 @@ mat-toolbar {
   background-repeat: no-repeat;
   height: 73px;
   z-index: 999;
-  position: relative;
+  position: fixed;
 
   .navbar {
     display: flex;
@@ -26,4 +26,44 @@ mat-toolbar {
 
 #mainNavLogo {
   margin-top: -18px;
+}
+
+.navbar2 {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 15px;
+  width: 100%;
+  position: absolute;
+  bottom: -14px;
+  right: 25px;
+  background-color: #393939;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  width: auto;
+  padding: 0 12px;
+  z-index: 10;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+
+  .navbar-nav {
+    display:flex;
+    padding: 5px 0;
+    a {
+      color: #fff;
+      font-size: 14px;
+      padding: 0 10px;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+  }
+}
+
+.nav-divider{
+  color: #646464;
+  margin: 0 13px;
+  text-align: center;
+  font-size: 12px;
+}
+
+a {
+  letter-spacing: 3px!important;
 }

@@ -7,8 +7,6 @@ description?: string;
 genre?: string;
 extension?: string;
 tags?: string;
-createdAt?: string;
-updatedAt?: string;
 active?: number;
 views?: number;
 profile_url?: string;

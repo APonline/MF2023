@@ -139,91 +139,91 @@ export class NewItemFormComponent implements OnInit {
       await this.artistsService.getAll().subscribe(res => {
         this.artists = res;
         if (this.tool=="artists") {
-          this.toolSet = this.artists.result;
+          this.toolSet = this.artists;
           this.setSettings(this.toolSet);
         }
       });
       await this.artistMemebersSerivce.getAll().subscribe(res => {
         this.artist_members = res;
         if (this.tool=="artist_members") {
-          this.toolSet = this.artist_members.result;
+          this.toolSet = this.artist_members;
           this.setSettings(this.toolSet);
         }
       });
       await this.artistLinksSerivce.getAll().subscribe(res => {
         this.artist_links = res;
         if (this.tool=="artist_links") {
-          this.toolSet = this.artist_links.result;
+          this.toolSet = this.artist_links;
           this.setSettings(this.toolSet);
         }
       });
       await this.albumsService.getAll().subscribe(res => {
         this.albums = res;
         if (this.tool=="albums") {
-          this.toolSet = this.albums.result;
+          this.toolSet = this.albums;
           this.setSettings(this.toolSet);
         }
       });
       await this.songsService.getAll().subscribe(res => {
         this.songs = res;
         if (this.tool=="songs") {
-          this.toolSet = this.songs.result;
+          this.toolSet = this.songs;
           this.setSettings(this.toolSet);
         }
       });
       await this.commentsService.getAll().subscribe(res => {
         this.comments = res;
         if (this.tool=="comments") {
-          this.toolSet = this.comments.result;
+          this.toolSet = this.comments;
           this.setSettings(this.toolSet);
         }
       });
       await this.contactsService.getAll().subscribe(res => {
         this.contacts = res;
         if (this.tool=="contacts") {
-          this.toolSet = this.contacts.result;
+          this.toolSet = this.contacts;
           this.setSettings(this.toolSet);
         }
       });
       await this.documentsService.getAll().subscribe(res => {
         this.documents = res;
         if (this.tool=="documents") {
-          this.toolSet = this.documents.result;
+          this.toolSet = this.documents;
           this.setSettings(this.toolSet);
         }
       });
       await this.friendsService.getAll().subscribe(res => {
         this.friends = res;
         if (this.tool=="friends") {
-          this.toolSet = this.friends.result;
+          this.toolSet = this.friends;
           this.setSettings(this.toolSet);
         }
       });
       await this.gigsService.getAll().subscribe(res => {
         this.gigs = res;
         if (this.tool=="gigs") {
-          this.toolSet = this.gigs.result;
+          this.toolSet = this.gigs;
           this.setSettings(this.toolSet);
         }
       });
       await this.imagesService.getAll().subscribe(res => {
         this.images = res;
         if (this.tool=="images") {
-          this.toolSet = this.images.result;
+          this.toolSet = this.images;
           this.setSettings(this.toolSet);
         }
       });
       await this.socialsService.getAll().subscribe(res => {
         this.socials = res;
         if (this.tool=="socials") {
-          this.toolSet = this.socials.result;
+          this.toolSet = this.socials;
           this.setSettings(this.toolSet);
         }
       });
       await this.videosService.getAll().subscribe(res => {
         this.videos = res;
         if (this.tool=="videos") {
-          this.toolSet = this.videos.result;
+          this.toolSet = this.videos;
           this.setSettings(this.toolSet);
         }
       });
@@ -256,6 +256,8 @@ export class NewItemFormComponent implements OnInit {
       })
 
       this.dataSource = new MatTableDataSource(this.toolSet);
+      this.dataSource = this.dataSource.data;
+
       this.newRecord = newForm;
       this.adminForm = new FormGroup(form);
     }
@@ -278,93 +280,43 @@ export class NewItemFormComponent implements OnInit {
     createNew(data) {
       delete data.id;
       delete data.action;
+      const service = this.tool+'Service';
 
-      // if (this.tool=="companies") {
-      //   this.companyService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="sub_companies") {
-      //   this.subCompanyService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="personnel_categories") {
-      //   this.personnelService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="disciplines") {
-      //   this.discplineService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="discipline_categories") {
-      //   this.discplineCatService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="special_roles") {
-      //   this.specialRoleService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="permissions") {
-      //   this.permissionsService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="statuses") {
-      //   this.statusService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="onboarding_material_type") {
-      //   this.onboardingMaterialTypeService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // } else if (this.tool=="onboarding_materials") {
-      //   this.onboardingMaterialService.create(data).subscribe(async res => { this.alertService.success('Item has been created!', true); });
-      // }
+      this[service].create(data).subscribe(async res => {
+        this.dataSource.push(res);
+        this.table.renderRows();
+        this.alertService.success('Item has been created!', true);
+      });
 
     }
 
     update(data) {
       let id = data.id;
-      delete data.id;
       delete data.action;
+      const service = this.tool+'Service';
 
-      // if (this.tool=="companies") {
-      //   this.companyService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="sub_companies") {
-      //   this.subCompanyService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="personnel_categories") {
-      //   this.personnelService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="disciplines") {
-      //   this.discplineService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="discipline_categories") {
-      //   this.discplineCatService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="special_roles") {
-      //   this.specialRoleService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="permissions") {
-      //   this.permissionsService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="statuses") {
-      //   this.statusService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="onboarding_material_type") {
-      //   this.onboardingMaterialTypeService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // } else if (this.tool=="onboarding_materials") {
-      //   this.onboardingMaterialService.update(id,data).subscribe(async res => { this.alertService.success('Item has been updated!', true); });
-      // }
+      this[service].update(id,data).subscribe(async res => {
+        this.table.renderRows();
+        this.alertService.success('Item has been updated!', true);
+      });
 
     }
 
     delete(id){
-      // if (this.tool=="companies") {
-      //   this.companyService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="sub_companies") {
-      //   this.subCompanyService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="personnel_categories") {
-      //   this.personnelService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="disciplines") {
-      //   this.discplineService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="discipline_categories") {
-      //   this.discplineCatService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="special_roles") {
-      //   this.specialRoleService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="permissions") {
-      //   this.permissionsService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="statuses") {
-      //   this.statusService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="onboarding_material_type") {
-      //   this.onboardingMaterialTypeService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // } else if (this.tool=="onboarding_materials") {
-      //   this.onboardingMaterialService.delete(id).subscribe(async res => { this.alertService.success('Item has been deleted!', true); });
-      // }
+      const service = this.tool+'Service';
+
+      this[service].delete(id).subscribe(async res => {
+        this.alertService.success('Item has been deleted!', true);
+      });
 
     }
 
 
-
-
-
     openDialog(action,obj) {
       obj.action = action;
+      obj.tool = this.toolName;
       const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-        width: '95%',
+        //width: '95%',
         data:obj
       });
 
@@ -387,9 +339,6 @@ export class NewItemFormComponent implements OnInit {
         newRec[res] = row_obj[res];
       })
 
-      newRec['id'] = 0;
-      this.dataSource.push(newRec);
-      this.table.renderRows();
       this.createNew(row_obj);
     }
     updateRowData(row_obj){

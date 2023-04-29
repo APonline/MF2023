@@ -23,12 +23,6 @@ module.exports = (sequelize, Sequelize) => {
       date_joined: {
       type: Sequelize.STRING
     },
-      createdAt: {
-      type: Sequelize.STRING
-    },
-      updatedAt: {
-      type: Sequelize.STRING
-    },
       profile_url: {
       type: Sequelize.STRING
     },

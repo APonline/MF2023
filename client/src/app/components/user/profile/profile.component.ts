@@ -26,7 +26,6 @@ export class ProfileComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
-    console.log(this.currentUser)
   }
 
    ngOnInit() {

@@ -29,12 +29,6 @@ module.exports = (sequelize, Sequelize) => {
       tags: {
       type: Sequelize.STRING
     },
-      createdAt: {
-      type: Sequelize.STRING
-    },
-      updatedAt: {
-      type: Sequelize.STRING
-    },
       active: {
       type: Sequelize.INTEGER
     },

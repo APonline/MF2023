@@ -24,7 +24,6 @@ export class VerifyComponent implements OnInit {
       }
       this.user.verify(user.id).subscribe({
         next: (res) => {
-          console.log(res)
         this.verified = res.tna;
         },
         error: (e) => console.error(e)

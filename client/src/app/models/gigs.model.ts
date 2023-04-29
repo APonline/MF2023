@@ -8,6 +8,4 @@ show_time?: string;
 location?: string;
 tickets_url?: string;
 active?: number;
-createdAt?: string;
-updatedAt?: string;
 }

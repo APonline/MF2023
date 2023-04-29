@@ -16,7 +16,7 @@ import moment from 'moment';
   styleUrls: ['./new-item-update.component.scss']
  })
 export class NewItemUpdateComponent implements OnInit {
-  public currentUser: Observable<any>;
+  currentUser: any;
   @Input() record: any;
 
   adminForm = this.formBuilder.group({});
@@ -25,18 +25,28 @@ export class NewItemUpdateComponent implements OnInit {
   displayedColumns: string[] = [];
 
   action:string;
+  tool:string;
   local_data:any;
 
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
+      private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<NewItemUpdateComponent>,
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    //this.currentUser = this.authenticationService.currentUserValue;
+    this.currentUser = this.authenticationService.currentUserValue;
 
     this.action = data.action;
+
+    ( data.tool.substring(data.tool.length - 1) == 's' ? data.tool = data.tool.slice(0, -1) : data.tool = data.tool);
+    this.tool = `${data.tool}`;
+
+    delete data.tool;
+
+    data.owner_user = this.currentUser.id;
+    data.active = 1;
 
     Object.keys(data).map(res => {
       this.displayedColumns.push(res)

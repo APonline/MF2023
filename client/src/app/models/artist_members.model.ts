@@ -6,7 +6,5 @@ user_id?: number;
 artist_id?: number;
 active?: number;
 date_joined?: string;
-createdAt?: string;
-updatedAt?: string;
 profile_url?: string;
 }

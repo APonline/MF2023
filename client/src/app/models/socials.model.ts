@@ -11,6 +11,4 @@ token_key?: string;
 secret_id?: string;
 api_url?: string;
 active?: number;
-createdAt?: string;
-updatedAt?: string;
 }
