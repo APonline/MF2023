@@ -1,12 +1,12 @@
 <div id="newEdit" class="page">
-  <div class="glass">
-    <h1>New/Edit</h1>
+  <!-- <div class="glass"> -->
 
-
-    <ul class="page-top-cta">
-      <li *ngFor="let tool of tools">
-        <button [routerLink]="['/items/new-edit/', tool.value ]" type="filled" color="primary" size="medium">{{tool.name}}</button>
+    <ul class="page-top-cta glass">
+      <li *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', tool.value ]">
+        <div class="itemBk"></div>
+        <div class="item" [ngStyle]="{background: 'url(./assets/images/' + (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+        <h4>{{tool.name}}</h4>
       </li>
     </ul>
-  </div>
+  <!-- </div> -->
 </div>

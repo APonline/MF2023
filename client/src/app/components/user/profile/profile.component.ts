@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-profile',
@@ -12,7 +12,7 @@ import { User } from 'src/app/models/users.model';
   styleUrls: ['profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  currentUser: User;
+  currentUser: user;
   profileForm: FormGroup;
   editing = 0;
   userProfile: any;

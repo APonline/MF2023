@@ -1,4 +1,6 @@
 <div id="newEditForm" class="page">
+    <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+
   <div class="glass">
     <div class="goback page-top-cta">
       <button routerLink="/items" id="goBack" mat-raised-button color="primary">

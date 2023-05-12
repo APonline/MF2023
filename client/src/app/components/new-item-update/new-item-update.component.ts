@@ -53,6 +53,8 @@ export class NewItemUpdateComponent implements OnInit {
     })
     this.local_data = [{...data}];
 
+    console.log('TEST: ',this.displayedColumns, this.local_data);
+
 
   }
 

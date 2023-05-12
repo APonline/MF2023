@@ -9,6 +9,8 @@ import { environment } from 'src/environments/environment';
 import moment from 'moment';
 import { NewItemUpdateComponent } from '../new-item-update/new-item-update.component';
 
+
+/* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
 import { AlbumsService } from 'src/app/services/albums.service';
 import { ArtistsLinksService } from 'src/app/services/artist_links.service';
@@ -51,22 +53,9 @@ export class NewItemFormComponent implements OnInit {
   delUser = false;
   projectTypeClicked = false;
 
-  albums: any = [];
-  artist_links: any = [];
-  artist_members: any = [];
-  artists: any = [];
-  comments: any = [];
-  contacts: any = [];
-  documents: any = [];
-  friends: any = [];
-  gigs: any = [];
-  images: any = [];
-  socials: any = [];
-  songs: any = [];
-  videos: any = [];
-  myMaterials: any;
   thisUser: '';
   toolSet: any = [];
+  modelSet: any;
 
   adminForm = this.formBuilder.group({});
 
@@ -109,8 +98,8 @@ export class NewItemFormComponent implements OnInit {
         private alertService: AlertService,
         private imagesService: ImagesService,
         private albumsService: AlbumsService,
-        private artistLinksSerivce: ArtistsLinksService,
-        private artistMemebersSerivce: ArtistMembersService,
+        private artistLinksService: ArtistsLinksService,
+        private artistMembersService: ArtistMembersService,
         private artistsService: ArtistsService,
         private commentsService: CommentsService,
         private contactsService: ContactsService,
@@ -120,7 +109,7 @@ export class NewItemFormComponent implements OnInit {
         private socialsService: SocialsService,
         private songsService: SongsService,
         private videosService: VidoesService,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
     ) {
       //this.currentUser = this.authenticationService.currentUserValue;
 
@@ -135,96 +124,52 @@ export class NewItemFormComponent implements OnInit {
       this.loadData();
     }
 
+    capitalizeWords(arr) {
+      return arr.map((word) => {
+        const capitalizedFirst = word.charAt(0).toUpperCase();
+        const rest = word.slice(1).toLowerCase();
+        return capitalizedFirst + rest;
+      });
+    }
+
     async loadData() {
-      await this.artistsService.getAll().subscribe(res => {
-        this.artists = res;
-        if (this.tool=="artists") {
-          this.toolSet = this.artists;
+      let toolTitle = this.tool.split("_");
+      toolTitle = this.capitalizeWords(toolTitle);
+
+      let toolTitle2 = toolTitle.join(',');
+      toolTitle2 = toolTitle2.replace(/ /g,"");
+      toolTitle2 = toolTitle2.replace(/,/g,"");
+      toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
+      let service = toolTitle2 + 'Service';
+      let model = this.tool;
+
+      await this[service].getAll().subscribe(res => {
+
+        res.map((r,i) => {
+          if(r.id == 1){
+            console.log(r)
+            this.modelSet = r;
+            //delete res[i];
+          }
+        });
+        //res = res.splice(0,0);
+
+
+
+        this[this.tool] = res;
+        this.toolSet = this[this.tool];
+
+        if(this.toolSet.length > 1){
           this.setSettings(this.toolSet);
-        }
-      });
-      await this.artistMemebersSerivce.getAll().subscribe(res => {
-        this.artist_members = res;
-        if (this.tool=="artist_members") {
-          this.toolSet = this.artist_members;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.artistLinksSerivce.getAll().subscribe(res => {
-        this.artist_links = res;
-        if (this.tool=="artist_links") {
-          this.toolSet = this.artist_links;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.albumsService.getAll().subscribe(res => {
-        this.albums = res;
-        if (this.tool=="albums") {
-          this.toolSet = this.albums;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.songsService.getAll().subscribe(res => {
-        this.songs = res;
-        if (this.tool=="songs") {
-          this.toolSet = this.songs;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.commentsService.getAll().subscribe(res => {
-        this.comments = res;
-        if (this.tool=="comments") {
-          this.toolSet = this.comments;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.contactsService.getAll().subscribe(res => {
-        this.contacts = res;
-        if (this.tool=="contacts") {
-          this.toolSet = this.contacts;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.documentsService.getAll().subscribe(res => {
-        this.documents = res;
-        if (this.tool=="documents") {
-          this.toolSet = this.documents;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.friendsService.getAll().subscribe(res => {
-        this.friends = res;
-        if (this.tool=="friends") {
-          this.toolSet = this.friends;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.gigsService.getAll().subscribe(res => {
-        this.gigs = res;
-        if (this.tool=="gigs") {
-          this.toolSet = this.gigs;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.imagesService.getAll().subscribe(res => {
-        this.images = res;
-        if (this.tool=="images") {
-          this.toolSet = this.images;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.socialsService.getAll().subscribe(res => {
-        this.socials = res;
-        if (this.tool=="socials") {
-          this.toolSet = this.socials;
-          this.setSettings(this.toolSet);
-        }
-      });
-      await this.videosService.getAll().subscribe(res => {
-        this.videos = res;
-        if (this.tool=="videos") {
-          this.toolSet = this.videos;
-          this.setSettings(this.toolSet);
+        }else {
+          console.log('M ',this.modelSet);
+          let newForm ={}
+          Object.keys(this.modelSet).map(res => {
+            if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
+              newForm[res] = '';
+            }
+          });
+          this.newRecord = newForm;
         }
       });
 
@@ -240,6 +185,8 @@ export class NewItemFormComponent implements OnInit {
       }else{
         f = formData[0];
       }
+
+      console.log(formData, f);
       this.displayedColumns.push('action');
       Object.keys(f).map(res => {
         if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
@@ -256,10 +203,13 @@ export class NewItemFormComponent implements OnInit {
       })
 
       this.dataSource = new MatTableDataSource(this.toolSet);
+      this.dataSource.data.shift();
       this.dataSource = this.dataSource.data;
 
       this.newRecord = newForm;
       this.adminForm = new FormGroup(form);
+
+      console.log(this.displayedColumns, this.dataSource)
     }
 
     dateAdjust(date) {
@@ -321,12 +271,14 @@ export class NewItemFormComponent implements OnInit {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if(result.event == 'Add'){
-          this.addRowData(result.data);
-        }else if(result.event == 'Update'){
-          this.updateRowData(result.data);
-        }else if(result.event == 'Delete'){
-          this.deleteRowData(result.data);
+        if(result){
+          if(result.event == 'Add'){
+            this.addRowData(result.data);
+          }else if(result.event == 'Update'){
+            this.updateRowData(result.data);
+          }else if(result.event == 'Delete'){
+            this.deleteRowData(result.data);
+          }
         }
       });
     }

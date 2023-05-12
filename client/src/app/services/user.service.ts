@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../models/users.model';
+import { user } from '../models/users.model';
 import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.apiUrl + 'users';
@@ -15,10 +15,10 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<any> {
-    return this.http.get<User[]>(baseUrl);
+    return this.http.get<user[]>(baseUrl);
   }
 
-  get(id: any): Observable<User> {
+  get(id: any): Observable<user> {
     return this.http.get(`${baseUrl}/${id}`);
   }
 
@@ -38,12 +38,12 @@ export class UserService {
     return this.http.delete(baseUrl);
   }
 
-  findByUsername(username: any): Observable<User[]> {
-    return this.http.get<User[]>(`${baseUrl}?username=${username}`);
+  findByUsername(username: any): Observable<user[]> {
+    return this.http.get<user[]>(`${baseUrl}?username=${username}`);
   }
 
-  findByEmail(email: any): Observable<User[]> {
-    return this.http.get<User[]>(`${baseUrl}?email=${email}`);
+  findByEmail(email: any): Observable<user[]> {
+    return this.http.get<user[]>(`${baseUrl}?email=${email}`);
   }
 
   verify(data: any): Observable<any> {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SocketioService } from 'src/app/services/socketio.service';
@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class MessengerContainer implements OnInit {
 
-  currentUser: User;
+  currentUser: user;
   userList$: any = [];
   messenger: boolean;
   chaticon: string;

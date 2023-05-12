@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ import { User } from 'src/app/models/users.model';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    currentUser: User;
+    currentUser: user;
 
     constructor(
         private router: Router,

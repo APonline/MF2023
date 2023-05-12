@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs';
@@ -28,7 +28,7 @@ import { trigger, group, transition, query, style, animate } from '@angular/anim
   styleUrls: ['user.component.scss']
 })
 export class UserContainer implements OnInit {
-  currentUser: User;
+  currentUser: user;
   userList: any[];
 
   constructor(

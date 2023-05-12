@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-mainNav',
@@ -10,7 +10,7 @@ import { User } from 'src/app/models/users.model';
   styleUrls: ['./mainNav.component.scss']
  })
 export class MainNavComponent implements OnInit {
-    currentUser: User;
+    currentUser: user;
 
     constructor(
         private formBuilder: FormBuilder,

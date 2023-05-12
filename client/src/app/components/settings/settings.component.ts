@@ -7,7 +7,7 @@ import { DOCUMENT } from '@angular/common';
 import { AlertService } from '../../services/alert.service';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +16,7 @@ import { User } from 'src/app/models/users.model';
 })
 export class SettingsComponent implements OnInit {
 
-  currentUser: User;
+  currentUser: user;
   registerForm: FormGroup;
   loading = false;
   submitted = false;

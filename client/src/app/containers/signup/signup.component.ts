@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/models/users.model';
+import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['signup.component.scss']
 })
 export class SignupContainer implements OnInit {
-  currentUser: User;
+  currentUser: user;
   userList: any[];
 
   constructor() {}

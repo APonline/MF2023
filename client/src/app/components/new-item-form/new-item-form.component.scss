@@ -1,5 +1,17 @@
+.itemBK {
+  background-size: cover!important;
+  background-attachment: fixed!important;
+  background-repeat:no-repeat!important;
+  background-position: 50% 50%!important;
+  width:100%;
+  height:calc(100% - 70px);
+  margin-top: -70px;
+  position:absolute;
+  filter: blur(10px);
+}
+
 #newEditForm {
-  background-image: url("/assets/images/w2.png");
+  // background-image: url("/assets/images/w2.png");
   background-size: cover;
   background-attachment: fixed;
   width: 100%;

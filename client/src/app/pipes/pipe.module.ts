@@ -1,14 +1,17 @@
 import { NgModule } from "@angular/core";
-import { RemoveUnderscorePipe } from "./pipe-remove-underscor";
+import { RemoveUnderscorePipe } from "./pipe-remove-underscore";
+import { CapitalizePipe } from "./pipe-uppercase-words";
 
 
 @NgModule({
   imports: [],
   declarations: [
-    RemoveUnderscorePipe
+    RemoveUnderscorePipe,
+    CapitalizePipe
   ],
   exports: [
-    RemoveUnderscorePipe
+    RemoveUnderscorePipe,
+    CapitalizePipe
   ]
 })
 export class PipeModule{}

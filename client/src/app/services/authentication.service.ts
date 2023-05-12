@@ -4,24 +4,24 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { UserService } from './user.service';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../models/users.model';
+import { user } from '../models/users.model';
 import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.apiUrl + 'auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<user>;
+  public currentUser: Observable<user>;
   use = '';
 
   constructor(private http: HttpClient, @Inject(DOCUMENT) private _document: Document, private user: UserService) {
     this.use = localStorage.getItem('currentUser');
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(this.use));
+    this.currentUserSubject = new BehaviorSubject<user>(JSON.parse(this.use));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  public get currentUserValue(): User {
+  public get currentUserValue(): user {
     return this.currentUserSubject.value;
   }
 
