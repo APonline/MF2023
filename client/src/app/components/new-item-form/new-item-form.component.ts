@@ -266,7 +266,7 @@ export class NewItemFormComponent implements OnInit {
       obj.action = action;
       obj.tool = this.toolName;
       const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-        //width: '95%',
+        // width: '65%',
         data:obj
       });
 

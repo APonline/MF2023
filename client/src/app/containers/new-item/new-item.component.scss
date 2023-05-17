@@ -49,7 +49,7 @@ li {
     overflow:hidden;
     transform-origin: bottom;
     // transform: skewX(-4deg);
-    opacity: 0.5;
+    opacity: 0.3;
     display:grid;
   }
   .item{
@@ -104,16 +104,17 @@ li:hover {
   // margin-left:5px;
 }
 
-// .itemBk:after {
-//   content:"";
-//   background-image: linear-gradient(180deg, #234dbc, #b84295);
-//   border-radius: inherit;
-//   transform: skewY(0deg);
-//   transform-origin: bottom left;
-//   background-size: 200% 200%;
-//   animation: Animation 5s ease infinite;
-//   z-index:0;
-// }
+.itemBk:after {
+  content:"";
+  background-color:#000;
+  // background-image: linear-gradient(180deg, #234dbc, #b84295);
+  // border-radius: inherit;
+  // transform: skewY(0deg);
+  // transform-origin: bottom left;
+  // background-size: 200% 200%;
+  // animation: Animation 5s ease infinite;
+  // z-index:0;
+}
 
 
 @keyframes Animation {
