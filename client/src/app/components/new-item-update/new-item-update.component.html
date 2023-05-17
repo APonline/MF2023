@@ -8,18 +8,33 @@
     <ul>
       <li *ngFor="let row of displayedColumns">
         <ng-container *ngIf="row != 'active' && row != 'action' && row != 'id' && row != 'date_joined' && row.indexOf('owner') === -1">
-            <p><span>{{row}}</span></p>
-            <div>
-              <mat-form-field>
-                <input matInput [(ngModel)]="local_data[0][row]">
-              </mat-form-field>
-            </div>
+          <ng-container
+            [ngTemplateOutlet]="row.indexOf('image') === -1 ? normalTemplate : uploaderTemplate"
+            [ngTemplateOutletContext]="{ $implicit: row }">
+          </ng-container>
         </ng-container>
       </li>
     </ul>
   </div>
   <ng-template #elseTemplate>
     Are you sure?
+  </ng-template>
+  <ng-template #normalTemplate let-row>
+    <p><span>{{row}}</span></p>
+    <div>
+      <mat-form-field>
+        <input matInput [(ngModel)]="local_data[0][row]">
+      </mat-form-field>
+    </div>
+  </ng-template>
+  <ng-template #uploaderTemplate let-row>
+    <p><span>{{row}}</span></p>
+    <div>
+      <!-- <mat-form-field>
+        <input matInput [(ngModel)]="local_data[0][row]">
+      </mat-form-field> -->
+
+    </div>
   </ng-template>
     <!-- <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">
 
