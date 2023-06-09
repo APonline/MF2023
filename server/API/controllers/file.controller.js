@@ -9,26 +9,29 @@ let imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
 __basedir = global.__basedir;
 baseUrl = global.baseUrl;
 
-const upload = async (req, res) => {
+const upload = (req, res) => {
   try {
-    await uploadFile(req, res);
+    uploadFile(req, res);
 
-    if (req.file == undefined) {
+    if (req == undefined) {
       return res.status(400).send({ message: "Please upload a file!" });
     }
 
     res.status(200).send({
-      message: "Uploaded the file successfully: " + req.file.originalname,
+      message: "Uploaded the file successfully: ",
     });
   } catch (err) {
     res.status(500).send({
-      message: `Could not upload the file: ${req.file.originalname}. ${err}`,
+      message: `Could not upload the file. ${err}`,
     });
   }
 };
 
 const getListFiles = (req, res) => {
-  const directoryPath = __basedir + "/resources/static/assets/uploads/";
+  let p = req.params.name;
+  let g = req.query.group;
+  let t = getfileFormat(req.query.type);
+  const directoryPath2 = __basedir + "/resources/static/" +g+ "/" + t + "/";
 
   fs.readdir(directoryPath, function (err, files) {
     if (err) {
@@ -40,10 +43,10 @@ const getListFiles = (req, res) => {
     let fileInfos = [];
 
     files.forEach( (file) => {
-        let f = getFileType(file);
+        let f = getFileType(p,g,t);
         fileInfos.push({
-            name: file,
-            url: baseUrl + '/api/v1/files/' + file,
+            name: p,
+            url: baseUrl + '/api/v1/files/' + p,
             type: f.type,
             display: f.display
         });
@@ -53,7 +56,39 @@ const getListFiles = (req, res) => {
   });
 };
 
-const getFileType = (file) => {
+const getFile = (req, res) => {
+  let p = req.params.name;
+  let g = req.query.group;
+  let t = getfileFormat(req.query.type);
+  const directoryPath = __basedir + "/resources/static/" +g+ "/" + t + "/" +p;
+
+  fs.readFile(directoryPath, (err, file)=>{
+    if(err) {
+      res.status(500).send({
+        message: "Unable to scan file!",
+      });
+    }
+
+    let fileInfo = [];
+
+    let f = getFileType(p,g,t);
+    fileInfo.push({
+        name: p,
+        url: baseUrl + '/api/v1/files/' + p,
+        type: f.type,
+        display: f.display
+    });
+
+    res.status(200).send(fileInfo);
+  });
+
+};
+
+const convertBase64 = (path) => {
+  return "data:image/gif;base64,"+fs.readFileSync(path,  'base64');
+};
+
+const getFileType = (file, group, type) => {
     let f = file.split('.');
     let fCount = f.length;
 
@@ -61,10 +96,24 @@ const getFileType = (file) => {
 
     let obj = {
         type: f[fCount - 1],
-        display: ( img == '' ? baseUrl + '/api/v1/files/' + file : img)
+        display: ( img == '' ? convertBase64(__basedir + "/resources/static/"+group+"/"+type+"/" + file)  : img)
     }
 
     return obj;
+}
+
+const getfileFormat = (type) => {
+  let img = '';
+  if(videoTypes.indexOf(type) >= 0){
+      img = 'video';
+  }else if(audioTypes.indexOf(type) >= 0){
+      img = 'music';
+  }else if(documentTypes.indexOf(type) >= 0){
+      img = 'document';
+  }else if(imagesTypes.indexOf(type) >= 0){
+      img = 'image';
+  }
+  return img;
 }
 
 const getfileImgforDisplay = (type) => {
@@ -97,5 +146,6 @@ const download = (req, res) => {
 module.exports = {
   upload,
   getListFiles,
+  getFile,
   download,
 };

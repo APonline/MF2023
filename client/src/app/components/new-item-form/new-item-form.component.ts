@@ -59,31 +59,6 @@ export class NewItemFormComponent implements OnInit {
 
   adminForm = this.formBuilder.group({});
 
-  newEditForm = this.formBuilder.group({
-    fname: new FormControl('', Validators.required),
-    lname: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
-    mobile_phone: '',
-    office_phone: '',
-    company: new FormControl('', Validators.required),
-    sub_company: '',
-    personnel_category: new FormControl('', Validators.required),
-    discipline: new FormControl('', Validators.required),
-    discipline_category: new FormControl('', Validators.required),
-    special_role: new FormControl('', Validators.required),
-    permissions: new FormControl('', Validators.required),
-    start_date: new FormControl('', Validators.required),
-    end_date: new FormControl('', Validators.required),
-    srs_package: false,
-    atc1_package: false,
-    atc2_package: false,
-    eg_package: false,
-    as_package: false,
-    status: '',
-    notes: '',
-    timestamp: '',
-  });
-
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
@@ -119,7 +94,6 @@ export class NewItemFormComponent implements OnInit {
 
       this.tool = window.location.href.split('/')[5];
       this.toolName = this.tool.replace(/_/g," ");
-
 
       this.loadData();
     }
@@ -266,11 +240,15 @@ export class NewItemFormComponent implements OnInit {
       obj.action = action;
       obj.tool = this.toolName;
       const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-        // width: '65%',
+        panelClass: 'dialog-box',
+        width: '85%',
+        height: '80vh',
         data:obj
       });
 
       dialogRef.afterClosed().subscribe(result => {
+
+        console.log(result.data);
         if(result){
           if(result.event == 'Add'){
             this.addRowData(result.data);
@@ -310,5 +288,4 @@ export class NewItemFormComponent implements OnInit {
       });
       this.delete(row_obj.id);
     }
-
 }

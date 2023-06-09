@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject, Optional } from '@angular/core';
+import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
@@ -27,6 +27,7 @@ export class NewItemUpdateComponent implements OnInit {
   action:string;
   tool:string;
   local_data:any;
+  currentGroup = null;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -34,6 +35,7 @@ export class NewItemUpdateComponent implements OnInit {
       private router: Router,
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<NewItemUpdateComponent>,
+      private cdr: ChangeDetectorRef,
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
@@ -54,6 +56,13 @@ export class NewItemUpdateComponent implements OnInit {
     this.local_data = [{...data}];
 
     console.log('TEST: ',this.displayedColumns, this.local_data);
+
+    //this.currentGroup = this.authenticationService.currentUserValue;
+    if(this.tool == 'artist'){
+      this.currentGroup = this.local_data[0].name;
+    }else{
+      this.currentGroup = 'Polarity';
+    }
 
 
   }
@@ -84,6 +93,17 @@ export class NewItemUpdateComponent implements OnInit {
   }
   dateAdjust(date) {
     return moment(date).format("YYYY-MM-DD");
+  }
+
+  ngAfterContentChecked(): void {
+    this.cdr.detectChanges();
+  }
+
+  updateImageValue(e) {
+    this.local_data[0][e.field] = e.val;
+
+    console.log('updated item: ',e);
+    console.log(this.local_data[0])
   }
 
 }

@@ -33,7 +33,8 @@
       <!-- <mat-form-field>
         <input matInput [(ngModel)]="local_data[0][row]">
       </mat-form-field> -->
-
+      <!-- <app-upload-multi [group]="local_data[0][id]"></app-upload-multi> -->
+      <app-upload-single (fileNew)="updateImageValue($event)" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
     </div>
   </ng-template>
     <!-- <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">

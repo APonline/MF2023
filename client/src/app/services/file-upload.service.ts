@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 const baseUrl = environment.apiUrl;
 
 @Injectable({
-  providedIn: 'root'
+   providedIn: 'root'
 })
 export class FileUploadService {
 
@@ -14,12 +14,12 @@ export class FileUploadService {
 
   constructor(private http: HttpClient) { }
 
-  upload(file: File): Observable<HttpEvent<any>> {
+  upload(file: any, group: any, type: any): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
 
-    const req = new HttpRequest('POST', `${this.baseUrl}upload`, formData, {
+    const req = new HttpRequest('POST', `${this.baseUrl}upload?group=${group}&type=${type}`, formData, {
       reportProgress: true,
       responseType: 'json'
     });
@@ -28,10 +28,18 @@ export class FileUploadService {
   }
 
   downloadFile(id: any, name: any): Observable<any> {
-    return this.http.get(`${this.baseUrl}files/${name}`);
+    return this.http.get(`${this.baseUrl}files/download/${name}`);
   }
 
   getFiles(): Observable<any> {
     return this.http.get(`${this.baseUrl}files`);
+  }
+
+  getFile(id: any, name: any, group: any, type: any): Observable<any> {
+    if(name==''){
+      return;
+    }
+    name = name.replace(/\s+/g, '-');
+    return this.http.get(`${this.baseUrl}files/${name}?group=${group}&type=${type}`);
   }
 }

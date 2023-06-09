@@ -195,3 +195,13 @@
   max-width: 1200px;
   margin:0 auto;
 }
+
+.cdk-overlay-dark-backdrop  {
+  background: linear-gradient(
+    to bottom right,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.9)
+  );
+  backdrop-filter: blur(0.2rem);
+  -moz-backdrop-filter: blur(0.2rem);
+}

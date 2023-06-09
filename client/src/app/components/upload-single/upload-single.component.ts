@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
@@ -20,15 +20,19 @@ import { SongsService } from 'src/app/services/songs.service';
 import { VidoesService } from 'src/app/services/videos.service';
 
 @Component({
-  selector: 'app-upload-multi',
-  templateUrl: 'upload-multi.component.html',
-  styleUrls: ['./upload-multi.component.scss']
+  selector: 'app-upload-single',
+  templateUrl: 'upload-single.component.html',
+  styleUrls: ['./upload-single.component.scss']
 })
 
-export class UploadFilesComponent implements OnInit {
+export class UploadFileComponent implements OnInit {
   currentUser: any;
   currentGroup: any;
   @Input() service: string;
+  @Input() file: string;
+  @Input() group: string;
+  @Input() field: string;
+  @Output() fileNew = new EventEmitter<any>();
 
   selectedFiles?: FileList;
   progressInfos: any[] = [];
@@ -60,11 +64,19 @@ export class UploadFilesComponent implements OnInit {
     private alertService: AlertService) {
       this.currentUser = this.authenticationService.currentUserValue;
       //this.currentGroup = this.authenticationService.currentUserValue;
-      this.currentGroup = 'Polarity';
     }
 
   ngOnInit(): void {
-    this.fileInfos = this.uploadService.getFiles();
+    this.currentGroup = this.group;
+    let type = this.file.split(".").pop();
+    this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.replace(/\s+/g, '-').toLowerCase(), type);
+
+    if(this.fileInfos){
+      this.fileInfos.subscribe(res => {
+        console.log("YOOO: ",res);
+      });
+    }
+
   }
 
   selectFiles(event: any): void {
@@ -101,16 +113,25 @@ export class UploadFilesComponent implements OnInit {
   upload(idx: number, file: File): void {
     this.progressInfos[idx] = { value: 0, fileName: file.name };
 
+
     if (file) {
-      this.uploadService.upload(file,this.currentGroup,file.type.split('/')[0]).subscribe({
+      let type = file.name.split('.').pop();
+      let group = this.currentGroup.replace(/\s+/g, '-').toLowerCase();
+      this.uploadService.upload(file,group,type).subscribe({
         next: (event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
             this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
           } else if (event instanceof HttpResponse) {
             const msg = 'Uploaded the file successfully: ' + file.name;
             this.message.push(msg);
-            this.fileInfos = this.uploadService.getFiles();
+            //this.fileInfos = this.uploadService.getFiles();
+            this.fileInfos = this.uploadService.getFile(0,file.name, group, type);
 
+            let obj = {
+              field: this.field,
+              val:file.name
+            }
+            this.fileNew.emit(obj);
             //this.saveToDB(file.name);
           }
         },
