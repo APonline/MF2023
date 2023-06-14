@@ -148,4 +148,8 @@ module.exports = {
   getListFiles,
   getFile,
   download,
+  videoTypes,
+  audioTypes,
+  documentTypes,
+  imagesTypes
 };

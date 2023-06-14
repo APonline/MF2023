@@ -65,7 +65,6 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
     }
 }
 exports[`update${itemTopic}`] = async (req, res) => {
-    console.log(req.body);
     try{
         let id =req.body.id;
         let result = await Item.update( req.body,{ where: { id } });

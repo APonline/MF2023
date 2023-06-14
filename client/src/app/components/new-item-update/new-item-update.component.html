@@ -14,13 +14,19 @@
           </ng-container>
         </ng-container>
       </li>
+      <li *ngIf="uploaderInstalled">
+        <ng-container
+            [ngTemplateOutlet]="uploaderTemplate"
+            [ngTemplateOutletContext]="{ $implicit: 'title' }">
+          </ng-container>
+      </li>
     </ul>
   </div>
   <ng-template #elseTemplate>
     Are you sure?
   </ng-template>
   <ng-template #normalTemplate let-row>
-    <p><span>{{row}}</span></p>
+    <p><span>{{row | removeUnderscore}}</span></p>
     <div>
       <mat-form-field>
         <input matInput [(ngModel)]="local_data[0][row]">
@@ -28,13 +34,13 @@
     </div>
   </ng-template>
   <ng-template #uploaderTemplate let-row>
-    <p><span>{{row}}</span></p>
+    <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
     <div>
       <!-- <mat-form-field>
         <input matInput [(ngModel)]="local_data[0][row]">
       </mat-form-field> -->
       <!-- <app-upload-multi [group]="local_data[0][id]"></app-upload-multi> -->
-      <app-upload-single (fileNew)="updateImageValue($event)" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
+      <app-upload-single (fileNew)="updateUploadValue($event)" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
     </div>
   </ng-template>
     <!-- <table mat-table [dataSource]="local_data" #mytable class="my-table mat-elevation-z8">

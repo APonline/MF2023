@@ -15,7 +15,7 @@ export class user {
   last_login?: string;
   login_count?: number;
   profile_url?: string;
-  profile_img?: string;
+  profile_image?: string;
   verified?: number;
   tna?: number;
   online?: number;

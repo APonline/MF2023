@@ -12,4 +12,5 @@ profile_url?: string;
 phone?: string;
 email?: string;
 active?: number;
+contact_image?: string;
 }

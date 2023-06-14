@@ -41,6 +41,9 @@ module.exports = (sequelize, Sequelize) => {
       active: {
       type: Sequelize.INTEGER
     },
+      contact_image: {
+      type: Sequelize.STRING
+    },
  });
     
 return ItemTopic;

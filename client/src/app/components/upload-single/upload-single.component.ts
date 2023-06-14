@@ -68,8 +68,14 @@ export class UploadFileComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentGroup = this.group;
+
+    if(this.field == 'title'){
+      console.log(this.file);
+    }
+
     let type = this.file.split(".").pop();
-    this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.replace(/\s+/g, '-').toLowerCase(), type);
+
+    this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.name.replace(/\s+/g, '-').toLowerCase(), type);
 
     if(this.fileInfos){
       this.fileInfos.subscribe(res => {
@@ -116,7 +122,7 @@ export class UploadFileComponent implements OnInit {
 
     if (file) {
       let type = file.name.split('.').pop();
-      let group = this.currentGroup.replace(/\s+/g, '-').toLowerCase();
+      let group = this.currentGroup.name.replace(/\s+/g, '-').toLowerCase();
       this.uploadService.upload(file,group,type).subscribe({
         next: (event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
@@ -132,7 +138,7 @@ export class UploadFileComponent implements OnInit {
               val:file.name
             }
             this.fileNew.emit(obj);
-            //this.saveToDB(file.name);
+            this.saveToDB(file.name, group, type);
           }
         },
         error: (err: any) => {
@@ -143,31 +149,31 @@ export class UploadFileComponent implements OnInit {
     }
   }
 
-  saveToDB(name){
+  saveToDB(name, group, type){
     let ext = name.split('.');
     ext = ext[ext.length - 1];
 
     //images
     let obj = {
-      owner_user: this.currentUser,
-      owner_group: this.currentGroup,
+      owner_user: this.currentUser.id,
+      owner_group: this.currentGroup.id,
       title: name,
       description: '',
       genre: 'default',
       extension: ext,
-      tags: [],
+      tags: '',
       active: 1,
       views: 0,
-      profile_url: '@' + this.currentGroup + '_' + name + ''
+      profile_url: '@' + this.currentGroup.name + '_' + name + ''
     };
 
     let location = '';
     if(this.videoTypes.indexOf(ext) !== -1){
-      location = 'videos';
+      location = 'video';
       obj['duration'] = '';
     }
     if(this.audioTypes.indexOf(ext) !== -1){
-      location = 'sounds';
+      location = 'song';
       obj['duration'] = '';
       obj['owner_album'] = '';
       obj['author'] = '';
@@ -175,14 +181,13 @@ export class UploadFileComponent implements OnInit {
       delete obj['views'];
     }
     if(this.documentTypes.indexOf(ext) !== -1){
-      location = 'documents';
+      location = 'document';
     }
     if(this.imagesTypes.indexOf(ext) !== -1){
-      location = 'images';
+      location = 'image';
     }
 
-    obj['location'] = 'resources/static/assets/uploads/' + location;
-
+    obj['location_url'] = name;
 
     if(this.videoTypes.indexOf(ext) !== -1){
       this.videosService.create(obj).subscribe((res) => {

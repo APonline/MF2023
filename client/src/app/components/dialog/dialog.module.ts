@@ -7,6 +7,7 @@ import { NewItemUpdateComponent } from '../new-item-update/new-item-update.compo
 import { DialogTemplate } from './templates/dialog.component';
 import { UploadFilesComponent } from '../upload-multi/upload-multi.component';
 import { UploadFileComponent } from '../upload-single/upload-single.component';
+import { PipeModule } from 'src/app/pipes/pipe.module';
 
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA ],
@@ -20,7 +21,8 @@ import { UploadFileComponent } from '../upload-single/upload-single.component';
     CommonModule,
     FormsModule,
     AngularMaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PipeModule
   ],
   exports: [
     DialogTemplate,

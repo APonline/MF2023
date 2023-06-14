@@ -12,11 +12,11 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { name: req.body.name } });
+        let item = await Item.findOne({ where: { title: req.body.title } });
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.name + "_" + num;
+            newItem['profile_url'] = req.body.title + "_" + num;
         }
 
         let result = await Item.create( newItem );

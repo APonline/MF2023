@@ -8,4 +8,7 @@ release_year?: string;
 track_count?: number;
 active?: number;
 profile_url?: string;
+album_front_image?: string;
+album_back_image?: string;
+album_linernotes_image?: string;
 }

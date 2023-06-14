@@ -57,7 +57,7 @@ module.exports = (sequelize, Sequelize) => {
         profile_url: {
             type: Sequelize.STRING
         },
-        profile_img: {
+        profile_image: {
             type: Sequelize.STRING
         },
         tna: {

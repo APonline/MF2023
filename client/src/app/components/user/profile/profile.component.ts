@@ -46,7 +46,7 @@ export class ProfileComponent implements OnInit {
       last_login: ['', Validators.required],
       login_count: ['', Validators.required],
       profile_url: ['', Validators.required],
-      profile_img: ['', Validators.required],
+      profile_image: ['', Validators.required],
     });
 
     this.profileForm.controls['email'].setValue(this.currentUser.email);
@@ -64,7 +64,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm.controls['last_login'].setValue(this.currentUser.last_login);
     this.profileForm.controls['login_count'].setValue(this.currentUser.login_count);
     this.profileForm.controls['profile_url'].setValue(this.currentUser.profile_url);
-    this.profileForm.controls['lastname'].setValue(this.currentUser.profile_img);
+    this.profileForm.controls['lastname'].setValue(this.currentUser.profile_image);
   }
 
   // convenience getter for easy access to form fields

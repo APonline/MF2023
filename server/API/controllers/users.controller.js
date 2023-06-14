@@ -129,7 +129,7 @@ myClass[`verify${itemTopic}`] = async (req, res) => {
             date_joined: user.date_joined,
             last_login: user.last_login,
             profile_url: user.profile_url,
-            profile_img: user.profile_img,
+            profile_image: user.profile_image,
             roles: authorities,
             tna: user.tna,
             verified: user.verified,

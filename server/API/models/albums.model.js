@@ -29,6 +29,15 @@ module.exports = (sequelize, Sequelize) => {
       profile_url: {
       type: Sequelize.STRING
     },
+      album_front_image: {
+      type: Sequelize.STRING
+    },
+      album_back_image: {
+      type: Sequelize.STRING
+    },
+      album_linernotes_image: {
+      type: Sequelize.STRING
+    },
  });
     
 return ItemTopic;

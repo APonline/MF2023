@@ -29,6 +29,9 @@ export class NewItemUpdateComponent implements OnInit {
   local_data:any;
   currentGroup = null;
 
+  uploaderNeeds = ['image','video','document','song'];
+  uploaderInstalled = false;
+
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -59,10 +62,12 @@ export class NewItemUpdateComponent implements OnInit {
 
     //this.currentGroup = this.authenticationService.currentUserValue;
     if(this.tool == 'artist'){
-      this.currentGroup = this.local_data[0].name;
+      this.currentGroup = {name: this.local_data[0].name, id: this.local_data[0].id };
     }else{
-      this.currentGroup = 'Polarity';
+      this.currentGroup = {name: 'Polarity', id:2};
     }
+
+    this.requiresUploader();
 
 
   }
@@ -77,6 +82,13 @@ export class NewItemUpdateComponent implements OnInit {
   }
 
   async ngOnInit() {
+  }
+
+  requiresUploader(){
+    if( this.uploaderNeeds.indexOf(this.tool) !== -1 ){
+      this.uploaderInstalled = true;
+      return true;
+    }
   }
 
   getDate() {
@@ -99,7 +111,7 @@ export class NewItemUpdateComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  updateImageValue(e) {
+  updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
 
     console.log('updated item: ',e);
