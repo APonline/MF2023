@@ -1,6 +1,32 @@
 <div id="newEdit" class="page">
-  <!-- <div class="glass"> -->
+  <div class="itemBKGrid"></div>
 
+  <div class="glass">
+    <div class="content" id="cards" (mousemove)="cardShine($event)">
+
+      <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', tool.value ]">
+        <div class="card-content">
+          <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 200% no-repeat'}"></div>
+          <div class="card-image">
+            <i class="fa-duotone fa-apartment"></i>
+          </div>
+          <div class="card-info-wrapper">
+            <div class="card-info">
+              <i class="fa-duotone fa-apartment"></i>
+              <div class="card-info-title">
+                <h4>{{tool.name}}</h4>
+                <!-- <h5>Places to be apart. Wait, what?</h5>  Saved for future-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div id="newEdit" class="page">
     <ul class="page-top-cta glass">
       <li *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', tool.value ]">
         <div class="itemBk"></div>
@@ -8,5 +34,6 @@
         <h4>{{tool.name}}</h4>
       </li>
     </ul>
-  <!-- </div> -->
-</div>
+</div> -->
+
+

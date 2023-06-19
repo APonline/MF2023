@@ -79,7 +79,6 @@ export class UploadFilesComponent implements OnInit {
         const reader = new FileReader();
 
         reader.onload = (e: any) => {
-          console.log(e.target.result);
           this.previews.push(e.target.result);
         };
 

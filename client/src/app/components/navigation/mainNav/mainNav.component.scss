@@ -36,7 +36,7 @@ mat-toolbar {
   position: absolute;
   bottom: -14px;
   right: 25px;
-  background-color: #393939;
+  background-color: #242424;;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
   width: auto;
@@ -53,6 +53,7 @@ mat-toolbar {
       padding: 0 10px;
       letter-spacing: 1px;
       cursor: pointer;
+      font-family: "Thin_lc" !important;
     }
   }
 }

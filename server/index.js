@@ -74,34 +74,35 @@ let onlineUsers = [];
   
 io.on('connection', (socket) => {
   let user = socket.handshake.auth.user;
+  if(user != null){
+    if (!onlineUsers.some((u) => u.id === user.id)) { 
+      user['socketId']=socket.id;
+      onlineUsers.push(user);
+      console.log(`${user.username} connected`);
+      updateOnlineStatus(user, 1);
+      updateOnlineUsers();
+    }
+    // send all active users to new user
+    io.emit("get-users", onlineUsers);
   
-  if (!onlineUsers.some((u) => u.id === user.id)) { 
-    user['socketId']=socket.id;
-    onlineUsers.push(user);
-    console.log(`${user.username} connected`);
-    updateOnlineStatus(user, 1);
-    updateOnlineUsers();
+    socket.on('disconnect', () => {
+      onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
+      console.log(`${user.username} disconnected`);
+      updateOnlineStatus(user, 0);
+      io.emit("get-users", onlineUsers);
+    });
+  
+    socket.on("offline", () => {
+      onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
+      console.log(`${user.username}disconnected`);
+      updateOnlineStatus(user, 0);
+      io.emit("get-users", onlineUsers);
+    });
+  
+    socket.on('my message', (msg) => {
+        io.emit('my broadcast', `server: ${msg}`);
+    });
   }
-  // send all active users to new user
-  io.emit("get-users", onlineUsers);
-
-  socket.on('disconnect', () => {
-    onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
-    console.log(`${user.username} disconnected`);
-    updateOnlineStatus(user, 0);
-    io.emit("get-users", onlineUsers);
-  });
-
-  socket.on("offline", () => {
-    onlineUsers = onlineUsers.filter((u) => u.socketId !== socket.id);
-    console.log(`${user.username}disconnected`);
-    updateOnlineStatus(user, 0);
-    io.emit("get-users", onlineUsers);
-  });
-
-  socket.on('my message', (msg) => {
-      io.emit('my broadcast', `server: ${msg}`);
-  });
 });
 
 // setonline status

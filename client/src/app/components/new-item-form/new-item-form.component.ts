@@ -121,7 +121,6 @@ export class NewItemFormComponent implements OnInit {
 
         res.map((r,i) => {
           if(r.id == 1){
-            console.log(r)
             this.modelSet = r;
             //delete res[i];
           }
@@ -136,7 +135,6 @@ export class NewItemFormComponent implements OnInit {
         if(this.toolSet.length > 1){
           this.setSettings(this.toolSet);
         }else {
-          console.log('M ',this.modelSet);
           let newForm ={}
           Object.keys(this.modelSet).map(res => {
             if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
@@ -160,7 +158,6 @@ export class NewItemFormComponent implements OnInit {
         f = formData[0];
       }
 
-      console.log(formData, f);
       this.displayedColumns.push('action');
       Object.keys(f).map(res => {
         if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
@@ -183,7 +180,6 @@ export class NewItemFormComponent implements OnInit {
       this.newRecord = newForm;
       this.adminForm = new FormGroup(form);
 
-      console.log(this.displayedColumns, this.dataSource)
     }
 
     dateAdjust(date) {
@@ -248,7 +244,6 @@ export class NewItemFormComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
 
-        console.log(result.data);
         if(result){
           if(result.event == 'Add'){
             this.addRowData(result.data);

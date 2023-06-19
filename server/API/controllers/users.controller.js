@@ -6,6 +6,8 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 
+const bcrypt = require("bcryptjs");
+
 import sendMailOut from '../../mailserver';
 import requestPassword from '../../mailTemplates/requestPassword';
 import deleteAccount from '../../mailTemplates/deleteAccount';
@@ -53,6 +55,10 @@ myClass[`getAll${itemTopic}s`] = async (req, res) => {
 myClass[`update${itemTopic}`] = async (req, res) => {
     let id =req.body.id;
     let body = req.body;
+
+    if(body['password']){
+        body['password'] = bcrypt.hashSync(req.body.password, 8);
+    }
 
     try{
         let result = await Item.update( body,{ where: { id } });

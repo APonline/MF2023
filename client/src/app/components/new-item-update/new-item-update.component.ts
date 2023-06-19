@@ -58,8 +58,6 @@ export class NewItemUpdateComponent implements OnInit {
     })
     this.local_data = [{...data}];
 
-    console.log('TEST: ',this.displayedColumns, this.local_data);
-
     //this.currentGroup = this.authenticationService.currentUserValue;
     if(this.tool == 'artist'){
       this.currentGroup = {name: this.local_data[0].name, id: this.local_data[0].id };
@@ -113,9 +111,6 @@ export class NewItemUpdateComponent implements OnInit {
 
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
-
-    console.log('updated item: ',e);
-    console.log(this.local_data[0])
   }
 
 }

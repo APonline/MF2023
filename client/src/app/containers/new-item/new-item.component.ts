@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 
@@ -10,6 +10,8 @@ import { AuthenticationService } from '../../services/authentication.service';
  })
 export class NewitemComponent implements OnInit {
 
+  @ViewChildren('card') card!: QueryList<any>;
+
     tools = [
       {name:'Artists', value:'artists'},
       {name:'Artist Members', value:'artist_members'},
@@ -19,7 +21,7 @@ export class NewitemComponent implements OnInit {
       {name:'Comments', value:'comments'},
       {name:'Contacts', value:'contacts'},
       {name:'Documents', value:'documents'},
-      {name:'Friends', value:'friends'},
+      // {name:'Friends', value:'friends'},
       {name:'Gigs', value:'gigs'},
       {name:'Images', value:'images'},
       {name:'Socials', value:'socials'},
@@ -35,4 +37,16 @@ export class NewitemComponent implements OnInit {
     ngOnInit() {
 
     }
+
+    cardShine(e) {
+      for(const card of this.card){
+        const rect = card.nativeElement.getBoundingClientRect(),
+        x = e.clientX - rect.left,
+        y = e.clientY - rect.top;
+
+        card.nativeElement.style.setProperty("--mouse-x", `${x}px`);
+        card.nativeElement.style.setProperty("--mouse-y", `${y}px`);
+      }
+    }
+
 }

@@ -26,10 +26,10 @@ export class ProfileComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
+    //console.log(this.currentUser)
   }
 
    ngOnInit() {
-
     this.profileForm = this.formBuilder.group({
       email: ['', Validators.required],
       username: ['', Validators.required],

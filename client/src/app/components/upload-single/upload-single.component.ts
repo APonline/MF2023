@@ -69,19 +69,19 @@ export class UploadFileComponent implements OnInit {
   ngOnInit(): void {
     this.currentGroup = this.group;
 
-    if(this.field == 'title'){
-      console.log(this.file);
-    }
+    // if(this.field == 'title'){
+    //   console.log(this.file);
+    // }
 
     let type = this.file.split(".").pop();
 
     this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.name.replace(/\s+/g, '-').toLowerCase(), type);
 
-    if(this.fileInfos){
-      this.fileInfos.subscribe(res => {
-        console.log("YOOO: ",res);
-      });
-    }
+    // if(this.fileInfos){
+    //   this.fileInfos.subscribe(res => {
+    //     console.log("YOOO: ",res);
+    //   });
+    // }
 
   }
 
@@ -97,7 +97,6 @@ export class UploadFileComponent implements OnInit {
         const reader = new FileReader();
 
         reader.onload = (e: any) => {
-          console.log(e.target.result);
           this.previews.push(e.target.result);
         };
 
@@ -138,7 +137,7 @@ export class UploadFileComponent implements OnInit {
               val:file.name
             }
             this.fileNew.emit(obj);
-            this.saveToDB(file.name, group, type);
+            this.saveToDB(file.name);
           }
         },
         error: (err: any) => {
@@ -149,7 +148,7 @@ export class UploadFileComponent implements OnInit {
     }
   }
 
-  saveToDB(name, group, type){
+  saveToDB(name){
     let ext = name.split('.');
     ext = ext[ext.length - 1];
 
@@ -163,8 +162,7 @@ export class UploadFileComponent implements OnInit {
       extension: ext,
       tags: '',
       active: 1,
-      views: 0,
-      profile_url: '@' + this.currentGroup.name + '_' + name + ''
+      views: 0
     };
 
     let location = '';
@@ -190,6 +188,7 @@ export class UploadFileComponent implements OnInit {
     obj['location_url'] = name;
 
     if(this.videoTypes.indexOf(ext) !== -1){
+      obj['profile_url'] = '@' + this.currentGroup.name + '_video_' + name + '';
       this.videosService.create(obj).subscribe((res) => {
         if(!res.message){
           this.alertService.success('Item has been created!', true);
@@ -199,6 +198,7 @@ export class UploadFileComponent implements OnInit {
       });
     }
     if(this.audioTypes.indexOf(ext) !== -1){
+      obj['profile_url'] = '@' + this.currentGroup.name + '_song_' + name + '';
       this.songsService.create(obj).subscribe((res) => {
         if(!res.message){
           this.alertService.success('Item has been created!', true);
@@ -208,6 +208,7 @@ export class UploadFileComponent implements OnInit {
       });
     }
     if(this.documentTypes.indexOf(ext) !== -1){
+      obj['profile_url'] = '@' + this.currentGroup.name + '_document_' + name + '';
       this.documentsService.create(obj).subscribe((res) => {
         if(!res.message){
           this.alertService.success('Item has been created!', true);
@@ -217,6 +218,7 @@ export class UploadFileComponent implements OnInit {
       });
     }
     if(this.imagesTypes.indexOf(ext) !== -1){
+      obj['profile_url'] = '@' + this.currentGroup.name + '_image_' + name + '';
       this.imagesService.create(obj).subscribe((res) => {
         if(!res.message){
           this.alertService.success('Item has been created!', true);

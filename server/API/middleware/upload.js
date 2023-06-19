@@ -10,10 +10,8 @@ let imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    //console.log(req.body, req.params, file)
     let group = req.query.group;
     let type = getfileFormat(req.query.type);
-    console.log('G: '+ group, 'T: '+ type+ ' dir created');
     if(!fs.existsSync(__basedir + "/resources/static/" +group+'/'+type)){
       fs.mkdirSync(__basedir + "/resources/static/" +group+'/');
       fs.mkdirSync(__basedir + "/resources/static/" +group+'/'+type);
