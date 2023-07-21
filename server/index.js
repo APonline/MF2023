@@ -5,7 +5,7 @@ const qs = require('qs');
 const axios = require('axios');
 
 global.__basedir = __dirname;
-global.baseUrl = "http://localhost:3000";
+global.baseUrl = "https://musefactory.app:4000";
 
 // db
 const db = require("./API/models");
@@ -38,11 +38,12 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
   cors: {
     origins: [
-        "http://localhost:3001",
-        "http://localhost:3000",
-        "http://localhost:4200",
-        "http://localhost:8080",
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:4200",
+        "http://127.0.0.1:8080",
         "https://musefactory.app",
+        "https://musefactory.app:4000",
     ],
   }
 });
@@ -52,14 +53,15 @@ require("./API/routes")(app);
 // ---all routes
 app.all('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
     next();
 });
 
 
 // SOCKETING
 app.get('/', (req, res) => {
-    res.send('<h1>Hey Socket.io</h1>');
+    res.send('<h1>Hey Socket.io hey</h1>');
 });
 
 io.use((socket, next) => {
@@ -107,32 +109,37 @@ io.on('connection', (socket) => {
 
 // setonline status
 let updateOnlineStatus = (user, status) => {
-  user['online'] = status;
-  axios.put(`http://localhost:3000/api/v1/users/online/${user.id}`,
-    qs.stringify(user))
-    .then( (response) => {
-      if(status == 1) {
-        console.log(`${user.username} logged online...`);
-      }else{
-        console.log(`${user.username} logged offline...`);
-      }
-    })
-    .catch( (error) => {
-      console.log(`error with ${user.username} logging online status...`);
-    });
+  if(user){
+    user['online'] = status;
+    axios.put(`https://musefactory.app:4000/api/v1/users/online/${user.id}`,
+      qs.stringify(user))
+      .then( (response) => {
+        if(status == 1) {
+          console.log(`${user.username} logged online...`);
+        }else{
+          console.log(`${user.username} logged offline...`);
+        }
+      })
+      .catch( (error) => {
+        console.log(`error with ${user.username} logging online status...`);
+      });
+  }
 };
 
-let updateOnlineUsers = () => {
-  axios.get(`http://localhost:3000/api/v1/users`)
+let updateOnlineUsers = (user) => {
+  if(user){
+    axios.get(`https://musefactory.app:4000/api/v1/users`)
     .then( (response) => {
       return response;
     })
     .catch( (error) => {
       console.log(`error with ${user.username} logging online status...`);
     });
+  }
+  
 };
 // SOCKETING
   
-http.listen(3000, () => {
-    console.log('listening on *:3000');
+http.listen(4000, () => {
+    console.log('listening on *:4000');
 });

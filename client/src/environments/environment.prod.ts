@@ -1,6 +1,9 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://musefactory.app:4000/graphql',
-  apiSubUrl: 'wss://musefactory.app:4000/subscriptions',
-  version: 'v1.0.0'
+  // apiUrl: 'http://127.0.0.1:4000/api/v1/',
+	// SOCKET_ENDPOINT: 'http://127.0.0.1:4000',
+  apiUrl: 'https://musefactory.app:4000/api/v1/',
+	SOCKET_ENDPOINT: 'https://musefactory.app:4000',
+  version: 'v1.0.0',
+  root: ""
 };

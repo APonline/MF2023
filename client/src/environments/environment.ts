@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api/v1/',
-	SOCKET_ENDPOINT: 'http://localhost:3000',
+  apiUrl: 'https://musefactory.app:4000/api/v1/',
+	SOCKET_ENDPOINT: 'https://musefactory.app:4000',
   version: 'v1.0.0',
   root: ""
 };

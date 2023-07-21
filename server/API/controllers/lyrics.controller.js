@@ -12,11 +12,11 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { name: req.body.name } }); 
+        let item = await Item.findOne({ where: { title: req.body.title } });
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.name + "_" + num;
+            newItem['profile_url'] = req.body.title + "_" + num;
         }
 
         let result = await Item.create( newItem );
@@ -28,7 +28,7 @@ exports[`create${itemTopic}`] = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}! ${error.message}`
+            message: `Unable to create ${itemTopic}!`
         });
     }
 }
@@ -49,7 +49,6 @@ exports[`get${itemTopic}`] = async (req, res) => {
     }
 }
 exports[`getAll${itemTopic}s`] = async (req, res) => {
-    
     try{
         let result = await Item.findAll({ where: { active: 1 } });
 
@@ -64,7 +63,6 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
         });
     }
 }
-
 exports[`update${itemTopic}`] = async (req, res) => {
     try{
         let id =req.body.id;
@@ -77,7 +75,7 @@ exports[`update${itemTopic}`] = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to update ${itemTopic}!  ${error.message}`
+            message: `Unable to update ${itemTopic}!`
         });
     }
 }
@@ -87,13 +85,13 @@ exports[`delete${itemTopic}`] = async (req, res) => {
         let result = await Item.destroy({ where: { id } });
 
         if (result) {
-            return res.status(200).send({ result });
+            return res.status(200).send( result );
         }else{
             return res.status(500).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to delete ${itemTopic}!  ${error.message}`
+            message: `Unable to delete ${itemTopic}!`
         });
     }
 }

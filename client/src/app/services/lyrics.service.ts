@@ -3,15 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl + `artists`;
+const baseUrl = environment.apiUrl + `songs`;
 const signup = environment.apiUrl + 'auth/signup';
-
-
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArtistsService {
+export class LyricsService {
 
   constructor(private http: HttpClient) { }
 

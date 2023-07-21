@@ -5,6 +5,7 @@ import { AlertService } from 'src/app/services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { user } from 'src/app/models/users.model';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,7 @@ export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   editing = 0;
   userProfile: any;
+  userImage: any;
 
   constructor(
     private router: Router,
@@ -23,13 +25,17 @@ export class ProfileComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private user: UserService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private uploadService: FileUploadService,
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
-    //console.log(this.currentUser)
+
   }
 
-   ngOnInit() {
+   async ngOnInit() {
+    await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
+      this.userImage = res;
+    });
     this.profileForm = this.formBuilder.group({
       email: ['', Validators.required],
       username: ['', Validators.required],

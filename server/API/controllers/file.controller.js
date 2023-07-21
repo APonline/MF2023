@@ -147,6 +147,7 @@ module.exports = {
   upload,
   getListFiles,
   getFile,
+  getFileType,
   download,
   videoTypes,
   audioTypes,

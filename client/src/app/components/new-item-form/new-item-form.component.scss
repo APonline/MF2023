@@ -105,11 +105,17 @@ th p {
   line-height:56px;
 }
 #table {
-  min-width:1220px;
+  min-width:1200px;
   position:relative;
 }
 table {
   white-space: nowrap;
+  width: -webkit-fill-available;
+}
+
+tr, th, td {
+  min-width:100%;
+  width: auto;
 }
 
 th {

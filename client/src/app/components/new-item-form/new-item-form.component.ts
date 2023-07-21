@@ -56,6 +56,8 @@ export class NewItemFormComponent implements OnInit {
   thisUser: '';
   toolSet: any = [];
   modelSet: any;
+  group = null;
+  groupId = null;
 
   adminForm = this.formBuilder.group({});
 
@@ -92,7 +94,9 @@ export class NewItemFormComponent implements OnInit {
 
     ngOnInit() {
 
-      this.tool = window.location.href.split('/')[5];
+      this.groupId = window.location.href.split('/')[5];
+      this.group = window.location.href.split('/')[6].replace(/_/g," ").replace(/@/g,"");
+      this.tool = window.location.href.split('/')[7];
       this.toolName = this.tool.replace(/_/g," ");
 
       this.loadData();
@@ -118,13 +122,20 @@ export class NewItemFormComponent implements OnInit {
       let model = this.tool;
 
       await this[service].getAll().subscribe(res => {
-
         res.map((r,i) => {
           if(r.id == 1){
             this.modelSet = r;
             //delete res[i];
           }
         });
+
+        if(this.tool == 'artist_members'){
+          res = res.filter(item => {
+            if(item.artistId == this.groupId || item.id == 1){
+              return item;
+            }
+          });
+        }
         //res = res.splice(0,0);
 
 

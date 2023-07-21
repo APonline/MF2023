@@ -10,7 +10,7 @@ import { user } from 'src/app/models/users.model';
   styleUrls: ['./mainNav.component.scss']
  })
 export class MainNavComponent implements OnInit {
-    currentUser: user;
+    currentUser: any;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -22,6 +22,8 @@ export class MainNavComponent implements OnInit {
         // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) {
           this.currentUser = this.authenticationService.currentUserValue;
+        }else{
+          this.currentUser = false;
         }
     }
 

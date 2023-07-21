@@ -1,24 +1,83 @@
 <div id="newEdit" class="page">
   <div class="itemBKGrid"></div>
 
-  <div class="glass">
-    <div class="content" id="cards" (mousemove)="cardShine($event)">
+  <div id="profilePage">
+    <div class="glass" style="width:1000px;margin-bottom:10px;background-size:cover;" [ngStyle]="{background: 'url('+artistInfo[0]?.profile_banner_image+')'}">
+      <div class="sidebyside" style="position:absolute;bottom:3px;left:3px;">
+        <div class="imgBox">
+          <img src="{{ artistInfo[0]?.profile_image }}" width="120px" />
+        </div>
+        <div class="content">
+          <h1>{{ group }}</h1>
+          <p>{{ artistInfo[0]?.profile_url }}</p>
+          <p>{{ artistInfo[0]?.genre }}</p>
+        </div>
+      </div>
+    </div>
 
-      <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', tool.value ]">
-        <div class="card-content">
-          <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 200% no-repeat'}"></div>
-          <div class="card-image">
-            <i class="fa-duotone fa-apartment"></i>
-          </div>
-          <div class="card-info-wrapper">
-            <div class="card-info">
-              <i class="fa-duotone fa-apartment"></i>
-              <div class="card-info-title">
-                <h4>{{tool.name}}</h4>
-                <!-- <h5>Places to be apart. Wait, what?</h5>  Saved for future-->
+    <div id="large-container">
+      <div class="glass" style="position: relative;margin: 0;width: 40%;margin-right: 10px;max-height: 500px;height: auto;">
+        <div class="content" style="height: 100%;">
+          <ul>
+            <li *ngFor="let row of artistInfoKeys">
+              <ng-container *ngIf="row != 'profile_url' && row != 'name' && row != 'genre' && row != 'profile_banner_image' && row != 'profile_image' && row != 'artist_image_1' && row != 'artist_image_2' && row != 'artist_image_3'">
+                <ng-container
+                  [ngTemplateOutlet]="row.indexOf('image') === -1 ? normalTemplate : uploaderTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: row }">
+                </ng-container>
+              </ng-container>
+            </li>
+          </ul>
+
+          <ul class="flex row lowerimages">
+            <li *ngFor="let row of artistInfoKeys">
+              <ng-container *ngIf="row == 'artist_image_1' || row == 'artist_image_2' || row == 'artist_image_3'">
+                <div class="imgBox">
+                  <img src="{{ artistInfo[0][row] }}" style="width:100%;" />
+                </div>
+              </ng-container>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
+      <ng-template #normalTemplate let-row>
+        <div class="sidebyside">
+          <h3>{{ row | removeUnderscore }}:</h3>
+          <p>{{ artistInfo[0][row] }}</p>
+        </div>
+      </ng-template>
+
+      <ng-template #uploaderTemplate let-row>
+        <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
+        <div class="imgBox">
+          <img src="{{ artistInfo[0][row] }}" width="60px" />
+        </div>
+      </ng-template>
+
+
+      <div class="glass" style="position: relative; margin: 0;width: 60%;">
+        <div class="content" id="cards" (mousemove)="cardShine($event)">
+
+          <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', groupId, group, tool.value ]">
+            <div class="card-content">
+              <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 200% no-repeat'}"></div>
+              <div class="card-image">
+                <i class="fa-duotone fa-apartment"></i>
+              </div>
+              <div class="card-info-wrapper">
+                <div class="card-info">
+                  <i class="fa-duotone fa-apartment"></i>
+                  <div class="card-info-title">
+                    <h4>{{tool.name}}</h4>
+                    <!-- <h5>Places to be apart. Wait, what?</h5>  Saved for future-->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>

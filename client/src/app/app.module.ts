@@ -52,6 +52,7 @@ import { NewitemComponent } from './containers/new-item/new-item.component';
 import { MessengerContainer } from './containers/messenger/messenger.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
+import { ProjectsContainer } from './containers/projects/projects.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -88,6 +89,7 @@ import { NewItemFormComponent } from './components/new-item-form/new-item-form.c
     NewItemFormComponent,
     MessengerContainer,
     SettingsComponent,
+    ProjectsContainer
   ],
   imports: [
     AppRoutingModule,

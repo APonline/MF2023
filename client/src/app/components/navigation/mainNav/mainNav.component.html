@@ -1,21 +1,27 @@
 <!-- nav -->
 <mat-toolbar color="primary">
   <img src="/assets/images/logo.png" id="mainNavLogo" />
-  <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" routerLink="/">Home</a>
-      <a class="nav-item nav-link" routerLink="/items">New/Edit</a>
-      <a class="nav-item nav-link" (click)="logout()">Logout</a>
-    </div>
-  </nav>
 
-  <nav class="navbar2 navbar-expand navbar-dark bg-dark" *ngIf="currentUser">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" routerLink="/user/profile">Profile</a>
-      <p class="nav-divider">|||</p>
-      <a class="nav-item nav-link" routerLink="/settings">Settings</a>
-    </div>
-  </nav>
+  <nav *ngIf="!currentUser; else loggedIn" class="navbar navbar-expand navbar-dark bg-dark"></nav>
+  <ng-template #loggedIn>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" routerLink="/">Home</a>
+        <a class="nav-item nav-link" routerLink="/projects">Projects</a>
+        <!-- <a class="nav-item nav-link" routerLink="/items">New/Edit</a> -->
+        <a class="nav-item nav-link" (click)="logout()">Logout</a>
+      </div>
+    </nav>
+
+    <nav class="navbar2 navbar-expand navbar-dark bg-dark">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" routerLink="/user/profile">Profile</a>
+        <p class="nav-divider">|||</p>
+        <a class="nav-item nav-link" routerLink="/settings">Settings</a>
+      </div>
+    </nav>
+  </ng-template>
+
 </mat-toolbar>
 
 

@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --sourceMap=true",
-    "build": "ng build --configuration production",
+    "build": "ng build --output-hashing=all",
     "build:production": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint",

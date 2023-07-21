@@ -17,6 +17,10 @@ export class ArtistMembersService {
     return this.http.get<any[]>(baseUrl);
   }
 
+  getAllForUser(id: any): Observable<any> {
+    return this.http.get<any[]>(`${baseUrl}/user/${id}`);
+  }
+
   get(id: any): Observable<any> {
     return this.http.get(`${baseUrl}/${id}`);
   }

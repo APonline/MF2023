@@ -147,7 +147,7 @@ let makeMyAPIForMe = () => {
         let content = start + col_names + end;
 
         fs.appendFile(`./API/models/${result[i]}.model.js`, content, function (err) {
-          if (err) throw err;
+          if (err) throw err;           
           console.log('File is created successfully.');
         });
 
@@ -187,6 +187,15 @@ db.user.belongsToMany(db.role, {
   otherKey: "roleId"
 });
 // User Based Roles End
+
+
+
+db['artist-member'].belongsTo(db.artist, {
+  through: "artist-members",
+  foreignKey: "artistId",
+  as: 'artists'
+});
+
 
 
 db.ROLES = ["user", "admin", "moderator"];

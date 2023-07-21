@@ -1,6 +1,6 @@
 <app-mainNav></app-mainNav>
 
-<app-messenger></app-messenger>
+<app-messenger *ngIf="this.currentUser"></app-messenger>
 
 <!-- main app container v1 -->
 <div class="jumbotron">

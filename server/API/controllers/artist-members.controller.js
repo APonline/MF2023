@@ -5,6 +5,7 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 ( itemTopic.substring(itemTopic.length - 1) == 's' ? itemTopic = itemTopic.slice(0, -1) : itemTopic = itemTopic);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
+const Artists = db.artist;
 
 let datetime = new Date(); 
 
@@ -60,6 +61,30 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
     } catch (error) {
         return res.status(500).send({
             message: `Unable to get ${itemTopic}s!`
+        });
+    }
+}
+exports[`getAllFor${itemTopic}`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { user_id: id, active: 1 }, 
+            include: [{
+                model: Artists,
+                required: true,
+                as: 'artists',
+                where: { active: 1 } 
+            }],
+        });
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s for user! -- ${error.message}`
         });
     }
 }
