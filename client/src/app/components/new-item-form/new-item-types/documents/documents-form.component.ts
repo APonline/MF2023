@@ -31,7 +31,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-documntsForm',
+  selector: 'app-documentsForm',
   templateUrl: './documents-form.component.html',
   styleUrls: ['./documents-form.component.scss']
  })
