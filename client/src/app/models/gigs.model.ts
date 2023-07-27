@@ -8,4 +8,5 @@ show_time?: string;
 location?: string;
 tickets_url?: string;
 active?: number;
+profile_url?: string;
 }

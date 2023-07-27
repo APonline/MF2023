@@ -1,0 +1,81 @@
+<div id="newEditForm" class="page">
+    <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+    <div class="itemBKGrid"></div>
+
+  <div class="glass">
+    <div class="goback page-top-cta">
+      <button [routerLink]="['/items', groupId, group]" id="goBack" mat-raised-button color="primary">
+        Go Back
+      </button>
+    </div>
+
+    <div class="mild-container">
+      <h1 style="text-transform: capitalize;">{{toolName}}</h1>
+
+      <div class="add-new">
+        <button (click)="openDialog('Add',newRecord)" mat-raised-button color="primary">Add Row</button>
+      </div>
+
+      <div class="content masked-overflow">
+        <!-- app.component.html -->
+        <div class="container text-center">
+          <div id="table">
+            <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
+              <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+
+                <ng-template #actionTemplate>
+                  <ng-container matColumnDef="action">
+                    <tr>
+                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
+                        <p class="headerTitle" style="text-align:center;">
+                          <mat-label>Actions</mat-label>
+                        </p>
+                      </th>
+                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
+                        <ng-container *ngIf="element.id != 0; else noActionTemplate">
+
+
+                          <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
+                            edit
+                          </button>
+                          <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
+                            delete
+                          </button>
+
+                        </ng-container>
+                        <ng-template #noActionTemplate>
+                          Rendering...
+                        </ng-template>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </ng-template>
+
+
+                <ng-container *ngIf="disCol != 'action'; else actionTemplate">
+                  <tr>
+                      <th mat-header-cell *matHeaderCellDef >
+                        <p class="headerTitle" *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
+                          <mat-label [for]="disCol">
+                                                  {{ disCol | removeUnderscore }}
+                          </mat-label>
+                        </p>
+                      </th>
+                      <td mat-cell *matCellDef="let element"  class="action-link">
+                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null">
+                          {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
+                        </p>
+                      </td>
+                  </tr>
+                </ng-container>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

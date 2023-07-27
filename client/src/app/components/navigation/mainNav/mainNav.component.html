@@ -4,7 +4,7 @@
 
   <nav *ngIf="!currentUser; else loggedIn" class="navbar navbar-expand navbar-dark bg-dark"></nav>
   <ng-template #loggedIn>
-    <nav class="navbar navbar-expand navbar-dark bg-dark">
+    <nav class="navbar navbar-expand navbar-dark bg-dark desktop">
       <div class="navbar-nav">
         <a class="nav-item nav-link" routerLink="/">Home</a>
         <a class="nav-item nav-link" routerLink="/projects">Projects</a>
@@ -13,15 +13,46 @@
       </div>
     </nav>
 
-    <nav class="navbar2 navbar-expand navbar-dark bg-dark">
+    <nav class="navbar2 navbar-expand navbar-dark bg-dark desktop">
       <div class="navbar-nav">
         <a class="nav-item nav-link" routerLink="/user/profile">Profile</a>
         <p class="nav-divider">|||</p>
         <a class="nav-item nav-link" routerLink="/settings">Settings</a>
       </div>
     </nav>
+
+
+
+    <div class="navbar device">
+      <div class="container nav-container">
+          <input  (click)="change()" class="checkbox" type="checkbox" name="" id="" [checked]="!toggle" />
+          <div class="hamburger-lines">
+            <span class="line line1"></span>
+            <span class="line line2"></span>
+            <span class="line line3"></span>
+          </div>
+      </div>
+    </div>
+    <div [ngClass]="{'': toggle, 'active': !toggle}" class="menu-items device">
+      <a class="nav-item nav-link" routerLink="/" (click)="toggle = true"><p>Home</p></a>
+      <a class="nav-item nav-link" routerLink="/projects" (click)="toggle = true"><p>Projects</p></a>
+      <a class="nav-item nav-link" (click)="logout()" ><p>Logout</p></a>
+      <p class="nav-divider"><span>|||</span></p>
+      <a class="nav-item nav-link" routerLink="/user/profile"  (click)="toggle = true"><p>Profile</p></a>
+      <a class="nav-item nav-link" routerLink="/settings"  (click)="toggle = true"><p>Settings</p></a>
+    </div>
   </ng-template>
 
 </mat-toolbar>
 
+
+<!-- <div class="list" *ngFor="let project of myProjects" [routerLink]="['/items', project?.artists?.id, project?.artists?.profile_url]">
+  <div class="imgBox">
+    <img src="{{ project?.display?.display }}" alt="{{ project?.display?.name }}" />
+  </div>
+  <div class="content">
+    <h4>{{ project.artists.name }}</h4>
+    <p>{{ project.artists.genre }}</p>
+  </div>
+</div> -->
 

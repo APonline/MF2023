@@ -1,21 +1,3 @@
-#newEdit {
-  background-image: url("/assets/images/w1.png");
-  background-size: cover;
-  background-attachment: fixed;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-
-  .content {
-    position:relative;
-
-    .container {
-      overflow-x: auto;
-    }
-  }
-}
 .flex {
   display:flex;
 }
@@ -24,32 +6,9 @@
   flex-direction:row;
 }
 
-.lowerimages{
-  position:absolute;
-  bottom:0px;
-}
-
-#profilePage{
-  display:flex;
-  flex-direction: column;
-}
-
-.imgBox {
-  margin-left: -5px;
-  margin-bottom: -6px;
-  border-bottom-left-radius: 16px;
-  overflow: hidden;
-}
-
-#large-container {
-  display:flex;
-  flex-direction: row;
-  max-width:1000px;
-}
-
 h5 {
-  font-size: 12px;
-  margin:12px 0;
+    font-size: 12px;
+    margin:12px 0;
 }
 h4 {
   font-size: 15px;
@@ -72,127 +31,396 @@ p {
 li{
   margin:12px 0;
 }
-.content {
-  min-width: 49%;
 
-  h1 {
-    margin-left:8px;
+@media (min-width:320px)  {
+  .device { display: block; }
+  .desktop { display: none; }
+
+  .itemBKGrid {
+    position:fixed;
+  }
+
+  #newEdit {
+      background-image: url("/assets/images/w1.png");
+      background-size: cover;
+      background-attachment: fixed;
+      width: 100%;
+      height: 100%;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      padding: 120px 0px 40px!important;
+      box-sizing: border-box;
+
+      .content {
+        position:relative;
+
+        .container {
+          overflow-x: auto;
+        }
+      }
+    }
+
+    .iconboximg{
+      width: 120px;
+      position: relative;
+      margin-top: 150px!important;
+      border: 5px solid #646464;
+      height: 120px;
+      border-radius: 25px!important;
+      margin-left:0px!important;
+      background-color:#000;
+
+      img {
+        height: 120px;
+        width: 120px;
+      }
+    }
+
+    .topbanner {
+      width:100%;
+      margin-bottom:10px;
+      background-size:cover;
+      height: 300px;
+      background-size: 130%!important;
+      margin-top: -62px;
+      border-bottom: 5px solid #646464;
+    }
+
+    #profilePage{
+      display:flex;
+      flex-direction: column;
+
+    }
+
+    .infopanel {
+      position: relative;
+      margin: 0;
+      width: 100%;
+      margin-right: 10px;
+      max-height: 500px;
+      height: auto;
+      background: none;
+      box-shadow: none;
+      padding: 20px;
+      box-sizing: border-box;
+      backdrop-filter: none;
+    }
+
+    .controlpanel {
+      position: relative;
+      width: 92%;
+      margin: 0 auto;
+      margin-top: 50px;
+    }
+
+    .lowerimages {
+      margin-top:25px;
+      margin-bottom:50px;
+    }
+
+    .imgBox {
+      margin: 0 auto;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+  #cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    // max-width: 1000px;
+    // min-width:50vw;
+    width: calc(100% - 0px);
+  }
+
+  #cards:hover > .card::after {
+    opacity: 1;
+  }
+
+  .card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    // height: 260px;
+    height:140px;
+    flex-direction: column;
+    position: relative;
+    width: calc(100% / 1 - 3px);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card::before,
+  .card::after {
+    border-radius: inherit;
+    content: "";
+    height: 100%;
+    left: 0px;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    transition: opacity 500ms;
+    width: 100%;
+  }
+
+  .card::before {
+    background: radial-gradient(
+      800px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.06),
+      transparent 40%
+    );
+    z-index: 3;
+  }
+
+  .card::after {
+    background: radial-gradient(
+      600px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.4),
+      transparent 40%
+    );
+    z-index: 1;
+  }
+
+  .card > .card-content {
+    background-color: rgb(5, 5, 5);
+    border-radius: inherit;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    inset: 1px;
+    padding: 10px;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .item {
+    position:Absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    background-size: 100%!important;
+    opacity:0.1;
+    transition: all 500ms ease-in-out;
+  }
+
+  .card:hover .item {
+    opacity:.5;
+    background-size: 120%!important;
+    transition: all 500ms ease-in-out;
+  }
+
+  .card-info {
+    position: absolute;
+    bottom: -5px;
+    opacity:0.4;
+    transition: all 500ms ease-in-out;
+    overflow:hidden;
+  }
+
+  .card:hover .card-info {
+    position: absolute;
+    bottom: 5px;
+    opacity:1;
+    transition: all 500ms ease-in-out;
   }
 }
+@media (min-width:801px)  {  }
+@media (min-width:1281px) {
+  .device { display: none; }
+  .desktop { display: block; }
+  #newEdit {
+    background-image: url("/assets/images/w1.png");
+    background-size: cover;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: center;
 
-.sidebyside {
-  display:flex;
-  flex-direction: row;
-  justify-content: flex-start;
+    .content {
+      position:relative;
 
-  p{
-    margin-left:10px;
+      .container {
+        overflow-x: auto;
+      }
+    }
   }
+
+  .topbanner {
+    width:1000px;
+    margin-bottom:10px;
+    background-size:cover;
+  }
+
+  .infopanel {
+    position: relative;
+    margin: 0;
+    width: 40%;
+    margin-right: 10px;
+    max-height: 500px;
+    height: auto;
+  }
+
+  .lowerimages{
+    position:absolute;
+    bottom:0px;
+  }
+
+  #profilePage{
+    display:flex;
+    flex-direction: column;
+  }
+
+  .imgBox {
+    margin-left: -5px;
+    margin-bottom: -6px;
+    border-bottom-left-radius: 16px;
+    overflow: hidden;
+  }
+
+  #large-container {
+    display:flex;
+    flex-direction: row;
+    max-width:1000px;
+  }
+
+  .content {
+    min-width: 49%;
+
+    h1 {
+      margin-left:8px;
+    }
+  }
+
+  .sidebyside {
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    p{
+      margin-left:10px;
+    }
+  }
+
+  .controlpanel {
+    position: relative;
+    margin: 0;
+    width: 60%;
+  }
+
+  #cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    // max-width: 1000px;
+    // min-width:50vw;
+    width: calc(100% - 0px);
+  }
+
+  #cards:hover > .card::after {
+    opacity: 1;
+  }
+
+  .card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    // height: 260px;
+    height:140px;
+    flex-direction: column;
+    position: relative;
+    width: calc(100% / 4 - 3px);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card::before,
+  .card::after {
+    border-radius: inherit;
+    content: "";
+    height: 100%;
+    left: 0px;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    transition: opacity 500ms;
+    width: 100%;
+  }
+
+  .card::before {
+    background: radial-gradient(
+      800px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.06),
+      transparent 40%
+    );
+    z-index: 3;
+  }
+
+  .card::after {
+    background: radial-gradient(
+      600px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.4),
+      transparent 40%
+    );
+    z-index: 1;
+  }
+
+  .card > .card-content {
+    background-color: rgb(5, 5, 5);
+    border-radius: inherit;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    inset: 1px;
+    padding: 10px;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .item {
+    position:Absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    background-size: 180%!important;
+    opacity:0.1;
+    transition: all 500ms ease-in-out;
+  }
+
+  .card:hover .item {
+    opacity:.5;
+    background-size: 210%!important;
+    transition: all 500ms ease-in-out;
+  }
+
+  .card-info {
+    position: absolute;
+    bottom: -5px;
+    opacity:0.4;
+    transition: all 500ms ease-in-out;
+    overflow:hidden;
+  }
+
+  .card:hover .card-info {
+    position: absolute;
+    bottom: 5px;
+    opacity:1;
+    transition: all 500ms ease-in-out;
+  }
+
 }
 
-#cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  // max-width: 1000px;
-  // min-width:50vw;
-  width: calc(100% - 0px);
-}
 
-#cards:hover > .card::after {
-  opacity: 1;
-}
-
-.card {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  // height: 260px;
-  height:140px;
-  flex-direction: column;
-  position: relative;
-  width: calc(100% / 4 - 3px);
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
-.card::before,
-.card::after {
-  border-radius: inherit;
-  content: "";
-  height: 100%;
-  left: 0px;
-  opacity: 0;
-  position: absolute;
-  top: 0px;
-  transition: opacity 500ms;
-  width: 100%;
-}
-
-.card::before {
-  background: radial-gradient(
-    800px circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 255, 255, 0.06),
-    transparent 40%
-  );
-  z-index: 3;
-}
-
-.card::after {
-  background: radial-gradient(
-    600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 255, 255, 0.4),
-    transparent 40%
-  );
-  z-index: 1;
-}
-
-.card > .card-content {
-  background-color: rgb(5, 5, 5);
-  border-radius: inherit;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  inset: 1px;
-  padding: 10px;
-  position: absolute;
-  z-index: 2;
-}
-
-.item {
-  position:Absolute;
-  top:0px;
-  left:0px;
-  width: 100%;
-  height: 100%;
-  background-size: 180%!important;
-  opacity:0.1;
-  transition: all 500ms ease-in-out;
-}
-
-.card:hover .item {
-  opacity:.5;
-  background-size: 210%!important;
-  transition: all 500ms ease-in-out;
-}
-
-.card-info {
-  position: absolute;
-  bottom: -5px;
-  opacity:0.4;
-  transition: all 500ms ease-in-out;
-  overflow:hidden;
-}
-
-.card:hover .card-info {
-  position: absolute;
-  bottom: 5px;
-  opacity:1;
-  transition: all 500ms ease-in-out;
-}
 
 
 // .page {

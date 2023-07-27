@@ -2,12 +2,12 @@
   <div class="itemBKGrid"></div>
 
   <div id="profilePage">
-    <div class="glass" style="width:1000px;margin-bottom:10px;background-size:cover;" [ngStyle]="{background: 'url('+artistInfo[0]?.profile_banner_image+')'}">
-      <div class="sidebyside" style="position:absolute;bottom:3px;left:3px;">
-        <div class="imgBox">
-          <img src="{{ artistInfo[0]?.profile_image }}" width="120px" />
+    <div class="glass topbanner" [ngStyle]="{background: 'url('+artistInfo[0]?.profile_banner_image+')'}">
+      <div class="sidebyside" style="bottom: -12px;left: 0px;width: 100%;    position: relative;">
+        <div class="imgBox iconboximg">
+          <img src="{{ artistInfo[0]?.profile_image }}" width="120" />
         </div>
-        <div class="content">
+        <div class="content desktop">
           <h1>{{ group }}</h1>
           <p>{{ artistInfo[0]?.profile_url }}</p>
           <p>{{ artistInfo[0]?.genre }}</p>
@@ -16,8 +16,14 @@
     </div>
 
     <div id="large-container">
-      <div class="glass" style="position: relative;margin: 0;width: 40%;margin-right: 10px;max-height: 500px;height: auto;">
+      <div class="glass infopanel">
         <div class="content" style="height: 100%;">
+          <div class="content device">
+            <h1>{{ group }}</h1>
+            <p>{{ artistInfo[0]?.profile_url }}</p>
+            <p>{{ artistInfo[0]?.genre }}</p>
+            <br/><br/>
+          </div>
           <ul>
             <li *ngFor="let row of artistInfoKeys">
               <ng-container *ngIf="row != 'profile_url' && row != 'name' && row != 'genre' && row != 'profile_banner_image' && row != 'profile_image' && row != 'artist_image_1' && row != 'artist_image_2' && row != 'artist_image_3'">
@@ -57,12 +63,12 @@
       </ng-template>
 
 
-      <div class="glass" style="position: relative; margin: 0;width: 60%;">
+      <div class="glass controlpanel">
         <div class="content" id="cards" (mousemove)="cardShine($event)">
 
           <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', groupId, group, tool.value ]">
             <div class="card-content">
-              <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 200% no-repeat'}"></div>
+              <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 100% no-repeat'}"></div>
               <div class="card-image">
                 <i class="fa-duotone fa-apartment"></i>
               </div>

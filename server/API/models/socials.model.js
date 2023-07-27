@@ -38,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
       active: {
       type: Sequelize.INTEGER
     },
+    profile_url: {
+      type: Sequelize.STRING
+    },
  });
     
 return ItemTopic;

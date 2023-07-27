@@ -36,7 +36,7 @@ export class FileUploadService {
   }
 
   getFile(id: any, name: any, group: any, type: any): Observable<any> {
-    if(name==''){
+    if(name==''&&name==null&&name==undefined){
       return;
     }
     name = name.replace(/\s+/g, '-');

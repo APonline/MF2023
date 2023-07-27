@@ -13,23 +13,26 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { name: req.body.name } });
+        let item = await Item.findOne({ where: { user_id: req.body.user_id, artistId: req.body.artistId } });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.name + "_" + num;
-        }
+        if (item == null) { 
+            newItem['owner_group'] = req.body.artistId;
 
-        let result = await User.create( newItem );
+            let result = await Item.create( newItem );
 
-        if (result) {
-            return res.status(200).send( result );
+            if (result) {
+                return res.status(200).send( result );
+            }else{
+                return res.status(500).send({ result: null });
+            }
         }else{
-            return res.status(500).send({ result: null });
+            return res.status(500).send({
+                message: `Unable to create ${itemTopic}! - `
+            });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
+            message: `Unable to create ${itemTopic}! - ` + error.message
         });
     }
 }
@@ -107,16 +110,19 @@ exports[`update${itemTopic}`] = async (req, res) => {
 exports[`delete${itemTopic}`] = async (req, res) => {
     try{
         let id =req.params.id;
-        let result = await Item.destroy({ where: { id } });
-
-        if (result) {
-            return res.status(200).send( result );
-        }else{
-            return res.status(500).send({ result: null });
-        }
+        await Item.destroy({ where: { id } })
+        .then(function(rowDeleted){ 
+            if(rowDeleted === 1){
+                return res.status(200).send({ result: [] });
+            }else{
+                return res.status(500).send({ result: null });
+            }
+          }, function(err){
+              console.log(err); 
+          });
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to delete ${itemTopic}!`
+            message: `Unable to delete ${itemTopic}! - `+ error.message
         });
     }
 }

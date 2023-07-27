@@ -58,6 +58,9 @@ export class NewItemFormComponent implements OnInit {
   modelSet: any;
   group = null;
   groupId = null;
+  updateTable = false;
+  res: any;
+  act: string;
 
   adminForm = this.formBuilder.group({});
 
@@ -100,6 +103,7 @@ export class NewItemFormComponent implements OnInit {
       this.toolName = this.tool.replace(/_/g," ");
 
       this.loadData();
+
     }
 
     capitalizeWords(arr) {
@@ -121,177 +125,66 @@ export class NewItemFormComponent implements OnInit {
       let service = toolTitle2 + 'Service';
       let model = this.tool;
 
-      await this[service].getAll().subscribe(res => {
-        res.map((r,i) => {
-          if(r.id == 1){
-            this.modelSet = r;
-            //delete res[i];
-          }
-        });
-
-        if(this.tool == 'artist_members'){
-          res = res.filter(item => {
-            if(item.artistId == this.groupId || item.id == 1){
-              return item;
-            }
-          });
-        }
-        //res = res.splice(0,0);
-
-
-
-        this[this.tool] = res;
-        this.toolSet = this[this.tool];
-
-        if(this.toolSet.length > 1){
-          this.setSettings(this.toolSet);
-        }else {
-          let newForm ={}
-          Object.keys(this.modelSet).map(res => {
-            if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-              newForm[res] = '';
-            }
-          });
-          this.newRecord = newForm;
-        }
-      });
-
     }
 
-    setSettings(formData){
-      let form ={};
-      let newForm ={}
-
-      let f = null;
-      if(formData.length == 0){
-        f = formData;
-      }else{
-        f = formData[0];
+    takeAction(obj) {
+      if(obj){
+        if(obj.action == 'Add'){
+          this.createNew(obj.data);
+        }else if(obj.action == 'Update'){
+          this.update(obj.data);
+        }else if(obj.action == 'Delete'){
+          this.delete(obj.data.id);
+        }
       }
-
-      this.displayedColumns.push('action');
-      Object.keys(f).map(res => {
-        if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-          this.displayedColumns.push(res);
-          form[res] = new FormControl('');
-          newForm[res] = '';
-        }
-      });
-
-      this.toolSet.map((res,i) => {
-        delete res.active;
-        delete res.createdAt;
-        delete res.updatedAt;
-      })
-
-      this.dataSource = new MatTableDataSource(this.toolSet);
-      this.dataSource.data.shift();
-      this.dataSource = this.dataSource.data;
-
-      this.newRecord = newForm;
-      this.adminForm = new FormGroup(form);
-
     }
 
-    dateAdjust(date) {
-      return moment(date).format("YYYY-MM-DD");
-    }
 
-    validateAllFormFields(formGroup: FormGroup) {
-      Object.keys(formGroup.controls).forEach(field => {
-        const control = formGroup.get(field);
-        if (control instanceof FormControl) {
-          control.markAsTouched({ onlySelf: true });
-        } else if (control instanceof FormGroup) {
-          this.validateAllFormFields(control);
-        }
-      });
-    }
-
+    //CREATE
     createNew(data) {
       delete data.id;
       delete data.action;
-      const service = this.tool+'Service';
+      let t = this.tool.split('_');
+      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      const service = tName+'Service';
 
       this[service].create(data).subscribe(async res => {
-        this.dataSource.push(res);
-        this.table.renderRows();
+        this.act = 'create';
+        this.res = res;
+        this.updateTable = true;
         this.alertService.success('Item has been created!', true);
       });
-
     }
 
+    //UPDATE
     update(data) {
       let id = data.id;
       delete data.action;
-      const service = this.tool+'Service';
+      let t = this.tool.split('_');
+      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      const service = tName+'Service';
 
       this[service].update(id,data).subscribe(async res => {
-        this.table.renderRows();
+        this.act = 'put';
+        this.res = data;
+        this.updateTable = true;
         this.alertService.success('Item has been updated!', true);
       });
 
     }
 
+    //DELETE
     delete(id){
-      const service = this.tool+'Service';
+      let t = this.tool.split('_');
+      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      const service = tName+'Service';
 
       this[service].delete(id).subscribe(async res => {
+        this.act = 'delete';
+        this.res = id;
+        this.updateTable = true;
         this.alertService.success('Item has been deleted!', true);
       });
 
-    }
-
-
-    openDialog(action,obj) {
-      obj.action = action;
-      obj.tool = this.toolName;
-      const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-        panelClass: 'dialog-box',
-        width: '85%',
-        height: '80vh',
-        data:obj
-      });
-
-      dialogRef.afterClosed().subscribe(result => {
-
-        if(result){
-          if(result.event == 'Add'){
-            this.addRowData(result.data);
-          }else if(result.event == 'Update'){
-            this.updateRowData(result.data);
-          }else if(result.event == 'Delete'){
-            this.deleteRowData(result.data);
-          }
-        }
-      });
-    }
-
-    addRowData(row_obj){
-      var d = new Date();
-      let newRec = {};
-
-      this.displayedColumns.map(res => {
-        newRec[res] = row_obj[res];
-      })
-
-      this.createNew(row_obj);
-    }
-    updateRowData(row_obj){
-      this.dataSource = this.dataSource.filter((value,key)=>{
-        if(value.id == row_obj.id){
-          this.displayedColumns.map(res => {
-            value[res] = row_obj[res];
-          })
-        }
-        return true;
-      });
-      this.update(row_obj);
-    }
-    deleteRowData(row_obj){
-      this.dataSource = this.dataSource.filter((value,key)=>{
-        return value.id != row_obj.id;
-      });
-      this.delete(row_obj.id);
     }
 }

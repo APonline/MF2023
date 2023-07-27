@@ -53,6 +53,19 @@ import { MessengerContainer } from './containers/messenger/messenger.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
 import { ProjectsContainer } from './containers/projects/projects.component';
+import { ArtistMembersFormComponent } from './components/new-item-form/new-item-types/artist-members/artist-members-form.component';
+import { ArtistLinksFormComponent } from './components/new-item-form/new-item-types/artist-links/artist-links-form.component';
+import { ArtistsFormComponent } from './components/new-item-form/new-item-types/artists/artists-form.component';
+import { AlbumsFormComponent } from './components/new-item-form/new-item-types/albums/albums-form.component';
+import { CommentsFormComponent } from './components/new-item-form/new-item-types/comments/comments-form.component';
+import { ContactsFormComponent } from './components/new-item-form/new-item-types/contacts/contacts-form.component';
+import { DocumentsFormComponent } from './components/new-item-form/new-item-types/documents/documents-form.component';
+import { GigsFormComponent } from './components/new-item-form/new-item-types/gigs/gigs-form.component';
+import { ImagesFormComponent } from './components/new-item-form/new-item-types/images/images-form.component';
+import { LyricsFormComponent } from './components/new-item-form/new-item-types/lyrics/lyrics-form.component';
+import { SocialsFormComponent } from './components/new-item-form/new-item-types/socials/socials-form.component';
+import { SongsFormComponent } from './components/new-item-form/new-item-types/songs/songs-form.component';
+import { VideosFormComponent } from './components/new-item-form/new-item-types/videos/videos-form.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -87,6 +100,19 @@ import { ProjectsContainer } from './containers/projects/projects.component';
     MainNavComponent,
     NewitemComponent,
     NewItemFormComponent,
+    ArtistsFormComponent,
+    ArtistMembersFormComponent,
+    ArtistLinksFormComponent,
+    AlbumsFormComponent,
+    CommentsFormComponent,
+    ContactsFormComponent,
+    DocumentsFormComponent,
+    GigsFormComponent,
+    ImagesFormComponent,
+    LyricsFormComponent,
+    SocialsFormComponent,
+    SongsFormComponent,
+    VideosFormComponent,
     MessengerContainer,
     SettingsComponent,
     ProjectsContainer

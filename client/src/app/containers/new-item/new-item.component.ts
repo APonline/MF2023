@@ -95,9 +95,7 @@ export class NewitemComponent implements OnInit {
           this.artistInfoKeys.push('artist_image_'+i);
         }
 
-
         this.artistInfo.push(obj);
-        console.log(this.artistInfo, this.artistInfoKeys);
       });
     }
 

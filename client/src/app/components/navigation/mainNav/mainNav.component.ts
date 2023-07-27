@@ -11,6 +11,7 @@ import { user } from 'src/app/models/users.model';
  })
 export class MainNavComponent implements OnInit {
     currentUser: any;
+    toggle:boolean = true;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -30,8 +31,13 @@ export class MainNavComponent implements OnInit {
     ngOnInit() {
     }
 
+    change(){
+      this.toggle = !this.toggle;
+    }
+
     logout() {
       this.currentUser = undefined;
+      this.toggle = false;
       this.authenticationService.logout();
     }
 }
