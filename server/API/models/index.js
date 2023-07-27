@@ -192,9 +192,26 @@ db.user.belongsToMany(db.role, {
 
 db['artist-member'].belongsTo(db.artist, {
   through: "artist-members",
-  foreignKey: "artistId",
+  foreignKey: "artist_id",
   as: 'artists'
 });
+db.user.belongsTo(db['artist-member'], {
+  through: "users",
+  targetKey: 'user_id',
+  sourceKey: 'id',
+  foreignKey: "id",
+  otherKey:"id",
+  as: 'members'
+});
+db['artist-member'].belongsTo(db.user, {
+  through: "artist-members",
+  targetKey: 'id',
+  foreignKey: "user_id",
+  sourceKey: 'artist_id',
+  otherKey:"user_id",
+  as: 'members'
+});
+
 
 
 

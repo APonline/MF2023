@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
       user_id: {
       type: Sequelize.INTEGER
     },
-      artistId: {
+      artist_id: {
       type: Sequelize.INTEGER
     },
       active: {

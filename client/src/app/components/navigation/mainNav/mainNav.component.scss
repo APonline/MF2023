@@ -1,9 +1,9 @@
 @media (min-width:320px)  {
   .device {
-    display:flex;
+    display:flex!important;
   }
   .desktop {
-    display: none;
+    display: none!important;
   }
 
   mat-toolbar {
@@ -195,10 +195,10 @@
 @media (min-width:801px)  {  }
 @media (min-width:1281px) {
   .device {
-    display:none;
+    display:none!important;
   }
   .desktop {
-    display: flex;
+    display: flex!important;
   }
 
   mat-toolbar {

@@ -6,6 +6,7 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 const Artists = db.artist;
+const Users = db.user;
 
 let datetime = new Date(); 
 
@@ -13,10 +14,10 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { user_id: req.body.user_id, artistId: req.body.artistId } });
+        let item = await Item.findOne({ where: { user_id: req.body.user_id, artist_id: req.body.artist_id } });
 
         if (item == null) { 
-            newItem['owner_group'] = req.body.artistId;
+            newItem['owner_group'] = req.body.artist_id;
 
             let result = await Item.create( newItem );
 
@@ -54,7 +55,7 @@ exports[`get${itemTopic}`] = async (req, res) => {
 }
 exports[`getAll${itemTopic}s`] = async (req, res) => {
     try{
-        let result = await Item.findAll({ where: { active: 1 } });
+        let result = await Item.findAll({ where: { active: 1 }});
 
         if (result) {
             return res.status(200).send( result );
@@ -63,7 +64,31 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to get ${itemTopic}s!`
+            message: `Unable to get ${itemTopic}s! - `+ error.message
+        });
+    }
+}
+exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { artist_id: id, active: 1 }, 
+            include: [{
+                model: Users,
+                required: true,
+                as: 'members',
+                where: { active: 1 } 
+            }],
+        });
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s! - `+ error.message
         });
     }
 }

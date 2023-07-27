@@ -122,7 +122,6 @@ export class CommentsFormComponent implements OnInit, OnChanges {
           return true;
         });
       }else if(this.act == 'delete'){
-        console.log(this.res)
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
         });
@@ -163,7 +162,7 @@ export class CommentsFormComponent implements OnInit, OnChanges {
 
       if(this.tool == 'artist_members'){
         res = res.filter(item => {
-          if(item.artistId == this.groupId || item.id == 1){
+          if(item.artist_id == this.groupId || item.id == 1){
             return item;
           }
         });

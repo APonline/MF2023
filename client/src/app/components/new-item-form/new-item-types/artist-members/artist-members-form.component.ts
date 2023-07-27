@@ -29,6 +29,7 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 @Component({
   selector: 'app-artistMembersForm',
@@ -92,7 +93,9 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      private uploadService: FileUploadService,
+
   ) {
 
   }
@@ -100,6 +103,13 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   ngOnInit() {
 
     this.loadData();
+
+    // this.artistMembersService.getAllForArtist(2).subscribe( res => {
+
+    //   console.log('test: '+ JSON.stringify(res, null, 4))
+
+    // });
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -122,7 +132,6 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
           return true;
         });
       }else if(this.act == 'delete'){
-        console.log(this.res)
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
         });
@@ -154,22 +163,25 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     let service = toolTitle2 + 'Service';
     let model = this.tool;
 
-    await this[service].getAll().subscribe(res => {
+    await this[service].getAllForArtist(this.groupId).subscribe(res => {
+      let cleanData = [];
       res.map((r,i) => {
         if(r.id == 1){
           this.modelSet = r;
         }
+        let entry = {
+          'username': r.members.username,
+          'name': r.members.first_name + r.members.last_name,
+          'email': r.members.email,
+          'phone': r.members.phone,
+          'date_joined': r['date_joined'],
+          'profile_url': r.members.profile_url,
+        }
+        cleanData.push(entry);
       });
 
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artistId == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
 
-      this[this.tool] = res;
+      this[this.tool] = cleanData;
       this.toolSet = this[this.tool];
 
       if(this.toolSet.length > 1){
