@@ -7,4 +7,5 @@ artist_id?: number;
 active?: number;
 date_joined?: string;
 profile_url?: string;
+role?: string;
 }

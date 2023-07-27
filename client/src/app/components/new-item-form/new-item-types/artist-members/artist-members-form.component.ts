@@ -170,11 +170,13 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
           this.modelSet = r;
         }
         let entry = {
+          'id': r.id,
           'username': r.members.username,
           'name': r.members.first_name + r.members.last_name,
+          'role': r.role,
           'email': r.members.email,
           'phone': r.members.phone,
-          'date_joined': r['date_joined'],
+          'date_joined': r.date_joined,
           'profile_url': r.members.profile_url,
         }
         cleanData.push(entry);
@@ -226,7 +228,6 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     })
 
     this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource.data.shift();
     this.dataSource = this.dataSource.data;
 
     this.newRecord = newForm;

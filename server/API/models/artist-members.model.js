@@ -26,6 +26,9 @@ module.exports = (sequelize, Sequelize) => {
       profile_url: {
       type: Sequelize.STRING
     },
+      role: {
+      type: Sequelize.STRING
+    },
  });
     
 return ItemTopic;
