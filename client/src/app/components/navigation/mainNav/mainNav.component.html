@@ -45,14 +45,4 @@
 
 </mat-toolbar>
 
-
-<!-- <div class="list" *ngFor="let project of myProjects" [routerLink]="['/items', project?.artists?.id, project?.artists?.profile_url]">
-  <div class="imgBox">
-    <img src="{{ project?.display?.display }}" alt="{{ project?.display?.name }}" />
-  </div>
-  <div class="content">
-    <h4>{{ project.artists.name }}</h4>
-    <p>{{ project.artists.genre }}</p>
-  </div>
-</div> -->
-
+<app-messenger *ngIf="this.currentUser" [toggle]="toggle"></app-messenger>

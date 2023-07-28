@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
@@ -11,8 +11,8 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
   templateUrl: 'messenger.component.html',
   styleUrls: ['messenger.component.scss']
 })
-export class MessengerContainer implements OnInit {
-
+export class MessengerContainer implements OnInit, OnChanges {
+  @Input() toggle: any;
   currentUser: user;
   userList$: any = [];
   messenger: boolean;
@@ -64,6 +64,13 @@ export class MessengerContainer implements OnInit {
       this.userList$ = res;
     });
 
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.toggle){
+      this.messenger = false;
+    }else{
+      this.messenger = false;
+    }
   }
 
   goToChat(user) {
