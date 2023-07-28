@@ -5,14 +5,9 @@
     </button>
 
     <h3 style="padding:20px;">Online Users</h3>
-    <!-- <ul>
-      <li *ngFor="let user of userList$">
-        {{user.username}} ({{user.firstname}} {{user.lastname}})
-      </li>
-    </ul> -->
 
     <div class="box">
-      <div class="list" *ngFor="let user of userList$">
+      <div class="list" *ngFor="let user of userList$" (click)="goToChat(user)">
         <div class="imgBox">
           <img *ngIf="user?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
             <ng-template #hasImage>
@@ -24,6 +19,76 @@
           <h4>{{user.username}}</h4>
           <p>{{user.firstname}} {{user.lastname}}</p>
         </div>
+      </div>
+    </div>
+
+    <div class="box chat" [ngClass]="{'': mode != 'chat', 'active': mode == 'chat', 'hidden': !messenger, 'show': messenger}">
+      <div class="currUser">
+        <div class="currUserTop">
+          <div class="backtoList" (click)="closeChat()">
+            <i class="material-icons" >arrow_back_ios_new</i>
+          </div>
+          <div class="imgBox">
+            <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
+              <ng-template #hasImage>
+                <img src="{{ currChatUser?.display?.display}}" alt="{{ currChatUser?.display?.name}}" />
+              </ng-template>
+          </div>
+          <div class="content">
+            <h4>{{currChatUser.username}}</h4>
+            <p>{{currChatUser.firstname}} {{currChatUser.lastname}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-log">
+        <div class="blurb sender tri-right right-in">
+          <p class="body">
+            Hey how's it going?
+          </p>
+          <span class="timestamp">2023-07-27 9:56 PM</span>
+        </div>
+
+        <div class="blurb receiver tri-right left-in">
+          <p class="body">
+            Not bad but I am kind a busy at the moment.
+          </p>
+          <span class="timestamp">2023-07-27 9:58 PM</span>
+        </div>
+        <div class="blurb receiver tri-right left-in">
+          <p class="body">
+            I'm going to upload a track soon.
+            Hey check out this band in the meanwhile
+            <a href="https://musefactory.app/@polarity" target="_new">https://musefactory.app/@polarity</a>
+          </p>
+          <span class="timestamp">2023-07-27 9:58 PM</span>
+        </div>
+
+        <div class="blurb sender tri-right right-in">
+          <p class="body">
+            Hey how's it going?
+          </p>
+          <span class="timestamp">2023-07-27 9:56 PM</span>
+        </div>
+
+        <div class="blurb receiver tri-right left-in">
+          <p class="body">
+            Not bad but I am kind a busy at the moment.
+          </p>
+          <span class="timestamp">2023-07-27 9:58 PM</span>
+        </div>
+        <div class="blurb receiver tri-right left-in">
+          <p class="body">
+            I'm going to upload a track soon.
+            Hey check out this band in the meanwhile
+            <a href="https://musefactory.app/@polarity" target="_new">https://musefactory.app/@polarity</a>
+          </p>
+          <span class="timestamp">2023-07-27 9:58 PM</span>
+        </div>
+      </div>
+      <div class="chat-input">
+        <input tpe="text" value="" placeholder="msg..." />
+        <i class="material-icons">send</i>
       </div>
     </div>
   </div>

@@ -18,6 +18,17 @@ export class MessengerContainer implements OnInit {
   messenger: boolean;
   chaticon: string;
   userImage: any;
+  mode='list';
+  currChatUser=null;
+  defaultUser = {
+    username:null,
+    firstname: null,
+    lastname: null,
+    profile_image:null,
+    display:{
+      name: null
+    }
+  };
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -28,6 +39,8 @@ export class MessengerContainer implements OnInit {
     this.currentUser = this.authenticationService.currentUserValue;
     this.messenger = false;
     this.chaticon = 'arrow_drop_down';
+
+    this.currChatUser = this.defaultUser;
   }
 
   async ngOnInit() {
@@ -53,10 +66,32 @@ export class MessengerContainer implements OnInit {
 
   }
 
+  goToChat(user) {
+    this.currChatUser = user;
+
+    setTimeout(()=> {
+      this.mode = 'chat';
+    }, 250);
+  }
+
+  closeChat() {
+    this.mode = 'list';
+
+    setTimeout(()=> {
+      this.currChatUser = this.defaultUser;
+    }, 1000);
+  }
 
   openMessenger() {
     this.messenger = !this.messenger;
     (this.messenger ? this.chaticon = 'arrow_drop_up' : this.chaticon = 'arrow_drop_down');
+
+    if(!this.messenger) {
+      // this.mode = 'chathidden';
+      // setTimeout(()=>{
+      //   this.closeChat();
+      // },2000);
+    }
   }
 
   ngOnDestroy() {
