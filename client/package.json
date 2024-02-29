@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postbuild": "cp -R -f /var/www/actions-runner/_work/TelluTemp2024/TelluTemp2024/client/dist/client/* /var/www/html && cp -R -f /var/www/actions-runner/_work/MF2023/MF2023/server /var/www && pm2 restart 0"
+    "postbuild": "cp -R -f /var/www/actions-runner/_work/MF2023/main/client/dist/client/* /var/www/html && cp -R -f /var/www/actions-runner/_work/MF2023/main/server /var/www && pm2 restart 0"
   },
   "private": true,
   "dependencies": {
