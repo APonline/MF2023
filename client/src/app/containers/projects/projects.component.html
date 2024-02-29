@@ -3,7 +3,7 @@
     <h2>Projects</h2>
 
     <div class="box">
-      <div class="list" *ngFor="let project of myProjects" [routerLink]="['/items', project?.artists?.id, project?.artists?.profile_url]">
+      <div class="list" *ngFor="let project of myProjects" [routerLink]="['/projects', project?.artists?.id, project?.artists?.profile_url]">
         <div class="imgBox">
           <img src="{{ project?.display?.display }}" alt="{{ project?.display?.name }}" />
         </div>

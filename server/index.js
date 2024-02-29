@@ -5,7 +5,7 @@ const qs = require('qs');
 const axios = require('axios');
 
 global.__basedir = __dirname;
-global.baseUrl = "https://musefactory.app:4000";
+global.baseUrl = "https://musefactory.app";
 
 // db
 const db = require("./API/models");
@@ -17,6 +17,15 @@ db.sequelize.options.logging = false;
 const app = express();
 
 app.use(cors());
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
+app.use(cors({
+  origin: global.baseUrl
+}));
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -42,6 +51,10 @@ const io = require('socket.io')(http, {
         "http://127.0.0.1:3000",
         "http://127.0.0.1:4200",
         "http://127.0.0.1:8080",
+        "http://localhost:3001",
+        "http://localhost:3000",
+        "http://localhost:4200",
+        "http://localhost:8080",
         "https://musefactory.app",
         "https://musefactory.app:4000",
     ],

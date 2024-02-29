@@ -66,6 +66,13 @@ import { LyricsFormComponent } from './components/new-item-form/new-item-types/l
 import { SocialsFormComponent } from './components/new-item-form/new-item-types/socials/socials-form.component';
 import { SongsFormComponent } from './components/new-item-form/new-item-types/songs/songs-form.component';
 import { VideosFormComponent } from './components/new-item-form/new-item-types/videos/videos-form.component';
+import { ArtistFormComponent } from './components/new-item-form/new-item-types/artist/artist-form.component';
+import { GalleriesFormComponent } from './components/new-item-form/new-item-types/galleries/galleries-form.component';
+import { TasksFormComponent } from './components/new-item-form/new-item-types/tasks/tasks-form.component';
+import { ScheduleFormComponent } from './components/new-item-form/new-item-types/schedule/schedule-form.component';
+import { MerchFormComponent } from './components/new-item-form/new-item-types/merch/merch-form.component';
+import { MerchCategoriesFormComponent } from './components/new-item-form/new-item-types/merch-categories/merch-categories-form.component';
+import { CampaignsFormComponent } from './components/new-item-form/new-item-types/campaigns/campaigns-form.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -100,6 +107,7 @@ import { VideosFormComponent } from './components/new-item-form/new-item-types/v
     MainNavComponent,
     NewitemComponent,
     NewItemFormComponent,
+    ArtistFormComponent,
     ArtistsFormComponent,
     ArtistMembersFormComponent,
     ArtistLinksFormComponent,
@@ -115,7 +123,13 @@ import { VideosFormComponent } from './components/new-item-form/new-item-types/v
     VideosFormComponent,
     MessengerContainer,
     SettingsComponent,
-    ProjectsContainer
+    ProjectsContainer,
+    GalleriesFormComponent,
+    TasksFormComponent,
+    ScheduleFormComponent,
+    MerchFormComponent,
+    MerchCategoriesFormComponent,
+    CampaignsFormComponent
   ],
   imports: [
     AppRoutingModule,

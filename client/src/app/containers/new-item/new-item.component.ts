@@ -20,18 +20,24 @@ export class NewitemComponent implements OnInit {
   env= 'test';
 
     tools = [
-      //{name:'Artists', value:'artists'},
+      {name:'Artist', value:'artist'},
       {name:'Artist Members', value:'artist_members'},
       {name:'Albums', value:'albums'},
       {name:'Songs', value:'songs'},
       {name:'Lyrics', value:'lyrics'},
       {name:'Gigs', value:'gigs'},
+      {name:'Tasks', value:'tasks'},
+      {name:'Schedule', value:'schedule'},
       {name:'Documents', value:'documents'},
       {name:'Artist Links', value:'artist_links'},
       {name:'Socials', value:'socials'},
+      {name:'Campaigns', value:'campaigns'},
       {name:'Comments', value:'comments'},
+      {name:'Merch Categories', value:'merch_categories'},
+      {name:'Merch', value:'merch'},
       {name:'Contacts', value:'contacts'},
       // {name:'Friends', value:'friends'},
+      {name:'Galleries', value:'galleries'},
       {name:'Images', value:'images'},
       {name:'Videos', value:'videos'},
     ]

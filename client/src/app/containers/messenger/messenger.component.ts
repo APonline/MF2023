@@ -5,6 +5,8 @@ import { AuthenticationService } from '../../services/authentication.service';
 import { SocketioService } from 'src/app/services/socketio.service';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-messenger',
@@ -44,26 +46,28 @@ export class MessengerContainer implements OnInit, OnChanges {
   }
 
   async ngOnInit() {
-    this.socketService.setupSocketConnection(this.currentUser);
-    this.userList$ = [];
+    if(environment.production){
+      this.socketService.setupSocketConnection(this.currentUser);
+      this.userList$ = [];
 
-    this.socketService.getNewUsers().subscribe(async res=> {
-      for(let i=0; i<res.length; i++){
-        if(res[i].username == this.currentUser.username){
-          res.splice(i, 1);
-        }
+      this.socketService.getNewUsers().subscribe(async res=> {
+        console.log(res)
+        for(let i=0; i<res.length; i++){
+          if(res[i].username == this.currentUser.username){
+            res.splice(i, 1);
+          }
 
-        if(res[i] != undefined){
-          if(res[i].profile_image != 'default'){
-            await this.uploadService.getFile(0, res[i].profile_image, 'users/'+res[i].id, 'png').subscribe(r => {
-              res[i]['display'] = r[0];
-            });
+          if(res[i] != undefined){
+            if(res[i].profile_image != 'default'){
+              await this.uploadService.getFile(0, res[i].profile_image, 'users/'+res[i].id, 'png').subscribe(r => {
+                res[i]['display'] = r[0];
+              });
+            }
           }
         }
-      }
-      this.userList$ = res;
-    });
-
+        this.userList$ = res;
+      });
+    }
   }
   ngOnChanges(changes: SimpleChanges): void {
     if(this.toggle){

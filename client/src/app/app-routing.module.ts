@@ -19,8 +19,8 @@ const routes: Routes = [
   },
   { path: 'projects', component: ProjectsContainer, canActivate: [AuthGuard], data: { animation: 'artists', layer: 4 } },
   //{ path: 'items', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items', layer: 5 } },
-  { path: 'items/:id/:url', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items', layer: 5 } },
-  { path: 'items/new-edit/:id/:url/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'itemsEdit', layer: 6 } },
+  { path: 'projects/:id/:url', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'projects', layer: 5 } },
+  { path: 'projects/new-edit/:id/:url/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'projectsEdit', layer: 6 } },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { animation: 'settings', layer: 7 } },
 
   // otherwise redirect to home

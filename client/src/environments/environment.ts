@@ -3,7 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false,
+  production: true,
+  //apiUrl: 'http://127.0.0.1:4000/api/v1/',
   apiUrl: 'https://musefactory.app:4000/api/v1/',
 	SOCKET_ENDPOINT: 'https://musefactory.app:4000',
   version: 'v1.0.0',

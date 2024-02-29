@@ -41,7 +41,7 @@ li{
   }
 
   #newEdit {
-      background-image: url("/assets/images/w1.png");
+      background-image: url("/assets/images/w1.jpg");
       background-size: cover;
       background-attachment: fixed;
       width: 100%;
@@ -85,6 +85,32 @@ li{
       background-size: 130%!important;
       margin-top: -62px;
       border-bottom: 5px solid #646464;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .topbanner::after {
+      content: " ";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      transform: translateZ(-1px) scale(1.5);
+      background-size: 100%;
+      z-index: -1;
+    }
+    .topbannerImg {
+      border: none;
+      margin: 0;
+      margin-top: -20px;
+      position: absolute;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      background-size: cover!important;
     }
 
     #profilePage{
@@ -234,7 +260,7 @@ li{
   .device { display: none; }
   .desktop { display: block; }
   #newEdit {
-    background-image: url("/assets/images/w1.png");
+    background-image: url("/assets/images/w1.jpg");
     background-size: cover;
     background-attachment: fixed;
     width: 100%;
@@ -256,6 +282,38 @@ li{
     width:1000px;
     margin-bottom:10px;
     background-size:cover;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+  .topbanner::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateZ(-1px) scale(1.5);
+    background-size: 100%;
+    z-index: -1;
+  }
+  .topbannerImg {
+    border: none;
+    margin: 0;
+    margin-top: -20px;
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    background-size: cover!important;
+  }
+
+  .topcontent {
+    position: absolute!important;
+    bottom: 20px;
+    left: 130px;
+    width: auto;
   }
 
   .infopanel {
@@ -428,7 +486,7 @@ li{
 // }
 
 // #newEdit {
-//   background-image: url("/assets/images/w1.png");
+//   background-image: url("/assets/images/w1.jpg");
 //   background-size: cover;
 //   background-attachment: fixed;
 //   width: 100%;

@@ -10,7 +10,7 @@
           <p class="profile-pic">
             <img *ngIf="currentUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
             <ng-template #hasImage>
-              <img src="{{ userImage[0].display}}" alt="{{ userImage[0].name}}" />
+              <img src="{{ userImage[0]?.display}}" alt="{{ userImage[0]?.name}}" />
             </ng-template>
           </p>
         </div>

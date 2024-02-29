@@ -1,13 +1,19 @@
 <div id="newEdit" class="page">
   <div class="itemBKGrid"></div>
 
-  <div id="profilePage">
-    <div class="glass topbanner" [ngStyle]="{background: 'url('+artistInfo[0]?.profile_banner_image+')'}">
+
+
+
+  <div id="profilePage" style="perspective: 2px;">
+    <div class="glass topbanner" >
+      <div class="topbannerImg" *ngIf="artistInfo[0]?.profile_image" [ngStyle]="{background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url('+artistInfo[0]?.profile_banner_image+') center 50% / 36% no-repeat'}"></div>
+      <div class="topbannerImg" *ngIf="!artistInfo[0]?.profile_image" [ngStyle]="{background: 'url(./assets/images/logo.png)'}"></div>
       <div class="sidebyside" style="bottom: -12px;left: 0px;width: 100%;    position: relative;">
         <div class="imgBox iconboximg">
-          <img src="{{ artistInfo[0]?.profile_image }}" width="120" />
+          <img *ngIf="artistInfo[0]?.profile_image" src="{{ artistInfo[0]?.profile_image }}" width="120" />
+          <img *ngIf="!artistInfo[0]?.profile_image" src="./assets/images/intrologo.png" width="120" />
         </div>
-        <div class="content desktop">
+        <div class="content topcontent desktop">
           <h1>{{ group }}</h1>
           <p>{{ artistInfo[0]?.profile_url }}</p>
           <p>{{ artistInfo[0]?.genre }}</p>
@@ -35,15 +41,15 @@
             </li>
           </ul>
 
-          <ul class="flex row lowerimages">
+          <!-- <ul class="flex row lowerimages">
             <li *ngFor="let row of artistInfoKeys">
               <ng-container *ngIf="row == 'artist_image_1' || row == 'artist_image_2' || row == 'artist_image_3'">
                 <div class="imgBox">
-                  <img src="{{ artistInfo[0][row] }}" style="width:100%;" />
+                  <img src="{{ artistInfo[0]?.[row] }}" style="width:100%;" />
                 </div>
               </ng-container>
             </li>
-          </ul>
+          </ul> -->
         </div>
       </div>
 
@@ -58,7 +64,7 @@
       <ng-template #uploaderTemplate let-row>
         <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
         <div class="imgBox">
-          <img src="{{ artistInfo[0][row] }}" width="60px" />
+          <img src="{{ artistInfo[0]?.[row] }}" width="60px" />
         </div>
       </ng-template>
 
@@ -66,7 +72,7 @@
       <div class="glass controlpanel">
         <div class="content" id="cards" (mousemove)="cardShine($event)">
 
-          <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', groupId, group, tool.value ]">
+          <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/projects/new-edit/', groupId, group, tool.value ]">
             <div class="card-content">
               <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 100% no-repeat'}"></div>
               <div class="card-image">
