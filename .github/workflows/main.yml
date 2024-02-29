@@ -13,7 +13,10 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v1
+        uses: actions/checkout@v4
+        with:
+          respository: APOnline/MF2023
+          path: main
 
       - name: Cache node modules
         uses: actions/cache@v2
