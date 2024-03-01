@@ -8,9 +8,6 @@ const Item = db[itemTitle];
 
 const bcrypt = require("bcryptjs");
 
-//import sendMailOut from '../../mailserver';
-//import requestPassword from '../../mailTemplates/requestPassword';
-//import deleteAccount from '../../mailTemplates/deleteAccount';
 const sendMailOut = require('../../mailserver');
 const uniqueCredentials = require('../../mailTemplates/signup');
 const deleteAccount = require('../../mailTemplates/deleteAccount');
