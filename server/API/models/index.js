@@ -5,7 +5,7 @@ const { QueryTypes } = require('sequelize');
 
 const sequelize = new Sequelize(
   config.DB,
-  config.USER,
+  'andphi22',
   config.PASSWORD,
   {
     host: config.HOST,
@@ -22,7 +22,7 @@ const sequelize = new Sequelize(
   }
 ); 
 
-console.log( config.HOST, config.DB, config.USER, config.PASSWORD,)
+console.log( config.HOST, config.DB, 'andphi22', config.PASSWORD,)
 
 // Get Tables
 let makeMyAPIForMe = () => {
