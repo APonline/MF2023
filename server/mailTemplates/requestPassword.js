@@ -76,4 +76,4 @@ const requestPassword = (verifyId, email, username) => {
     return obj;
 };
 
-export default requestPassword;
+module.exports = requestPassword;

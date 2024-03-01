@@ -91,4 +91,4 @@ const uniqueCredentials = (verifyId, email, username) => {
     return obj;
 };
 
-export default uniqueCredentials;
+module.exports = uniqueCredentials; 

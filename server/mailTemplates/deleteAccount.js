@@ -79,4 +79,4 @@ const deleteAccount = (verifyId, email, username) => {
     return obj;
 };
 
-export default deleteAccount;
+module.exports =  deleteAccount;
