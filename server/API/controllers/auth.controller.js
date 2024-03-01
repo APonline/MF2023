@@ -8,8 +8,10 @@ const Op = db.Sequelize.Op;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-import sendMailOut from '../../mailserver';
-import uniqueCredentials from '../../mailTemplates/signup';
+//import sendMailOut from '../../mailserver';
+//import uniqueCredentials from '../../mailTemplates/signup';
+const sendMailOut = require('../../mailserver');
+const uniqueCredentials = require('../../mailTemplates/signup');
 
 let datetime = new Date();
 let lastLogin =
