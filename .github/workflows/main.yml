@@ -3,7 +3,7 @@ on:
     branches:
       - main
 
-name: Build Muse Factory
+name: Build Muse Factory 2024
 jobs:
   build:
     runs-on: self-hosted
