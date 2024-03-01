@@ -35,4 +35,4 @@ const sendMailOut = (sendTo, sendSubject, sendText, sendHtml) => {
 }
 // MAIL ENDS
 
-export default sendMailOut;
+module.exports = sendMailOut;
