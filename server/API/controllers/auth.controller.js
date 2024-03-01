@@ -78,7 +78,7 @@ exports.signin = async (req, res) => {
             where: {
                 email: req.body.email,
             },
-            logging: true
+            logging: console.log
         });
 
         if (!user) {
