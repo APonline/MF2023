@@ -22,6 +22,7 @@ const sequelize = new Sequelize(
   }
 ); 
 
+console.log( config.HOST, config.DB, config.USER, config.PASSWORD,)
 
 // Get Tables
 let makeMyAPIForMe = () => {
