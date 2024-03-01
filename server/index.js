@@ -154,5 +154,5 @@ let updateOnlineUsers = (user) => {
 // SOCKETING
   
 http.listen(4000, () => {
-    console.log('listening on *:4000');
+    console.log('listening on xxx:4000');
 });
