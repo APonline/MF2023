@@ -1,5 +1,8 @@
-import { createWriteStream, readFileSync } from 'fs';
-import dotenv from 'dotenv';
+//import { createWriteStream, readFileSync } from 'fs';
+const createWriteStream = require('fs');
+const readFileSync = require('fs');
+//import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
 const nodemailer = require('nodemailer');
 const SMTPServer = require("smtp-server").SMTPServer;
