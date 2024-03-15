@@ -77,13 +77,13 @@ exports.signin = async (req, res) => {
         const user = await User.findOne({
             where: {
                 email: req.body.email,
-            },
-            logging: console.log
+            }
         });
 
         if (!user) {
             return res.status(404).send({ message: "User Not found." });
         }
+        console.log(user)
 
         const passwordIsValid = bcrypt.compareSync(
             req.body.password,

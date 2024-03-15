@@ -6,6 +6,7 @@ const axios = require('axios');
 
 global.__basedir = __dirname;
 global.baseUrl = "https://musefactory.app";
+global.baseUrl = "http://localhost:4200";
  
 // db
 const db = require("./API/models");
@@ -50,13 +51,15 @@ const io = require('socket.io')(http, {
         "http://127.0.0.1:3001",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:4200",
+        "http://127.0.0.1:4001",
         "http://127.0.0.1:8080",
         "http://localhost:3001",
         "http://localhost:3000",
         "http://localhost:4200",
+        "http://localhost:4001",
         "http://localhost:8080",
         "https://musefactory.app",
-        "https://musefactory.app:4000",
+        "https://musefactory.app:4001",
     ],
   }
 });
@@ -124,7 +127,7 @@ io.on('connection', (socket) => {
 let updateOnlineStatus = (user, status) => {
   if(user){
     user['online'] = status;
-    axios.put(`https://musefactory.app:4000/api/v1/users/online/${user.id}`,
+    axios.put(`https://musefactory.app:4001/api/v1/users/online/${user.id}`,
       qs.stringify(user))
       .then( (response) => {
         if(status == 1) {
@@ -141,7 +144,7 @@ let updateOnlineStatus = (user, status) => {
 
 let updateOnlineUsers = (user) => {
   if(user){
-    axios.get(`https://musefactory.app:4000/api/v1/users`)
+    axios.get(`https://musefactory.app:4001/api/v1/users`)
     .then( (response) => {
       return response;
     })
@@ -153,6 +156,6 @@ let updateOnlineUsers = (user) => {
 };
 // SOCKETING
   
-http.listen(4000, () => {
-    console.log('listening on xxx:4000');
+http.listen(4001, () => {
+    console.log('listening on xxx:4001');
 });

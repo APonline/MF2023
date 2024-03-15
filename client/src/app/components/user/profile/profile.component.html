@@ -1,4 +1,4 @@
-<div class="glass">
+<div class="glass main-content">
   <mat-card>
     <h2>Profile</h2>
     <p>{{ currentUser.profile_url }}</p>
@@ -43,6 +43,11 @@
             </div>
           </mat-form-field>
 
+        </div>
+
+
+        <h3>PERSONAL INFO</h3>
+        <div class="info-block">
           <div class="label-value" *ngIf="editing == 0">
             <p class="label">First Name:</p>
             <p>{{ currentUser.firstname }}</p>
@@ -68,11 +73,7 @@
               <div *ngIf="f.lastname.errors.required">Last Name is required</div>
             </div>
           </mat-form-field>
-        </div>
 
-
-        <h3>PERSONAL INFO</h3>
-        <div class="info-block">
           <div class="label-value" *ngIf="editing == 0">
             <p class="label">Phone:</p>
             <p>{{ currentUser.phone }}</p>

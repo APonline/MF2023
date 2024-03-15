@@ -30,6 +30,8 @@ export class ProfileComponent implements OnInit {
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
 
+    console.log(this.currentUser);
+
   }
 
    async ngOnInit() {
