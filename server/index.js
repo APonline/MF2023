@@ -6,7 +6,7 @@ const axios = require('axios');
 
 global.__basedir = __dirname;
 global.baseUrl = "https://musefactory.app";
-global.baseUrl = "http://localhost:4200";
+//global.baseUrl = "http://localhost:4200";
  
 // db
 const db = require("./API/models");
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: global.baseUrl
+  origin: ['https://musefactory.app','http://localhost:4200']
 }));
 
 // parse requests of content-type - application/json
