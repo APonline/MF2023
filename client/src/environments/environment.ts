@@ -5,7 +5,7 @@
 export const environment = {
   production: true,
   //apiUrl: 'http://127.0.0.1:4001/api/v1/',
-  apiUrl: 'https://musefactory.app:4001/api/v1/',
+  apiUrl: 'https://musefactory.app/api/v1/',
 	//SOCKET_ENDPOINT: 'http://127.0.0.1:4001',
   SOCKET_ENDPOINT: 'https://musefactory.app:4001',
   version: 'v1.0.0',
