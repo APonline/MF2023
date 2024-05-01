@@ -10,7 +10,7 @@
           <p class="profile-pic">
             <img *ngIf="currentUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
             <ng-template #hasImage>
-              <img src="{{ userImage[0]?.display}}" alt="{{ userImage[0]?.name}}" />
+              <img src="{{ userImage?.display}}" alt="{{ userImage?.name}}" />
             </ng-template>
           </p>
         </div>
@@ -172,31 +172,27 @@
             <p>{{ currentUser.last_login }}</p>
           </div>
         </div>
-
-
-
       </div>
-    </form>
 
-
-    <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="editProfile()">
-      edit
-    </div>
-    <div id="cancelBtn" class="material-icons" *ngIf="editing === 1" (click)="cancelEdit()">
-      cancel
-    </div>
+      <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="editProfile()">
+        edit
+      </div>
+      <div id="cancelBtn" class="material-icons" *ngIf="editing === 1" (click)="cancelEdit()">
+        cancel
+      </div>
 
       <div class="form-group button-group-center">
-        <button mat-raised-button color="primary" *ngIf="editing === 0" (click)="resetPassword()">
+        <button class="dalmation" mat-raised-button color="accent" *ngIf="editing === 0" (click)="resetPassword()">
           Reset Password
         </button>
-        <button mat-raised-button color="primary" *ngIf="editing === 0" (click)="deleteUser()">
+        <button class="dalmation" mat-raised-button color="primary" *ngIf="editing === 0" (click)="deleteUser()">
           Delete Account
         </button>
-        <button mat-raised-button color="primary" *ngIf="editing === 1" (click)="saveEdit()">
+        <button class="dalmation" mat-raised-button color="accent" *ngIf="editing === 1" (click)="saveEdit()">
           Save
         </button>
       </div>
+    </form>
 
   </mat-card>
 </div>

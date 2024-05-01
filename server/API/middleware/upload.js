@@ -37,7 +37,7 @@ const getfileFormat = (type) => {
   }
   return img;
 }
-
+ 
 let uploadFile = multer({
   storage: storage,
   limits: { fileSize: maxSize },

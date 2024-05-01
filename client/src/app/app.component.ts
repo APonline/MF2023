@@ -1,6 +1,8 @@
 import { animate, group, query, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 
 import { AuthenticationService } from './services/authentication.service';
 import { user } from 'src/app/models/users.model';
@@ -10,15 +12,15 @@ import { user } from 'src/app/models/users.model';
   animations: [
     trigger('routerAnimation', [
       transition('* <=> *', [
-        query(':enter, :leave', style({ position: 'absolute', width: '100vw', left: 0, minHeight: 'calc(100vh - 136px)'}), { optional: true }),
+        query(':enter, :leave', style({ position: 'absolute', left: '0px', width: 'calc(100vw - 0px)', minHeight: 'calc(100vh - 136px)', overflow: 'hidden'}), { optional: true }),
         group([
           query(':enter', [
             style({ opacity: 0 }),
-            animate('1.2s ease-in-out', style({ opacity: 1 }))
+            animate('0.8s ease-in-out', style({ opacity: 1 }))
           ], { optional: true }),
           query(':leave', [
             style({ opacity: 1 }),
-            animate('0.3s ease-in-out', style({  opacity: 0 }))
+            animate('0.5s ease-in-out', style({  opacity: 0 }))
           ], { optional: true }),
         ])
       ])
@@ -29,12 +31,43 @@ import { user } from 'src/app/models/users.model';
 })
 export class AppComponent {
     currentUser: user;
+    shouldSlide = false;
+    //loading = false;
+    subscriptions: Subscription[] = [];
 
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
     ) {
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+      // show loading spinner when redirecting
+      // let routerSub: Subscription;
+
+      // routerSub = this.router.events.subscribe(e  => {
+      //   switch (true) {
+      //     case e instanceof NavigationStart: {
+      //       this.loading = true;
+      //       break;
+      //     }
+      //     case e instanceof NavigationEnd:
+      //     case e instanceof NavigationCancel:
+      //     case e instanceof NavigationError: {
+      //       setTimeout(() => {
+      //         const miniload = document.getElementById('miniLoading');
+      //         miniload.classList.add('fade');
+      //         setTimeout(() => {
+      //           this.loading = false;
+      //         }, 1200);
+      //       }, 10);
+      //       break;
+      //     }
+      //     default: {
+      //       break;
+      //     }
+      //   }
+
+      // });
+      // this.subscriptions.push(routerSub);
+      this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     }
 
     logout() {
@@ -44,5 +77,9 @@ export class AppComponent {
 
     getRouteAnimation(outlet) {
       return outlet.activatedRouteData.animation;
+    }
+
+    ngOnDestroy(): void {
+      this.subscriptions.forEach((subscription) => subscription.unsubscribe());
     }
 }

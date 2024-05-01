@@ -22,15 +22,15 @@
           </div>
         </mat-form-field>
       </div>
-    </form>
       <div class="form-group button-group-center">
-        <button (click)="userLogin()" [disabled]="loading" mat-raised-button color="primary">
+        <button class="dalmation" (click)="userLogin()" [disabled]="loading" mat-raised-button color="accent">
           Login
         </button>
-        <button (click)="registerUser()" mat-raised-button color="primary">
+        <button class="dalmation" (click)="registerUser()" mat-raised-button color="primary">
           Register
         </button>
       </div>
       <a id="forgotPassword" routerLink="/user/passwordReset" class="btn btn-link">Forgot your password?</a>
+    </form>
   </mat-card>
 </div>

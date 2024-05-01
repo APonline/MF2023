@@ -54,4 +54,12 @@ export class UserService {
     return this.http.post(`${baseUrl}/passwordReset`, data);
   }
 
+  getChatHistoryWith(user, chatee): Observable<any> {
+    return this.http.get(`${baseUrl}/chatHistoryWith/${user}/${chatee}`);
+  }
+
+  updateChatHistoryWith(user, chatee, data): Observable<any> {
+    return this.http.put(`${baseUrl}/chatHistoryWith/${user}/${chatee}`, data);
+  }
+
 }

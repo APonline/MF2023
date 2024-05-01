@@ -6,6 +6,8 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 
+const fs = require('fs');
+
 const bcrypt = require("bcryptjs");
 
 const sendMailOut = require('../../mailserver');
@@ -93,7 +95,6 @@ myClass[`delete${itemTopic}`] = async (req, res) => {
         });
     }
 }
-
 myClass[`verify${itemTopic}`] = async (req, res) => {
     const userLoginCount = await Item.update(
         {
@@ -159,6 +160,62 @@ myClass.requestPassword = async (req, res) => {
 
     return true;
 
+}
+myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let chatee =req.params.chatee;
+
+        const directoryPath = __basedir + "/resources/chats/";
+        const forwards = id+"-"+chatee+".json";
+        const backwards = chatee+"-"+id+".json";
+
+        fs.readFile(directoryPath+forwards, "utf8", (err, data) => {
+            if (!err && data) {
+                return res.status(200).send( {title: forwards, data: JSON.parse(data)} );
+            }else{
+                fs.readFile(directoryPath+backwards, (err, data) => {
+                    if (!err && data) {
+                        return res.status(200).send( {title: backwards, data: JSON.parse(data)} );
+                    }else{
+                        let createStream = fs.createWriteStream(`${directoryPath}${forwards}`);
+                        createStream.end();
+                        return res.status(200).send({title: forwards, data: {}});
+                    }
+                })
+            }
+        })
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}!`
+        });
+    }
+}
+myClass[`update${itemTopic}ChatHistoryWith`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let chatee =req.params.chatee;
+        let file = req.body.file.slice(5);
+        let msg = req.body.msg;
+        
+        const directoryPath = __basedir + "/resources/chats/";
+
+        fs.readFile(directoryPath+file, "utf8", (err, data) => {
+            if (!err && data) {
+                let json = JSON.parse(data);
+                json.msgs.push(msg);
+            
+                fs.writeFile(directoryPath+file, JSON.stringify(json), (err, data) => {
+                    return res.status(200).send( {title: file, data: data} );
+                }) 
+            }
+            
+        })
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}!`
+        });
+    }
 }
 
 module.exports = myClass;

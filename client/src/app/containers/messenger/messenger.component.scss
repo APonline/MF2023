@@ -176,17 +176,18 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        width:auto;
+        width:fit-content;
         padding:10px;
         margin: 15px 0;
         position: relative;
 
-        .body {
+        // .body {
+        //   word-break: break-all;
 
-            a {
-              word-break: break-all;
-            }
-        }
+        //     a {
+        //       word-break: break-all;
+        //     }
+        // }
         .timestamp {
           font-size:9px;
           margin-top:15px;
@@ -196,7 +197,7 @@
 
       .sender {
         margin-left:5%;
-        margin-right:10%;
+        margin-right:5%;
         background: linear-gradient(0deg,#004e72 0%,#006bb8 50%,rgb(0, 107, 184) 100%);
       }
       .tri-right.right-in:before{
@@ -211,7 +212,7 @@
         border-color: rgb(0, 107, 184) rgb(0, 107, 184) transparent transparent;
       }
       .receiver {
-        margin-left:10%;
+        margin-left:5%;
         margin-right:5%;
         background: linear-gradient(0deg, rgb(0, 100, 3) 0%, rgba(0, 162, 19) 50%, rgba(0, 162, 19) 100%);
       }
@@ -225,6 +226,9 @@
         top: 5px;
         transform: rotateY(0deg);
         border-color: rgb(0, 162, 19) rgb(0, 162, 19) transparent transparent;
+      }
+      .typing.tri-right.left-in:before, .typing.tri-right.right-in:before{
+        border-color: rgba(0, 0, 0, 0) rgba(0, 0, 0, 0.5) transparent transparent!important;
       }
     }
 
@@ -275,3 +279,44 @@
 
 
 }
+
+.typing {
+  width: fit-content!important;
+  padding: 0!important;
+  background: rgba(0, 0, 0, 0.5)!important;
+}
+
+.msgSubmit {
+  cursor: pointer;
+  padding: 8px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+
+  i {
+    justify-content: center;
+  }
+}
+
+.chatMsgContainer {
+  display: flex;
+  flex-direction: row;
+  width:100%;
+}
+
+.chatMsgContainer:has( > .sender) {
+  justify-content: flex-end!important;
+}
+
+.chatMsgContainer:has( > .receiver) {
+  justify-content: flex-start!important;
+}
+
+@keyframes blink { 50% { fill: transparent }}
+.dot {
+  animation: 1s blink infinite;
+  fill: grey;
+}
+.dot:nth-child(2) { animation-delay: 250ms }
+.dot:nth-child(3) { animation-delay: 500ms }
+

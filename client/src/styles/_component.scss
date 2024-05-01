@@ -216,3 +216,52 @@
   backdrop-filter: blur(0.2rem);
   -moz-backdrop-filter: blur(0.2rem);
 }
+
+
+button.mat-primary {
+  border-radius:12px;
+  border: 2px solid #fff;
+  color:#000!important;
+  background-color:#fff!important;
+  transition: all .3s ease-in-out;
+}
+button.mat-primary:hover {
+  background-color:#bfbfbf!important;
+  transition: all .4s ease-in-out;
+}
+.mat-dialog-container button.mat-primary, button.dalmation.mat-primary{
+  border-radius:12px;
+  border: 2px solid #000;
+  color:#fff!important;
+  background-color:#000!important;
+  transition: all .3s ease-in-out;
+}
+.mat-dialog-container button.mat-primary:hover, button.dalmation.mat-primary:hover {
+  background-color:#373737!important;
+  transition: all .4s ease-in-out;
+}
+
+button.mat-accent {
+  border-radius:12px;
+  border: 2px solid #fff;
+  color:#fff!important;
+  background-color:transparent!important;
+  transition: all .3s ease-in-out;
+}
+button.mat-accent:hover {
+  background-color:rgba(191, 191, 191, .3)!important;
+  transition: all .4s ease-in-out;
+}
+.mat-dialog-container button.mat-accent, button.dalmation.mat-accent {
+  border-radius:12px;
+  border: 2px solid #000;
+  background-color:#fff!important;
+  color: #000 !important;
+  transition: all .3s ease-in-out;
+}
+.mat-dialog-container button.mat-accent:hover, button.dalmation.mat-accent:hover {
+  background-color:#e0e0e0!important;
+  transition: all .4s ease-in-out;
+}
+
+

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { environment } from 'src/environments/environment';
 
-
 @Component({
   selector: 'app-messenger',
   templateUrl: 'messenger.component.html',
   styleUrls: ['messenger.component.scss']
 })
-export class MessengerContainer implements OnInit, OnChanges {
+export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @Input() toggle: any;
   currentUser: user;
   userList$: any = [];
@@ -22,6 +22,10 @@ export class MessengerContainer implements OnInit, OnChanges {
   userImage: any;
   mode='list';
   currChatUser=null;
+  currChatLog=null;
+  currIsTyping;
+  myMsg='';
+  currNewChatLog=[];
   defaultUser = {
     username:null,
     firstname: null,
@@ -51,7 +55,6 @@ export class MessengerContainer implements OnInit, OnChanges {
       this.userList$ = [];
 
       this.socketService.getNewUsers().subscribe(async res=> {
-        console.log(res)
         for(let i=0; i<res.length; i++){
           if(res[i].username == this.currentUser.username){
             res.splice(i, 1);
@@ -77,16 +80,52 @@ export class MessengerContainer implements OnInit, OnChanges {
     }
   }
 
+  scrollToBottom(): void {
+    try {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }
+}
+
   goToChat(user) {
     this.currChatUser = user;
+
+    this.user.getChatHistoryWith(this.currentUser.id, this.currChatUser.id).subscribe(res => {
+      this.currChatLog = res.data.msgs;
+      this.scrollToBottom();
+
+      this.socketService.setupChatConnection(this.currentUser.id, this.currChatUser.id, res.title);
+      this.socketService.chatTyping$.subscribe(r => {
+        this.currIsTyping = r;
+      });
+
+      this.socketService.chat$.subscribe(r => {
+        if(r != undefined && r != ''){
+          this.currNewChatLog.push(r);
+          this.scrollToBottom();
+        }
+      });
+    });
 
     setTimeout(()=> {
       this.mode = 'chat';
     }, 250);
   }
 
+  isTyping(msg) {
+    this.socketService.isTyping(msg);
+  }
+
+  hasTyped() {
+    let msg = this.myMsg;
+    this.socketService.hasTyped(msg);
+    this.myMsg = '';
+    this.scrollToBottom();
+  }
+
   closeChat() {
     this.mode = 'list';
+
+    this.socketService.chat.disconnect();
 
     setTimeout(()=> {
       this.currChatUser = this.defaultUser;
@@ -103,6 +142,10 @@ export class MessengerContainer implements OnInit, OnChanges {
       //   this.closeChat();
       // },2000);
     }
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
   }
 
   ngOnDestroy() {

@@ -11,17 +11,17 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { ProjectsContainer } from './containers/projects/projects.component';
 
 const routes: Routes = [
-  { path: '', component: HomeContainer, canActivate: [AuthGuard], data: { animation: 'home', layer: 1 } },
-  { path: 'login', component: LandingContainer, data: { animation: 'login', layer: 2 } },
-  { path: 'signup', component: SignupContainer, data: { animation: 'signup', layer: 3 } },
+  { path: '', component: HomeContainer, canActivate: [AuthGuard], data: { animation: '' } },
+  { path: 'login', component: LandingContainer, data: { animation: 'login' } },
+  { path: 'signup', component: SignupContainer, data: { animation: 'signup' } },
   { path: 'user',
-    loadChildren: () => import('./containers/user/user.module').then(mod => mod.UserModule)
+    loadChildren: () => import('./containers/user/user.module').then(mod => mod.UserModule), data: { animation: 'user' }
   },
-  { path: 'projects', component: ProjectsContainer, canActivate: [AuthGuard], data: { animation: 'artists', layer: 4 } },
-  //{ path: 'items', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items', layer: 5 } },
-  { path: 'projects/:id/:url', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'projects', layer: 5 } },
-  { path: 'projects/new-edit/:id/:url/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'projectsEdit', layer: 6 } },
-  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { animation: 'settings', layer: 7 } },
+  { path: 'projects', component: ProjectsContainer, canActivate: [AuthGuard], data: { animation: 'projects' } },
+  //{ path: 'items', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'items' } },
+  { path: 'projects/:id/:url', component: NewitemComponent, canActivate: [AuthGuard], data: { animation: 'projects/:id/:url' } },
+  { path: 'projects/new-edit/:id/:url/:id', component: NewItemFormComponent, canActivate: [AuthGuard], data: { animation: 'projects/new-edit/:id/:url/:id' } },
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard], data: { animation: 'settings' } },
 
   // otherwise redirect to home
   { path: '**', redirectTo: '' }

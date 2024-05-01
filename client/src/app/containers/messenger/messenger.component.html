@@ -41,54 +41,45 @@
         </div>
       </div>
 
-      <div class="chat-log">
-        <div class="blurb sender tri-right right-in">
-          <p class="body">
-            Hey how's it going?
-          </p>
-          <span class="timestamp">2023-07-27 9:56 PM</span>
-        </div>
+      <div class="chat-log" #scrollMe>
 
-        <div class="blurb receiver tri-right left-in">
-          <p class="body">
-            Not bad but I am kind a busy at the moment.
-          </p>
-          <span class="timestamp">2023-07-27 9:58 PM</span>
-        </div>
-        <div class="blurb receiver tri-right left-in">
-          <p class="body">
-            I'm going to upload a track soon.
-            Hey check out this band in the meanwhile
-            <a href="https://musefactory.app/@polarity" target="_new">https://musefactory.app/@polarity</a>
-          </p>
-          <span class="timestamp">2023-07-27 9:58 PM</span>
-        </div>
+        <ng-container *ngFor="let chat of currChatLog">
+          <div class="chatMsgContainer">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+              </p>
+              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
+            </div>
+          </div>
 
-        <div class="blurb sender tri-right right-in">
-          <p class="body">
-            Hey how's it going?
-          </p>
-          <span class="timestamp">2023-07-27 9:56 PM</span>
-        </div>
+        </ng-container>
 
-        <div class="blurb receiver tri-right left-in">
-          <p class="body">
-            Not bad but I am kind a busy at the moment.
-          </p>
-          <span class="timestamp">2023-07-27 9:58 PM</span>
-        </div>
-        <div class="blurb receiver tri-right left-in">
-          <p class="body">
-            I'm going to upload a track soon.
-            Hey check out this band in the meanwhile
-            <a href="https://musefactory.app/@polarity" target="_new">https://musefactory.app/@polarity</a>
-          </p>
-          <span class="timestamp">2023-07-27 9:58 PM</span>
+        <ng-container *ngFor="let chat of currNewChatLog">
+          <div class="chatMsgContainer">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+              </p>
+              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="blurb typing tri-right receiver left-in" *ngIf="currIsTyping">
+          <svg height="40" width="40">
+            <circle class="dot" cx="10" cy="20" r="3" style="fill:grey;" />
+            <circle class="dot" cx="20" cy="20" r="3" style="fill:grey;" />
+            <circle class="dot" cx="30" cy="20" r="3" style="fill:grey;" />
+          </svg>
         </div>
       </div>
       <div class="chat-input">
-        <input tpe="text" value="" placeholder="msg..." />
-        <i class="material-icons">send</i>
+          <input type="text" [(ngModel)]="myMsg" name="chatMsg" placeholder="msg..."
+          (keyup)="isTyping($event.target.value)"
+          (keyup.enter)="hasTyped()" />
+          <button class="msgSubmit" (click)="hasTyped()">
+            <i class="material-icons">send</i>
+          </button>
+
       </div>
     </div>
   </div>

@@ -31,13 +31,9 @@ export class ProfileComponent implements OnInit {
     this.currentUser = this.authenticationService.currentUserValue;
 
     console.log(this.currentUser);
-
   }
 
-   async ngOnInit() {
-    await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
-      this.userImage = res;
-    });
+  async ngOnInit() {
     this.profileForm = this.formBuilder.group({
       email: ['', Validators.required],
       username: ['', Validators.required],
@@ -72,7 +68,11 @@ export class ProfileComponent implements OnInit {
     this.profileForm.controls['last_login'].setValue(this.currentUser.last_login);
     this.profileForm.controls['login_count'].setValue(this.currentUser.login_count);
     this.profileForm.controls['profile_url'].setValue(this.currentUser.profile_url);
-    this.profileForm.controls['lastname'].setValue(this.currentUser.profile_image);
+    this.profileForm.controls['profile_image'].setValue(this.currentUser.profile_image);
+
+    await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
+      this.userImage = res[0];
+    });
   }
 
   // convenience getter for easy access to form fields

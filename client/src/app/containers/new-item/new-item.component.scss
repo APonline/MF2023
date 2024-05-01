@@ -32,6 +32,10 @@ li{
   margin:12px 0;
 }
 
+.controlpanel {
+  box-shadow: none;
+}
+
 @media (min-width:320px)  {
   .device { display: block; }
   .desktop { display: none; }
@@ -40,116 +44,121 @@ li{
     position:fixed;
   }
 
+  #profilePage {
+    width:100%;
+  }
+
   #newEdit {
-      background-image: url("/assets/images/w1.jpg");
-      background-size: cover;
-      background-attachment: fixed;
-      width: 100%;
-      height: 100%;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      padding: 120px 0px 40px!important;
-      box-sizing: border-box;
+    background-image: url("/assets/images/w1.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    padding: 120px 0px 40px!important;
+    box-sizing: border-box;
 
-      .content {
-        position:relative;
+    .content {
+      position:relative;
 
-        .container {
-          overflow-x: auto;
-        }
+      .container {
+        overflow-x: auto;
       }
     }
+  }
 
-    .iconboximg{
-      width: 120px;
-      position: relative;
-      margin-top: 150px!important;
-      border: 5px solid #646464;
+  .iconboximg{
+    width: 120px;
+    position: relative;
+    margin-top: 150px!important;
+    border: 5px solid #646464;
+    height: 120px;
+    border-radius: 25px!important;
+    margin-left:0px!important;
+    background-color:#000;
+
+    img {
       height: 120px;
-      border-radius: 25px!important;
-      margin-left:0px!important;
-      background-color:#000;
-
-      img {
-        height: 120px;
-        width: 120px;
-      }
+      width: 120px;
     }
+  }
 
-    .topbanner {
-      width:100%;
-      margin-bottom:10px;
-      background-size:cover;
-      height: 300px;
-      background-size: 130%!important;
-      margin-top: -62px;
-      border-bottom: 5px solid #646464;
-      position: relative;
-      transform-style: preserve-3d;
-    }
+  .topbanner {
+    width:100%;
+    margin-bottom:10px;
+    background-size:cover;
+    height: 300px;
+    background-size: 130%!important;
+    margin-top: -62px;
+    border-bottom: 5px solid #646464;
+    position: relative;
+    transform-style: preserve-3d;
+  }
 
-    .topbanner::after {
-      content: " ";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      transform: translateZ(-1px) scale(1.5);
-      background-size: 100%;
-      z-index: -1;
-    }
-    .topbannerImg {
-      border: none;
-      margin: 0;
-      margin-top: -20px;
-      position: absolute;
-      left: 0px;
-      width: 100%;
-      height: 100%;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
-      background-size: cover!important;
-    }
+  // .topbanner::after {
+  //   content: " ";
+  //   position: absolute;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   transform: translateZ(-1px) scale(1.5);
+  //   background-size: 100%;
+  //   z-index: -1;
+  // }
+  .topbannerImg {
+    border: none;
+    margin: 0;
+    margin-top: -20px;
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    background-size: cover!important;
+  }
 
-    #profilePage{
-      display:flex;
-      flex-direction: column;
+  #profilePage{
+    display:flex;
+    flex-direction: column;
 
-    }
+  }
 
-    .infopanel {
-      position: relative;
-      margin: 0;
-      width: 100%;
-      margin-right: 10px;
-      max-height: 500px;
-      height: auto;
-      background: none;
-      box-shadow: none;
-      padding: 20px;
-      box-sizing: border-box;
-      backdrop-filter: none;
-    }
+  .infopanel {
+    position: relative;
+    margin: 0;
+    width: 100%;
+    margin-right: 10px;
+    max-height: 500px;
+    height: auto;
+    background: none;
+    box-shadow: none;
+    padding: 20px;
+    box-sizing: border-box;
+    backdrop-filter: none;
+  }
 
-    .controlpanel {
-      position: relative;
-      width: 92%;
-      margin: 0 auto;
-      margin-top: 50px;
-    }
+  .controlpanel {
+    position: relative;
+    width: calc(100% - 0px);
+    margin: 20px auto;
+    background: none;
+    backdrop-filter: none;
+  }
 
-    .lowerimages {
-      margin-top:25px;
-      margin-bottom:50px;
-    }
+  .lowerimages {
+    margin-top:25px;
+    margin-bottom:50px;
+  }
 
-    .imgBox {
-      margin: 0 auto;
-      border-radius: 50%;
-      overflow: hidden;
-    }
+  .imgBox {
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+  }
 
   #cards {
     display: flex;
@@ -255,8 +264,44 @@ li{
     transition: all 500ms ease-in-out;
   }
 }
-@media (min-width:801px)  {  }
-@media (min-width:1281px) {
+@media (min-width:801px)  {
+  .device { display: none; }
+  .desktop { display: block; }
+
+  #profilePage {
+    width:100%;
+  }
+  .topcontent {
+    position: absolute!important;
+    top: 0px;
+    left: 140px;
+  }
+
+  .topbannerImg {
+    background-position: 50% 35% !important;
+  }
+
+  .card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    // height: 260px;
+    height:140px;
+    flex-direction: column;
+    position: relative;
+    width: calc(100% / 2 - 3px);
+  }
+
+  .controlpanel {
+    position: relative;
+    width: calc(100% - 0px);
+    margin: 20px auto;
+    background: none;
+    backdrop-filter: none;
+  }
+}
+@media (min-width:1200px) {
   .device { display: none; }
   .desktop { display: block; }
   #newEdit {
@@ -279,23 +324,25 @@ li{
   }
 
   .topbanner {
-    width:1000px;
+    width:100%;
     margin-bottom:10px;
     background-size:cover;
     position: relative;
     transform-style: preserve-3d;
   }
-  .topbanner::after {
-    content: " ";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transform: translateZ(-1px) scale(1.5);
-    background-size: 100%;
-    z-index: -1;
-  }
+  // .topbanner::after {
+  //   content: " ";
+  //   position: absolute;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   transform: translateZ(-1px) scale(1.5);
+  //   background-size: 100%;
+  //   z-index: -1;
+  //   box-sizing: border-box;
+  //   width: calc(100% - 70px);
+  // }
   .topbannerImg {
     border: none;
     margin: 0;
@@ -313,13 +360,14 @@ li{
     position: absolute!important;
     bottom: 20px;
     left: 130px;
+    top:auto;
     width: auto;
   }
 
   .infopanel {
     position: relative;
     margin: 0;
-    width: 40%;
+    width: 100%;
     margin-right: 10px;
     max-height: 500px;
     height: auto;
@@ -332,7 +380,9 @@ li{
 
   #profilePage{
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
+    width: calc(100% - 80px);
+    justify-content: space-between;
   }
 
   .imgBox {
@@ -343,9 +393,10 @@ li{
   }
 
   #large-container {
-    display:flex;
-    flex-direction: row;
-    max-width:1000px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-right: 20px;
   }
 
   .content {
@@ -369,7 +420,11 @@ li{
   .controlpanel {
     position: relative;
     margin: 0;
-    width: 60%;
+    width: 50%;
+    margin-top: 0px;
+    background: none;
+    backdrop-filter: none;
+    padding: 0;
   }
 
   #cards {

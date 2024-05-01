@@ -12,8 +12,8 @@ const routes: Routes = [
   { path: '', component: UserContainer,
     children : [
       { path: 'verify', component: VerifyComponent },
-      { path: 'passwordReset', component: PasswordResetComponent, data: { animation: 'user/passwordReset', layer: 1 }  },
-      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { animation: 'user/profile', layer: 1 }  },
+      { path: 'passwordReset', component: PasswordResetComponent, data: { animation: 'user/passwordReset' }  },
+      { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard], data: { animation: 'user/profile' }  },
     ]
   }
 ];

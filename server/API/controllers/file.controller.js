@@ -71,15 +71,17 @@ const getFile = (req, res) => {
 
     let fileInfo = [];
 
-    let f = getFileType(p,g,t);
-    fileInfo.push({
-        name: p,
-        url: baseUrl + '/api/v1/files/' + p,
-        type: f.type,
-        display: f.display
-    });
+    if(p!='default'){
+      let f = getFileType(p,g,t);
+      fileInfo.push({
+          name: p,
+          url: baseUrl + '/api/v1/files/' + p,
+          type: f.type,
+          display: f.display
+      });
 
-    res.status(200).send(fileInfo);
+      res.status(200).send(fileInfo);
+    }
   });
 
 };
