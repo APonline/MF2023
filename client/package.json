@@ -27,6 +27,7 @@
     "@angular/router": "~13.2.2",
     "angular-ng-autocomplete": "^2.0.7",
     "core-js": "^2.5.4",
+    "linkify-it": "^5.0.0",
     "mat-color-picker": "^1.4.3",
     "material-community-components": "^10.0.0",
     "moment": "^2.29.4",

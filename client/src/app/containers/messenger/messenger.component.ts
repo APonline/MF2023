@@ -6,6 +6,8 @@ import { SocketioService } from 'src/app/services/socketio.service';
 import { Observable } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { environment } from 'src/environments/environment';
+import linkifyit from 'linkify-it';
+const linkify = linkifyit();
 
 @Component({
   selector: 'app-messenger',
@@ -15,6 +17,7 @@ import { environment } from 'src/environments/environment';
 export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @Input() toggle: any;
+
   currentUser: user;
   userList$: any = [];
   messenger: boolean;
@@ -117,9 +120,21 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
   hasTyped() {
     let msg = this.myMsg;
-    this.socketService.hasTyped(msg);
-    this.myMsg = '';
-    this.scrollToBottom();
+
+    let urls = linkify.match(msg);
+
+    if(urls != null) {
+      let newval = '<a href="'+urls[0].url+'" target="_new">'+urls[0].url+'</a>';
+      msg = msg.replace(urls[0].text, newval);
+
+      this.socketService.hasTyped(msg);
+      this.myMsg = '';
+      this.scrollToBottom();
+    }else{
+      this.socketService.hasTyped(msg);
+      this.myMsg = '';
+      this.scrollToBottom();
+    }
   }
 
   closeChat() {

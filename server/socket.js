@@ -23,7 +23,6 @@ module.exports = function(io, hostname) {
     
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;
-        //console.log('token', token);
         next();
     });
     
@@ -31,7 +30,6 @@ module.exports = function(io, hostname) {
         
     io.on('connection', (socket) => {
         let token = socket.handshake.auth.token;
-        console.log('token', token);
         if(token == 'users'){
             let user = socket.handshake.auth.user;
             if (!onlineUsers.some((u) => u.id === user.id)) { 

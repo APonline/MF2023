@@ -12,7 +12,7 @@ import { user } from 'src/app/models/users.model';
   animations: [
     trigger('routerAnimation', [
       transition('* <=> *', [
-        query(':enter, :leave', style({ position: 'absolute', left: '0px', width: 'calc(100vw - 0px)', minHeight: 'calc(100vh - 136px)', overflow: 'hidden'}), { optional: true }),
+        query(':enter, :leave', style({ position: 'absolute', left: '0px', width: 'calc(100% - 0px)', minHeight: 'calc(100vh - 136px)', overflow: 'hidden'}), { optional: true }),
         group([
           query(':enter', [
             style({ opacity: 0 }),
