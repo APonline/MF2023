@@ -35,7 +35,7 @@ jobs:
         run: |
           cd client/
           npm i --legacy-peer-deps
-          npm run build --prod --output-hashing=all
+          npm run build --output-hashing=all
 
       - name: npm install and run backend
         run: |
