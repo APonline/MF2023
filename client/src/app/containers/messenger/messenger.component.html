@@ -9,7 +9,7 @@
     <div class="box">
       <div class="list" *ngFor="let user of userList$" (click)="goToChat(user)">
         <div class="imgBox">
-          <img *ngIf="user?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
+          <img *ngIf="user?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
             <ng-template #hasImage>
               <img src="{{ user?.display?.display}}" alt="{{ user?.display?.name}}" />
             </ng-template>
@@ -29,7 +29,7 @@
             <i class="material-icons" >arrow_back_ios_new</i>
           </div>
           <div class="imgBox">
-            <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
+            <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
               <ng-template #hasImage>
                 <img src="{{ currChatUser?.display?.display}}" alt="{{ currChatUser?.display?.name}}" />
               </ng-template>

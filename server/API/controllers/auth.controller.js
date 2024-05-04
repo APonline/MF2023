@@ -43,7 +43,7 @@ exports.signup = async (req, res) => {
             last_login: lastLogin,
             login_count: 1,
             profile_url: "@" + req.body.username + "",
-            profile_image: "images/defaultprofile.png",
+            profile_image: "images/defaultprofile1.png",
             tna: 0
         });
 

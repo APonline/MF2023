@@ -8,7 +8,7 @@
 
         <div class="label-value-img" *ngIf="editing == 0 || editing == 1">
           <p class="profile-pic">
-            <img *ngIf="currentUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile.png"  />
+            <img *ngIf="currentUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
             <ng-template #hasImage>
               <img src="{{ userImage?.display}}" alt="{{ userImage?.name}}" />
             </ng-template>
