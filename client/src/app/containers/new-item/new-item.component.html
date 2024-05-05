@@ -9,7 +9,7 @@
     <div id="large-container">
       <div class="glass topbanner" >
         <div class="topbannerImg" *ngIf="artistInfo[0]?.profile_image" [ngStyle]="{background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url('+artistInfo[0]?.profile_banner_image+') center 50% / 36% no-repeat'}"></div>
-        <div class="topbannerImg" *ngIf="!artistInfo[0]?.profile_image" [ngStyle]="{background: 'url(./assets/images/logo.png)'}"></div>
+        <div class="topbannerImg" *ngIf="!artistInfo[0]?.profile_image" [ngStyle]="{background: 'url(./assets/images/logo1.png)'}"></div>
         <div class="sidebyside" style="bottom: -12px;left: 0px;width: 100%;    position: relative;">
           <div class="imgBox iconboximg">
             <img *ngIf="artistInfo[0]?.profile_image" src="{{ artistInfo[0]?.profile_image }}" width="120" />

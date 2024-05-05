@@ -49,7 +49,7 @@ const deleteAccount = (verifyId, email, username) => {
             </head>
             <body>
                 <div id="mfEmail">
-                    <a id='logo' href='https://musefactory.app'><img width="260px" src="https://musefactory.app/assets/images/logo.png" /></a>
+                    <a id='logo' href='https://musefactory.app'><img width="260px" src="https://musefactory.app/assets/images/logo1.png" /></a>
                     <br/>
                     <h1 style='color:#fff!important;'>Muse Factory</h1>
                     <h3 style='color:#fff!important;'>Delete Account</h3>
