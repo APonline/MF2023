@@ -26,7 +26,7 @@ module.exports = function(app) {
     app.get(`/api/v1/${itemTopic}/passwordReset`, controller.requestPassword );
     app.get(`/api/v1/${itemTopic}/verify`, controller.verifyUser );
 
-    app.get(`/api/v1/${itemTopic}/chatHistoryWith/:id/:chatee`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
-    app.put(`/api/v1/${itemTopic}/chatHistoryWith/:id/:chatee`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
+    app.get(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
+    app.put(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
 }
  

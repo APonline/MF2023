@@ -60,24 +60,28 @@ module.exports = function(io, hostname) {
                 io.emit('my broadcast', `server: ${msg}`);
             });
         }else{
-            let user = socket.handshake.auth.user;
+            let group = socket.handshake.auth.group;
+            let userId = socket.handshake.auth.userId;
+            let username = socket.handshake.auth.username;
             let chatee = socket.handshake.auth.chatee;
             let convo = socket.handshake.auth.token;
-            if(user != null){
+
+            if(userId != null){
                 socket.on('isTyping', (msg) => {
-                    io.emit('userIsTyping', {user, convo, msg});
+                    io.emit('userIsTyping', {group, userId, chatee, convo, msg});
                 });
 
                 socket.on('hasTyped', (msg) => {
                     let newMsg = {
-                        "userId": user,
+                        "userId": userId,
+                        "username": username,
                         "body": msg,
                         "date": date,
                         "time": time,
                         "attachmentUrl":"",
                         "attachmentPreview":""
                     }
-                    io.emit('userHasTyped', {user, chatee, convo, msg: newMsg});
+                    io.emit('userHasTyped', {group, userId, chatee, convo, msg: newMsg});
                 });
             }
         }

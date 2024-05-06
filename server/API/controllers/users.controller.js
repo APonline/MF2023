@@ -163,28 +163,42 @@ myClass.requestPassword = async (req, res) => {
 }
 myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
     try{
+        let group =req.params.group;
         let id =req.params.id;
         let chatee =req.params.chatee;
 
         const directoryPath = __basedir + "/resources/chats/";
-        const forwards = id+"-"+chatee+".json";
-        const backwards = chatee+"-"+id+".json";
 
-        fs.readFile(directoryPath+forwards, "utf8", (err, data) => {
-            if (!err && data) {
-                return res.status(200).send( {title: forwards, data: JSON.parse(data)} );
-            }else{
-                fs.readFile(directoryPath+backwards, (err, data) => {
-                    if (!err && data) {
-                        return res.status(200).send( {title: backwards, data: JSON.parse(data)} );
-                    }else{
-                        let createStream = fs.createWriteStream(`${directoryPath}${forwards}`);
-                        createStream.end();
-                        return res.status(200).send({title: forwards, data: {}});
-                    }
-                })
-            }
-        })
+        if(group != 'user'){
+            fs.readFile(directoryPath+group+'.json', "utf8", (err, data) => {
+                if (!err && data) {
+                    return res.status(200).send( {title: group+'.json', data: JSON.parse(data)} );
+                }else{
+                    let createStream = fs.createWriteStream(`${directoryPath}${group}.json`);
+                    createStream.end();
+                    return res.status(200).send({title: group+'.json', data: {}});
+                }
+            })
+        }else{
+            const forwards = id+"-"+chatee+".json";
+            const backwards = chatee+"-"+id+".json";
+
+            fs.readFile(directoryPath+forwards, "utf8", (err, data) => {
+                if (!err && data) {
+                    return res.status(200).send( {title: forwards, data: JSON.parse(data)} );
+                }else{
+                    fs.readFile(directoryPath+backwards, (err, data) => {
+                        if (!err && data) {
+                            return res.status(200).send( {title: backwards, data: JSON.parse(data)} );
+                        }else{
+                            let createStream = fs.createWriteStream(`${directoryPath}${forwards}`);
+                            createStream.end();
+                            return res.status(200).send({title: forwards, data: {}});
+                        }
+                    })
+                }
+            })
+        }
     } catch (error) {
         return res.status(500).send({
             message: `Unable to get ${itemTopic}!`
@@ -195,15 +209,25 @@ myClass[`update${itemTopic}ChatHistoryWith`] = async (req, res) => {
     try{
         let id =req.params.id;
         let chatee =req.params.chatee;
+        let group =req.params.group;
         let file = req.body.file.slice(5);
         let msg = req.body.msg;
+
+        if(group != 'user')
+            file = group+'.json';
         
         const directoryPath = __basedir + "/resources/chats/";
 
         fs.readFile(directoryPath+file, "utf8", (err, data) => {
-            if (!err && data) {
-                let json = JSON.parse(data);
-                json.msgs.push(msg);
+            if (!err) {
+                let json;
+                if(data!=''&&data!=undefined&&data!=null){
+                    json = JSON.parse(data);
+                    json.msgs.push(msg);
+                }else{
+                    json = {msgs: []};
+                    json.msgs.push(msg);
+                }
             
                 fs.writeFile(directoryPath+file, JSON.stringify(json), (err, data) => {
                     return res.status(200).send( {title: file, data: data} );

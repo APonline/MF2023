@@ -42,12 +42,14 @@ export class SocketioService {
     });
   }
 
-  setupChatConnection(user, chatee, convo) {
+  setupChatConnection(group, user, chatee, convo) {
     this.chatTyping$.next(false);
     this.chat = io(environment.SOCKET_ENDPOINT, {
       auth: {
         token: 'chat-'+convo,
-        user,
+        group: group,
+        userId: user.id,
+        username: user.username,
         chatee
       }
     });
@@ -57,7 +59,7 @@ export class SocketioService {
     });
 
     this.chat.on('userIsTyping', (data) => {
-      if(data.user != this.currentUser.id && data.convo == this.chat.auth.token){
+      if(data.userId != this.currentUser.id && data.convo == this.chat.auth.token){
         this.chatTyping$.next(true);
         setTimeout(()=> {
           this.chatTyping$.next(false);
@@ -70,8 +72,8 @@ export class SocketioService {
         this.chat$.next(data.msg);
         this.chatTyping$.next(false);
 
-        if(this.currentUser.id == data.user){
-          this.user.updateChatHistoryWith(this.currentUser.id, data.chatee, {file: data.convo, msg: data.msg}).subscribe(res => {
+        if(this.currentUser.id == data.userId){
+          this.user.updateChatHistoryWith(data.group, this.currentUser.id, data.chatee, {file: data.convo, msg: data.msg}).subscribe(res => {
             console.log('updated file: ',res)
           });
         }
