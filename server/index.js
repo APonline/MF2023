@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: ['https://musefactory.app','http://localhost:4200']
+  origin: ['https://musefactory.app','https://musefactory.app:3001','http://localhost:4200']
 }));
 
 // parse requests of content-type - application/json
