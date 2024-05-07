@@ -73,7 +73,6 @@ const io = require('socket.io')(http, {
       "http://localhost:8080",
       "https://musefactory.app",
       "https://musefactory.app:4001",
-      "http://musefactory.app:4001",
       "https://musefactory.app:3001",
       "https://musefactory.app:4000",
   ],
