@@ -59,25 +59,25 @@ let hostname = os.hostname();
 
 const io = require('socket.io')(http, {
   cors: {
-  origins: [
-      "http://127.0.0.1:3001",
-      "http://127.0.0.1:3000",
-      "http://127.0.0.1:4200",
-      "http://127.0.0.1:4001",
-      "http://127.0.0.1:4000",
-      "http://127.0.0.1:8080",
-      "http://localhost:3001",
-      "http://localhost:3000",
-      "http://localhost:4200",
-      "http://localhost:4001",
-      "http://localhost:8080",
-      "https://musefactory.app",
-      "https://musefactory.app:4001",
-      "https://musefactory.app:3001",
-      "https://musefactory.app:4000",
-  ],
+    origins: [
+        "http://127.0.0.1:3001",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:4200",
+        "http://127.0.0.1:4001",
+        "http://127.0.0.1:4000",
+        "http://127.0.0.1:8080",
+        "http://localhost:3001",
+        "http://localhost:3000",
+        "http://localhost:4200",
+        "http://localhost:4001",
+        "http://localhost:8080",
+        "https://musefactory.app",
+        "https://musefactory.app:4001",
+        "https://musefactory.app:3001",
+        "https://musefactory.app:4000",
+    ],
   }
-});
+}, {secure: true});
 
 require("./socket")(io, hostname);
 //SOCKET
