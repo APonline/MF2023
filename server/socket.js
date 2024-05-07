@@ -63,6 +63,7 @@ module.exports = function(io, hostname) {
             let group = socket.handshake.auth.group;
             let userId = socket.handshake.auth.userId;
             let username = socket.handshake.auth.username;
+            let userImg = socket.handshake.auth.userImg;
             let chatee = socket.handshake.auth.chatee;
             let convo = socket.handshake.auth.token;
 
@@ -75,6 +76,7 @@ module.exports = function(io, hostname) {
                     let newMsg = {
                         "userId": userId,
                         "username": username,
+                        "userImg": userImg,
                         "body": msg,
                         "date": date,
                         "time": time,

@@ -8,6 +8,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { environment } from 'src/environments/environment';
 import linkifyit from 'linkify-it';
 import { ArtistMembersService } from 'src/app/services/artist_members.service';
+import { DomSanitizer } from '@angular/platform-browser';
 const linkify = linkifyit();
 
 @Component({
@@ -48,6 +49,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     private socketService: SocketioService,
     private uploadService: FileUploadService,
     private projects: ArtistMembersService,
+    private sanitizer:DomSanitizer
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
     this.messenger = false;
@@ -96,6 +98,17 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
         this.userList$ = res;
       });
     }
+
+    console.log(this.currentUser)
+    if(this.currentUser.profile_image != 'default'){
+      // await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
+      //   let blobbed = this.imgBlob(res[0].display.slice(22));
+        //this.currentUser['userImg'] = this.sanitizer.bypassSecurityTrustUrl(blobbed);
+      //});
+      this.currentUser['userImg'] = 'https://musefactory.app:4000/resources/static/users/'+this.currentUser.id+'/image/'+this.currentUser.profile_image+'';
+    }else{
+      this.currentUser['userImg'] = 'https://musefactory.app/assets/images/defaultprofile1.png';
+    }
   }
   ngOnChanges(changes: SimpleChanges): void {
     if(this.toggle){
@@ -109,7 +122,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     try {
         this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }
-}
+  }
 
   goToChat(user, type) {
 
@@ -168,6 +181,21 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
         this.mode = 'chat';
       }, 250);
     }
+
+  }
+
+  async getFileFromUrl(url, name, defaultType = 'image/jpeg'){
+    const response = await fetch(url);
+    const data = await response.blob();
+    return new File([data], name, {
+      type: data.type || defaultType,
+    });
+  }
+
+  async imgBlob(src){
+    const file = await this.getFileFromUrl(src, 'user.jpg');
+    console.log(file);
+    return file;
 
   }
 

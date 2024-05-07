@@ -176,7 +176,12 @@ myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
                 }else{
                     let createStream = fs.createWriteStream(`${directoryPath}${group}.json`);
                     createStream.end();
-                    return res.status(200).send({title: group+'.json', data: {}});
+
+                    let json = {msgs: []};
+                    
+                    fs.writeFile(directoryPath+forwards, JSON.stringify(json), (err, data) => {
+                        return res.status(200).send( {title: group+'.json', data: data} );
+                    }) 
                 }
             })
         }else{
@@ -193,7 +198,12 @@ myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
                         }else{
                             let createStream = fs.createWriteStream(`${directoryPath}${forwards}`);
                             createStream.end();
-                            return res.status(200).send({title: forwards, data: {}});
+
+                            let json = {msgs: []};
+                    
+                            fs.writeFile(directoryPath+forwards, JSON.stringify(json), (err, data) => {
+                                return res.status(200).send( {title: forwards, data: data} );
+                            }) 
                         }
                     })
                 }

@@ -50,6 +50,7 @@ export class SocketioService {
         group: group,
         userId: user.id,
         username: user.username,
+        userImg: user.userImg,
         chatee
       }
     });

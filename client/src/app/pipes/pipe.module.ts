@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RemoveUnderscorePipe } from "./pipe-remove-underscore";
 import { CapitalizePipe } from "./pipe-uppercase-words";
 import { SanitizeHtmlPipe } from "./pipe-sanitize-html";
+import { SafePipe } from "./pipe-safeurl";
 
 
 @NgModule({
@@ -9,12 +10,14 @@ import { SanitizeHtmlPipe } from "./pipe-sanitize-html";
   declarations: [
     RemoveUnderscorePipe,
     CapitalizePipe,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
+    SafePipe
   ],
   exports: [
     RemoveUnderscorePipe,
     CapitalizePipe,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
+    SafePipe
   ]
 })
 export class PipeModule{}
