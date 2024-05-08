@@ -105,7 +105,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       //   let blobbed = this.imgBlob(res[0].display.slice(22));
         //this.currentUser['userImg'] = this.sanitizer.bypassSecurityTrustUrl(blobbed);
       //});
-      this.currentUser['userImg'] = 'https://musefactory.app:4000/resources/static/users/'+this.currentUser.id+'/image/'+this.currentUser.profile_image+'';
+      this.currentUser['userImg'] = 'https://musefactory.app:3001/resources/static/users/'+this.currentUser.id+'/image/'+this.currentUser.profile_image+'';
     }else{
       this.currentUser['userImg'] = 'https://musefactory.app/assets/images/defaultprofile1.png';
     }
