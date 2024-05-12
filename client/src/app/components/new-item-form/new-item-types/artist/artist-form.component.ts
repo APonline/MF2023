@@ -7,8 +7,6 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
-
 
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
@@ -29,13 +27,15 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MFService } from 'src/app/services/MF.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 @Component({
   selector: 'app-artistForm',
   templateUrl: './artist-form.component.html',
   styleUrls: ['./artist-form.component.scss']
  })
-export class ArtistFormComponent implements OnInit, OnChanges {
+export class ArtistFormComponent implements OnInit {
   @Output() activeItem = new EventEmitter<any>();
 
   public currentUser: Observable<any>;
@@ -71,9 +71,18 @@ export class ArtistFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
 
+  uploaderNeeds = ['image','video','document','song'];
+  uploaderInstalled = false;
+
+  editing = 0;
+  myForm: FormGroup;
+  data: any;
+  currentGroup = null;
+
   constructor(
       public dialog: MatDialog,
       private formBuilder: FormBuilder,
+      public MF: MFService,
       private route: ActivatedRoute,
       private user: UserService,
       private router: Router,
@@ -92,139 +101,109 @@ export class ArtistFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      private uploadService: FileUploadService,
   ) {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.myForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      location: [''],
+      genre: ['', Validators.required],
+      description: [''],
+      bio: [''],
+      // profile_image: [''],
+      // profile_banner_image: [''],
+      // artist_image_1: [''],
+      // artist_image_2: [''],
+      // artist_image_3: [''],
+    });
 
     this.loadData();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if(this.updateTable){
-      if(this.act == 'create'){
-        Object.keys(this.res).map(res => {
-          if(res == 'createdAt' || res == 'updatedAt' || res == 'active') {
-            delete this.res[res];
-          }
-        });
-
-        this.dataSource.push(this.res);
-      }else if(this.act == 'put'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          if(value.id == this.res.id){
-            this.displayedColumns.map(res => {
-              value[res] = this.res[res];
-            })
-          }
-          return true;
-        });
-      }else if(this.act == 'delete'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          return value.id != this.res;
-        });
-      }
-      this.table.renderRows();
-    }
-  }
-
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   async loadData() {
     let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    toolTitle = this.MF.capitalizeWords(toolTitle);
 
     let toolTitle2 = toolTitle.join(',');
     toolTitle2 = toolTitle2.replace(/ /g,"");
     toolTitle2 = toolTitle2.replace(/,/g,"");
     toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
     let service = toolTitle2+ 's' + 'Service';
-    let model = this.tool;
+    console.log('Service: '+service)
 
     await this[service].get(this.groupId).subscribe(res => {
       this.modelSet = res;
 
       this[this.tool] = [res];
       this.toolSet = this[this.tool];
+      this.data = this.toolSet[0]
 
-      this.setSettings(this.toolSet);
+      if(this.tool == 'artist'){
+        this.currentGroup = {name: this.data.name, id: this.data.id };
+      }else{
+        this.currentGroup = {name: 'Polarity', id:2};
+      }
 
+      this.setupForm(this.data);
     });
-
   }
 
-  setSettings(formData){
-    console.log(formData)
-    let form ={};
-    let newForm ={}
+  setupForm(formData) {
+    this.myForm.controls['name'].setValue(formData.name);
+    this.myForm.controls['location'].setValue(formData.location);
+    this.myForm.controls['genre'].setValue(formData.genre);
+    this.myForm.controls['description'].setValue(formData.description);
+    this.myForm.controls['bio'].setValue(formData.bio);
+    // this.myForm.controls['profile_image'].setValue(formData.profile_image);
+    // this.myForm.controls['profile_banner_image'].setValue(formData.profile_banner_image);
+    // this.myForm.controls['artist_image_1'].setValue(formData.artist_image_1);
+    // this.myForm.controls['artist_image_2'].setValue(formData.artist_image_2);
+    // this.myForm.controls['artist_image_3'].setValue(formData.artist_image_3);
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
+    this.getImages();
+  }
+
+  getImages() {
+    //profile image
+    if(this.data.profile_image != 'default' && this.data.profile_image != ''){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+       this.uploadService.getFile(0, this.data.profile_image, group, 'png').subscribe(r => {
+        this.data['profile_image_img'] = r[0].display;
+      });
     }else{
-      f = formData[0];
+      this.data['profile_image_img'] = './assets/images/intrologo.png';
     }
 
-    this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
-    this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
+    //profile banner
+    if(this.data.profile_banner_image != 'default' && this.data.profile_banner_image != ''){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+       this.uploadService.getFile(0, this.data.profile_banner_image, group, 'png').subscribe(r => {
+        this.data['profile_banner_image_img'] = r[0].display;
+      });
+    }else{
+      this.data['profile_banner_image_img'] = './assets/images/intrologo.png';
+    }
   }
 
-  validateAllFormFields(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control instanceof FormControl) {
-        control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {
-        this.validateAllFormFields(control);
-      }
-    });
+  updateUploadValue(e) {
+    this.data[e.field] = e.val;
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+  get f() { return this.myForm.controls; }
+
+  onSubmit(){
+  }
+
+  editProfile() {
+    this.editing = 1;
+  }
+
+  cancelEdit() {
+    this.editing = 0;
   }
 }

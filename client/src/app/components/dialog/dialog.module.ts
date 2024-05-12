@@ -14,8 +14,8 @@ import { PipeModule } from 'src/app/pipes/pipe.module';
   declarations: [
     DialogTemplate,
     NewItemUpdateComponent,
-    UploadFilesComponent,
-    UploadFileComponent
+    // UploadFilesComponent,
+    // UploadFileComponent
   ],
   imports:[
     CommonModule,
@@ -27,14 +27,14 @@ import { PipeModule } from 'src/app/pipes/pipe.module';
   exports: [
     DialogTemplate,
     NewItemUpdateComponent,
-    UploadFilesComponent,
-    UploadFileComponent
+    // UploadFilesComponent,
+    // UploadFileComponent
   ],
   entryComponents: [
     DialogTemplate,
     NewItemUpdateComponent,
-    UploadFilesComponent,
-    UploadFileComponent
+    // UploadFilesComponent,
+    // UploadFileComponent
   ]
 })
 export class DialogModule { }

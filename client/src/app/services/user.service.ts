@@ -47,7 +47,11 @@ export class UserService {
   }
 
   verify(data: any): Observable<any> {
-    return this.http.post(`${baseUrl}/verify`, data);
+    return this.http.put(`${baseUrl}/verify/${data}`, data);
+  }
+
+  tna(data: any): Observable<any> {
+    return this.http.put(`${baseUrl}/tna/${data}`, data);
   }
 
   passwordReset(data: any): Observable<any> {

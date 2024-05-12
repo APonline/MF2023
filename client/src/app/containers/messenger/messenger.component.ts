@@ -137,8 +137,11 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       let group = user.artists.profile_url;
 
       this.user.getChatHistoryWith(group, this.currentUser.id, this.currChatUser.id).subscribe(res => {
-        this.currChatLog = res.data.msgs;
-        this.scrollToBottom();
+        if(res.data.msgs != null){
+          this.currChatLog = res.data.msgs;
+          this.scrollToBottom();
+        }
+
 
         this.socketService.setupChatConnection(group, this.currentUser, this.currChatUser.id, group);
         this.socketService.chatTyping$.subscribe(r => {

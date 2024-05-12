@@ -32,6 +32,7 @@ export class FileUploadService {
   }
 
   getFiles(): Observable<any> {
+    console.log('HEY');
     return this.http.get(`${this.baseUrl}files`);
   }
 

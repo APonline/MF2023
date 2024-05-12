@@ -30,6 +30,7 @@ import { SongsService } from './services/songs.service';
 import { VidoesService } from './services/videos.service';
 import { GigsService } from './services/gigs.service';
 import { DialogService } from './services/dialog.service';
+import { MFService } from './services/MF.service';
 
 
 
@@ -73,6 +74,8 @@ import { ScheduleFormComponent } from './components/new-item-form/new-item-types
 import { MerchFormComponent } from './components/new-item-form/new-item-types/merch/merch-form.component';
 import { MerchCategoriesFormComponent } from './components/new-item-form/new-item-types/merch-categories/merch-categories-form.component';
 import { CampaignsFormComponent } from './components/new-item-form/new-item-types/campaigns/campaigns-form.component';
+import { UploadFileComponent } from './components/upload-single/upload-single.component';
+import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -129,7 +132,9 @@ import { CampaignsFormComponent } from './components/new-item-form/new-item-type
     ScheduleFormComponent,
     MerchFormComponent,
     MerchCategoriesFormComponent,
-    CampaignsFormComponent
+    CampaignsFormComponent,
+    UploadFileComponent,
+    UploadFilesComponent
   ],
   imports: [
     AppRoutingModule,
@@ -162,7 +167,8 @@ import { CampaignsFormComponent } from './components/new-item-form/new-item-type
     SongsService,
     VidoesService,
     GigsService,
-    DialogService
+    DialogService,
+    MFService
   ],
   bootstrap: [AppComponent]
 })

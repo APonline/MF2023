@@ -16,7 +16,7 @@
             <img *ngIf="!artistInfo[0]?.profile_image" src="./assets/images/intrologo.png" width="120" />
           </div>
           <div class="content topcontent desktop">
-            <h1>{{ group }}</h1>
+            <h1>{{ artistInfo[0]?.name }}</h1>
             <p>{{ artistInfo[0]?.profile_url }}</p>
             <p>{{ artistInfo[0]?.genre }}</p>
           </div>
@@ -26,7 +26,7 @@
       <div class="glass infopanel">
         <div class="content" style="height: 100%;">
           <div class="content device">
-            <h1>{{ group }}</h1>
+            <h1>{{ artistInfo[0]?.name }}</h1>
             <p>{{ artistInfo[0]?.profile_url }}</p>
             <p>{{ artistInfo[0]?.genre }}</p>
             <br/><br/>

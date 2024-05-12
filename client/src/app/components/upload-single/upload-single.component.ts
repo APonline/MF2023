@@ -64,6 +64,8 @@ export class UploadFileComponent implements OnInit {
     private alertService: AlertService) {
       this.currentUser = this.authenticationService.currentUserValue;
       //this.currentGroup = this.authenticationService.currentUserValue;
+
+      console.log(this.field, this.file, this.group)
     }
 
   ngOnInit(): void {

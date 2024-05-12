@@ -60,7 +60,7 @@ export class UploadFilesComponent implements OnInit {
     private alertService: AlertService) {
       this.currentUser = this.authenticationService.currentUserValue;
       //this.currentGroup = this.authenticationService.currentUserValue;
-      this.currentGroup = 'Polarity';
+      this.currentGroup = '';
     }
 
   ngOnInit(): void {

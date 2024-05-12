@@ -1,81 +1,125 @@
 <div id="newEditForm" class="page">
-    <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
-    <div class="itemBKGrid"></div>
+  <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+  <div class="itemBKGrid"></div>
 
-  <div class="glass">
-    <div class="goback page-top-cta">
-      <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-        Go Back
-      </button>
-    </div>
-
-    <div class="mild-container">
-      <h1 style="text-transform: capitalize;">{{toolName}}</h1>
-
-      <div class="add-new">
-        <button (click)="openDialog('Add',newRecord)" mat-raised-button color="primary">Add Row</button>
-      </div>
-
-      <div class="content masked-overflow">
-        <!-- app.component.html -->
-        <div class="container text-center">
-          <div id="table">
-            <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
-              <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-
-                <ng-template #actionTemplate>
-                  <ng-container matColumnDef="action">
-                    <tr>
-                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
-                        <p class="headerTitle" style="text-align:center;">
-                          <mat-label>Actions</mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
-                        <ng-container *ngIf="element.id != 0; else noActionTemplate">
-
-
-                          <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
-                            edit
-                          </button>
-                          <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
-                            delete
-                          </button>
-
-                        </ng-container>
-                        <ng-template #noActionTemplate>
-                          Rendering...
-                        </ng-template>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </ng-template>
-
-
-                <ng-container *ngIf="disCol != 'action'; else actionTemplate">
-                  <tr>
-                      <th mat-header-cell *matHeaderCellDef >
-                        <p class="headerTitle" *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
-                          <mat-label [for]="disCol">
-                                                  {{ disCol | removeUnderscore }}
-                          </mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element"  class="action-link">
-                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null">
-                          {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
-                        </p>
-                      </td>
-                  </tr>
-                </ng-container>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="glass">
+  <div class="goback page-top-cta">
+    <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
+      Go Back
+    </button>
   </div>
+
+  <div class="content">
+    <mat-card>
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <h1 style="text-transform: capitalize;">{{toolName}} Info</h1>
+
+        <h3>BASIC INFO</h3>
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Name</p>
+            <p>{{data?.name}}</p>
+          </div>
+          <mat-form-field class="example-full-width" *ngIf="editing == 1">
+            <mat-label for="name">Name</mat-label>
+            <input matInput formControlName="name" placeholder="name"
+              [ngClass]="{ 'is-invalid': f?.name.errors }">
+            <div *ngIf="f?.name.errors" class="invalid-feedback">
+              <div *ngIf="f?.name.errors.required">Name is required</div>
+            </div>
+          </mat-form-field>
+        </div>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Location</p>
+            <p>{{data?.location}}</p>
+          </div>
+          <mat-form-field class="example-full-width" *ngIf="editing == 1">
+            <mat-label for="location">Location</mat-label>
+            <input matInput formControlName="location" placeholder="location"
+              [ngClass]="{ 'is-invalid': f?.location.errors }">
+            <div *ngIf="f?.location.errors" class="invalid-feedback">
+              <div *ngIf="f?.location.errors.required">Location is required</div>
+            </div>
+          </mat-form-field>
+        </div>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Genre</p>
+            <p>{{data?.genre}}</p>
+          </div>
+          <mat-form-field class="example-full-width" *ngIf="editing == 1">
+            <mat-label for="genre">Genre</mat-label>
+            <input matInput formControlName="genre" placeholder="genre"
+              [ngClass]="{ 'is-invalid': f?.genre.errors }">
+            <div *ngIf="f?.genre.errors" class="invalid-feedback">
+              <div *ngIf="f?.genre.errors.required">Genre is required</div>
+            </div>
+          </mat-form-field>
+        </div>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">description</p>
+            <p>{{data?.description}}</p>
+          </div>
+          <mat-form-field class="example-full-width" *ngIf="editing == 1">
+            <mat-label for="description">Description</mat-label>
+            <input matInput formControlName="description" placeholder="description"
+              [ngClass]="{ 'is-invalid': f?.description.errors }">
+            <div *ngIf="f?.description.errors" class="invalid-feedback">
+              <div *ngIf="f?.description.errors.required">Description is required</div>
+            </div>
+          </mat-form-field>
+        </div>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Bio</p>
+            <p>{{data?.bio}}</p>
+          </div>
+          <mat-form-field class="example-full-width" *ngIf="editing == 1">
+            <mat-label for="bio">Bio</mat-label>
+              <textarea matInput formControlName="bio" placeholder="bio"
+              [ngClass]="{ 'is-invalid': f?.bio.errors }">
+              </textarea>
+            <div *ngIf="f?.bio.errors" class="invalid-feedback">
+              <div *ngIf="f?.bio.errors.required">Bio is required</div>
+            </div>
+          </mat-form-field>
+        </div>
+
+        <h3>Imagery</h3>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Profile Image</p>
+            <img *ngIf="data?.profile_image" src="{{ data?.profile_image_img }}" width="120" />
+            <img *ngIf="!data?.profile_image" src="./assets/images/intrologo.png" width="120" />
+          </div>
+          <app-upload-single *ngIf="editing == 1" (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="data?.profile_image" [group]="currentGroup"></app-upload-single>
+        </div>
+
+        <div class="item">
+          <div class="label-value" *ngIf="editing == 0">
+            <p class="label">Profile Banner Image</p>
+            <img *ngIf="data?.profile_banner_image" src="{{ data?.profile_banner_image_img }}" width="120" />
+            <img *ngIf="!data?.profile_banner_image" src="./assets/images/intrologo.png" width="120" />
+          </div>
+            <app-upload-single *ngIf="editing == 1" (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="data?.profile_banner_image" [group]="currentGroup"></app-upload-single>
+        </div>
+
+
+        <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="editProfile()">
+          edit
+        </div>
+        <div id="cancelBtn" class="material-icons" *ngIf="editing === 1" (click)="cancelEdit()">
+          cancel
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>
 </div>

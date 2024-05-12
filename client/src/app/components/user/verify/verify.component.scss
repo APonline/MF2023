@@ -19,3 +19,45 @@ mat-card {
     }
   }
 }
+
+h5 {
+  margin:0 auto;
+}
+
+h2 {
+  color: #d6d6d6;
+}
+
+.tna {
+  margin-top: 40px;
+    width: 1000px;
+    box-sizing: border-box;
+    position: relative;
+    min-height: 400px;
+
+  .content {
+    width: calc(100% - 40px);
+    height: 350px;
+    overflow: auto;
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-sizing: border-box;
+    color: #000;
+    position: absolute;
+    top: 25px;
+    display:block;
+
+    h1 {
+      margin-bottom: 50px;
+    }
+
+    p {
+      margin:10px 0 20px 0;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+}

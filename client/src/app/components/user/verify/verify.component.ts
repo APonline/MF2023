@@ -10,6 +10,8 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class VerifyComponent implements OnInit {
   verified = 0;
+  tna = 0;
+  currentUser;
 
   constructor(private router: Router, private route: ActivatedRoute, private authenticationService: AuthenticationService, private user: UserService) {
     this.route.queryParams.subscribe(params => {
@@ -17,14 +19,14 @@ export class VerifyComponent implements OnInit {
       let username = params['username'];
       let email = params['email'];
 
-      const user = {
+      this.currentUser = {
         id,
         username,
         email
       }
-      this.user.verify(user.id).subscribe({
+      this.user.verify(this.currentUser.id).subscribe({
         next: (res) => {
-        this.verified = res.tna;
+          this.verified = res.verified;
         },
         error: (e) => console.error(e)
       });
@@ -36,9 +38,18 @@ export class VerifyComponent implements OnInit {
     this.checkVerified();
   }
 
+  submitTNA() {
+    this.user.tna(this.currentUser.id).subscribe({
+      next: (res) => {
+        this.tna = res.tna;
+      },
+      error: (e) => console.error(e)
+    });
+  }
+
   checkVerified() {
     setTimeout(() => {
-      if (this.verified !== 1) {
+      if (this.tna !== 1) {
         this.checkVerified();
       } else {
         this.router.navigate(['/']);

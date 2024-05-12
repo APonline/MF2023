@@ -24,7 +24,8 @@ module.exports = function(app) {
     app.put(`/api/v1/${itemTopic}/online/:id`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
     app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
     app.get(`/api/v1/${itemTopic}/passwordReset`, controller.requestPassword );
-    app.get(`/api/v1/${itemTopic}/verify`, controller.verifyUser );
+    app.put(`/api/v1/${itemTopic}/verify/:id`, controller.verifyUser ); 
+    app.put(`/api/v1/${itemTopic}/tna/:id`, controller.tnaUser ); 
 
     app.get(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
     app.put(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
