@@ -15,9 +15,9 @@ const uniqueCredentials = require('../../mailTemplates/signup');
 
 let datetime = new Date();
 let lastLogin =
+datetime.getFullYear() + "-" +
 ("00" + (datetime.getMonth() + 1)).slice(-2) + "-" +
-("00" + datetime.getDate()).slice(-2) + "-" +
-datetime.getFullYear() + " " +
+("00" + datetime.getDate()).slice(-2) + " " +
 ("00" + datetime.getHours()).slice(-2) + ":" +
 ("00" + datetime.getMinutes()).slice(-2) + ":" +
 ("00" + datetime.getSeconds()).slice(-2);

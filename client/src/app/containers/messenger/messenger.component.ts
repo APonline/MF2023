@@ -164,8 +164,10 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       this.currChatUser = user;
 
       this.user.getChatHistoryWith('user', this.currentUser.id, this.currChatUser.id).subscribe(res => {
-        this.currChatLog = res.data.msgs;
-        this.scrollToBottom();
+        if(res.data.msgs != null){
+          this.currChatLog = res.data.msgs;
+          this.scrollToBottom();
+        }
 
         this.socketService.setupChatConnection('user', this.currentUser, this.currChatUser.id, res.title);
         this.socketService.chatTyping$.subscribe(r => {
