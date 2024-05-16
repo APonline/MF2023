@@ -52,7 +52,7 @@ export class VerifyComponent implements OnInit {
       if (this.tna !== 1) {
         this.checkVerified();
       } else {
-        this.router.navigate(['/']);
+        this.router.navigate(['/projects']);
       }
     }, 3000);
   }

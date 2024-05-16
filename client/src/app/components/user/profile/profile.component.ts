@@ -59,16 +59,16 @@ export class ProfileComponent implements OnInit {
     this.profileForm.controls['phone'].setValue(this.currentUser.phone);
     this.profileForm.controls['city'].setValue(this.currentUser.city);
     this.profileForm.controls['country'].setValue(this.currentUser.country);
-    this.profileForm.controls['age'].setValue( (this.currentUser.age == '0' ? '' : this.currentUser.age) );
-    this.profileForm.controls['gender'].setValue( (this.currentUser.gender == '0' ? '' : this.currentUser.gender) );
-    this.profileForm.controls['birthday'].setValue( (this.currentUser.birthday == '0' ? '' : this.currentUser.birthday) );
+    this.profileForm.controls['age'].setValue(this.currentUser.age);
+    this.profileForm.controls['gender'].setValue(this.currentUser.gender);
+    this.profileForm.controls['birthday'].setValue(this.currentUser.birthday);
     this.profileForm.controls['date_joined'].setValue(this.currentUser.date_joined);
     this.profileForm.controls['last_login'].setValue(this.currentUser.last_login);
     this.profileForm.controls['login_count'].setValue(this.currentUser.login_count);
     this.profileForm.controls['profile_url'].setValue(this.currentUser.profile_url);
     this.profileForm.controls['profile_image'].setValue(this.currentUser.profile_image);
 
-    if(this.currentUser.profile_image == 'default'){
+    if(this.currentUser.profile_image != 'default'){
       await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
         this.userImage = res[0];
       });

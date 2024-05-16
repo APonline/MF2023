@@ -115,7 +115,7 @@
 
           <div class="label-value" *ngIf="editing == 0">
             <p class="label">Age:</p>
-            <p>{{ currentUser.age }}</p>
+            <p>{{ currentUser.age == '0' ? '' : currentUser.age }}</p>
           </div>
           <mat-form-field class="example-full-width" *ngIf="editing == 1">
             <mat-label for="age">Age</mat-label>
@@ -128,7 +128,7 @@
 
           <div class="label-value" *ngIf="editing == 0">
             <p class="label">Gender:</p>
-            <p>{{ currentUser.gender }}</p>
+            <p>{{ currentUser.gender == '0' ? '' : currentUser.gender }}</p>
           </div>
           <mat-form-field class="example-full-width" *ngIf="editing == 1">
             <mat-label for="gender">Gender</mat-label>
@@ -141,7 +141,7 @@
 
           <div class="label-value" *ngIf="editing == 0">
             <p class="label">Birthday:</p>
-            <p>{{ currentUser.birthday }}</p>
+            <p>{{ currentUser.birthday == '0' ? '' : currentUser.birthday }}</p>
           </div>
           <mat-form-field class="example-full-width" *ngIf="editing == 1">
             <mat-label for="birthday">Birthday</mat-label>

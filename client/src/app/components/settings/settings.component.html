@@ -4,7 +4,9 @@
   <div class="glass">
     <mat-card>
       <h2>Settings</h2>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+      <h4>No Settings currently.</h4>
+      <!-- <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
             <mat-form-field class="example-full-width">
               <mat-label for="firstname">First Name</mat-label>
@@ -59,14 +61,14 @@
               <input matInput formControlName="country" placeholder="country" [ngClass]="{ 'is-invalid': f.country.errors }">
             </mat-form-field>
           </div>
-          <!--<div class="form-group">
+          <div class="form-group">
             <mat-form-field color="primary" appearance="fill">
               <mat-label>Inherited calendar color</mat-label>
               <input matInput [matDatepicker]="birthday" formControlName="birthday">
               <mat-datepicker-toggle matSuffix [for]="birthday"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
             </mat-form-field>
-          </div>-->
+          </div>
           <div class="form-group">
             <mat-form-field class="example-full-width">
               <mat-label for="password">Password</mat-label>
@@ -76,15 +78,16 @@
               </div>
             </mat-form-field>
           </div>
-        </form>
-          <div class="form-group button-group-center">
-            <button (click)="cancel()" mat-raised-button color="primary">
-              Cancel
-            </button>
-            <button (click)="registerUser()" [disabled]="loading" mat-raised-button color="primary">
-                Register
-            </button>
-          </div>
+
+        <div class="form-group button-group-center">
+          <button (click)="cancel()" mat-raised-button color="primary">
+            Cancel
+          </button>
+          <button (click)="registerUser()" [disabled]="loading" mat-raised-button color="primary">
+              Register
+          </button>
+        </div>
+      </form> -->
     </mat-card>
   </div>
 </div>
