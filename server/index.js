@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
+process.env.TZ = 'America/Toronto'
 
 global.__basedir = __dirname;
 global.baseUrl = "https://musefactory.app";
