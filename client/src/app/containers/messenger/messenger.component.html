@@ -1,5 +1,5 @@
 <div id="messenger" [ngClass]="messenger ? 'active' : ''">
-  <div class="glassSolid" style="padding:0px;position:absolute;height:100%;">
+  <div class="glassSolid" style="padding:0px;position:absolute;height:100%;overflow-y:auto">
     <button id="messengerBtn" class="material-icons" title='Messenger' (click)="openMessenger()">
       chat <span class="mat-icon-word">MF Messenger</span> <span><i class="material-icons">{{chaticon}}</i></span>
     </button>
@@ -12,8 +12,8 @@
           <img src="{{ project?.display?.display}}" alt="{{ project?.display?.name}}" />
         </div>
         <div class="content">
-          <h4>{{project.artists.name}}</h4>
-          <p>{{project.artists.profile_url}}</p>
+          <h4>{{project?.artists?.name}}</h4>
+          <p>{{project?.artists?.profile_url}}</p>
         </div>
       </div>
     </div>
@@ -36,115 +36,115 @@
       </div>
     </div>
 
-    <div class="box chat" [ngClass]="{'': mode != 'chat', 'active': mode == 'chat', 'hidden': !messenger, 'show': messenger}">
-      <div class="currUser">
-        <div class="currUserTop" *ngIf="currType == 'group'; else chatUser">
+  </div>
+  <div class="box chat" [ngClass]="{'': mode != 'chat', 'active': mode == 'chat', 'hidden': !messenger, 'show': messenger}">
+    <div class="currUser">
+      <div class="currUserTop" *ngIf="currType == 'group'; else chatUser">
+        <div class="backtoList" (click)="closeChat()">
+          <i class="material-icons" >arrow_back_ios_new</i>
+        </div>
+        <div class="imgBox">
+          <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
+            <ng-template #hasImage>
+              <img src="{{ currChatUser?.display}}" alt="{{ currChatUser?.name}}" />
+            </ng-template>
+        </div>
+        <div class="content">
+          <h4>{{currChatUser.name}}</h4>
+          <p>{{currChatUser.url}}</p>
+        </div>
+      </div>
+
+      <ng-template #chatUser>
+        <div class="currUserTop" >
           <div class="backtoList" (click)="closeChat()">
             <i class="material-icons" >arrow_back_ios_new</i>
           </div>
           <div class="imgBox">
             <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
               <ng-template #hasImage>
-                <img src="{{ currChatUser?.display}}" alt="{{ currChatUser?.name}}" />
+                <img src="{{ currChatUser?.display?.display}}" alt="{{ currChatUser?.display?.name}}" />
               </ng-template>
           </div>
           <div class="content">
-            <h4>{{currChatUser.name}}</h4>
-            <p>{{currChatUser.url}}</p>
+            <h4>{{currChatUser.username}}</h4>
+            <p>{{currChatUser.firstname}} {{currChatUser.lastname}}</p>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="chat-log" #scrollMe>
+
+      <ng-container *ngFor="let chat of currChatLog">
+        <div class="chatMsgContainer" *ngIf="currType == 'group'; else chatUserLog">
+          <div class="blurb tri-right" [ngClass]="chat.userId == currentUser.id ? 'sender right-in':'receiver left-in'">
+            <p class="postedby">{{chat.username}}</p>
+
+            <img class="tinyimg" [src]="chat.userImg"  />
+            <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+            </p>
+            <span class="timestamp">{{chat.date}} {{chat.time}}</span>
           </div>
         </div>
 
-        <ng-template #chatUser>
-          <div class="currUserTop" >
-            <div class="backtoList" (click)="closeChat()">
-              <i class="material-icons" >arrow_back_ios_new</i>
-            </div>
-            <div class="imgBox">
-              <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
-                <ng-template #hasImage>
-                  <img src="{{ currChatUser?.display?.display}}" alt="{{ currChatUser?.display?.name}}" />
-                </ng-template>
-            </div>
-            <div class="content">
-              <h4>{{currChatUser.username}}</h4>
-              <p>{{currChatUser.firstname}} {{currChatUser.lastname}}</p>
+        <ng-template #chatUserLog>
+          <div class="chatMsgContainer">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+              <p class="postedby">{{chat.username}}</p>
+
+              <img class="tinyimg" [src]="chat.userImg"  />
+              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+              </p>
+              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
             </div>
           </div>
         </ng-template>
-      </div>
 
-      <div class="chat-log" #scrollMe>
+      </ng-container>
 
-        <ng-container *ngFor="let chat of currChatLog">
-          <div class="chatMsgContainer" *ngIf="currType == 'group'; else chatUserLog">
-            <div class="blurb tri-right" [ngClass]="chat.userId == currentUser.id ? 'sender right-in':'receiver left-in'">
-              <p class="postedby">{{chat.username}}</p>
+      <ng-container *ngFor="let chat of currNewChatLog">
+        <div class="chatMsgContainer" *ngIf="currType == 'group'; else chatUserLogNew">
+          <div class="blurb tri-right" [ngClass]="chat.userId == currentUser.id ? 'sender right-in':'receiver left-in'">
+            <p class="postedby">{{chat.username}}</p>
 
-              <img class="tinyimg" [src]="chat.userImg"  />
-              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
-              </p>
-              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
-            </div>
+            <img class="tinyimg" [src]="chat.userImg"  />
+            <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+            </p>
+            <span class="timestamp">{{chat.date}} {{chat.time}}</span>
           </div>
-
-          <ng-template #chatUserLog>
-            <div class="chatMsgContainer">
-              <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
-                <p class="postedby">{{chat.username}}</p>
-
-                <img class="tinyimg" [src]="chat.userImg"  />
-                <p class="body" [innerHTML]="chat.body | sanitizeHtml">
-                </p>
-                <span class="timestamp">{{chat.date}} {{chat.time}}</span>
-              </div>
-            </div>
-          </ng-template>
-
-        </ng-container>
-
-        <ng-container *ngFor="let chat of currNewChatLog">
-          <div class="chatMsgContainer" *ngIf="currType == 'group'; else chatUserLogNew">
-            <div class="blurb tri-right" [ngClass]="chat.userId == currentUser.id ? 'sender right-in':'receiver left-in'">
-              <p class="postedby">{{chat.username}}</p>
-
-              <img class="tinyimg" [src]="chat.userImg"  />
-              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
-              </p>
-              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
-            </div>
-          </div>
-
-          <ng-template #chatUserLogNew>
-            <div class="chatMsgContainer">
-              <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
-                <p class="postedby">{{chat.username}}</p>
-
-                <img class="tinyimg" [src]="chat.userImg"  />
-                <p class="body" [innerHTML]="chat.body | sanitizeHtml">
-                </p>
-                <span class="timestamp">{{chat.date}} {{chat.time}}</span>
-              </div>
-            </div>
-          </ng-template>
-        </ng-container>
-
-        <div class="blurb typing tri-right receiver left-in" *ngIf="currIsTyping">
-          <svg height="40" width="40">
-            <circle class="dot" cx="10" cy="20" r="3" style="fill:grey;" />
-            <circle class="dot" cx="20" cy="20" r="3" style="fill:grey;" />
-            <circle class="dot" cx="30" cy="20" r="3" style="fill:grey;" />
-          </svg>
         </div>
-      </div>
-      <div class="chat-input">
-          <input type="text" [(ngModel)]="myMsg" name="chatMsg" placeholder="msg..."
-          (keyup)="isTyping($event.target.value)"
-          (keyup.enter)="hasTyped()" />
-          <button class="msgSubmit" (click)="hasTyped()">
-            <i class="material-icons">send</i>
-          </button>
 
+        <ng-template #chatUserLogNew>
+          <div class="chatMsgContainer">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+              <p class="postedby">{{chat.username}}</p>
+
+              <img class="tinyimg" [src]="chat.userImg"  />
+              <p class="body" [innerHTML]="chat.body | sanitizeHtml">
+              </p>
+              <span class="timestamp">{{chat.date}} {{chat.time}}</span>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <div class="blurb typing tri-right receiver left-in" *ngIf="currIsTyping">
+        <svg height="40" width="40">
+          <circle class="dot" cx="10" cy="20" r="3" style="fill:grey;" />
+          <circle class="dot" cx="20" cy="20" r="3" style="fill:grey;" />
+          <circle class="dot" cx="30" cy="20" r="3" style="fill:grey;" />
+        </svg>
       </div>
+    </div>
+    <div class="chat-input">
+        <input type="text" [(ngModel)]="myMsg" name="chatMsg" placeholder="msg..."
+        (keyup)="isTyping($event.target.value)"
+        (keyup.enter)="hasTyped()" />
+        <button class="msgSubmit" (click)="hasTyped()">
+          <i class="material-icons">send</i>
+        </button>
+
     </div>
   </div>
 </div>

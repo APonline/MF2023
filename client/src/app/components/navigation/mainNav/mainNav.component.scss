@@ -219,9 +219,10 @@
         a {
           color: #fff;
           font-size: 14px;
-          padding: 0 10px;
+          padding: 0 12px;
           letter-spacing: 1px;
           cursor: pointer;
+          transition: color 0.5s ease-in-out;
         }
       }
     }
@@ -251,10 +252,11 @@
     .navbar-nav {
       display:flex;
       padding: 5px 0;
+
       a {
         color: #fff;
         font-size: 14px;
-        padding: 0 10px;
+        padding: 0 12px;
         letter-spacing: 1px;
         cursor: pointer;
         font-family: "Thin_lc" !important;
@@ -272,4 +274,17 @@
   a {
     letter-spacing: 3px!important;
   }
+}
+
+.icon {
+  font-size: 24px!important;
+  color:#fff!important;
+}
+a:hover {
+  color:rgb(255, 0, 0)!important;
+}
+a.disabled, a.disabled:hover {
+  pointer-events: none;
+  cursor: default;
+  color:gray!important;
 }

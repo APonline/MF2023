@@ -21,6 +21,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
   @Input() toggle: any;
 
   myProjects: any = [];
+  projectNames = [];
   currentUser: user;
   userList$: any = [];
   messenger: boolean;
@@ -57,23 +58,41 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
     this.currChatUser = this.defaultUser;
 
-    this.myProjects = [];
-    this.projects.getAllForUser(this.currentUser.id).subscribe( res => {
-      for(let i=0; i<res.length; i++){
-        if(res[i] != undefined || res[i].owner != 0){
-          if(res[i].artists.profile_image != 'default' && res[i].artists.profile_image != ''){
-            let group = res[i].artists.name.replace(/\s+/g, '-').toLowerCase();
-             this.uploadService.getFile(0, res[i].artists.profile_image, group, 'png').subscribe(r => {
-              res[i]['display'] = r[0];
-            });
-          }else{
-            res[i]['display'] = { display: './assets/images/intrologo.png', name: 'default', type: 'png', url: './assets/images/intrologo.png' };
+    // this.projects.projects$.subscribe(r => {
+    //   if(r != undefined && r != ''){
+    //     this.myProjects.push(r);
+    //   }
+    // });
+    this.projects.getAllForUser(this.currentUser.id);
+
+    this.projects.projects$.subscribe(r => {
+        if(r != undefined && r != ''){
+          console.log('projIDs: ',this.projectNames)
+          if(!this.projectNames.includes(r.id)){
+            console.log('id: ',r)
+            this.projectNames.push(r.id);
+            this.myProjects.push(r);
           }
         }
-      }
-
-      this.myProjects = res;
     });
+
+    // this.projects.getAllForUser(this.currentUser.id).subscribe( async res => {
+    //   for(let i=0; i<res.length; i++){
+    //     if(res[i] != undefined || res[i].owner != 0){
+    //       if(res[i].artists.profile_image != 'default' && res[i].artists.profile_image != ''){
+    //         let group = res[i].artists.name.replace(/\s+/g, '-').toLowerCase();
+    //          this.uploadService.getFile(0, res[i].artists.profile_image, group, 'png').subscribe(r => {
+    //           res[i]['display'] = r[0];
+    //         });
+    //       }else{
+    //         res[i]['display'] = { display: './assets/images/intrologo.png', name: 'default', type: 'png', url: './assets/images/intrologo.png' };
+    //       }
+    //     }
+    //   }
+
+    //   console.log(res)
+    //   this.myProjects = res;
+    // });
   }
 
   async ngOnInit() {
@@ -81,7 +100,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       this.socketService.setupSocketConnection(this.currentUser);
       this.userList$ = [];
 
-      this.socketService.getNewUsers().subscribe(async res=> {
+      this.socketService.getNewUsers().subscribe(async res => {
         for(let i=0; i<res.length; i++){
           if(res[i].username == this.currentUser.username){
             res.splice(i, 1);
@@ -99,7 +118,6 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       });
     }
 
-    console.log(this.currentUser)
     if(this.currentUser.profile_image != 'default'){
       // await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
       //   let blobbed = this.imgBlob(res[0].display.slice(22));
@@ -129,18 +147,21 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     if(type == 'group'){
       this.currType = 'group';
       this.currChatUser = {
-        id: user.artists.id,
-        name: user.artists.name,
-        display: user.display.display,
-        url: user.artists.profile_url
+        id: user?.artists?.id,
+        name: user?.artists?.name,
+        display: user?.display?.display,
+        url: user?.artists?.profile_url
       }
       let group = user.artists.profile_url;
 
       this.user.getChatHistoryWith(group, this.currentUser.id, this.currChatUser.id).subscribe(res => {
-        if(res.data.msgs != null){
-          this.currChatLog = res.data.msgs;
-          this.scrollToBottom();
+        if(res.data != null){
+          if(res.data.msgs != null){
+            this.currChatLog = res.data.msgs;
+            this.scrollToBottom();
+          }
         }
+
 
 
         this.socketService.setupChatConnection(group, this.currentUser, this.currChatUser.id, group);

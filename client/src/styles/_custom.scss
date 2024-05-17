@@ -132,6 +132,14 @@ table {
   --alt-font: "Roboto", sans-serif;
 }
 
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
 $custom-typography: mat-typography-config(
   $font-family: var(--main-font),
 );

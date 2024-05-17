@@ -11,31 +11,32 @@ const Users = db.user;
 let datetime = new Date(); 
 
 exports[`create${itemTopic}`] = async (req, res) => {
-    try{
+    //try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { user_id: req.body.user_id, artist_id: req.body.artist_id } });
+        await Item.findOne({ where: { user_id: newItem.user_id, artist_id: newItem.artist_id } }).then(async r => {
 
-        if (item == null) { 
-            newItem['owner_group'] = req.body.artist_id;
-
+          try {
             let result = await Item.create( newItem );
 
             if (result) {
-                return res.status(200).send( result );
+              return res.status(200).send( result );
             }else{
                 return res.status(500).send({ result: null });
             }
-        }else{
+
+          } catch (error) {
             return res.status(500).send({
-                message: `Unable to create ${itemTopic}! - `
+              message: `Unable to create ${itemTopic}! - ` + error.message
             });
-        }
-    } catch (error) {
-        return res.status(500).send({
-            message: `Unable to create ${itemTopic}! - ` + error.message
+          }
         });
-    }
+        
+    // } catch (error) {
+    //     return res.status(500).send({
+    //         message: `Unable to create ${itemTopic}! - ` + error.message
+    //     });
+    // }
 }
 exports[`get${itemTopic}`] = async (req, res) => {
     try{

@@ -76,6 +76,7 @@ import { MerchCategoriesFormComponent } from './components/new-item-form/new-ite
 import { CampaignsFormComponent } from './components/new-item-form/new-item-types/campaigns/campaigns-form.component';
 import { UploadFileComponent } from './components/upload-single/upload-single.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
+import { NewProjectUpdateComponent } from './components/new-project-update/new-project-update.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -134,7 +135,8 @@ import { UploadFilesComponent } from './components/upload-multi/upload-multi.com
     MerchCategoriesFormComponent,
     CampaignsFormComponent,
     UploadFileComponent,
-    UploadFilesComponent
+    UploadFilesComponent,
+    NewProjectUpdateComponent
   ],
   imports: [
     AppRoutingModule,

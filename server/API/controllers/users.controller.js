@@ -104,7 +104,6 @@ myClass[`delete${itemTopic}`] = async (req, res) => {
     }
 }
 myClass[`verify${itemTopic}`] = async (req, res) => {
-    console.log(req.params.id)
     const userLoginCount = await Item.update(
         {
             verified: 1,
@@ -210,14 +209,16 @@ myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
         if(group != 'user'){
             fs.readFile(directoryPath+group+'.json', "utf8", (err, data) => {
                 if (!err && data) {
+                    console.log('A')
                     return res.status(200).send( {title: group+'.json', data: JSON.parse(data)} );
                 }else{
+                    console.log('B')
                     let createStream = fs.createWriteStream(`${directoryPath}${group}.json`);
                     createStream.end();
 
                     let json = {msgs: []};
                     
-                    fs.writeFile(directoryPath+forwards, JSON.stringify(json), (err, data) => {
+                    fs.writeFile(`${directoryPath}${group}.json`, JSON.stringify(json), (err, data) => {
                         return res.status(200).send( {title: group+'.json', data: data} );
                     }) 
                 }

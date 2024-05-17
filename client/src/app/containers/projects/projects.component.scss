@@ -10,6 +10,16 @@
   padding: 120px 16px 40px;
 }
 
+#create {
+  position: absolute;
+  top: 20px;
+  right: 010px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 30px;
+  cursor: pointer;
+}
 
 
 .box{
@@ -22,7 +32,7 @@
     margin:3px 0;
     cursor:pointer;
     transition: 0.5s;
-    padding: 8px 20px;
+    padding: 8px 10px;
 
     .content {
       display: flex;
@@ -47,6 +57,8 @@
       height:60px;
       border-radius: 50%;
       margin-right:10px;
+      min-width: 60px;
+    min-height: 60px;
 
       img {
         position:absolute;
