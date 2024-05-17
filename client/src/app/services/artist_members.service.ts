@@ -58,13 +58,6 @@ export class ArtistMembersService {
   create(data: any): Observable<any> {
     let project = this.http.post(baseUrl, data);
 
-    // project.subscribe(r=>{
-    //   console.log(r);
-    //   this.projects$.next(r);
-    // })
-    // this.projects$.next(project);
-    // this.getAllForUser(data.user_id);
-
     return project;
   }
 
