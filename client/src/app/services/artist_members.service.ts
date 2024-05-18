@@ -28,7 +28,6 @@ export class ArtistMembersService {
     let project =  this.http.get<any[]>(`${baseUrl}/user/${id}`);
 
     project.subscribe(r => {
-      console.log('YO: ',r);
       r.map(res => {
         if(res.artists.profile_image != 'default' && res.artists.profile_image != ''){
           let group = res.artists.name.replace(/\s+/g, '-').toLowerCase();

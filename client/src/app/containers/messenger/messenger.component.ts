@@ -67,9 +67,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
     this.projects.projects$.subscribe(r => {
         if(r != undefined && r != ''){
-          console.log('projIDs: ',this.projectNames)
           if(!this.projectNames.includes(r.id)){
-            console.log('id: ',r)
             this.projectNames.push(r.id);
             this.myProjects.push(r);
           }
