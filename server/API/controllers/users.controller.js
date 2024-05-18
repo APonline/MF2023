@@ -209,10 +209,8 @@ myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
         if(group != 'user'){
             fs.readFile(directoryPath+group+'.json', "utf8", (err, data) => {
                 if (!err && data) {
-                    console.log('A')
                     return res.status(200).send( {title: group+'.json', data: JSON.parse(data)} );
                 }else{
-                    console.log('B')
                     let createStream = fs.createWriteStream(`${directoryPath}${group}.json`);
                     createStream.end();
 

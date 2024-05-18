@@ -44,14 +44,14 @@
           <i class="material-icons" >arrow_back_ios_new</i>
         </div>
         <div class="imgBox">
-          <img *ngIf="currChatUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
+          <img *ngIf="currChatUser?.profile_image; else hasImage" src="./assets/images/intrologo.png" />
             <ng-template #hasImage>
               <img src="{{ currChatUser?.display}}" alt="{{ currChatUser?.name}}" />
             </ng-template>
         </div>
         <div class="content">
-          <h4>{{currChatUser.name}}</h4>
-          <p>{{currChatUser.url}}</p>
+          <h4>{{currChatUser?.name}}</h4>
+          <p>{{currChatUser?.url}}</p>
         </div>
       </div>
 
@@ -67,8 +67,8 @@
               </ng-template>
           </div>
           <div class="content">
-            <h4>{{currChatUser.username}}</h4>
-            <p>{{currChatUser.firstname}} {{currChatUser.lastname}}</p>
+            <h4>{{currChatUser?.username}}</h4>
+            <p>{{currChatUser?.firstname}} {{currChatUser?.lastname}}</p>
           </div>
         </div>
       </ng-template>
@@ -90,7 +90,7 @@
 
         <ng-template #chatUserLog>
           <div class="chatMsgContainer">
-            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser?.id ? 'sender right-in':'receiver left-in'">
               <p class="postedby">{{chat.username}}</p>
 
               <img class="tinyimg" [src]="chat.userImg"  />
@@ -117,7 +117,7 @@
 
         <ng-template #chatUserLogNew>
           <div class="chatMsgContainer">
-            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser.id ? 'sender right-in':'receiver left-in'">
+            <div class="blurb tri-right" [ngClass]="chat.userId != currChatUser?.id ? 'sender right-in':'receiver left-in'">
               <p class="postedby">{{chat.username}}</p>
 
               <img class="tinyimg" [src]="chat.userImg"  />

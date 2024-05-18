@@ -3,7 +3,7 @@ import { user } from 'src/app/models/users.model';
 import { UserService } from '../../services/user.service';
 import { AuthenticationService } from '../../services/authentication.service';
 import { SocketioService } from 'src/app/services/socketio.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { environment } from 'src/environments/environment';
 import linkifyit from 'linkify-it';
@@ -19,6 +19,8 @@ const linkify = linkifyit();
 export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   @Input() toggle: any;
+  chattingSubX: Subscription;
+  chatSubX: Subscription;
 
   myProjects: any = [];
   projectNames = [];
@@ -44,6 +46,9 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     }
   };
 
+  chatSub = false;
+  chattingSub = false;
+
   constructor(
     private authenticationService: AuthenticationService,
     private user: UserService,
@@ -58,11 +63,6 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
     this.currChatUser = this.defaultUser;
 
-    // this.projects.projects$.subscribe(r => {
-    //   if(r != undefined && r != ''){
-    //     this.myProjects.push(r);
-    //   }
-    // });
     this.projects.getAllForUser(this.currentUser.id);
 
     this.projects.projects$.subscribe(r => {
@@ -76,23 +76,6 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
         }
     });
 
-    // this.projects.getAllForUser(this.currentUser.id).subscribe( async res => {
-    //   for(let i=0; i<res.length; i++){
-    //     if(res[i] != undefined || res[i].owner != 0){
-    //       if(res[i].artists.profile_image != 'default' && res[i].artists.profile_image != ''){
-    //         let group = res[i].artists.name.replace(/\s+/g, '-').toLowerCase();
-    //          this.uploadService.getFile(0, res[i].artists.profile_image, group, 'png').subscribe(r => {
-    //           res[i]['display'] = r[0];
-    //         });
-    //       }else{
-    //         res[i]['display'] = { display: './assets/images/intrologo.png', name: 'default', type: 'png', url: './assets/images/intrologo.png' };
-    //       }
-    //     }
-    //   }
-
-    //   console.log(res)
-    //   this.myProjects = res;
-    // });
   }
 
   async ngOnInit() {
@@ -119,10 +102,6 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     }
 
     if(this.currentUser.profile_image != 'default'){
-      // await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
-      //   let blobbed = this.imgBlob(res[0].display.slice(22));
-        //this.currentUser['userImg'] = this.sanitizer.bypassSecurityTrustUrl(blobbed);
-      //});
       this.currentUser['userImg'] = 'https://musefactory.app:3001/resources/static/users/'+this.currentUser.id+'/image/'+this.currentUser.profile_image+'';
     }else{
       this.currentUser['userImg'] = 'https://musefactory.app/assets/images/defaultprofile1.png';
@@ -144,6 +123,19 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
   goToChat(user, type) {
 
+    this.currChatLog = [];
+    this.currNewChatLog = [];
+
+    if(this.chatSub){
+      this.chatSubX.unsubscribe();
+      this.chatSub = false;
+    }
+
+    if(this.chattingSub){
+      this.chattingSubX.unsubscribe();
+      this.chattingSub = false;
+    }
+
     if(type == 'group'){
       this.currType = 'group';
       this.currChatUser = {
@@ -155,6 +147,7 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       let group = user.artists.profile_url;
 
       this.user.getChatHistoryWith(group, this.currentUser.id, this.currChatUser.id).subscribe(res => {
+
         if(res.data != null){
           if(res.data.msgs != null){
             this.currChatLog = res.data.msgs;
@@ -162,14 +155,15 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
           }
         }
 
-
-
         this.socketService.setupChatConnection(group, this.currentUser, this.currChatUser.id, group);
-        this.socketService.chatTyping$.subscribe(r => {
+
+        this.chattingSubX = this.socketService.chatTyping$.subscribe(r => {
+          this.chattingSub = true;
           this.currIsTyping = r;
         });
 
-        this.socketService.chat$.subscribe(r => {
+        this.chatSubX = this.socketService.chat$.subscribe(r => {
+          this.chatSub = true;
           if(r != undefined && r != ''){
             this.currNewChatLog.push(r);
             this.scrollToBottom();
@@ -185,17 +179,21 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       this.currChatUser = user;
 
       this.user.getChatHistoryWith('user', this.currentUser.id, this.currChatUser.id).subscribe(res => {
-        if(res.data.msgs != null){
-          this.currChatLog = res.data.msgs;
-          this.scrollToBottom();
+        if(res.data != null){
+          if(res.data.msgs != null){
+            this.currChatLog = res.data.msgs;
+            this.scrollToBottom();
+          }
         }
 
         this.socketService.setupChatConnection('user', this.currentUser, this.currChatUser.id, res.title);
-        this.socketService.chatTyping$.subscribe(r => {
+        this.chattingSubX = this.socketService.chatTyping$.subscribe(r => {
+          this.chattingSub = true;
           this.currIsTyping = r;
         });
 
-        this.socketService.chat$.subscribe(r => {
+        this.chatSubX = this.socketService.chat$.subscribe(r => {
+          this.chatSub = true;
           if(r != undefined && r != ''){
             this.currNewChatLog.push(r);
             this.scrollToBottom();
@@ -251,11 +249,16 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
   closeChat() {
     this.mode = 'list';
 
-    this.socketService.chat$.unsubscribe();
-    this.socketService.chatTyping$.unsubscribe();
-    this.socketService.chat.disconnect();
+    this.socketService.chat$.next(null);
+
     this.currChatLog = [];
     this.currNewChatLog = [];
+
+    this.chatSubX.unsubscribe();
+    this.chatSub = false;
+    this.chattingSubX.unsubscribe();
+    this.chattingSub = false;
+    this.socketService.chat.disconnect();
 
     setTimeout(()=> {
       this.currChatUser = this.defaultUser;
@@ -279,6 +282,8 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
   }
 
   ngOnDestroy() {
+    this.chatSubX.unsubscribe();
+    this.chattingSubX.unsubscribe();
     this.socketService.disconnect();
   }
 }
