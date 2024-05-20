@@ -32,6 +32,7 @@
     "material-community-components": "^10.0.0",
     "moment": "^2.29.4",
     "ng-mat-select-infinite-scroll": "^2.1.1",
+    "ngx-image-cropper": "^8.0.0",
     "nodemon": "^2.0.7",
     "rxjs": "~6.6.3",
     "socket.io-client": "^4.6.1",

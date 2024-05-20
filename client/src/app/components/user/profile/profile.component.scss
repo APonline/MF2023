@@ -38,6 +38,14 @@ mat-form-field {
   cursor: pointer;
 }
 
+#editImgBtn {
+  position: absolute;
+  bottom: 9px;
+  left: calc(50% - 10px);
+  cursor: pointer;
+  color: #fff;
+}
+
 #cancelBtn {
   position: absolute;
   top: 16px;
@@ -53,6 +61,7 @@ mat-form-field {
 }
 
 .profile-pic {
+  position:relative;
   margin:0 auto;
   width: 200px;
   height: 200px;
@@ -68,7 +77,8 @@ mat-form-field {
   img {
     transition: opacity .5s ease-in-out;
     opacity:0.6;
-    width: 100%;
+    width: 110%;
+    margin-left: -5%;
   }
 }
 .profile-pic:hover {

@@ -7,12 +7,14 @@
       <div class="form-group">
 
         <div class="label-value-img" *ngIf="editing == 0 || editing == 1">
-          <p class="profile-pic">
+          <div class="profile-pic">
             <img *ngIf="currentUser?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
             <ng-template #hasImage>
               <img src="{{ userImage?.display}}" alt="{{ userImage?.name}}" />
             </ng-template>
-          </p>
+
+            <div id="editImgBtn" class="material-icons" (click)="editProfileImage()">edit</div>
+          </div>
         </div>
 
         <h3>BASIC INFO</h3>

@@ -6,6 +6,8 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UserService } from 'src/app/services/user.service';
 import { user } from 'src/app/models/users.model';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ImageUpdateComponent } from '../image-update/image-update.component';
 
 @Component({
   selector: 'app-profile',
@@ -20,6 +22,7 @@ export class ProfileComponent implements OnInit {
   userImage: any;
 
   constructor(
+    public dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -85,6 +88,15 @@ export class ProfileComponent implements OnInit {
     this.editing = 1;
   }
 
+  editProfileImage() {
+    //this.editing = 1;
+    let obj = {
+      id: this.currentUser.id,
+      profile_image: this.currentUser.profile_image
+    }
+    this.openDialog(obj)
+  }
+
   resetPassword() {
     this.editing = 0;
     this.router.navigate(['/user/passwordReset']);
@@ -124,6 +136,24 @@ export class ProfileComponent implements OnInit {
     }
     await this.user.delete(user);
     this.router.navigate(['/logout']);
+  }
+
+
+  openDialog(obj) {
+    obj.action = 'Manage';
+    obj.tool = 'Profile Image';
+    const dialogRef = this.dialog.open(ImageUpdateComponent, {
+      panelClass: 'dialog-box',
+      width: '85%',
+      height: '80vh',
+      data:obj
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        // this.activeItem.emit({ action: result.event, data: result.data });
+      }
+    });
   }
 
 }
