@@ -77,6 +77,7 @@ import { CampaignsFormComponent } from './components/new-item-form/new-item-type
 import { UploadFileComponent } from './components/upload-single/upload-single.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 import { NewProjectUpdateComponent } from './components/new-project-update/new-project-update.component';
+import { ImageCropperComponent } from 'ngx-image-cropper';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -145,6 +146,7 @@ import { NewProjectUpdateComponent } from './components/new-project-update/new-p
     UserModule,
     BrowserAnimationsModule,
     BrowserModule,
+    ImageCropperComponent
   ],
   providers: [
     SocketioService,

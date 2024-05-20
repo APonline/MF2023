@@ -11,12 +11,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import moment from 'moment';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ImagesService } from 'src/app/services/images.service';
+import { ImageCropperComponent, ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
   selector: 'app-imageUpdate',
   templateUrl: './image-update.component.html',
-  styleUrls: ['./image-update.component.scss']
+  styleUrls: ['./image-update.component.scss'],
  })
 export class ImageUpdateComponent implements OnInit {
   currentUser: any;
@@ -45,6 +47,11 @@ export class ImageUpdateComponent implements OnInit {
 
   imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
 
+
+  //tut
+  imageChangedEvent: Event | null = null;
+  cropImgPreview:any="";
+
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -52,6 +59,7 @@ export class ImageUpdateComponent implements OnInit {
       private alertService: AlertService,
       private uploadService: FileUploadService,
       private imagesService: ImagesService,
+      private sanitizer: DomSanitizer,
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<ImageUpdateComponent>,
       private cdr: ChangeDetectorRef,
@@ -71,14 +79,8 @@ export class ImageUpdateComponent implements OnInit {
     })
     this.local_data = [{...data}];
 
-    //this.currentGroup = this.authenticationService.currentUserValue;
-    if(this.tool == 'artist'){
-      this.currentGroup = {name: this.local_data[0].name, id: this.local_data[0].id };
-    }else{
-      this.currentGroup = {name: 'Polarity', id:2};
-    }
+    this.currentGroup = {name: this.local_data[0].name, id: this.local_data[0].id };
 
-    this.requiresUploader();
   }
 
 
@@ -93,13 +95,6 @@ export class ImageUpdateComponent implements OnInit {
   async ngOnInit() {
   }
 
-  requiresUploader(){
-    if( this.uploaderNeeds.indexOf(this.tool) !== -1 ){
-      this.uploaderInstalled = true;
-      return true;
-    }
-  }
-
   dateAdjust(date) {
     return moment(date).format("YYYY-MM-DD");
   }
@@ -110,6 +105,30 @@ export class ImageUpdateComponent implements OnInit {
 
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
+  }
+
+  ///tut
+  onFileChange(event: any) {
+    this.imageChangedEvent = event;
+    console.log(this.imageChangedEvent)
+  }
+
+  cropImg(e:ImageCroppedEvent) {
+    //this.cropImgPreview = e.base64
+    this.cropImgPreview = this.sanitizer.bypassSecurityTrustUrl(e.objectUrl);
+
+  }
+
+  imgLoad(image: LoadedImage) {
+
+  }
+
+  initCropper() {
+
+  }
+
+  imgFailed() {
+    console.log('image failed to load)')
   }
 
 
