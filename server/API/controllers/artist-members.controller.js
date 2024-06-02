@@ -13,6 +13,7 @@ let datetime = new Date();
 exports[`create${itemTopic}`] = async (req, res) => {
     //try{
         let newItem = req.body;
+        console.log(newItem)
 
         await Item.findOne({ where: { user_id: newItem.user_id, artist_id: newItem.artist_id } }).then(async r => {
 

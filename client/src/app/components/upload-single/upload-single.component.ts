@@ -65,25 +65,14 @@ export class UploadFileComponent implements OnInit {
       this.currentUser = this.authenticationService.currentUserValue;
       //this.currentGroup = this.authenticationService.currentUserValue;
 
-      console.log(this.field, this.file, this.group)
     }
 
   ngOnInit(): void {
     this.currentGroup = this.group;
 
-    // if(this.field == 'title'){
-    //   console.log(this.file);
-    // }
-
     let type = this.file.split(".").pop();
 
     this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.name.replace(/\s+/g, '-').toLowerCase(), type);
-
-    // if(this.fileInfos){
-    //   this.fileInfos.subscribe(res => {
-    //     console.log("YOOO: ",res);
-    //   });
-    // }
 
   }
 

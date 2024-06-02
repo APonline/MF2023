@@ -1,0 +1,14 @@
+<div class="box">
+  <div class="list" [ngClass]="active ? 'active' : ''">
+    <div class="imgBox">
+      <img *ngIf="user?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
+        <ng-template #hasImage>
+          <img src="{{ user?.display?.display}}" alt="{{ user?.display?.name}}" />
+        </ng-template>
+    </div>
+    <div class="content">
+      <h4>{{user.username}}</h4>
+      <p>{{user.first_name}} {{user.last_name}}</p>
+    </div>
+  </div>
+</div>

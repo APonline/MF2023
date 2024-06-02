@@ -5,6 +5,8 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 ( itemTopic.substring(itemTopic.length - 1) == 's' ? itemTopic = itemTopic.slice(0, -1) : itemTopic = itemTopic);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
+const sequelize = require('sequelize');
+import { Op } from 'sequelize';
 
 const fs = require('fs');
 const jwt = require("jsonwebtoken");
@@ -14,6 +16,7 @@ const bcrypt = require("bcryptjs");
 const sendMailOut = require('../../mailserver');
 const uniqueCredentials = require('../../mailTemplates/signup');
 const deleteAccount = require('../../mailTemplates/deleteAccount');
+const { logging } = require("../../config/db.config");
 
 let datetime = new Date();
 let lastLogin =
@@ -60,6 +63,31 @@ myClass[`getAll${itemTopic}s`] = async (req, res) => {
         return res.status(500).send({
             message: `Unable to get ${itemTopic}s!`
         });
+    }
+}
+myClass[`findAll${itemTopic}s`] = async (req, res) => {
+    let u =req.params.user;
+    let result = await Item.findAll({ 
+        where: {
+            [Op.or]: [
+                {
+                    first_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('first_name')), 'LIKE', '%' + u + '%'),
+                }, 
+                {
+                    last_name: sequelize.where(sequelize.fn('LOWER', sequelize.col('last_name')), 'LIKE', '%' + u + '%'),
+                }, 
+                {
+                    username: sequelize.where(sequelize.fn('LOWER', sequelize.col('username')), 'LIKE', '%' + u + '%'),
+                }
+            ],
+            active: 1
+        },
+    });
+
+    if (result) {
+        return res.status(200).send( result );
+    }else{
+        return res.status(500).send({ result: null });
     }
 }
 myClass[`update${itemTopic}`] = async (req, res) => {

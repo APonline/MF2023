@@ -1,0 +1,134 @@
+@media (min-width:320px)  {
+  #card {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    max-height: 40px;
+    transition: max-height .3s ease-in-out;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    overflow-y:hidden;
+    overflow-x:hidden;
+    z-index: 888;
+    background-color: #151515;
+    border-radius: 16px;
+
+    .glass, .glassSolid{
+      border-bottom-left-radius: 0px;
+      border-bottom-right-radius: 0px;
+      min-height:initial;
+    }
+  }
+
+  #card.active {
+    transition: max-height .5s ease-in-out;
+    max-height: calc(100% - 150px);
+    overflow-y:auto;
+    overflow-x: hidden;
+  }
+
+
+  #cardBtn{
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    position:fixed;
+    bottom:0px;
+    width:100%;
+    z-index:889;
+    right: 0px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    line-height: 35px;
+    cursor:pointer;
+    background-color: #242424;
+    border: none;
+    color: #fff;
+    letter-spacing: 2px;
+  }
+
+  #cardBtn:hover{
+    color:#bbbbbb;
+    background-color: #292929;
+  }
+
+  .mat-icon-word{
+    font-size: 14px;
+    direction: initial;
+    white-space: unset;
+    word-wrap: unset;
+    font-family: "Thin_lc" !important;
+  }
+
+  li {
+    font-family: "Thin_lc" !important;
+  }
+
+
+  .box{
+
+    .list {
+      position:relative;
+      display:flex;
+      padding: 10px 0;
+      background: rgba(0,0,0, 0);
+      width: 77%;
+      margin: 3px auto;
+      cursor:pointer;
+      transition: 0.5s;
+      padding: 8px 20px;
+      border-radius: 6px;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      h2{
+
+      }
+      h4 {
+        font-size: 1.2em;
+      }
+      p {
+        font-size: .7em;
+      }
+    }
+
+    .imgBox {
+      overflow:hidden;
+      position:relative;
+      width:60px;
+      min-width:60px;
+      height:60px;
+      border-radius: 50%;
+      margin-right:10px;
+
+      img {
+        position:absolute;
+        top:0px;
+        left:0px;
+        width:100%;
+        height:100%;
+        max-width:60px;
+      }
+    }
+
+    .list:hover, .list.active {
+      background: linear-gradient(-90deg,rgba(255,45,45, 0.4) 0%,rgba(64,64,64,.2) 80%);
+      box-shadow: -11px 11px 20px rgba(0,0,0,0.2);
+      z-index:886;
+      transform:scale(1.05) translateX(2px);
+    }
+  }
+
+}
+@media (min-width:801px)  {  }
+@media (min-width:1200px) {
+
+}
+

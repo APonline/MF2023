@@ -7,7 +7,7 @@ import { ProfileComponent } from "src/app/components/user/profile/profile.compon
 import { PasswordResetComponent } from "src/app/components/user/passwordReset/passwordReset.component";
 import { VerifyComponent } from "src/app/components/user/verify/verify.component";
 import { ImageUpdateComponent } from "src/app/components/user/image-update/image-update.component";
-import { ImageCropperComponent } from "ngx-image-cropper";
+import { AngularCropperjsModule } from "angular-cropperjs";
 
 @NgModule({
   declarations: [
@@ -20,6 +20,7 @@ import { ImageCropperComponent } from "ngx-image-cropper";
   imports: [
     UserRoutingModule,
     SharedModule,
+    AngularCropperjsModule
     //ImageCropperModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

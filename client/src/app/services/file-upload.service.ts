@@ -32,15 +32,15 @@ export class FileUploadService {
   }
 
   getFiles(): Observable<any> {
-    console.log('HEY');
     return this.http.get(`${this.baseUrl}files`);
   }
 
   getFile(id: any, name: any, group: any, type: any): Observable<any> {
-    if(name==''&&name==null&&name==undefined){
+    if(name=='' || name==null || name==undefined){
       return;
+    }else{
+      name = name.replace(/\s+/g, '-');
+      return this.http.get(`${this.baseUrl}files/${name}?group=${group}&type=${type}`);
     }
-    name = name.replace(/\s+/g, '-');
-    return this.http.get(`${this.baseUrl}files/${name}?group=${group}&type=${type}`);
   }
 }

@@ -80,7 +80,6 @@ export class ProjectsContainer implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        console.log({ action: result.event, data: result.data })
         this.createNew(result.data);
       }
     });

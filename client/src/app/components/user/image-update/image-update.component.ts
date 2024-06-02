@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -8,11 +8,10 @@ import { AlertService } from 'src/app/services/alert.service';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import moment from 'moment';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ImagesService } from 'src/app/services/images.service';
-import { ImageCropperComponent, ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CropperComponent, ImageCropperResult } from 'angular-cropperjs';
 
 
 @Component({
@@ -39,7 +38,7 @@ export class ImageUpdateComponent implements OnInit {
   uploaderNeeds = ['image','video','document','song'];
   uploaderInstalled = false;
 
-  selectedFiles?: FileList;
+  selectedFiles = [];
   progressInfos: any[] = [];
   message: string[] = [];
   previews: string[] = [];
@@ -49,8 +48,11 @@ export class ImageUpdateComponent implements OnInit {
 
 
   //tut
-  imageChangedEvent: Event | null = null;
-  cropImgPreview:any="";
+  @ViewChild('angularCropper') public angularCropper: CropperComponent;
+  config = [];
+  imageUrl = "";
+  resultImage: any;
+  resultResult: any;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -83,7 +85,6 @@ export class ImageUpdateComponent implements OnInit {
 
   }
 
-
   doAction(){
     this.dialogRef.close({event:this.action,data:this.local_data[0]});
   }
@@ -93,10 +94,19 @@ export class ImageUpdateComponent implements OnInit {
   }
 
   async ngOnInit() {
-  }
+    await this.uploadService.getFile(0, this.data.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(async res => {
+      this.imageUrl = res[0].display;
+      //this.selectedFiles = [this.dataURLtoFile(this.imageUrl,'profileimg.png')];
 
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
+      await this.config.push({
+        viewMode: 1,
+        aspectRatio: NaN,
+        preview: '#img-preview',
+        zoomOnWheel: false,
+        autoCropArea: 1,
+        checkOrientation: false,
+      });
+    });
   }
 
   ngAfterContentChecked(): void {
@@ -108,35 +118,71 @@ export class ImageUpdateComponent implements OnInit {
   }
 
   ///tut
-  onFileChange(event: any) {
-    this.imageChangedEvent = event;
-    console.log(this.imageChangedEvent)
+  fileChangeEvent(event: any): void {
+    let reader = new FileReader();
+
+    reader.onload = (event: any) => {
+      this.imageUrl = event.target.result;
+    };
+
+    reader.onerror = (event: any) => {
+      console.log("File could not be read: " + event.target.error.code);
+    };
+
+    reader.readAsDataURL(event.target.files[0]);
+    this.selectedFiles = [this.dataURLtoFile(this.imageUrl,'profileimg.png')];
+    this.config.push({
+      viewMode: 1,
+      aspectRatio: NaN,
+      preview: '#img-preview',
+      zoomOnWheel: false,
+      autoCropArea: 1,
+      checkOrientation: false,
+    });
   }
 
-  cropImg(e:ImageCroppedEvent) {
-    //this.cropImgPreview = e.base64
-    this.cropImgPreview = this.sanitizer.bypassSecurityTrustUrl(e.objectUrl);
+  CropMe() {
+    this.resultResult = this.angularCropper.imageUrl;
+    this.resultImage = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/png');
 
+    this.angularCropper.exportCanvas();
+
+    this.selectFiles(this.resultImage);
   }
 
-  imgLoad(image: LoadedImage) {
-
+  resultImageFun(event: ImageCropperResult) {
+    let urlCreator = window.URL;
+    this.resultResult = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/png');
   }
 
-  initCropper() {
-
+  checkstatus(event: any) {
+    if (event.blob === undefined) {
+      return;
+    }
+    // this.resultResult = event.blob;
+    let urlCreator = window.URL;
+    this.resultResult = this.sanitizer.bypassSecurityTrustUrl(
+        urlCreator.createObjectURL(new Blob(event.blob)));
   }
 
-  imgFailed() {
-    console.log('image failed to load)')
+  dataURLtoFile(dataurl, filename) {
+    var arr = dataurl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[arr.length - 1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type:mime});
   }
-
 
   ////uploader
-  selectFiles(event: any): void {
+  selectFiles(f): void {
     this.message = [];
     this.progressInfos = [];
-    this.selectedFiles = event.target.files;
+
+    this.selectedFiles = [this.dataURLtoFile(f,'profileimg.png')];
 
     this.previews = [];
     if (this.selectedFiles && this.selectedFiles[0]) {
@@ -156,20 +202,21 @@ export class ImageUpdateComponent implements OnInit {
   uploadFiles(): void {
     this.message = [];
 
-    if (this.selectedFiles) {
+    if (this.selectedFiles.length > 0) {
       for (let i = 0; i < this.selectedFiles.length; i++) {
         this.upload(i, this.selectedFiles[i]);
       }
+    }else {
+      this.doAction();
     }
   }
 
   upload(idx: number, file: File): void {
     this.progressInfos[idx] = { value: 0, fileName: file.name };
 
-
     if (file) {
       let type = file.name.split('.').pop();
-      let group = this.currentGroup.name.replace(/\s+/g, '-').toLowerCase();
+      let group = 'users/'+this.currentUser.id;
       this.uploadService.upload(file,group,type).subscribe({
         next: (event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
@@ -177,7 +224,7 @@ export class ImageUpdateComponent implements OnInit {
           } else if (event instanceof HttpResponse) {
             const msg = 'Uploaded the file successfully: ' + file.name;
             this.message.push(msg);
-            //this.fileInfos = this.uploadService.getFiles();
+
             this.fileInfos = this.uploadService.getFile(0,file.name, group, type);
 
             let obj = {
@@ -192,7 +239,7 @@ export class ImageUpdateComponent implements OnInit {
           this.progressInfos[idx].value = 0;
           const msg = 'Could not upload the file: ' + file.name;
           this.message.push(msg);
-        }});
+      }});
     }
   }
 
@@ -224,9 +271,10 @@ export class ImageUpdateComponent implements OnInit {
       obj['profile_url'] = '@' + this.currentGroup.name + '_image_' + name + '';
       this.imagesService.create(obj).subscribe((res) => {
         if(!res.message){
-          this.alertService.success('Item has been created!', true);
+          this.doAction();
+          this.alertService.success('Profile Picture has been Updated!', true);
         }else{
-          this.alertService.error('Item failed to be created!', true);
+          this.alertService.error('Pfoile Picture failed to Update!', true);
         }
       });
     }

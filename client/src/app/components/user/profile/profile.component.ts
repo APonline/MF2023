@@ -32,8 +32,6 @@ export class ProfileComponent implements OnInit {
     private uploadService: FileUploadService,
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
-
-    console.log(this.currentUser);
   }
 
   async ngOnInit() {
@@ -149,9 +147,11 @@ export class ProfileComponent implements OnInit {
       data:obj
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       if(result){
-        // this.activeItem.emit({ action: result.event, data: result.data });
+        await this.uploadService.getFile(0, this.currentUser.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(res => {
+          this.userImage = res[0];
+        });
       }
     });
   }

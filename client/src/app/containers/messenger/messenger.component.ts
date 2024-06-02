@@ -216,7 +216,6 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
 
   async imgBlob(src){
     const file = await this.getFileFromUrl(src, 'user.jpg');
-    console.log(file);
     return file;
 
   }
@@ -252,10 +251,17 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     this.currChatLog = [];
     this.currNewChatLog = [];
 
-    this.chatSubX.unsubscribe();
-    this.chatSub = false;
-    this.chattingSubX.unsubscribe();
-    this.chattingSub = false;
+
+    if(this.chatSub){
+      this.chatSubX.unsubscribe();
+      this.chatSub = false;
+    }
+
+    if(this.chattingSub){
+      this.chattingSubX.unsubscribe();
+      this.chattingSub = false;
+    }
+
     this.socketService.chat.disconnect();
 
     setTimeout(()=> {
@@ -268,10 +274,10 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
     (this.messenger ? this.chaticon = 'arrow_drop_up' : this.chaticon = 'arrow_drop_down');
 
     if(!this.messenger) {
-      // this.mode = 'chathidden';
-      // setTimeout(()=>{
-      //   this.closeChat();
-      // },2000);
+      this.mode = 'chathidden';
+      setTimeout(()=>{
+        this.closeChat();
+      },2000);
     }
   }
 

@@ -183,6 +183,7 @@ li{
     flex-direction: column;
     position: relative;
     width: calc(100% / 1 - 3px);
+    overflow: hidden;
   }
 
   .card:hover::before {
@@ -291,6 +292,7 @@ li{
     flex-direction: column;
     position: relative;
     width: calc(100% / 2 - 3px);
+    overflow: hidden;
   }
 
   .controlpanel {
@@ -450,6 +452,7 @@ li{
     flex-direction: column;
     position: relative;
     width: calc(100% / 4 - 3px);
+    overflow: hidden;
   }
 
   .card:hover::before {

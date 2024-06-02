@@ -42,6 +42,10 @@ export class UserService {
     return this.http.get<user[]>(`${baseUrl}?username=${username}`);
   }
 
+  findUsers(username: any): Observable<user[]> {
+    return this.http.get<user[]>(`${baseUrl}/find/${username}`);
+  }
+
   findByEmail(email: any): Observable<user[]> {
     return this.http.get<user[]>(`${baseUrl}?email=${email}`);
   }

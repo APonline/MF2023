@@ -33,8 +33,6 @@ const getListFiles = (req, res) => {
   let t = getfileFormat(req.query.type);
   const directoryPath = __basedir + "/resources/static/" +g+ "/" + t + "/";
 
-  console.log(directoryPath)
-
   fs.readdir(directoryPath, function (err, files) {
     if (err) {
       res.status(500).send({
@@ -45,7 +43,6 @@ const getListFiles = (req, res) => {
     let fileInfos = [];
 
     files.map((f,i) => {
-      console.log('F: '+f)
       if(f == '.DS_Store' && f == 'image'){
         const index = array.indexOf(f);
         if (index > -1) {
@@ -53,8 +50,6 @@ const getListFiles = (req, res) => {
         }
       }
     });
-
-    console.log(files);
 
     files.forEach( (file) => {
         let f = getFileType(p,g,t);
@@ -117,8 +112,6 @@ const getFileType = (file, group, type) => {
     }
 
     return obj;
-  }else{
-    console.log("FILE: "+file);
   }
 }
 

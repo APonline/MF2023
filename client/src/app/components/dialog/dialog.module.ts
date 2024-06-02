@@ -30,11 +30,11 @@ import { PipeModule } from 'src/app/pipes/pipe.module';
     // UploadFilesComponent,
     // UploadFileComponent
   ],
-  entryComponents: [
-    DialogTemplate,
-    NewItemUpdateComponent,
+  //entryComponents: [
+    //DialogTemplate,
+    //NewItemUpdateComponent,
     // UploadFilesComponent,
     // UploadFileComponent
-  ]
+  //]
 })
 export class DialogModule { }

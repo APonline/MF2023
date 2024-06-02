@@ -90,7 +90,6 @@ export class NewProjectUpdateComponent implements OnInit {
               res['display'] = r[0];
 
               this.userList.push(res)
-              console.log('OWNER: ',res)
             });
           }
         });

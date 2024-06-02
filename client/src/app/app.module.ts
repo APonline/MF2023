@@ -38,6 +38,8 @@ import { MFService } from './services/MF.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { UserModule } from './containers/user/user.module';
 import { SharedModule } from './shared.module';
+import { AngularCropperjsModule } from 'angular-cropperjs';
+
 
 
 // Components
@@ -77,7 +79,8 @@ import { CampaignsFormComponent } from './components/new-item-form/new-item-type
 import { UploadFileComponent } from './components/upload-single/upload-single.component';
 import { UploadFilesComponent } from './components/upload-multi/upload-multi.component';
 import { NewProjectUpdateComponent } from './components/new-project-update/new-project-update.component';
-import { ImageCropperComponent } from 'ngx-image-cropper';
+import { ArtistMembersUpdateComponent } from './components/new-item-form/new-item-types/artist-members/artist-members-update/artist-members-update.component';
+import { UserCardComponent } from './components/user/user-card/user-card.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -137,7 +140,9 @@ import { ImageCropperComponent } from 'ngx-image-cropper';
     CampaignsFormComponent,
     UploadFileComponent,
     UploadFilesComponent,
-    NewProjectUpdateComponent
+    NewProjectUpdateComponent,
+    ArtistMembersUpdateComponent,
+    UserCardComponent
   ],
   imports: [
     AppRoutingModule,
@@ -145,8 +150,7 @@ import { ImageCropperComponent } from 'ngx-image-cropper';
     SharedModule,
     UserModule,
     BrowserAnimationsModule,
-    BrowserModule,
-    ImageCropperComponent
+    BrowserModule
   ],
   providers: [
     SocketioService,

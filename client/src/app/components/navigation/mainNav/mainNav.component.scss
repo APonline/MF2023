@@ -288,3 +288,8 @@ a.disabled, a.disabled:hover {
   cursor: default;
   color:gray!important;
 }
+a.disabled p, a.disabled:hover p {
+  pointer-events: none;
+  cursor: default;
+  color:gray!important;
+}

@@ -7,7 +7,6 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 
 /* services - make dynamic somehow later */
@@ -30,6 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { ArtistMembersUpdateComponent } from './artist-members-update/artist-members-update.component';
 
 @Component({
   selector: 'app-artistMembersForm',
@@ -65,6 +65,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   modelSet: any;
   @Input() group: string;
   @Input() groupId: string;
+  artist: any;
 
   adminForm = this.formBuilder.group({});
 
@@ -97,18 +98,14 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       private uploadService: FileUploadService,
 
   ) {
-
   }
 
   ngOnInit() {
 
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
-
-    // this.artistMembersService.getAllForArtist(2).subscribe( res => {
-
-    //   console.log('test: '+ JSON.stringify(res, null, 4))
-
-    // });
 
   }
 
@@ -172,7 +169,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
         let entry = {
           'id': r.id,
           'username': r.members.username,
-          'name': r.members.first_name + r.members.last_name,
+          'name': r.members.first_name + ' ' + r.members.last_name,
           'role': r.role,
           'email': r.members.email,
           'phone': r.members.phone,
@@ -249,7 +246,11 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
+    obj.owner_user = this.artist?.owner_user;
+    obj.artist_id = this.artist?.id;
+    obj.profile_url = this.artist?.profile_url;
+    console.log(obj)
+    const dialogRef = this.dialog.open(ArtistMembersUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',
       height: '80vh',

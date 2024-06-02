@@ -133,7 +133,6 @@ export class ArtistFormComponent implements OnInit {
     toolTitle2 = toolTitle2.replace(/,/g,"");
     toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
     let service = toolTitle2+ 's' + 'Service';
-    console.log('Service: '+service)
 
     await this[service].get(this.groupId).subscribe(res => {
       this.modelSet = res;
