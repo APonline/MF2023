@@ -18,6 +18,7 @@ export class NewitemComponent implements OnInit {
   artistInfo = [];
   artistInfoKeys = [];
   env= 'test';
+  loaded = false;
 
     tools = [
       {name:'Artist', value:'artist'},
@@ -102,6 +103,10 @@ export class NewitemComponent implements OnInit {
         }
 
         this.artistInfo.push(obj);
+
+        setTimeout(()=>{
+          this.loaded = true;
+        },500);
       });
     }
 

@@ -11,10 +11,10 @@
         <div class="step-card">
           <div class="card-half">
             <div class="col-center">
-              <!-- <p class="sub-title"><span>Search Users</span></p> -->
               <div>
                 <mat-form-field>
-                  <input matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
+                  <input [disabled]="true" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
+                  <input *ngIf="!modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
                 </mat-form-field>
               </div>
             </div>
@@ -49,7 +49,13 @@
                       {{role.name}}
                       <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                     </mat-chip>
-                    <input formControlName="role" matInput placeholder="Vocals, Guitar"
+                    <input *ngIf="modUser" formControlName="role" matInput placeholder="Vocals, Guitar"
+                           [matChipInputFor]="chipList"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           [matChipInputAddOnBlur]="addOnBlur"
+                           (matChipInputTokenEnd)="addRole($event)"
+                           >
+                    <input *ngIf="!modUser" formControlName="role" matInput placeholder="Vocals, Guitar"
                            [matChipInputFor]="chipList"
                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                            [matChipInputAddOnBlur]="addOnBlur"
@@ -63,16 +69,16 @@
               <p><span>Date Joined</span></p>
               <div>
                 <div class="date-row">
-                  <select (change)="onChangeYear($event.target.value)">
-                    <option *ngFor="let y of years">{{y}}</option>
+                  <select (change)="onChangeYear($event.target.value)" formControlName="year">
+                    <option *ngFor="let y of years" [selected]="y==selectedYear? true: false">{{y}}</option>
                   </select>
                   <p>|</p>
-                  <select (change)="onChangeMonth($event.target.value)">
-                    <option *ngFor="let m of months">{{m}}</option>
+                  <select (change)="onChangeMonth($event.target.value)" formControlName="month">
+                    <option *ngFor="let m of months" [selected]="m==selectedMonth? true: false">{{m}}</option>
                   </select>
                   <p>|</p>
-                  <select (change)="onChangeDay($event.target.value)">
-                    <option *ngFor="let d of days">{{d}}</option>
+                  <select (change)="onChangeDay($event.target.value)" formControlName="day">
+                    <option *ngFor="let d of days" [selected]="d==selectedDay? true: false">{{d}}</option>
                   </select>
                 </div>
               </div>
@@ -89,9 +95,11 @@
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>
       <div class="step-card">
-        <ul class="center">
+        <ul class="center summary">
           <li>
-            <h3 style="text-align: center;">You will be adding this user to this Artist Group.</h3>
+            <h3 style="text-align: center;" *ngIf="action == 'Add'">You will be adding this user to this Artist Group.</h3>
+            <h3 style="text-align: center;" *ngIf="action == 'Update'">You will be updating this user in this Artist Group.</h3>
+            <h3 style="text-align: center;" *ngIf="action == 'Delete'">You will be deleting this user in this Artist Group.</h3>
           </li>
           <li>
             <div>
@@ -115,79 +123,7 @@
   </mat-stepper>
 
   <div mat-dialog-actions>
-    <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+    <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
     <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
   </div>
-
-  <!-- <p><span>Search Users</span></p>
-  <div>
-    <mat-form-field>
-      <input matInput #term (keyup)="onTyping(term.value)">
-    </mat-form-field>
-  </div>
-  <ul *ngFor="let u of foundUsers">
-    <li>{{u.username}}</li>
-  </ul>
-
-
-  <form>
-    <div *ngIf="action != 'Delete'; else elseTemplate">
-      <ul>
-        <li *ngFor="let row of displayedColumns">
-          <ng-container *ngIf="row != 'active' && row != 'action' && row != 'id' && row != 'date_joined' && row.indexOf('owner') === -1">
-            <ng-container
-              [ngTemplateOutlet]="row.indexOf('image') === -1 ? normalTemplate : uploaderTemplate"
-              [ngTemplateOutletContext]="{ $implicit: row }">
-            </ng-container>
-          </ng-container>
-        </li>
-        <li *ngIf="uploaderInstalled">
-          <ng-container
-              [ngTemplateOutlet]="uploaderTemplate"
-              [ngTemplateOutletContext]="{ $implicit: 'title' }">
-            </ng-container>
-        </li>
-      </ul>
-    </div>
-    <ng-template #elseTemplate>
-      Are you sure?
-    </ng-template>
-    <ng-template #normalTemplate let-row>
-      <p><span>{{row | removeUnderscore}}</span></p>
-      <div>
-        <mat-form-field>
-          <input matInput [(ngModel)]="local_data[0][row]">
-        </mat-form-field>
-      </div>
-    </ng-template>
-    <ng-template #uploaderTemplate let-row>
-      <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
-      <div>
-        <app-upload-single (fileNew)="updateUploadValue($event)" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
-      </div>
-    </ng-template>
-
-    <div *ngIf="ownerFound">
-      <p style="color:red;">This project exists, you may need an invite from the owner!</p>
-      <div class="box">
-        <div class="list" *ngFor="let user of userList">
-          <div class="imgBox">
-            <img *ngIf="user?.profile_image == 'default'; else hasImage" src="./assets/images/defaultprofile1.png"  />
-              <ng-template #hasImage>
-                <img src="{{ user?.display?.display}}" alt="{{ user?.display?.name}}" />
-              </ng-template>
-          </div>
-          <div class="content">
-            <h4>{{user.username}}</h4>
-            <p>{{user.email}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div mat-dialog-actions>
-      <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-      <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
-    </div>
-  </form> -->
 </div>

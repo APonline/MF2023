@@ -1,14 +1,11 @@
 <div id="newEdit" class="page">
   <div class="itemBKGrid"></div>
 
-
-
-
   <div id="profilePage" style="perspective: 2px;">
 
     <div id="large-container">
       <div class="glass topbanner" >
-        <div class="topbannerImg" *ngIf="artistInfo[0]?.profile_image" [ngStyle]="{background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url('+artistInfo[0]?.profile_banner_image+') center 50% / 36% no-repeat'}"></div>
+        <div class="topbannerImg" *ngIf="artistInfo[0]?.profile_image && loaded" [ngStyle]="{background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%), url('+artistInfo[0]?.profile_banner_image+') center 50% / 36% no-repeat'}"></div>
         <div class="topbannerImg" *ngIf="!artistInfo[0]?.profile_image" [ngStyle]="{background: 'url(./assets/images/logo1.png)'}"></div>
         <div class="sidebyside" style="bottom: -12px;left: 0px;width: 100%;    position: relative;">
           <div class="imgBox iconboximg">
@@ -62,17 +59,17 @@
       </ng-template>
 
       <ng-template #uploaderTemplate let-row>
-        <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
+        <!-- <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
         <div class="imgBox">
           <img src="{{ artistInfo[0]?.[row] }}" width="60px" />
-        </div>
+        </div> -->
       </ng-template>
     </div>
 
     <div class="glass controlpanel">
       <div class="content" id="cards" (mousemove)="cardShine($event)">
-        <h5 style="width:100%">The Feature tools are being built at the moment.<br/><br/> Check back as they will be released one by one.</h5>
-        <br /><br />
+        <!-- <h5 style="width:100%">The Feature tools are being built at the moment.<br/><br/> Check back as they will be released one by one.</h5>
+        <br /><br /> -->
         <div class="card" #card *ngFor="let tool of tools" [routerLink]="['/projects/new-edit/', groupId, group, tool.value ]">
           <div class="card-content">
             <div class="item" [ngStyle]="{background: 'linear-gradient(to bottom, rgba(0,0,0, 0.3) 0%, rgba(0,0,0, 1) 70%), url(./assets/images/'+ (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg) 50% 50% / 100% no-repeat'}"></div>
@@ -89,22 +86,12 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
+
   </div>
 
 </div>
 
-
-<!-- <div id="newEdit" class="page">
-    <ul class="page-top-cta glass">
-      <li *ngFor="let tool of tools" [routerLink]="['/items/new-edit/', tool.value ]">
-        <div class="itemBk"></div>
-        <div class="item" [ngStyle]="{background: 'url(./assets/images/' + (tool.name.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
-        <h4>{{tool.name}}</h4>
-      </li>
-    </ul>
-</div> -->
 
 

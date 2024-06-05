@@ -45,8 +45,11 @@ export class UserCardComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    console.log('u:',this.user)
+
     if(this.user.id != 0){
-      if(this.user.profile_image != 'default'){
+      if(this.user.profile_image != 'default' && this.user.profile_image != undefined){
         await this.uploadService.getFile(0, this.user.profile_image, 'users/'+this.user.id, 'png').subscribe(res => {
           this.user.display = res[0];
         });

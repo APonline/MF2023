@@ -175,7 +175,7 @@ li {
   justify-content: space-between;
   min-width:100%;
   margin: 0 auto;
-  margin-top: 40px;
+
 }
 .card-half {
   width:48%;
@@ -221,4 +221,72 @@ select {
   option {
     cursor:pointer;
   }
+}
+
+@media (min-width:320px)  {
+  .step-card {
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    height: 260px;
+  }
+  .summary {
+    height: 350px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+  // ul {
+  //   ul {
+  //     height: 100%;
+  //   }
+  // }
+
+  ::ng-deep {
+    mat-stepper {
+      height: calc(100% - 170px);
+    }
+  }
+}
+@media (min-width:801px)  {
+  .step-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-direction: column;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    height: 260px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+  .summary {
+    height: 350px;
+  }
+
+  ::ng-deep {
+    mat-stepper {
+      height: calc(100% - 170px);
+    }
+  }
+}
+@media (min-width:1200px) {
 }

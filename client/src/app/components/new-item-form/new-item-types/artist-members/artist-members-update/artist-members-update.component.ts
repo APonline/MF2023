@@ -49,7 +49,9 @@ export class ArtistMembersUpdateComponent implements OnInit {
   });
   secondFormGroup = this.formBuilder.group({
     role: [''],
-    date_joined: [''],
+    year: [''],
+    month: [''],
+    day: [''],
   });
   selectedUser: any;
   isLinear = true;
@@ -70,10 +72,12 @@ export class ArtistMembersUpdateComponent implements OnInit {
 
   selectedRoles= '';
 
-  selectedYear=this.currYear+1;
+  selectedYear=this.currYear;
   selectedMonth='01';
   selectedDay='01';
   selectedDateJoined= this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDay;
+  isValid=false;
+  modUser=false;
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -102,10 +106,10 @@ export class ArtistMembersUpdateComponent implements OnInit {
 
     delete data.tool;
 
-    console.log('WTF: ',data)
-
     data.owner_user = this.currentUser.id;
     data.active = 1;
+
+    console.log('D: ',data)
 
     Object.keys(data).map(res => {
       this.displayedColumns.push(res)
@@ -113,12 +117,39 @@ export class ArtistMembersUpdateComponent implements OnInit {
     this.local_data = [{...data}];
 
     this.currentGroup = {owner_user: this.local_data[0].owner_user, name: this.local_data[0].name, artist_id: this.local_data[0].artist_id, profile_url: this.local_data[0].profile_url };
+console.log('BB: ',data.user_id, data.id)
+    if(data.id != ''){
+      this.selectedUser = {id:data.user_id, profile_image: data.profile_image};
+      console.log('AAA:',this.selectedUser)
+      this.modUser = true;
+      this.userService.findUsers(data.username).subscribe(res => {
+        //setTimeout(()=>{
+          this.foundUsers = res;
+        //},10)
+        console.log(this.selectedUser, this.foundUsers[0].id)
+      });
+      this.selectedYear= data.date_joined.split('-')[0];
+      this.selectedMonth= data.date_joined.split('-')[1];
+      this.selectedDay= data.date_joined.split('-')[2];
+      this.selectedDateJoined = this.selectedYear +'-'+this.selectedMonth+'-'+this.selectedDay;
 
-    this.selectedUser = {id:0};
+      if(data.role.indexOf('/') > -1){
+        let roles = data.role.split(' / ');
+        roles.map(r => {
+          this.bRoles.push({name: r});
+        });
+      }else{
+        this.bRoles.push({name: data.role});
+      }
+
+      this.isValid=true;
+    }else{
+      this.selectedUser = {id:0};
+      this.modUser = false;
+    }
   }
 
   doAction(){
-    console.log(this.currentGroup,this.selectedUser)
     let newMember = {
       owner_user: this.currentGroup.owner_user,
       owner_group: this.currentGroup.artist_id,
@@ -130,29 +161,11 @@ export class ArtistMembersUpdateComponent implements OnInit {
       role: this.selectedRoles
     };
 
+    if(this.modUser){
+      newMember['id'] = this.data.id;
+    }
 
-    this.artistMembersService.create(newMember).subscribe(res => {
-      console.log('EDIT THIS UPDATE OF DATA BACK: ', res);
-      this.dialogRef.close({event:this.action,data:res});
-    })
-
-    // let name = this.local_data[0].name.toLowerCase();
-    // this.artistsService.find(name).subscribe(async res => {
-    //   if(res.result != null){
-    //     this.userService.get(res.owner_user).subscribe(async res => {
-    //       this.ownerFound = true;
-    //       if(res.profile_image != 'default'){
-    //         await this.uploadService.getFile(0, res.profile_image, 'users/'+res.id, 'png').subscribe(r => {
-    //           res['display'] = r[0];
-
-    //           this.userList.push(res)
-    //         });
-    //       }
-    //     });
-    //   }else{
-    //     this.dialogRef.close({event:this.action,data:this.local_data[0]});
-    //   }
-    // });
+    this.dialogRef.close({event:this.action, data: newMember});
   }
 
   closeDialog(){
@@ -175,14 +188,18 @@ export class ArtistMembersUpdateComponent implements OnInit {
   get f2() { return this.secondFormGroup.controls; }
 
   onTyping(e) {
-    this.userService.findUsers(e).subscribe(res => {
-      this.foundUsers = res;
-    })
+    if(e!=''){
+      this.userService.findUsers(e).subscribe(res => {
+        this.foundUsers = res;
+        this.selectedUser = res;
+      })
+    }else{
+      this.foundUsers = [];
+    }
   }
 
   selectUser(user) {
     this.selectedUser = user;
-    console.log(this.selectedUser)
     this.firstFormGroup.controls['user'].setValue(user);
   }
 
@@ -216,6 +233,12 @@ export class ArtistMembersUpdateComponent implements OnInit {
 
     newRoleList = newRoleList.slice(0, -3);
     this.selectedRoles = newRoleList;
+
+    if(this.modUser){
+      this.userService.findUsers(this.data.username).subscribe(res => {
+        this.selectedUser = res[0];
+      });
+    }
   }
 
   onChangeYear(y){
@@ -232,7 +255,8 @@ export class ArtistMembersUpdateComponent implements OnInit {
   }
 
   updateSelectedDateJoined() {
-    this.selectedDateJoined = this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDay;
+    this.selectedDateJoined = this.selectedYear +'-'+this.selectedMonth+'-'+this.selectedDay;
+    this.isValid=true;
   }
 
 }

@@ -11,33 +11,36 @@ const Users = db.user;
 let datetime = new Date(); 
 
 exports[`create${itemTopic}`] = async (req, res) => {
-    //try{
+    try {
         let newItem = req.body;
-        console.log(newItem)
 
-        await Item.findOne({ where: { user_id: newItem.user_id, artist_id: newItem.artist_id } }).then(async r => {
+        let result1 = await Item.findOne({ where: { user_id: newItem.user_id, artist_id: newItem.artist_id } });
 
-          try {
-            let result = await Item.create( newItem );
+        if (result1 == null) {
 
-            if (result) {
-              return res.status(200).send( result );
-            }else{
-                return res.status(500).send({ result: null });
+            try {
+                let result = await Item.create( newItem );
+
+                if (result) {
+                    return res.status(200).send( result );
+                }else{
+                    return res.status(500).send({ result: null });
+                }
+
+            } catch (error) {
+                return res.status(500).send({
+                    message: `A Unable to create ${itemTopic}! - ` + error.message
+                });
             }
 
-          } catch (error) {
-            return res.status(500).send({
-              message: `Unable to create ${itemTopic}! - ` + error.message
-            });
-          }
-        });
-        
-    // } catch (error) {
-    //     return res.status(500).send({
-    //         message: `Unable to create ${itemTopic}! - ` + error.message
-    //     });
-    // }
+        }else{
+            return res.status(200).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `B Unable to find ${itemTopic}! - ` + error.message
+        })
+    }
 }
 exports[`get${itemTopic}`] = async (req, res) => {
     try{

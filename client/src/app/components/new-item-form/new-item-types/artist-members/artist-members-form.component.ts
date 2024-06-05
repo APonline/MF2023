@@ -77,7 +77,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       public dialog: MatDialog,
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
-      private user: UserService,
+      private userService: UserService,
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
@@ -109,22 +109,42 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
 
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges) {
     if(this.updateTable){
       if(this.act == 'create'){
+
         Object.keys(this.res).map(res => {
           if(res == 'createdAt' || res == 'updatedAt' || res == 'active') {
             delete this.res[res];
           }
         });
 
-        this.dataSource.push(this.res);
+        this.userService.get(this.res.user_id).subscribe(u => {
+          let newRes = {
+            'id': this.res.id,
+            'user_id': u.id,
+            'username': u.username,
+            'name': u.first_name + ' ' + u.last_name,
+            'role': this.res.role,
+            'email': u.email,
+            'phone': u.phone,
+            'date_joined': this.res.date_joined,
+            'profile_url': u.profile_url,
+          }
+
+          this.dataSource.push(newRes);
+          this.table.renderRows();
+        });
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
-            this.displayedColumns.map(res => {
-              value[res] = this.res[res];
-            })
+            value['username']= value.username;
+            value['name']= value.name;
+            value['role']= this.res.role;
+            value['email']= value.email;
+            value['phone']= value.phone;
+            value['date_joined']= this.res.date_joined;
+            value['profile_url']= value.profile_url;
           }
           return true;
         });
@@ -132,8 +152,8 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
         });
+        this.table.renderRows();
       }
-      this.table.renderRows();
     }
   }
 
@@ -168,6 +188,8 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
         }
         let entry = {
           'id': r.id,
+          'user_id': r.user_id,
+          'profile_image': r.members.profile_image,
           'username': r.members.username,
           'name': r.members.first_name + ' ' + r.members.last_name,
           'role': r.role,
@@ -199,6 +221,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   }
 
   setSettings(formData){
+
     let form ={};
     let newForm ={}
 
@@ -248,8 +271,8 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     obj.tool = this.toolName;
     obj.owner_user = this.artist?.owner_user;
     obj.artist_id = this.artist?.id;
+    obj.user_id = obj?.user_id;
     obj.profile_url = this.artist?.profile_url;
-    console.log(obj)
     const dialogRef = this.dialog.open(ArtistMembersUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',

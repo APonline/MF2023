@@ -2,6 +2,8 @@ export class user {
   id?: any;
   firstname?: string;
   lastname?: string;
+  first_name?: string;
+  last_name?: string;
   username?: string;
   email?: string;
   phone?: string;
