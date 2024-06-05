@@ -6,7 +6,7 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 const sequelize = require('sequelize');
-import { Op } from 'sequelize';
+const Op = require('sequelize');
 
 const fs = require('fs');
 const jwt = require("jsonwebtoken");
