@@ -1,3 +1,7 @@
 # musefactory
 
+- client
+
+- server
+
 # DB
