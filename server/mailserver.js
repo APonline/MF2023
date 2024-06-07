@@ -23,7 +23,24 @@ const sendMailOut = (sendTo, sendSubject, sendText, sendHtml) => {
             to: sendTo,
             subject: sendSubject,
             text: sendText,
-            html: sendHtml
+            html: sendHtml,
+            attachments: [
+                {
+                    filename: 'logo1.png',
+                    path: 'https://musefactory.app/assets/images/logo1.png',
+                    cid: 'logo1' 
+                },
+                {
+                    filename: 'intrologo.png',
+                    path: 'https://musefactory.app/assets/images/intrologo.png',
+                    cid: 'intrologo'
+                },
+                {
+                    filename: 'loginbk.jpg',
+                    path: 'https://musefactory.app/assets/images/loginbk.jpg',
+                    cid: 'loginbk' 
+                }
+            ]
         }, (error, info) => {
             if (error) {
                 console.log(error);

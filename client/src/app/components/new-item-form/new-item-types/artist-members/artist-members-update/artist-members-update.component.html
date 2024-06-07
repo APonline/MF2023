@@ -16,6 +16,9 @@
                   <input [disabled]="true" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
                   <input *ngIf="!modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
                 </mat-form-field>
+                <button mat-raised-button color="accent" matStepperPrevious (click)="showInvite = !showInvite">{{(showInvite ? 'Show':'Hide')}} User Invite</button>
+                <br /><br />
+                <app-invite *ngIf="showInvite" [group]="data.group"></app-invite>
               </div>
             </div>
           </div>
@@ -119,11 +122,11 @@
         <button mat-raised-button color="accent" matStepperPrevious>Back</button>
         <button mat-raised-button color="primary" (click)="stepper.reset()">Reset</button>
       </div>
+
+      <div mat-dialog-actions>
+        <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+      </div>
     </mat-step>
   </mat-stepper>
-
-  <div mat-dialog-actions>
-    <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-    <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
-  </div>
 </div>

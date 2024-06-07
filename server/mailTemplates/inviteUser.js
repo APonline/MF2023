@@ -2,15 +2,13 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const deleteAccount = (verifyId, email, username) => {
-    const subject = `Muse Factory Delete Account!`;
+const inviteUser = (email, who, group) => {
+    const subject = `Muse Factory Invite!`;
     const plainText = `
-    ${username}, you are receiving this email because you have requested to delete your account.\n\n
-    Are you Sure you want to delete your account?\n\n
-    By clicking the button below, you will permanently delete your account.\n\n
-    
+    Hey, you've been invited by ${who} to join Muse Factory. ${group} is waiting to collaborate with you.
+    You can sign up at the link below.\n\n
 
-    https://musefactory.app/user/deleteAccount?id=${verifyId}&email=${email}
+    https://musefactory.app/register
     `;
     const template = `
     <!DOCTYPE html>
@@ -53,23 +51,22 @@ const deleteAccount = (verifyId, email, username) => {
             </head>
             <body>
                 <div id="mfEmail">
-                    <a id='logo' href='https://musefactory.app'><img width="307" height="56" alt="logo" title="logo" src="cid:logo1" /></a>
+                    <a id='logo' href='https://musefactory.app' target='_new'><img width="307" height="56" alt="logo" title="logo" src="cid:logo1" /></a>
                     <br/>
                     <h1 style='color:#fff!important;'>Muse Factory</h1>
-                    <h3 style='color:#fff!important;'>Delete Account</h3>
+                    <h3 style='color:#fff!important;'>Muse Factory Invite!</h3>
                     <p style='color:#fff!important;'>
-                        ${username}, you are receiving this email because you have requested to delete your account.\n\n
-                        Are you Sure you want to delete your account?\n\n
-                        By clicking the button below, you will permanently delete your account.\n\n
+                        Hey, you've been invited by ${who} to join Muse Factory. ${group} is waiting to collaborate with you.
+                        You can sign up at the link below.
                     </p>
                     <br/>
                     <br />
-                    <a id='link' href='https://musefactory.app/user/deleteAccount?id=${verifyId}&email=${email}'>Delete Account</a>
+                    <a id='link' href='https://musefactory.app/register'>Sign Up</a>
                     <br/>
                     <br/>
                     <br/>
                     <br/>
-                    <a id='logo2' href='https://musefactory.app' target='_new'><img width="100px" src="https://musefactory.app/assets/images/intrologo.png" /></a>
+                    <a id='logo2' href='https://musefactory.app' target='_new'><img width="100" height="100" alt="logo" title="logo" src="cid:intrologo" /></a>
                 </div>
             </body>
         </html>
@@ -83,4 +80,4 @@ const deleteAccount = (verifyId, email, username) => {
     return obj;
 };
 
-module.exports =  deleteAccount;
+module.exports = inviteUser;

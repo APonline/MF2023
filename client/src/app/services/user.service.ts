@@ -62,6 +62,10 @@ export class UserService {
     return this.http.post(`${baseUrl}/passwordReset`, data);
   }
 
+  invite(data: any): Observable<any> {
+    return this.http.post(`${baseUrl}/invite`, data);
+  }
+
   getChatHistoryWith(group, user, chatee): Observable<any> {
     return this.http.get(`${baseUrl}/chatHistoryWith/${group}/${user}/${chatee}`);
   }

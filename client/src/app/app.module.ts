@@ -81,6 +81,7 @@ import { UploadFilesComponent } from './components/upload-multi/upload-multi.com
 import { NewProjectUpdateComponent } from './components/new-project-update/new-project-update.component';
 import { ArtistMembersUpdateComponent } from './components/new-item-form/new-item-types/artist-members/artist-members-update/artist-members-update.component';
 import { UserCardComponent } from './components/user/user-card/user-card.component';
+import { InviteComponent } from './components/user/invite/invite.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -142,7 +143,8 @@ import { UserCardComponent } from './components/user/user-card/user-card.compone
     UploadFilesComponent,
     NewProjectUpdateComponent,
     ArtistMembersUpdateComponent,
-    UserCardComponent
+    UserCardComponent,
+    InviteComponent
   ],
   imports: [
     AppRoutingModule,

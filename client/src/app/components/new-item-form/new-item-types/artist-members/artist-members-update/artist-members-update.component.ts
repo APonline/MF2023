@@ -28,6 +28,7 @@ export interface BandRole {
 export class ArtistMembersUpdateComponent implements OnInit {
   currentUser: any;
   @Input() record: any;
+  @Input() group: any;
 
   adminForm = this.formBuilder.group({});
   newRecord = null;
@@ -78,6 +79,8 @@ export class ArtistMembersUpdateComponent implements OnInit {
   selectedDateJoined= this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDay;
   isValid=false;
   modUser=false;
+  showInvite=false;
+
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -109,24 +112,17 @@ export class ArtistMembersUpdateComponent implements OnInit {
     data.owner_user = this.currentUser.id;
     data.active = 1;
 
-    console.log('D: ',data)
-
     Object.keys(data).map(res => {
       this.displayedColumns.push(res)
     })
     this.local_data = [{...data}];
 
     this.currentGroup = {owner_user: this.local_data[0].owner_user, name: this.local_data[0].name, artist_id: this.local_data[0].artist_id, profile_url: this.local_data[0].profile_url };
-console.log('BB: ',data.user_id, data.id)
     if(data.id != ''){
       this.selectedUser = {id:data.user_id, profile_image: data.profile_image};
-      console.log('AAA:',this.selectedUser)
       this.modUser = true;
       this.userService.findUsers(data.username).subscribe(res => {
-        //setTimeout(()=>{
           this.foundUsers = res;
-        //},10)
-        console.log(this.selectedUser, this.foundUsers[0].id)
       });
       this.selectedYear= data.date_joined.split('-')[0];
       this.selectedMonth= data.date_joined.split('-')[1];

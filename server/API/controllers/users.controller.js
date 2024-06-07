@@ -6,7 +6,8 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 const sequelize = require('sequelize');
-const Op = require('sequelize');
+//const Op = require('sequelize');
+import { Op } from 'sequelize';
 
 const fs = require('fs');
 const jwt = require("jsonwebtoken");
@@ -14,6 +15,8 @@ const config = require("../../config/auth.config");
 const bcrypt = require("bcryptjs");
 
 const sendMailOut = require('../../mailserver');
+const reqPass = require('../../mailTemplates/requestPassword');
+const inviteUser = require('../../mailTemplates/inviteUser');
 const uniqueCredentials = require('../../mailTemplates/signup');
 const deleteAccount = require('../../mailTemplates/deleteAccount');
 const { logging } = require("../../config/db.config");
@@ -220,10 +223,22 @@ myClass.requestPassword = async (req, res) => {
     });
 
     // sendmail
-    let mailObj = requestPassword(user.id, user.email, user.username);
+    let mailObj = reqPass(user.id, user.email, user.username);
     sendMailOut(user.email, mailObj.subject, mailObj.plainText, mailObj.template);
 
-    return true;
+    return res.status(200).send(true);
+
+}
+myClass.invite = async (req, res) => {
+    let email = req.body.email;
+    let who = req.body.who;
+    let group = req.body.group;
+
+    // sendmail
+    let mailObj = inviteUser(email, who, group);
+    sendMailOut(email, mailObj.subject, mailObj.plainText, mailObj.template);
+
+    return res.status(200).send(true);
 
 }
 myClass[`get${itemTopic}ChatHistoryWith`] = async (req, res) => {
