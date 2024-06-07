@@ -273,6 +273,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     obj.artist_id = this.artist?.id;
     obj.user_id = obj?.user_id;
     obj.profile_url = this.artist?.profile_url;
+    obj.group = this.artist?.name;
     const dialogRef = this.dialog.open(ArtistMembersUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',

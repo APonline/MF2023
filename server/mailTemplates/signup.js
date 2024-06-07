@@ -24,13 +24,17 @@ const uniqueCredentials = (verifyId, email, username) => {
             <head>
                 <title>Welcome to</title>
                 <style>
+                    body{
+                        background-color:#000!important;
+                    }
                     #mfEmail {
+                        background-color:#000;
                         padding:40px;
-                        background:url(https://musefactory.app/assets/images/loginbk.jpg);
+                        background-image:url('cid:loginbk');
                         background-size:cover;
                         color:#fff!important;
                     }
-                    #verify {
+                    #link {
                         text-decoration:none;
                         padding:10px 8px;
                         cursor:pointer;
@@ -55,7 +59,7 @@ const uniqueCredentials = (verifyId, email, username) => {
             </head>
             <body>
                 <div id="mfEmail">
-                    <a id='logo' href='https://musefactory.app'><img width="260px" src="https://musefactory.app/assets/images/logo1.png" /></a>
+                    <a id='logo' href='https://musefactory.app'><img width="307" height="56" alt="logo" title="logo" src="cid:logo1" /></a>
                     <br/>
                     <h1 style='color:#fff!important;'>Welcome to Muse Factory!</h1>
                     <h3 style='color:#fff!important;'>${username}, before we really get started you will need to verify your account.</h3>

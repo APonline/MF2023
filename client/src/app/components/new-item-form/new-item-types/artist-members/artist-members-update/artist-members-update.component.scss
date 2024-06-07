@@ -1,10 +1,28 @@
 .mat-dialog-actions {
   width: 100%;
   justify-content: center;
+  margin-top: 20px;
+  margin-bottom:inherit;
+}
+form {
+  height: 100%;
 }
 
-.mat-stepper-horizontal {
-  margin-top: 8px;
+::ng-deep {
+  .mat-stepper-horizontal {
+    margin-top: 8px;
+  }
+  .mat-horizontal-stepper-content {
+    height: 100%;
+    display: block;
+    position: relative;
+  }
+  .mat-horizontal-content-container {
+    height: 100%;
+  }
+  .mat-form-field {
+    width:100%;
+  }
 }
 
 .mat-mdc-form-field {
@@ -34,7 +52,7 @@
   width: 75%;
 
   li {
-    margin-bottom:50px;
+    margin-bottom:25px;
 
     div {
       width: calc(100% - 5px);
@@ -131,45 +149,6 @@ li {
   }
 }
 
-::ng-deep {
-  // mat-stepper {
-  //   height: calc(100% - 45px);
-  // }
-
-  // .mat-dialog-actions {
-  //   justify-content: center;
-  // }
-
-  // .mat-horizontal-stepper-content {
-
-  //   min-height: 100%;
-  // }
-
-  // .mat-horizontal-content-container {
-  //   height: calc(100% - 70px);
-  //   position: relative;
-  // }
-
-  // .mat-horizontal-stepper-content {
-  //   min-height: calc(100% - 75px);
-  //   padding-top: 40px;
-  //   position: absolute;
-  //   width: 100%;
-
-  //   form {
-  //     display:flex;
-  //     flex-direction: column;
-  //     justify-content: space-between;
-  //     height:100%;
-  //   }
-  // }
-
-  .mat-form-field {
-    width:100%;
-  }
-}
-
-
 .step-card {
   display:flex;
   justify-content: space-between;
@@ -228,15 +207,17 @@ select {
     flex-direction: column;
     margin-top: 20px;
     margin-bottom: 20px;
+    height:100%;
   }
   .card-half {
     width: 100%;
   }
   ul{
-    height: 260px;
+    // height: 260px;
+    height:inherit;
   }
   .summary {
-    height: 350px;
+    // height: 350px;
   }
   .center {
     width:100%;
@@ -249,7 +230,41 @@ select {
 
   ::ng-deep {
     mat-stepper {
-      height: calc(100% - 170px);
+      height: calc(100% - 110px);
+    }
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 130px);
+
+        .center {
+          height:100%;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+
+  form {
+    height: calc(100% - 50px);
+  }
+
+  ::ng-deep {
+    .mat-stepper-horizontal {
+      margin-top: 8px;
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+      display: block;
+      position: relative;
+    }
+    .mat-horizontal-content-container {
+      height: calc(100% - 50px);
+    }
+    .mat-form-field {
+      width:100%;
     }
   }
 }
@@ -263,7 +278,7 @@ select {
     width: 100%;
   }
   ul{
-    height: 260px;
+    // height: 260px;
   }
   .center {
     width:100%;
@@ -274,14 +289,51 @@ select {
     margin-bottom: -40px;
   }
   .summary {
-    height: 350px;
+    // height: 350px;
   }
 
-  ::ng-deep {
-    mat-stepper {
-      height: calc(100% - 170px);
-    }
-  }
+  // ::ng-deep {
+  //   mat-stepper {
+  //     height: calc(100% - 170px);
+  //   }
+  // }
 }
 @media (min-width:1200px) {
+  .step-card{
+    flex-direction: row;
+    height: calc(100% - 20px);
+  }
+  ::ng-deep {
+    .mat-horizontal-content-container {
+      height: calc(100% - 25px);
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+    }
+
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 80px);
+
+        .center {
+          height:100%;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+  .card-half {
+    width:48%;
+    display: flex;
+    flex-direction: column;
+  }
+  .col-center {
+    height:100%;
+  }
+  ul {
+    height: inherit;
+  }
 }
