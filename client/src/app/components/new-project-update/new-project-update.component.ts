@@ -2,6 +2,7 @@ import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef } from '@
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
+import {BACKSLASH, SLASH, COMMA, ENTER} from '@angular/cdk/keycodes';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 
@@ -11,7 +12,7 @@ import moment from 'moment';
 import { ArtistsService } from 'src/app/services/artists.service';
 import { UserService } from 'src/app/services/user.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
-
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'app-newProjectUpdate',
@@ -36,6 +37,23 @@ export class NewProjectUpdateComponent implements OnInit {
 
   uploaderNeeds = ['image','video','document','song'];
   uploaderInstalled = false;
+
+  //stepper
+  isLinear = true;
+  isValid=false;
+  modUser=false;
+  submitted = false;
+  firstFormGroup = this.formBuilder.group({
+    name: ['', Validators.required],
+    genre: [''],
+    location: [''],
+    description: [''],
+    bio: [''],
+  });
+  // secondFormGroup = this.formBuilder.group({
+  //   profile_image: [''],
+  //   profile_banner_image: [''],
+  // });
 
   constructor(
       private formBuilder: FormBuilder,
@@ -75,12 +93,14 @@ export class NewProjectUpdateComponent implements OnInit {
 
     this.requiresUploader();
 
-
   }
+
+  get f() { return this.firstFormGroup.controls; }
 
 
   doAction(){
     let name = this.local_data[0].name.toLowerCase();
+
     this.artistsService.find(name).subscribe(async res => {
       if(res.result != null){
         this.userService.get(res.owner_user).subscribe(async res => {
@@ -94,6 +114,18 @@ export class NewProjectUpdateComponent implements OnInit {
           }
         });
       }else{
+
+        // let newMember = {
+        //   owner_user: this.currentGroup.owner_user,
+        //   owner_group: this.currentGroup.artist_id,
+        //   user_id: this.selectedUser.id,
+        //   artist_id: this.currentGroup.artist_id,
+        //   active: 1,
+        //   date_joined: this.selectedDateJoined,
+        //   profile_url: this.currentGroup.profile_url+'-'+this.selectedUser.profile_url,
+        //   role: this.selectedRoles
+        // };
+
         this.dialogRef.close({event:this.action,data:this.local_data[0]});
       }
     });
@@ -113,22 +145,6 @@ export class NewProjectUpdateComponent implements OnInit {
     }
   }
 
-  getDate() {
-    let today = new Date();
-    let day = '';
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // Months start at 0!
-    let dd = today.getDate();
-
-    if (dd < 10) dd = 0 + dd;
-    if (mm < 10) mm = 0 + mm;
-
-    return day = yyyy + '-' + mm + '-' + dd;
-  }
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
@@ -136,5 +152,11 @@ export class NewProjectUpdateComponent implements OnInit {
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
   }
+
+  getGenre(e) {
+    console.log(e)
+    this.local_data[0]['genre'] = e
+  }
+
 
 }

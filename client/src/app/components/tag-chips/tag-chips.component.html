@@ -1,0 +1,28 @@
+<!--Genres-->
+<div id="tag-chips">
+  <p><span>{{chipType}}</span></p>
+  <div>
+    <mat-form-field>
+      <mat-chip-list #chipList>
+        <mat-chip *ngFor="let c of chips" [selectable]="selectable" [removable]="removable"
+          (removed)="remove(c)">
+          {{c.name}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input *ngIf="modUser" matInput [placeholder]="placeholder"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)"
+              >
+        <input *ngIf="!modUser" matInput [placeholder]="placeholder"
+              [matChipInputFor]="chipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="addOnBlur"
+              (matChipInputTokenEnd)="add($event)"
+              >
+      </mat-chip-list>
+    </mat-form-field>
+  </div>
+</div>
+<!--Genres-->

@@ -33,6 +33,10 @@ form {
   height:100%;
 }
 
+.inner-content {
+  height: calc(100% - 45px);
+}
+
 .sub-title {
   font-family: 'Thin_lc';
   font-weight: bolder;
@@ -51,6 +55,14 @@ form {
   margin:0 auto;
   width: 75%;
 
+  .datepickerlist {
+    display:flex;
+
+    p {
+      text-align:right;
+    }
+  }
+
   li {
     margin-bottom:25px;
 
@@ -58,6 +70,10 @@ form {
       width: calc(100% - 5px);
       box-sizing: border-box;
       position: relative;
+    }
+
+    .datepicker {
+      width: 100%;
     }
   }
 }
@@ -77,7 +93,8 @@ li {
 
 
   p {
-    width:250px;
+    min-width:180px;
+    width:auto;
     display:flex;
     flex-direction: column;
     justify-content: center;
@@ -186,6 +203,7 @@ li {
       width:50px;
       margin:0 10px;
       text-align: center;
+      min-width:inherit;
     }
 }
 
@@ -267,6 +285,26 @@ select {
       width:100%;
     }
   }
+
+  .datepickerlist {
+    flex-direction: column;
+  }
+
+  .datepickerlist p {
+    text-align:left!important;
+  }
+
+  ::ng-deep {
+    app-tag-chips {
+      #tag-chips {
+        flex-direction: column!important;
+
+        p {
+          text-align:left!important;
+        }
+      }
+    }
+  }
 }
 @media (min-width:801px)  {
   .step-card {
@@ -297,6 +335,10 @@ select {
   //     height: calc(100% - 170px);
   //   }
   // }
+
+  .datepickerlist {
+    flex-direction: column;
+  }
 }
 @media (min-width:1200px) {
   .step-card{
@@ -314,6 +356,10 @@ select {
     .mat-horizontal-stepper-content:nth-child(3){
       .step-card{
         height: calc(100% - 80px);
+
+        ul.center {
+          width:50%!important;
+        }
 
         .center {
           height:100%;
@@ -333,7 +379,28 @@ select {
   .col-center {
     height:100%;
   }
-  ul {
+  ul.center {
     height: inherit;
+    width:50%!important;
+  }
+
+  .datepickerlist {
+    flex-direction: row;
+  }
+
+  .datepickerlist p {
+    text-align:right!important;
+  }
+
+  ::ng-deep {
+    app-tag-chips {
+      #tag-chips {
+        flex-direction: row!important;
+
+        p {
+          text-align:right!important;
+        }
+      }
+    }
   }
 }

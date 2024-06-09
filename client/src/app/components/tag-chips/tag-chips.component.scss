@@ -1,0 +1,25 @@
+
+app-tag-chips {
+  width: 100%;
+}
+#tag-chips {
+  display:flex;
+  flex-direction: row;
+
+  p {
+    min-width:180px;
+    width:fit-content;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align:right;
+    font-size: 14px;
+    color: #0000008a;
+    margin-right: 15px;
+  }
+
+  div {
+    min-width:250px;
+    width:100%;
+  }
+}

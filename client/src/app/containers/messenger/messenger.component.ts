@@ -262,7 +262,9 @@ export class MessengerContainer implements OnInit, AfterViewChecked, OnChanges {
       this.chattingSub = false;
     }
 
-    this.socketService.chat.disconnect();
+    if(this.socketService.chat !== undefined){
+      this.socketService.chat.disconnect();
+    }
 
     setTimeout(()=> {
       this.currChatUser = this.defaultUser;

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef, inject }
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {COMMA, ENTER, BACKSLASH, SLASH} from '@angular/cdk/keycodes';
 import { AlertService } from 'src/app/services/alert.service';
 
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -61,18 +61,18 @@ export class ArtistMembersUpdateComponent implements OnInit {
   selectable = true;
   removable = true;
   addOnBlur = true;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA, BACKSLASH, SLASH];
   bRoles: BandRole[] = [];
 
   announcer = inject(LiveAnnouncer);
 
-  currYear = new Date().getFullYear();
   years = [];
   months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
   days = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
 
   selectedRoles= '';
 
+  currYear = new Date().getFullYear();
   selectedYear=this.currYear;
   selectedMonth='01';
   selectedDay='01';
@@ -80,6 +80,7 @@ export class ArtistMembersUpdateComponent implements OnInit {
   isValid=false;
   modUser=false;
   showInvite=false;
+  selectedUserSet=false;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -122,7 +123,12 @@ export class ArtistMembersUpdateComponent implements OnInit {
       this.selectedUser = {id:data.user_id, profile_image: data.profile_image};
       this.modUser = true;
       this.userService.findUsers(data.username).subscribe(res => {
+
           this.foundUsers = res;
+          this.selectedUser = {id:res[0].id, profile_image: res[0].profile_image, username: res[0].username, first_name: res[0].first_name, last_name: res[0].last_name};
+          setTimeout(()=>{
+            this.selectedUserSet = true;
+          }, 100)
       });
       this.selectedYear= data.date_joined.split('-')[0];
       this.selectedMonth= data.date_joined.split('-')[1];
@@ -169,6 +175,7 @@ export class ArtistMembersUpdateComponent implements OnInit {
   }
 
   async ngOnInit() {
+
   }
 
   ngAfterContentChecked(): void {
@@ -199,42 +206,9 @@ export class ArtistMembersUpdateComponent implements OnInit {
     this.firstFormGroup.controls['user'].setValue(user);
   }
 
-  addRole(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-
-    if ((value || "").trim()) {
-      this.bRoles.push({ name: value.trim() });
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = "";
-    }
-  }
-
-  removeRole(country: BandRole): void {
-    const index = this.bRoles.indexOf(country);
-
-    if (index >= 0) {
-      this.bRoles.splice(index, 1);
-    }
-  }
-
-  updateRoles() {
-    let newRoleList = '';
-    this.bRoles.map(res => {
-      newRoleList = newRoleList + res.name + ' / ';
-    });
-
-    newRoleList = newRoleList.slice(0, -3);
-    this.selectedRoles = newRoleList;
-
-    if(this.modUser){
-      this.userService.findUsers(this.data.username).subscribe(res => {
-        this.selectedUser = res[0];
-      });
-    }
+  getRole(e) {
+    this.local_data[0]['role'] = e
+    this.selectedRoles = this.local_data[0]['role'];
   }
 
   onChangeYear(y){

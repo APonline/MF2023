@@ -82,6 +82,7 @@ import { NewProjectUpdateComponent } from './components/new-project-update/new-p
 import { ArtistMembersUpdateComponent } from './components/new-item-form/new-item-types/artist-members/artist-members-update/artist-members-update.component';
 import { UserCardComponent } from './components/user/user-card/user-card.component';
 import { InviteComponent } from './components/user/invite/invite.component';
+import { TagChipsComponent } from './components/tag-chips/tag-chips.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -144,7 +145,8 @@ import { InviteComponent } from './components/user/invite/invite.component';
     NewProjectUpdateComponent,
     ArtistMembersUpdateComponent,
     UserCardComponent,
-    InviteComponent
+    InviteComponent,
+    TagChipsComponent
   ],
   imports: [
     AppRoutingModule,
