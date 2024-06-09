@@ -33,7 +33,7 @@ export class MFService {
     if (dd < 10) dd = 0 + dd;
     if (mm < 10) mm = 0 + mm;
 
-    return day = yyyy + '-' + mm + '-' + dd;
+    return day = yyyy + '-' + ('0' + mm).toString().slice(-2) + '-' + ('0' + dd).toString().slice(-2);
   }
 
 }

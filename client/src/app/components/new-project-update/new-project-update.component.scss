@@ -1,4 +1,15 @@
+.content {
+  height:100%;
+}
 
+.inner-content {
+  height: calc(100% - 45px);
+}
+
+ul {
+  width: 50%;
+  margin: 0 auto;
+}
 
 li {
   display:flex;
@@ -19,6 +30,14 @@ li {
     width:250px;
   }
 
+}
+
+app-tag-chips {
+  width: 100%;
+}
+
+h4 {
+  color:red;
 }
 
 
@@ -77,99 +96,170 @@ li {
   }
 }
 
-// .content {
-//   width:100%;
-//   min-height:450px;
-//   box-sizing: border-box;
-// }
 
-// #contact-form {
-//   display: flex;
-//   flex-direction: column;
-// }
+.step-card-actions {
+  display:flex;
+  justify-content: center;
+  min-width:100%;
+  // position:absolute;
+  bottom:20px;
 
-// textarea {
-//   min-height: 200px;
-// }
-
-
-// mat-form-field {
-//   width:100%;
-//   margin-right: 3px;
-// }
-// .form-box {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-wrap: wrap;
-//   flex-basis: 20%;
-//   margin-top:20px;
-// }
-// .form-box-horizontal {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-direction: row;
-
-//   mat-checkbox {
-//     margin-right:40px;
-//   }
-// }
-// .form-box-vertical {
-//   display:flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   min-height: 100px;
-//   margin-bottom: 10px;
-//   line-height: 33px;
-
-//   mat-radio-group {
-//     display:flex;
-//     justify-content: flex-start;
-
-//     mat-radio-button {
-//       margin-right:40px;
-//     }
-//   }
-// }
-// .mat-select {
-//   margin: 20px 0 ;
-//   max-width: 300px;
-// }
-
-// .submit {
-//   display:flex;
-//   justify-content: space-between;
-//   width:200px;
-// }
-
-// .user-reqs{
-//   width:100%;
-//   display: block;
-// }
-
-// :host ::ng-deep .user-reqs .glass {
-//   background:transparent!important;
-//   box-shadow: none;
-//   -moz-box-shadow: none;
-//   -webkit-box-shadow: none;
-//   backdrop-filter: none;
-//   -moz-backdrop-filter: none;
-//   -webkit-backdrop-filter: none;
-// }
-
-// table tr {
-//   display: flex;
-//   flex-direction: column;
-//   min-width: 500px;
-
-// }
-
-// td {
-//   width:100%;
-// }
-
+  button {
+    margin:0 20px;
+  }
+}
 ::ng-deep {
 
   .mat-dialog-actions {
     justify-content: center;
+  }
+}
+
+.summary-info {
+  width:100%!important;
+
+  p {
+    width:100%;
+    text-align:left;
+    margin:10px;
+  }
+}
+
+
+@media (min-width:320px)  {
+  .step-card {
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height:100%;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    // height: 260px;
+    height:inherit;
+  }
+  .summary {
+    // height: 350px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+
+  ::ng-deep {
+    mat-stepper {
+      height: calc(100% - 110px);
+    }
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 130px);
+
+        .center {
+          height:100%;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+
+  form {
+    height: calc(100% - 50px);
+  }
+
+  ::ng-deep {
+    .mat-stepper-horizontal {
+      margin-top: 8px;
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+      display: block;
+      position: relative;
+    }
+    .mat-horizontal-content-container {
+      height: calc(100% - 50px);
+    }
+    .mat-form-field {
+      width:100%;
+    }
+  }
+}
+@media (min-width:801px)  {
+  .step-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-direction: column;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    // height: 260px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+  .summary {
+    // height: 350px;
+  }
+
+  // ::ng-deep {
+  //   mat-stepper {
+  //     height: calc(100% - 170px);
+  //   }
+  // }
+}
+@media (min-width:1200px) {
+  .step-card{
+    flex-direction: row;
+    height: calc(100% - 20px);
+  }
+  ::ng-deep {
+    .mat-horizontal-content-container {
+      height: calc(100% - 25px);
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+    }
+
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 80px);
+
+        .center {
+          height:100%;
+          width:50%!important;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+  .card-half {
+    width:48%;
+    display: flex;
+    flex-direction: column;
+  }
+  .col-center {
+    height:100%;
+  }
+  ul {
+    height: inherit;
+    width:50%!important;
   }
 }

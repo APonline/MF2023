@@ -29,6 +29,7 @@
     "angular-ng-autocomplete": "^2.0.7",
     "core-js": "^2.5.4",
     "cropperjs": "^1.6.2",
+    "fast-average-color": "^9.4.0",
     "linkify-it": "^5.0.0",
     "mat-color-picker": "^0.0.3",
     "material-community-components": "^10.0.0",

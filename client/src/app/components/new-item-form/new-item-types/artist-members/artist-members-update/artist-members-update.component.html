@@ -3,130 +3,119 @@
   <h1><strong>{{action}} {{tool}}</strong></h1>
   <br/>
 
-  <mat-stepper [linear]="isLinear" #stepper>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup" *ngIf="firstFormGroup">
-        <ng-template matStepLabel>Find a user</ng-template>
+  <div class="inner-content" *ngIf="action != 'Delete'; else elseTemplate">
+    <mat-stepper [linear]="isLinear" #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup" *ngIf="firstFormGroup">
+          <ng-template matStepLabel>Find a user</ng-template>
 
-        <div class="step-card">
-          <div class="card-half">
-            <div class="col-center">
-              <div>
-                <mat-form-field>
-                  <input [disabled]="true" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
-                  <input *ngIf="!modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
-                </mat-form-field>
-                <button mat-raised-button color="accent" matStepperPrevious (click)="showInvite = !showInvite">{{(showInvite ? 'Show':'Hide')}} User Invite</button>
-                <br /><br />
-                <app-invite *ngIf="showInvite" [group]="data.group"></app-invite>
+          <div class="step-card">
+            <div class="card-half">
+              <div class="col-center">
+                <div>
+                  <mat-form-field>
+                    <input [disabled]="true" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
+                    <input *ngIf="!modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
+                  </mat-form-field>
+                  <button mat-raised-button color="accent" matStepperPrevious (click)="showInvite = !showInvite">{{(showInvite ? 'Show':'Hide')}} User Invite</button>
+                  <br /><br />
+                  <app-invite *ngIf="showInvite" [group]="data.group"></app-invite>
+                </div>
               </div>
             </div>
+            <div class="card-half">
+              <ul>
+                <li *ngFor="let u of foundUsers" (click)="selectUser(u)">
+                  <app-user-card [user]="u" [active]="(selectedUser.id == u.id ? true : false)" ></app-user-card>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div class="card-half">
-            <ul>
-              <li *ngFor="let u of foundUsers" (click)="selectUser(u)">
-                <app-user-card [user]="u" [active]="(selectedUser.id == u.id ? true : false)" ></app-user-card>
+
+          <div class="step-card-actions">
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
+          <ng-template matStepLabel>Select a Role</ng-template>
+
+          <div class="step-card">
+            <ul class="center">
+              <li>
+                <app-tag-chips (Tag)="getRole($event)" [local_data]="local_data[0]['role']" [chipType]="'Role'"></app-tag-chips>
+              </li>
+              <li class="datepickerlist">
+                <p><span>Date Joined</span></p>
+                <div class="datepicker">
+                  <div class="date-row">
+                    <select (change)="onChangeYear($event.target.value)" formControlName="year">
+                      <option *ngFor="let y of years" [selected]="y==selectedYear? true: false">{{y}}</option>
+                    </select>
+                    <p>|</p>
+                    <select (change)="onChangeMonth($event.target.value)" formControlName="month">
+                      <option *ngFor="let m of months" [selected]="m==selectedMonth? true: false">{{m}}</option>
+                    </select>
+                    <p>|</p>
+                    <select (change)="onChangeDay($event.target.value)" formControlName="day">
+                      <option *ngFor="let d of days" [selected]="d==selectedDay? true: false">{{d}}</option>
+                    </select>
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
-        </div>
 
-        <div class="step-card-actions">
-          <button mat-raised-button color="primary" matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup">
-      <form [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
-        <ng-template matStepLabel>Select a Role</ng-template>
-
+          <div class="step-card-actions">
+            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
         <div class="step-card">
-          <ul class="center">
+          <ul class="center summary">
             <li>
-              <p><span>Role(s)</span></p>
+              <h3 style="text-align: center;" *ngIf="action == 'Add'">You will be adding this user to this Artist Group.</h3>
+              <h3 style="text-align: center;" *ngIf="action == 'Update'">You will be updating this user in this Artist Group.</h3>
+              <h3 style="text-align: center;" *ngIf="action == 'Delete'">You will be deleting this user in this Artist Group.</h3>
+            </li>
+            <li>
               <div>
-                <mat-form-field>
-                  <mat-chip-list #chipList>
-                    <mat-chip *ngFor="let role of bRoles" [selectable]="selectable" [removable]="removable"
-                      (removed)="removeRole(role)">
-                      {{role.name}}
-                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                    </mat-chip>
-                    <input *ngIf="modUser" formControlName="role" matInput placeholder="Vocals, Guitar"
-                           [matChipInputFor]="chipList"
-                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
-                           (matChipInputTokenEnd)="addRole($event)"
-                           >
-                    <input *ngIf="!modUser" formControlName="role" matInput placeholder="Vocals, Guitar"
-                           [matChipInputFor]="chipList"
-                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                           [matChipInputAddOnBlur]="addOnBlur"
-                           (matChipInputTokenEnd)="addRole($event)"
-                           [(ngModel)]="local_data[0]['role']">
-                  </mat-chip-list>
-                </mat-form-field>
+                <app-user-card *ngIf="selectedUserSet" [user]="selectedUser" [active]="true" ></app-user-card>
               </div>
             </li>
             <li>
-              <p><span>Date Joined</span></p>
-              <div>
-                <div class="date-row">
-                  <select (change)="onChangeYear($event.target.value)" formControlName="year">
-                    <option *ngFor="let y of years" [selected]="y==selectedYear? true: false">{{y}}</option>
-                  </select>
-                  <p>|</p>
-                  <select (change)="onChangeMonth($event.target.value)" formControlName="month">
-                    <option *ngFor="let m of months" [selected]="m==selectedMonth? true: false">{{m}}</option>
-                  </select>
-                  <p>|</p>
-                  <select (change)="onChangeDay($event.target.value)" formControlName="day">
-                    <option *ngFor="let d of days" [selected]="d==selectedDay? true: false">{{d}}</option>
-                  </select>
-                </div>
-              </div>
+              <div><h4>Role(s)</h4><br/><p>{{selectedRoles}}</p></div>
+            </li>
+            <li>
+              <div><h4>Date Joined</h4><br/><p>{{selectedDateJoined}}</p></div>
             </li>
           </ul>
         </div>
 
         <div class="step-card-actions">
           <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" matStepperNext (click)="updateRoles()">Next</button>
+          <button mat-raised-button color="primary" (click)="stepper.reset()">Reset</button>
         </div>
-      </form>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Done</ng-template>
-      <div class="step-card">
-        <ul class="center summary">
-          <li>
-            <h3 style="text-align: center;" *ngIf="action == 'Add'">You will be adding this user to this Artist Group.</h3>
-            <h3 style="text-align: center;" *ngIf="action == 'Update'">You will be updating this user in this Artist Group.</h3>
-            <h3 style="text-align: center;" *ngIf="action == 'Delete'">You will be deleting this user in this Artist Group.</h3>
-          </li>
-          <li>
-            <div>
-              <app-user-card [user]="selectedUser" [active]="true" ></app-user-card>
-            </div>
-          </li>
-          <li>
-            <div><h4>Role(s)</h4><br/><p>{{selectedRoles}}</p></div>
-          </li>
-          <li>
-            <div><h4>Date Joined</h4><br/><p>{{selectedDateJoined}}</p></div>
-          </li>
-        </ul>
-      </div>
 
-      <div class="step-card-actions">
-        <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-        <button mat-raised-button color="primary" (click)="stepper.reset()">Reset</button>
-      </div>
+        <div mat-dialog-actions>
+          <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+          <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </div>
+  <ng-template #elseTemplate>
+    <div class="inner-content">
+      Are you sure?
 
       <div mat-dialog-actions>
         <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
         <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
       </div>
-    </mat-step>
-  </mat-stepper>
+    </div>
+  </ng-template>
 </div>

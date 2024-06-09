@@ -1,34 +1,3 @@
-.mat-dialog-actions {
-  width: 100%;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom:inherit;
-}
-form {
-  height: 100%;
-}
-
-::ng-deep {
-  .mat-stepper-horizontal {
-    margin-top: 8px;
-  }
-  .mat-horizontal-stepper-content {
-    height: 100%;
-    display: block;
-    position: relative;
-  }
-  .mat-horizontal-content-container {
-    height: 100%;
-  }
-  .mat-form-field {
-    width:100%;
-  }
-}
-
-.mat-mdc-form-field {
-  margin-top: 16px;
-}
-
 .content {
   height:100%;
 }
@@ -37,68 +6,21 @@ form {
   height: calc(100% - 45px);
 }
 
-.sub-title {
-  font-family: 'Thin_lc';
-  font-weight: bolder;
-  font-size: 23px;
-  color: #bababa;
-}
-
-.col-center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: calc(100% - 40px);
-}
-
-.center {
-  margin:0 auto;
-  width: 75%;
-
-  .datepickerlist {
-    display:flex;
-
-    p {
-      text-align:right;
-    }
-  }
-
-  li {
-    margin-bottom:25px;
-
-    div {
-      width: calc(100% - 5px);
-      box-sizing: border-box;
-      position: relative;
-    }
-
-    .datepicker {
-      width: 100%;
-    }
-  }
-}
-
 ul {
-  overflow: auto;
-    max-height: 100%;
-    position: relative;
-    height: 420px;
+  width: 50%;
+  margin: 0 auto;
 }
 
 li {
-  width: 100%;
-  min-width: 100%;
-  position: relative;
-  display: block;
-
+  display:flex;
+  flex-direction: row;
 
   p {
-    min-width:180px;
-    width:auto;
+    width:250px;
     display:flex;
     flex-direction: column;
     justify-content: center;
-    text-align:left;
+    text-align:right;
     font-size: 14px;
     color: #0000008a;
     margin-right: 15px;
@@ -108,6 +30,14 @@ li {
     width:250px;
   }
 
+}
+
+app-tag-chips {
+  width: 100%;
+}
+
+h4 {
+  color:red;
 }
 
 
@@ -168,16 +98,8 @@ li {
 
 .step-card {
   display:flex;
-  justify-content: space-between;
-  min-width:100%;
-  margin: 0 auto;
+}
 
-}
-.card-half {
-  width:48%;
-  display: flex;
-  flex-direction: column;
-}
 .step-card-actions {
   display:flex;
   justify-content: center;
@@ -189,36 +111,35 @@ li {
     margin:0 20px;
   }
 }
+::ng-deep {
 
-.example-chip-list {
-  width: 100%;
-}
-
-.date-row {
-  display:flex;
-  justify-content: space-between;
-  width: 25% !important;
-
-    p {
-      width:50px;
-      margin:0 10px;
-      text-align: center;
-      min-width:inherit;
-    }
-}
-
-select {
-  padding: 8px 12px;
-  font-family: 'Thin_lc';
-  font-size: 20px;
-  letter-spacing: 1px;
-  border-radius: 6px;
-  cursor:pointer;
-
-  option {
-    cursor:pointer;
+  .mat-dialog-actions {
+    justify-content: center;
   }
 }
+
+.summary {
+
+  li {
+    margin-bottom:10px!important;
+  }
+}
+
+.summary-info {
+  width:100%!important;
+
+  p {
+    width:calc(100% - 20px);
+    text-align:left;
+    margin:10px;
+  }
+}
+
+#final-profile-image, #final-profile-banner-image {
+  max-height: 120px;
+  margin-top: 10px;
+}
+
 
 @media (min-width:320px)  {
   .step-card {
@@ -285,26 +206,6 @@ select {
       width:100%;
     }
   }
-
-  .datepickerlist {
-    flex-direction: column;
-  }
-
-  .datepickerlist p {
-    text-align:left!important;
-  }
-
-  ::ng-deep {
-    app-tag-chips {
-      #tag-chips {
-        flex-direction: column!important;
-
-        p {
-          text-align:left!important;
-        }
-      }
-    }
-  }
 }
 @media (min-width:801px)  {
   .step-card {
@@ -335,10 +236,6 @@ select {
   //     height: calc(100% - 170px);
   //   }
   // }
-
-  .datepickerlist {
-    flex-direction: column;
-  }
 }
 @media (min-width:1200px) {
   .step-card{
@@ -357,12 +254,9 @@ select {
       .step-card{
         height: calc(100% - 80px);
 
-        ul.center {
-          width:50%!important;
-        }
-
         .center {
           height:100%;
+          width:50%!important;
 
           li {
             margin-bottom: 50px;
@@ -379,28 +273,8 @@ select {
   .col-center {
     height:100%;
   }
-  ul.center {
+  ul {
     height: inherit;
     width:50%!important;
-  }
-
-  .datepickerlist {
-    flex-direction: row;
-  }
-
-  .datepickerlist p {
-    text-align:right!important;
-  }
-
-  ::ng-deep {
-    app-tag-chips {
-      #tag-chips {
-        flex-direction: row!important;
-
-        p {
-          text-align:right!important;
-        }
-      }
-    }
   }
 }
