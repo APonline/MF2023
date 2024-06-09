@@ -29,6 +29,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MFService } from 'src/app/services/MF.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { ArtistUpdateComponent } from './artist-update/artist-update.component';
 
 @Component({
   selector: 'app-artistForm',
@@ -78,6 +79,7 @@ export class ArtistFormComponent implements OnInit {
   myForm: FormGroup;
   data: any;
   currentGroup = null;
+  artist: any;
 
   constructor(
       public dialog: MatDialog,
@@ -119,6 +121,11 @@ export class ArtistFormComponent implements OnInit {
       // artist_image_1: [''],
       // artist_image_2: [''],
       // artist_image_3: [''],
+    });
+
+
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
     });
 
     this.loadData();
@@ -204,5 +211,25 @@ export class ArtistFormComponent implements OnInit {
 
   cancelEdit() {
     this.editing = 0;
+  }
+
+  openDialog(action) {
+
+    let obj = JSON.parse(JSON.stringify(this.artist[0]))
+    obj.action = action;
+    obj.tool = this.toolName;
+
+    const dialogRef = this.dialog.open(ArtistUpdateComponent, {
+      panelClass: 'dialog-box',
+      width: '85%',
+      height: '80vh',
+      data:obj
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.activeItem.emit({ action: result.event, data: result.data });
+      }
+    });
   }
 }

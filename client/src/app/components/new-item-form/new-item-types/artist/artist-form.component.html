@@ -112,7 +112,7 @@
         </div>
 
 
-        <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="editProfile()">
+        <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="openDialog('Update')">
           edit
         </div>
         <div id="cancelBtn" class="material-icons" *ngIf="editing === 1" (click)="cancelEdit()">
