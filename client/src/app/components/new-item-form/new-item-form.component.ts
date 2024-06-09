@@ -80,7 +80,7 @@ export class NewItemFormComponent implements OnInit {
         private albumsService: AlbumsService,
         private artistLinksService: ArtistsLinksService,
         private artistMembersService: ArtistMembersService,
-        private artistsService: ArtistsService,
+        private artistService: ArtistsService,
         private commentsService: CommentsService,
         private contactsService: ContactsService,
         private documentsService: DocumentsService,
@@ -160,9 +160,18 @@ export class NewItemFormComponent implements OnInit {
     update(data) {
       let id = data.id;
       delete data.action;
-      let t = this.tool.split('_');
-      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      console.log('yo: ',this.tool);
+      let t = null;
+      let tName = null;
+      if(this.tool.indexOf('_') !== -1){
+        t = this.tool.split('_');
+        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      }else{
+        tName = this.tool;
+      }
+
       const service = tName+'Service';
+      console.log(service)
 
       this[service].update(id,data).subscribe(async res => {
         this.act = 'put';

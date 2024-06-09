@@ -201,11 +201,10 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
         cleanData.push(entry);
       });
 
-
       this[this.tool] = cleanData;
       this.toolSet = this[this.tool];
 
-      if(this.toolSet.length > 1){
+      if(this.toolSet.length > 0){
         this.setSettings(this.toolSet);
       }else {
         let newForm ={}

@@ -59,32 +59,43 @@
           </div>
         </form>
       </mat-step>
-      <!-- <mat-step [stepControl]="secondFormGroup">
+      <mat-step [stepControl]="secondFormGroup">
         <form [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
           <ng-template matStepLabel>Imagery</ng-template>
 
           <div class="step-card">
-            <ul class="center">
-              <li>
-                <p><span>Profile Image</span></p>
-                <div>
-                  <app-upload-single formControlName="profile_image" (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
-                </div>
-              </li>
-              <li>
-                <p><span>Profile Banner Image</span></p>
-                <div>
-                  <app-upload-single formControlName="profile_banner_image" (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
-                </div>
-              </li>
-            </ul>
+            <div class="card-half">
+              <ul class="center">
+                <li>
+                  <p style="text-align:left;"><span>Profile Image</span></p>
+                </li>
+                <li>
+                  <div>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="card-half">
+              <ul>
+                <li>
+                  <p style="text-align:left;"><span>Profile Banner Image</span></p>
+                </li>
+                <li>
+                  <div>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div class="step-card-actions">
+            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
             <button mat-raised-button color="primary" matStepperNext>Next</button>
           </div>
         </form>
-      </mat-step> -->
+      </mat-step>
       <mat-step>
         <ng-template matStepLabel>Done</ng-template>
 
@@ -107,12 +118,14 @@
             </li>
           </ul>
 
-          <!-- <ul class="center summary row">
+          <ul class="center summary row">
             <li>
+              <div class="summary-info"><h4>Profile Image</h4><img id="final-profile-image" [src]="local_data[0]['profile_image_img']"/></div>
             </li>
             <li>
+              <div class="summary-info"><h4>Profile Banner Image</h4><img id="final-profile-banner-image" [src]="local_data[0]['profile_banner_image_img']"/></div>
             </li>
-          </ul> -->
+          </ul>
         </div>
 
         <div class="step-card-actions" style="margin-top: -41px;">

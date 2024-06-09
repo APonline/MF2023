@@ -70,6 +70,7 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
 
   constructor(
       public dialog: MatDialog,
@@ -98,7 +99,9 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
   }
 
@@ -112,6 +115,7 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
         });
 
         this.dataSource.push(this.res);
+        this.table.renderRows();
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
@@ -121,12 +125,13 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
           }
           return true;
         });
+        this.table.renderRows();
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
         });
+        this.table.renderRows();
       }
-      this.table.renderRows();
     }
   }
 
@@ -244,6 +249,8 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.toLowerCase();
+        result.data.owner_group = this.artist?.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

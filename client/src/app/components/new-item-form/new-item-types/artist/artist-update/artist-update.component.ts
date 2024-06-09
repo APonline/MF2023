@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '../../services/authentication.service';
+import { AuthenticationService } from  '../../../../../services/authentication.service';
 import {BACKSLASH, SLASH, COMMA, ENTER} from '@angular/cdk/keycodes';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
@@ -15,11 +15,11 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
-  selector: 'app-newProjectUpdate',
-  templateUrl: './new-project-update.component.html',
-  styleUrls: ['./new-project-update.component.scss']
+  selector: 'app-artistUpdate',
+  templateUrl: './artist-update.component.html',
+  styleUrls: ['./artist-update.component.scss']
  })
-export class NewProjectUpdateComponent implements OnInit {
+export class ArtistUpdateComponent implements OnInit {
   currentUser: any;
   @Input() record: any;
 
@@ -50,10 +50,10 @@ export class NewProjectUpdateComponent implements OnInit {
     description: [''],
     bio: [''],
   });
-  // secondFormGroup = this.formBuilder.group({
-  //   profile_image: [''],
-  //   profile_banner_image: [''],
-  // });
+  secondFormGroup = this.formBuilder.group({
+    profile_image: [''],
+    profile_banner_image: [''],
+  });
 
   constructor(
       private formBuilder: FormBuilder,
@@ -63,7 +63,7 @@ export class NewProjectUpdateComponent implements OnInit {
       private userService: UserService,
       private uploadService: FileUploadService,
       private authenticationService: AuthenticationService,
-      public dialogRef: MatDialogRef<NewProjectUpdateComponent>,
+      public dialogRef: MatDialogRef<ArtistUpdateComponent>,
       private cdr: ChangeDetectorRef,
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -82,6 +82,8 @@ export class NewProjectUpdateComponent implements OnInit {
     Object.keys(data).map(res => {
       this.displayedColumns.push(res)
     })
+
+    console.log('D: ',data)
     this.local_data = [{...data}];
 
     //this.currentGroup = this.authenticationService.currentUserValue;
@@ -99,36 +101,35 @@ export class NewProjectUpdateComponent implements OnInit {
 
 
   doAction(){
-    let name = this.local_data[0].name.toLowerCase();
 
-    this.artistsService.find(name).subscribe(async res => {
-      if(res.result != null){
-        this.userService.get(res.owner_user).subscribe(async res => {
-          this.ownerFound = true;
-          if(res.profile_image != 'default'){
-            await this.uploadService.getFile(0, res.profile_image, 'users/'+res.id, 'png').subscribe(r => {
-              res['display'] = r[0];
+    // this.artistsService.find(name).subscribe(async res => {
+    //   if(res.result != null){
+    //     this.userService.get(res.owner_user).subscribe(async res => {
+    //       this.ownerFound = true;
+    //       if(res.profile_image != 'default'){
+    //         await this.uploadService.getFile(0, res.profile_image, 'users/'+res.id, 'png').subscribe(r => {
+    //           res['display'] = r[0];
 
-              this.userList.push(res)
-            });
-          }
-        });
-      }else{
+    //           this.userList.push(res)
+    //         });
+    //       }
+    //     });
+    //   }else{
 
-        // let newMember = {
-        //   owner_user: this.currentGroup.owner_user,
-        //   owner_group: this.currentGroup.artist_id,
-        //   user_id: this.selectedUser.id,
-        //   artist_id: this.currentGroup.artist_id,
-        //   active: 1,
-        //   date_joined: this.selectedDateJoined,
-        //   profile_url: this.currentGroup.profile_url+'-'+this.selectedUser.profile_url,
-        //   role: this.selectedRoles
-        // };
+        let newEdits = {
+          id: this.local_data[0].id,
+          bio: this.local_data[0].bio,
+          description: this.local_data[0].description,
+          genre: this.local_data[0].genre,
+          location: this.local_data[0].location,
+          name: this.local_data[0].name,
+          profile_image: this.local_data[0].profile_image,
+          profile_banner_image: this.local_data[0].profile_banner_image
+        };
 
-        this.dialogRef.close({event:this.action,data:this.local_data[0]});
-      }
-    });
+        this.dialogRef.close({event:this.action,data:newEdits});
+    //   }
+    // });
   }
 
   closeDialog(){

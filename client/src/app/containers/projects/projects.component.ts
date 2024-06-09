@@ -22,6 +22,12 @@ export class ProjectsContainer implements OnInit {
   myProjects: any = [];
   newRecord=null;
 
+  currYear = new Date().getFullYear();
+  selectedYear=this.currYear;
+  selectedMonth='01';
+  selectedDay='01';
+  selectedDateJoined= this.selectedYear+'-'+this.selectedMonth+'-'+this.selectedDay;
+
   constructor(
     public dialog: MatDialog,
     private authenticationService: AuthenticationService,
@@ -30,7 +36,7 @@ export class ProjectsContainer implements OnInit {
     private alertService: AlertService,
     private mfService: MFService,
     private artistsService: ArtistsService,
-
+    private artistMembersService: ArtistMembersService,
     private router: Router,
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
@@ -107,26 +113,27 @@ export class ProjectsContainer implements OnInit {
         profile_url: res.profile_url+'-'+this.currentUser.profile_url
       };
 
-      this.projects.create(data2).subscribe(async res => {
-        this.projects.getAllForUser(this.currentUser.id).subscribe( res => {
+      this.projects.create(data2).subscribe(async res2 => {
+
+        this.projects.getAllForUser(this.currentUser.id).subscribe( res3 => {
           for(let i=0; i<res.length; i++){
-            if(res[i] != undefined || res[i].owner != 0){
-              if(res[i].artists.profile_image != 'default' && res[i].artists.profile_image != ''){
-                let group = res[i].artists.name.replace(/\s+/g, '-').toLowerCase();
-                 this.uploadService.getFile(0, res[i].artists.profile_image, group, 'png').subscribe(r => {
-                  res[i]['display'] = r[0];
+            if(res3[i] != undefined || res3[i].owner != 0){
+              if(res3[i].artists.profile_image != 'default' && res3[i].artists.profile_image != ''){
+                let group = res3[i].artists.name.replace(/\s+/g, '-').toLowerCase();
+                 this.uploadService.getFile(0, res3[i].artists.profile_image, group, 'png').subscribe(r => {
+                  res3[i]['display'] = r[0];
                 });
               }else{
-                res[i]['display'] = { display: './assets/images/intrologo.png', name: 'default', type: 'png', url: './assets/images/intrologo.png' };
+                res3[i]['display'] = { display: './assets/images/intrologo.png', name: 'default', type: 'png', url: './assets/images/intrologo.png' };
               }
             }
           }
 
-          this.myProjects = res;
+          this.myProjects = res3;
         });
 
         setTimeout(()=>{
-          this.router.navigate(['/projects/'+res.artist_id+'/'+res.profile_url]);
+          this.router.navigate(['/projects/'+res.id+'/'+res.profile_url]);
         },1000)
       })
     });
