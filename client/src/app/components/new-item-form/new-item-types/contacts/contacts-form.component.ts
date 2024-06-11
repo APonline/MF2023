@@ -7,7 +7,6 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 
 /* services - make dynamic somehow later */
@@ -29,6 +28,7 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { ContactUpdateComponent } from './contact-update/contact-update.component';
 
 @Component({
   selector: 'app-contactsForm',
@@ -70,6 +70,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
 
   constructor(
       public dialog: MatDialog,
@@ -99,6 +100,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
   ngOnInit() {
 
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
   }
 
@@ -111,7 +115,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
           }
         });
 
+        console.log(this.dataSource, this.res)
         this.dataSource.push(this.res);
+        this.table.renderRows();
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
@@ -121,6 +127,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
           }
           return true;
         });
+        this.table.renderRows();
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
@@ -171,17 +178,22 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       this[this.tool] = res;
       this.toolSet = this[this.tool];
 
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
+      console.log(this.toolSet);
+
+      this.setSettings(this.toolSet);
+      // if(this.toolSet.length > 1){
+      //   console.log('A')
+      //   this.setSettings(this.toolSet);
+      // }else {
+      //   console.log('B')
+      //   let newForm ={}
+      //   Object.keys(this.modelSet).map(res => {
+      //     if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
+      //       newForm[res] = '';
+      //     }
+      //   });
+      //   this.newRecord = newForm;
+      // }
     });
 
   }
@@ -235,7 +247,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
+    obj.owner_id = this.artist?.id;
+    obj.group = this.artist?.name;
+    const dialogRef = this.dialog.open(ContactUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',
       height: '80vh',
@@ -244,6 +258,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        console.log(result.event, result.data)
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

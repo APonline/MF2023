@@ -41,7 +41,7 @@ export class NewitemComponent implements OnInit {
     // {name:'Comments', value:'comments'},
     // {name:'Merch Categories', value:'merch_categories'},
     // {name:'Merch', value:'merch'},
-    // {name:'Contacts', value:'contacts'},
+    {name:'Contacts', value:'contacts'},
     // // {name:'Friends', value:'friends'},
     // {name:'Galleries', value:'galleries'},
     // {name:'Images', value:'images'},

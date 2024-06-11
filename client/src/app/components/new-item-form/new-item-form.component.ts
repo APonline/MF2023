@@ -144,8 +144,15 @@ export class NewItemFormComponent implements OnInit {
     createNew(data) {
       delete data.id;
       delete data.action;
-      let t = this.tool.split('_');
-      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      let t = null;
+      let tName = null;
+      if(this.tool.indexOf('_') !== -1){
+        t = this.tool.split('_');
+        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      }else{
+        tName = this.tool;
+      }
+
       const service = tName+'Service';
 
       this[service].create(data).subscribe(async res => {
@@ -182,8 +189,14 @@ export class NewItemFormComponent implements OnInit {
 
     //DELETE
     delete(id){
-      let t = this.tool.split('_');
-      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      let t = null;
+      let tName = null;
+      if(this.tool.indexOf('_') !== -1){
+        t = this.tool.split('_');
+        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      }else{
+        tName = this.tool;
+      }
       const service = tName+'Service';
 
       this[service].delete(id).subscribe(async res => {

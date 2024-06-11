@@ -81,6 +81,7 @@ import { ArtistMembersUpdateComponent } from './components/new-item-form/new-ite
 import { UserCardComponent } from './components/user/user-card/user-card.component';
 import { InviteComponent } from './components/user/invite/invite.component';
 import { TagChipsComponent } from './components/tag-chips/tag-chips.component';
+import { ContactUpdateComponent } from './components/new-item-form/new-item-types/contacts/contact-update/contact-update.component';
 import { ArtistUpdateComponent } from './components/new-item-form/new-item-types/artist/artist-update/artist-update.component';
 
 // export const PICK_FORMATS = {
@@ -146,7 +147,8 @@ import { ArtistUpdateComponent } from './components/new-item-form/new-item-types
     UserCardComponent,
     InviteComponent,
     TagChipsComponent,
-    ArtistUpdateComponent
+    ArtistUpdateComponent,
+    ContactUpdateComponent
   ],
   imports: [
     AppRoutingModule,

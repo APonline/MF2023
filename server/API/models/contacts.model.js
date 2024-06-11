@@ -23,9 +23,6 @@ module.exports = (sequelize, Sequelize) => {
       relation: {
       type: Sequelize.STRING
     },
-      town: {
-      type: Sequelize.STRING
-    },
       city: {
       type: Sequelize.STRING
     },

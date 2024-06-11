@@ -26,6 +26,25 @@ li {
 
 }
 
+.section {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width:100%;
+  margin-bottom:10px;
+}
+
+.row {
+  // display:flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // width:100%;
+}
+
+app-tag-chips {
+  width: 100%;
+}
+
 @media (min-width:320px)  {
   ul {
     width: 100%;

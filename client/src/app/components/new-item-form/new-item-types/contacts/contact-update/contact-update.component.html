@@ -1,0 +1,96 @@
+
+<div class="content mf-theme">
+  <!-- dialog-box.component.html -->
+  <h1><strong>{{action}} {{tool}}</strong></h1>
+  <br/>
+
+
+  <div *ngIf="action != 'Delete'; else elseTemplate">
+    <div class="section">
+      <ul class="row">
+        <li>
+          <p><span>First Name</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['first_name']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <p><span>Last Name</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['last_name']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <p><span>Nickname</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['nickname']">
+            </mat-form-field>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <ul class="row">
+        <li>
+          <p><span>Phone</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['phone']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <p><span>Email</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['email']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <p><span>City</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['city']">
+            </mat-form-field>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <ul class="row">
+        <li>
+          <app-tag-chips (Tag)="getRelation($event)" [local_data]="local_data[0]['relation']" [chipType]="'Relation'"></app-tag-chips>
+        </li>
+        <li>
+          <p><span>Contact Image</span></p>
+          <div>
+            <app-upload-single (fileNew)="updateUploadValue($event)" [field]="'contact_image'" [file]="local_data[0]['contact_image']" [group]="currentGroup"></app-upload-single>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div mat-dialog-actions>
+      <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+      <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+    </div>
+  </div>
+  <ng-template #elseTemplate>
+    <div class="inner-content">
+      Are you sure?
+
+      <div mat-dialog-actions>
+        <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '../../services/authentication.service';
+import { AuthenticationService } from '../../../../../services/authentication.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 
@@ -11,11 +11,11 @@ import moment from 'moment';
 
 
 @Component({
-  selector: 'app-newItemUpdate',
-  templateUrl: './new-item-update.component.html',
-  styleUrls: ['./new-item-update.component.scss']
+  selector: 'app-contactUpdate',
+  templateUrl: './contact-update.component.html',
+  styleUrls: ['./contact-update.component.scss']
  })
-export class NewItemUpdateComponent implements OnInit {
+export class ContactUpdateComponent implements OnInit {
   currentUser: any;
   @Input() record: any;
 
@@ -31,13 +31,16 @@ export class NewItemUpdateComponent implements OnInit {
 
   uploaderNeeds = ['image','video','document','song'];
   uploaderInstalled = false;
+  modUser=false;
+
+  selectedRelations= '';
 
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
       private authenticationService: AuthenticationService,
-      public dialogRef: MatDialogRef<NewItemUpdateComponent>,
+      public dialogRef: MatDialogRef<ContactUpdateComponent>,
       private cdr: ChangeDetectorRef,
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -61,10 +64,12 @@ export class NewItemUpdateComponent implements OnInit {
     this.local_data = [{...data}];
 
     //this.currentGroup = this.authenticationService.currentUserValue;
-    if(this.tool == 'artist'){
-      this.currentGroup = {name: this.local_data[0].name, id: this.local_data[0].id };
+      this.currentGroup = {name: this.data.group, id: this.data.owner_id };
+
+    if(data.id != ''){
+      this.modUser = true;
     }else{
-      this.currentGroup = {name: 'Polarity', id:2};
+      this.modUser = false;
     }
 
     this.requiresUploader();
@@ -74,7 +79,26 @@ export class NewItemUpdateComponent implements OnInit {
 
 
   doAction(){
-    this.dialogRef.close({event:this.action,data:this.local_data[0]});
+    let newContact = {
+      owner_user: this.currentUser.id,
+      owner_group: this.data.owner_id,
+      first_name: this.local_data[0].first_name,
+      last_name: this.local_data[0].last_name,
+      nickname: this.local_data[0].nickname,
+      relation: this.selectedRelations,
+      city: this.local_data[0].city,
+      phone: this.local_data[0].phone,
+      email: this.local_data[0].email,
+      active: 1,
+      contact_image: this.local_data[0].contact_image,
+      profile_url: ('@'+(this.data.group).replace(/\s+/g, '')+'-'+this.local_data[0].first_name+'-'+this.local_data[0].last_name).toLowerCase(),
+    };
+
+    if(this.modUser){
+      newContact['id'] = this.data.id;
+    }
+
+    this.dialogRef.close({event:this.action, data:newContact});
   }
 
   closeDialog(){
@@ -91,28 +115,17 @@ export class NewItemUpdateComponent implements OnInit {
     }
   }
 
-  getDate() {
-    let today = new Date();
-    let day = '';
-    const yyyy = today.getFullYear();
-    let mm = today.getMonth() + 1; // Months start at 0!
-    let dd = today.getDate();
-
-    if (dd < 10) dd = 0 + dd;
-    if (mm < 10) mm = 0 + mm;
-
-    return day = yyyy + '-' + mm + '-' + dd;
-  }
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
 
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
+  }
+
+  getRelation(e) {
+    this.local_data[0]['relation'] = e
+    this.selectedRelations = this.local_data[0]['relation'];
   }
 
 }
