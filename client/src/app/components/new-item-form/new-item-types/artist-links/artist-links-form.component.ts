@@ -240,6 +240,7 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
+    delete obj.profile_url;
     const dialogRef = this.dialog.open(NewItemUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',

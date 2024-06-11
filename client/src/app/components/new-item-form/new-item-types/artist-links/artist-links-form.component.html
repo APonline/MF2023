@@ -57,13 +57,17 @@
                       <th mat-header-cell *matHeaderCellDef >
                         <p class="headerTitle" *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
                           <mat-label [for]="disCol">
-                                                  {{ disCol | removeUnderscore }}
+                            {{ disCol | removeUnderscore }}
                           </mat-label>
                         </p>
                       </th>
                       <td mat-cell *matCellDef="let element"  class="action-link">
-                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null">
+
+                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null && disCol != 'url'">
                           {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
+                        </p>
+                        <p *ngIf="disCol == 'url'">
+                          <a [href]="element[disCol]" target="_new">{{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}</a>
                         </p>
                       </td>
                   </tr>
