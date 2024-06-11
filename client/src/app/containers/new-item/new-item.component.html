@@ -28,42 +28,14 @@
             <p>{{ artistInfo[0]?.genre }}</p>
             <br/><br/>
           </div>
-          <ul>
-            <li *ngFor="let row of artistInfoKeys">
-              <ng-container *ngIf="row != 'profile_url' && row != 'name' && row != 'genre' && row != 'profile_banner_image' && row != 'profile_image' && row != 'artist_image_1' && row != 'artist_image_2' && row != 'artist_image_3'">
-                <ng-container
-                  [ngTemplateOutlet]="row.indexOf('image') === -1 ? normalTemplate : uploaderTemplate"
-                  [ngTemplateOutletContext]="{ $implicit: row }">
-                </ng-container>
-              </ng-container>
-            </li>
-          </ul>
-
-          <!-- <ul class="flex row lowerimages">
-            <li *ngFor="let row of artistInfoKeys">
-              <ng-container *ngIf="row == 'artist_image_1' || row == 'artist_image_2' || row == 'artist_image_3'">
-                <div class="imgBox">
-                  <img src="{{ artistInfo[0]?.[row] }}" style="width:100%;" />
-                </div>
-              </ng-container>
-            </li>
-          </ul> -->
+          <div id="recent-items">
+            <h3 *ngIf="recentItems.length == 0">No recent activity to display</h3>
+            <ul *ngIf="recentItems.length != 0">
+              <li>I made an action</li>
+            </ul>
+          </div>
         </div>
       </div>
-
-      <ng-template #normalTemplate let-row>
-        <div class="sidebyside">
-          <h3>{{ row | removeUnderscore }}:</h3>
-          <p>{{ artistInfo[0][row] }}</p>
-        </div>
-      </ng-template>
-
-      <ng-template #uploaderTemplate let-row>
-        <!-- <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
-        <div class="imgBox">
-          <img src="{{ artistInfo[0]?.[row] }}" width="60px" />
-        </div> -->
-      </ng-template>
     </div>
 
     <div class="glass controlpanel">

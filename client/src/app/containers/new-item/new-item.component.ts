@@ -23,6 +23,7 @@ export class NewitemComponent implements OnInit {
   env= 'test';
   loaded = false;
   fac = new FastAverageColor();
+  recentItems = [];
 
   tools = [
     {name:'Artist', value:'artist'},

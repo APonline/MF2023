@@ -36,6 +36,18 @@
   }
 }
 
+.section-row {
+  border-bottom: 1px solid rgb(214, 214, 214);
+}
+.row {
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.form-group {
+  margin-top:20px;
+}
+
 .headerTitle {
   text-transform: capitalize;
 }
@@ -71,7 +83,11 @@ h3 {
 }
 
 .item {
-  margin: 10 0 20px 0;
+  width: calc(50% - 20px);
+  position: relative;
+}
+.bio {
+  width:100%;
 }
 
 .label-value-img {
@@ -84,13 +100,19 @@ h3 {
 }
 
 .label-value {
-  width: calc(100% / 0);
-  margin: 16px 0;
+  width: 100%;
+  margin: 8px 0;
   line-height: 24px;
+  position: relative;
+  display: block;
+
+  p {
+    width: 100%;
+  }
 }
 
 .label {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.54);
+  color: rgba(0, 0, 0, 0.24);
   text-transform: capitalize;
 }

@@ -66,8 +66,6 @@ export class ArtistFormComponent implements OnInit {
   @Input() group: string;
   @Input() groupId: string;
 
-  adminForm = this.formBuilder.group({});
-
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
@@ -110,20 +108,6 @@ export class ArtistFormComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.myForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      location: [''],
-      genre: ['', Validators.required],
-      description: [''],
-      bio: [''],
-      // profile_image: [''],
-      // profile_banner_image: [''],
-      // artist_image_1: [''],
-      // artist_image_2: [''],
-      // artist_image_3: [''],
-    });
-
-
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -154,23 +138,8 @@ export class ArtistFormComponent implements OnInit {
         this.currentGroup = {name: 'Polarity', id:2};
       }
 
-      this.setupForm(this.data);
+      this.getImages();
     });
-  }
-
-  setupForm(formData) {
-    this.myForm.controls['name'].setValue(formData.name);
-    this.myForm.controls['location'].setValue(formData.location);
-    this.myForm.controls['genre'].setValue(formData.genre);
-    this.myForm.controls['description'].setValue(formData.description);
-    this.myForm.controls['bio'].setValue(formData.bio);
-    // this.myForm.controls['profile_image'].setValue(formData.profile_image);
-    // this.myForm.controls['profile_banner_image'].setValue(formData.profile_banner_image);
-    // this.myForm.controls['artist_image_1'].setValue(formData.artist_image_1);
-    // this.myForm.controls['artist_image_2'].setValue(formData.artist_image_2);
-    // this.myForm.controls['artist_image_3'].setValue(formData.artist_image_3);
-
-    this.getImages();
   }
 
   getImages() {
@@ -199,7 +168,6 @@ export class ArtistFormComponent implements OnInit {
     this.data[e.field] = e.val;
   }
 
-
   get f() { return this.myForm.controls; }
 
   onSubmit(){
@@ -214,7 +182,6 @@ export class ArtistFormComponent implements OnInit {
   }
 
   openDialog(action) {
-
     let obj = JSON.parse(JSON.stringify(this.artist[0]))
     obj.action = action;
     obj.tool = this.toolName;
@@ -228,6 +195,20 @@ export class ArtistFormComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        let newUpdate = JSON.parse(JSON.stringify(result.data))
+
+        this.data.name = newUpdate.name;
+        this.data.genre = newUpdate.genre;
+        this.data.location = newUpdate.location;
+        this.data.description = newUpdate.description;
+        this.data.bio = newUpdate.bio;
+        this.data.profile_image = newUpdate.profile_image;
+        this.data.profile_image_img = newUpdate.profile_image_img;
+        this.data.profile_banner_image = newUpdate.profile_banner_image;
+        this.data.profile_banner_image_img = newUpdate.profile_banner_image_img;
+
+        delete result.data.profile_image_img;
+        delete result.data.profile_banner_image_img;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

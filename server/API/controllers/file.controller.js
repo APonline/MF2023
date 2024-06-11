@@ -71,27 +71,31 @@ const getFile = (req, res) => {
   let t = getfileFormat(req.query.type);
   const directoryPath = __basedir + "/resources/static/" +g+ "/" + t + "/" +p;
 
-  fs.readFile(directoryPath, (err, file)=>{
-    if(err) {
-      res.status(500).send({
-        message: "Unable to scan file!",
-      });
-    }
-
-    let fileInfo = [];
-
-    if(p!='default'){
-      let f = getFileType(p,g,t);
-      fileInfo.push({
-          name: p,
-          url: baseUrl + '/api/v1/files/' + p,
-          type: f.type,
-          display: f.display
-      });
-
-      res.status(200).send(fileInfo);
-    }
-  });
+  if (fs.existsSync(directoryPath)) {
+    fs.readFile(directoryPath, (err, file)=>{
+      if(err) {
+        res.status(500).send({
+          message: "Unable to scan file!",
+        });
+      }
+  
+      let fileInfo = [];
+  
+      if(p!='default'){
+        let f = getFileType(p,g,t);
+        fileInfo.push({
+            name: p,
+            url: baseUrl + '/api/v1/files/' + p,
+            type: f.type,
+            display: f.display
+        });
+  
+        res.status(200).send(fileInfo);
+      }
+    });
+  } else {
+    res.status(200).send(null);
+  }
 
 };
 

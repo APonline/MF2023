@@ -83,7 +83,6 @@ export class ArtistUpdateComponent implements OnInit {
       this.displayedColumns.push(res)
     })
 
-    console.log('D: ',data)
     this.local_data = [{...data}];
 
     //this.currentGroup = this.authenticationService.currentUserValue;
@@ -101,35 +100,40 @@ export class ArtistUpdateComponent implements OnInit {
 
 
   doAction(){
+    //profile image
+    if(this.local_data[0].profile_image != 'default' && this.local_data[0].profile_image != ''){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+       this.uploadService.getFile(0, this.local_data[0].profile_image, group, 'png').subscribe(r => {
+        this.local_data[0]['profile_image_img'] = r[0].display;
+      });
+    }else{
+      this.local_data[0]['profile_image_img'] = './assets/images/intrologo.png';
+    }
 
-    // this.artistsService.find(name).subscribe(async res => {
-    //   if(res.result != null){
-    //     this.userService.get(res.owner_user).subscribe(async res => {
-    //       this.ownerFound = true;
-    //       if(res.profile_image != 'default'){
-    //         await this.uploadService.getFile(0, res.profile_image, 'users/'+res.id, 'png').subscribe(r => {
-    //           res['display'] = r[0];
+    //profile banner
+    if(this.local_data[0].profile_banner_image != 'default' && this.local_data[0].profile_banner_image != ''){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, group, 'png').subscribe(r => {
+        this.local_data[0]['profile_banner_image_img'] = r[0].display;
+      });
+    }else{
+      this.local_data[0]['profile_banner_image_img'] = './assets/images/intrologo.png';
+    }
 
-    //           this.userList.push(res)
-    //         });
-    //       }
-    //     });
-    //   }else{
+    let newEdits = {
+      id: this.local_data[0].id,
+      bio: this.local_data[0].bio,
+      description: this.local_data[0].description,
+      genre: this.local_data[0].genre,
+      location: this.local_data[0].location,
+      name: this.local_data[0].name,
+      profile_image: this.local_data[0].profile_image,
+      profile_image_img: this.local_data[0].profile_image_img,
+      profile_banner_image: this.local_data[0].profile_banner_image,
+      profile_banner_image_img: this.local_data[0].profile_banner_image_img
+    };
 
-        let newEdits = {
-          id: this.local_data[0].id,
-          bio: this.local_data[0].bio,
-          description: this.local_data[0].description,
-          genre: this.local_data[0].genre,
-          location: this.local_data[0].location,
-          name: this.local_data[0].name,
-          profile_image: this.local_data[0].profile_image,
-          profile_banner_image: this.local_data[0].profile_banner_image
-        };
-
-        this.dialogRef.close({event:this.action,data:newEdits});
-    //   }
-    // });
+    this.dialogRef.close({event:this.action,data:newEdits});
   }
 
   closeDialog(){
@@ -152,6 +156,23 @@ export class ArtistUpdateComponent implements OnInit {
 
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
+
+    if(e.field=='profile_image'){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+      let type = this.local_data[0].profile_banner_image.split('.');
+      let format = type[type.length - 1];
+       this.uploadService.getFile(0, this.local_data[0].profile_image, group, format).subscribe(r => {
+        this.local_data[0]['profile_image_img'] = r[0].display;
+      });
+    }
+    if(e.field=='profile_banner_image'){
+      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+      let type = this.local_data[0].profile_banner_image.split('.');
+      let format = type[type.length - 1];
+       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, group, format).subscribe(r => {
+        this.local_data[0]['profile_banner_image_img'] = r[0].display;
+      });
+    }
   }
 
   getGenre(e) {

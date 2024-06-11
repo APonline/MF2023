@@ -11,113 +11,87 @@
 
   <div class="content">
     <mat-card>
-      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+      <form  (ngSubmit)="onSubmit()">
         <h1 style="text-transform: capitalize;">{{toolName}} Info</h1>
 
-        <h3>BASIC INFO</h3>
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Name</p>
-            <p>{{data?.name}}</p>
-          </div>
-          <mat-form-field class="example-full-width" *ngIf="editing == 1">
-            <mat-label for="name">Name</mat-label>
-            <input matInput formControlName="name" placeholder="name"
-              [ngClass]="{ 'is-invalid': f?.name.errors }">
-            <div *ngIf="f?.name.errors" class="invalid-feedback">
-              <div *ngIf="f?.name.errors.required">Name is required</div>
+        <div class="section-row">
+          <h3>BASIC INFO</h3>
+
+          <div class="row">
+            <div class="item">
+              <div class="label-value" >
+                <p class="label">Name</p>
+                <p>{{data?.name}}</p>
+              </div>
             </div>
-          </mat-form-field>
-        </div>
-
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Location</p>
-            <p>{{data?.location}}</p>
-          </div>
-          <mat-form-field class="example-full-width" *ngIf="editing == 1">
-            <mat-label for="location">Location</mat-label>
-            <input matInput formControlName="location" placeholder="location"
-              [ngClass]="{ 'is-invalid': f?.location.errors }">
-            <div *ngIf="f?.location.errors" class="invalid-feedback">
-              <div *ngIf="f?.location.errors.required">Location is required</div>
+            <div class="item">
+              <div class="label-value">
+                <p class="label">Genre</p>
+                <p>{{data?.genre}}</p>
+              </div>
             </div>
-          </mat-form-field>
-        </div>
-
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Genre</p>
-            <p>{{data?.genre}}</p>
           </div>
-          <mat-form-field class="example-full-width" *ngIf="editing == 1">
-            <mat-label for="genre">Genre</mat-label>
-            <input matInput formControlName="genre" placeholder="genre"
-              [ngClass]="{ 'is-invalid': f?.genre.errors }">
-            <div *ngIf="f?.genre.errors" class="invalid-feedback">
-              <div *ngIf="f?.genre.errors.required">Genre is required</div>
+
+          <div class="row">
+            <div class="item">
+              <div class="label-value">
+                <p class="label">Location</p>
+                <p>{{data?.location}}</p>
+              </div>
             </div>
-          </mat-form-field>
-        </div>
-
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">description</p>
-            <p>{{data?.description}}</p>
-          </div>
-          <mat-form-field class="example-full-width" *ngIf="editing == 1">
-            <mat-label for="description">Description</mat-label>
-            <input matInput formControlName="description" placeholder="description"
-              [ngClass]="{ 'is-invalid': f?.description.errors }">
-            <div *ngIf="f?.description.errors" class="invalid-feedback">
-              <div *ngIf="f?.description.errors.required">Description is required</div>
+            <div class="item">
+              <div class="label-value">
+                <p class="label">description</p>
+                <p>{{data?.description}}</p>
+              </div>
             </div>
-          </mat-form-field>
-        </div>
-
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Bio</p>
-            <p>{{data?.bio}}</p>
           </div>
-          <mat-form-field class="example-full-width" *ngIf="editing == 1">
-            <mat-label for="bio">Bio</mat-label>
-              <textarea matInput formControlName="bio" placeholder="bio"
-              [ngClass]="{ 'is-invalid': f?.bio.errors }">
-              </textarea>
-            <div *ngIf="f?.bio.errors" class="invalid-feedback">
-              <div *ngIf="f?.bio.errors.required">Bio is required</div>
+
+          <div class="row">
+            <div class="item bio">
+              <div class="label-value">
+                <p class="label">Bio</p>
+                <p>{{data?.bio}}</p>
+              </div>
             </div>
-          </mat-form-field>
-        </div>
-
-        <h3>Imagery</h3>
-
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Profile Image</p>
-            <img *ngIf="data?.profile_image" src="{{ data?.profile_image_img }}" width="120" />
-            <img *ngIf="!data?.profile_image" src="./assets/images/intrologo.png" width="120" />
           </div>
-          <app-upload-single *ngIf="editing == 1" (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="data?.profile_image" [group]="currentGroup"></app-upload-single>
         </div>
 
-        <div class="item">
-          <div class="label-value" *ngIf="editing == 0">
-            <p class="label">Profile Banner Image</p>
-            <img *ngIf="data?.profile_banner_image" src="{{ data?.profile_banner_image_img }}" width="120" />
-            <img *ngIf="!data?.profile_banner_image" src="./assets/images/intrologo.png" width="120" />
+
+        <div class="section-row">
+          <h3>Imagery</h3>
+          <div class="row">
+            <div class="item">
+              <div class="label-value">
+                <p class="label">Profile Image</p>
+                <img *ngIf="data?.profile_image" src="{{ data?.profile_image_img }}" width="120" />
+                <img *ngIf="!data?.profile_image" src="./assets/images/intrologo.png" width="120" />
+              </div>
+            </div>
+
+            <div class="item">
+              <div class="label-value">
+                <p class="label">Profile Banner Image</p>
+                <img *ngIf="data?.profile_banner_image" src="{{ data?.profile_banner_image_img }}" width="120" />
+                <img *ngIf="!data?.profile_banner_image" src="./assets/images/intrologo.png" width="120" />
+              </div>
+            </div>
           </div>
-            <app-upload-single *ngIf="editing == 1" (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="data?.profile_banner_image" [group]="currentGroup"></app-upload-single>
         </div>
 
 
-        <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="openDialog('Update')">
+        <div class="form-group button-group-center">
+          <button class="dalmation " mat-raised-button color="accent" (click)="openDialog('Update')">
+            Edit
+          </button>
+        </div>
+
+        <!-- <div id="editBtn" class="material-icons" *ngIf="editing === 0" (click)="openDialog('Update')">
           edit
         </div>
         <div id="cancelBtn" class="material-icons" *ngIf="editing === 1" (click)="cancelEdit()">
           cancel
-        </div>
+        </div> -->
       </form>
     </mat-card>
   </div>

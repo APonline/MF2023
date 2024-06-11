@@ -160,7 +160,6 @@ export class NewItemFormComponent implements OnInit {
     update(data) {
       let id = data.id;
       delete data.action;
-      console.log('yo: ',this.tool);
       let t = null;
       let tName = null;
       if(this.tool.indexOf('_') !== -1){
@@ -171,7 +170,6 @@ export class NewItemFormComponent implements OnInit {
       }
 
       const service = tName+'Service';
-      console.log(service)
 
       this[service].update(id,data).subscribe(async res => {
         this.act = 'put';
