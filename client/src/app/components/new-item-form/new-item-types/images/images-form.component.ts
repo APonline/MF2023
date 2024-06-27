@@ -112,7 +112,6 @@ export class ImagesFormComponent implements OnInit, OnChanges {
     });
     this.galleriesService.getAllForArtist(this.artist?.id).subscribe(res => {
       this.galleries = res;
-      console.log(this.galleries)
     });
     this.loadData();
   }
@@ -238,7 +237,6 @@ export class ImagesFormComponent implements OnInit, OnChanges {
 
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-    console.log('REC: ',this.dataSource)
 
     this.newRecord = newForm;
     this.adminForm = new FormGroup(form);
