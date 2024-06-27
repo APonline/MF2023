@@ -42,7 +42,7 @@ exports.signup = async (req, res) => {
             date_joined: datetime.toISOString().slice(0,10),
             last_login: lastLogin,
             login_count: 1,
-            profile_url: "@" + req.body.username + "",
+            profile_url: "@" + req.body.username.replace(/\+s/g,'').toLowerCase() + "",
             profile_image: "default",
             tna: 0
         });

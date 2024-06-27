@@ -73,8 +73,6 @@ export class ContactUpdateComponent implements OnInit {
     }
 
     this.requiresUploader();
-
-
   }
 
 
@@ -90,7 +88,7 @@ export class ContactUpdateComponent implements OnInit {
       phone: this.local_data[0].phone,
       email: this.local_data[0].email,
       active: 1,
-      contact_image: this.local_data[0].contact_image,
+      // contact_image: this.local_data[0].contact_image,
       profile_url: ('@'+(this.data.group).replace(/\s+/g, '')+'-'+this.local_data[0].first_name+'-'+this.local_data[0].last_name).toLowerCase(),
     };
 

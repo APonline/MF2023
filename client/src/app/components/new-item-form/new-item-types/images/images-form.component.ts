@@ -29,6 +29,10 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MFService } from 'src/app/services/MF.service';
+import { ImagesUpdateComponent } from './images-update/images-update.component';
+import { GalleriesService } from 'src/app/services/galleries.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 
 @Component({
   selector: 'app-imagesForm',
@@ -70,6 +74,8 @@ export class ImagesFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
+  galleries = [];
 
   constructor(
       public dialog: MatDialog,
@@ -92,13 +98,22 @@ export class ImagesFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private galleriesService: GalleriesService,
+      private uploadService: FileUploadService,
+      private authenticationService: AuthenticationService,
+      private MF: MFService
   ) {
 
   }
 
   ngOnInit() {
-
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
+    this.galleriesService.getAllForArtist(this.artist?.id).subscribe(res => {
+      this.galleries = res;
+      console.log(this.galleries)
+    });
     this.loadData();
   }
 
@@ -130,21 +145,9 @@ export class ImagesFormComponent implements OnInit, OnChanges {
     }
   }
 
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   async loadData() {
     let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    toolTitle = this.MF.capitalizeWords(toolTitle);
 
     let toolTitle2 = toolTitle.join(',');
     toolTitle2 = toolTitle2.replace(/ /g,"");
@@ -153,40 +156,17 @@ export class ImagesFormComponent implements OnInit, OnChanges {
     let service = toolTitle2 + 'Service';
     let model = this.tool;
 
-    await this[service].getAll().subscribe(res => {
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
-      });
-
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artist_id == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
+    await this[service].getAllForArtist(this.groupId).subscribe(res => {
 
       this[this.tool] = res;
       this.toolSet = this[this.tool];
 
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
+      this.setSettings(this.toolSet);
     });
 
   }
 
-  setSettings(formData){
+  async setSettings(formData){
     let form ={};
     let newForm ={}
 
@@ -198,23 +178,67 @@ export class ImagesFormComponent implements OnInit, OnChanges {
     }
 
     this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
+    form['action'] = new FormControl('');
+    newForm['action'] = '';
+    this.displayedColumns.push('id');
+    form['id'] = new FormControl('');
+    newForm['id'] = '';
+    this.displayedColumns.push('owner_user');
+    form['owner_user'] = new FormControl('');
+    newForm['owner_user'] = '';
+    this.displayedColumns.push('owner_group');
+    form['owner_group'] = new FormControl('');
+    newForm['owner_group'] = '';
+    this.displayedColumns.push('gallery');
+    form['gallery'] = new FormControl('');
+    newForm['gallery'] = '';
+    this.displayedColumns.push('title');
+    form['title'] = new FormControl('');
+    newForm['title'] = '';
+    this.displayedColumns.push('preview');
+    form['preview'] = new FormControl('');
+    newForm['preview'] = '';
+    this.displayedColumns.push('description');
+    form['description'] = new FormControl('');
+    newForm['description'] = '';
+    this.displayedColumns.push('genre');
+    form['genre'] = new FormControl('');
+    newForm['genre'] = '';
+    this.displayedColumns.push('extension');
+    form['extension'] = new FormControl('');
+    newForm['extension'] = '';
+    this.displayedColumns.push('tags');
+    form['tags'] = new FormControl('');
+    newForm['tags'] = '';
+    this.displayedColumns.push('views');
+    form['views'] = new FormControl('');
+    newForm['views'] = '';
+    this.displayedColumns.push('profile_url');
+    form['profile_url'] = new FormControl('');
+    newForm['profile_url'] = '';
+    this.displayedColumns.push('location_url');
+    form['location_url'] = new FormControl('');
+    newForm['location_url'] = '';
 
-    this.toolSet.map((res,i) => {
+
+    this.toolSet.map(async (res,i) => {
+      res.gallery = res.gallery.title;
+
+      let type = res.location_url.split('.');
+      let format = type[type.length - 1];
+      let group = this.artist?.name.replace(/\s+/g, '-').toLowerCase();
+      await this.uploadService.getFile(0, res.location_url, group, format).subscribe(r => {
+        res.preview = r[0].display;
+      });
+
       delete res.active;
       delete res.createdAt;
       delete res.updatedAt;
     })
 
     this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource.data.shift();
     this.dataSource = this.dataSource.data;
+    console.log('REC: ',this.dataSource)
 
     this.newRecord = newForm;
     this.adminForm = new FormGroup(form);
@@ -235,7 +259,9 @@ export class ImagesFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
+    obj.groupId = this.artist?.id;
+    obj.groupName = this.artist?.name;
+    const dialogRef = this.dialog.open(ImagesUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',
       height: '80vh',
@@ -244,6 +270,8 @@ export class ImagesFormComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();;
+        result.data.owner_group = this.artist?.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

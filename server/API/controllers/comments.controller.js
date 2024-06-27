@@ -56,6 +56,42 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
         });
     }
 }
+exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { owner_group: id, active: 1 }
+        });
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s! - `+ error.message
+        });
+    }
+}
+exports[`getAllFor${itemTopic}item`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { owner_group: id, active: 1 }
+        });
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s! - `+ error.message
+        });
+    }
+}
 exports[`update${itemTopic}`] = async (req, res) => {
     try{
         let id =req.body.id;

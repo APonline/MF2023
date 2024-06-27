@@ -1,0 +1,54 @@
+
+<div class="content mf-theme">
+  <!-- dialog-box.component.html -->
+  <h1><strong>{{action}} {{tool}}</strong></h1>
+  <br/>
+
+
+  <div *ngIf="action != 'Delete'; else elseTemplate">
+    <div class="section">
+      <ul class="row">
+        <li>
+          <p><span>Title</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['title']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <p><span>Description</span></p>
+          <div>
+            <mat-form-field>
+              <input matInput [(ngModel)]="local_data[0]['description']">
+            </mat-form-field>
+          </div>
+        </li>
+        <li>
+          <app-tag-chips (Tag)="getGenre($event)" [local_data]="local_data[0]['genre']" [chipType]="'Genre'"></app-tag-chips>
+        </li>
+        <li>
+          <app-tag-chips (Tag)="getTag($event)" [local_data]="local_data[0]['tags']" [chipType]="'Tags'"></app-tag-chips>
+        </li>
+      </ul>
+    </div>
+
+    <div mat-dialog-actions>
+      <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+      <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+    </div>
+  </div>
+  <ng-template #elseTemplate>
+    <div class="inner-content">
+      Are you sure?
+
+      <div mat-dialog-actions>
+        <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+
+

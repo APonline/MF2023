@@ -83,6 +83,9 @@ import { InviteComponent } from './components/user/invite/invite.component';
 import { TagChipsComponent } from './components/tag-chips/tag-chips.component';
 import { ContactUpdateComponent } from './components/new-item-form/new-item-types/contacts/contact-update/contact-update.component';
 import { ArtistUpdateComponent } from './components/new-item-form/new-item-types/artist/artist-update/artist-update.component';
+import { GalleriesUpdateComponent } from './components/new-item-form/new-item-types/galleries/galleries-update/galleries-update.component';
+import { ImagesUpdateComponent } from './components/new-item-form/new-item-types/images/images-update/images-update.component';
+import { VideosUpdateComponent } from './components/new-item-form/new-item-types/videos/videos-update/videos-update.component';
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -148,7 +151,10 @@ import { ArtistUpdateComponent } from './components/new-item-form/new-item-types
     InviteComponent,
     TagChipsComponent,
     ArtistUpdateComponent,
-    ContactUpdateComponent
+    ContactUpdateComponent,
+    GalleriesUpdateComponent,
+    ImagesUpdateComponent,
+    VideosUpdateComponent
   ],
   imports: [
     AppRoutingModule,

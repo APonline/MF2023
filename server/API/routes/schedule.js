@@ -11,10 +11,11 @@ module.exports = function(app) {
         );
         next();
     });
-    // defaults end
+    // defaults en
 
     app.post(`/api/v1/${itemTopic}`, controller[`create${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}`]);
     app.get(`/api/v1/${itemTopic}`, controller[`getAll${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}s`]);
+    app.get(`/api/v1/${itemTopic}/artist/:id`, controller[`getAllFor${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}artist`]);
     app.get(`/api/v1/${itemTopic}/:id`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}`]);
     app.put(`/api/v1/${itemTopic}/:id`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}`]);
     app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1)}`]);

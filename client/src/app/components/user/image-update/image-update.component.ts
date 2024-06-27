@@ -268,7 +268,7 @@ export class ImageUpdateComponent implements OnInit {
     obj['location_url'] = name;
 
     if(this.imagesTypes.indexOf(ext) !== -1){
-      obj['profile_url'] = '@' + this.currentGroup.name + '_image_' + name + '';
+      obj['profile_url'] = '@' + this.currentGroup.name.replace(/\+s/g,'').toLowerCase() + '_image_' + name + '';
       this.imagesService.create(obj).subscribe((res) => {
         if(!res.message){
           this.doAction();

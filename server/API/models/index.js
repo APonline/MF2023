@@ -213,6 +213,34 @@ db['artist-member'].belongsTo(db.user, {
 });
 
 
+db['gallerie'].belongsTo(db.image, {
+  through: "galleries",
+  foreignKey: "id",
+  as: 'images'
+});
+db.image.belongsTo(db['gallerie'], {
+  through: "images",
+  targetKey: 'id',
+  sourceKey: 'owner_gallery',
+  foreignKey: "owner_gallery",
+  otherKey:"owner_gallery",
+  as: 'gallery'
+});
+db['gallerie'].belongsTo(db.video, {
+  through: "galleries",
+  foreignKey: "id",
+  as: 'videos'
+});
+db.video.belongsTo(db['gallerie'], {
+  through: "videos",
+  targetKey: 'id',
+  sourceKey: 'owner_gallery',
+  foreignKey: "owner_gallery",
+  otherKey:"owner_gallery",
+  as: 'gallery'
+});
+
+
 
 
 db.ROLES = ["user", "admin", "moderator"];

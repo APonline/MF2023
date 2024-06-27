@@ -16,7 +16,7 @@ exports[`create${itemTopic}`] = async (req, res) => {
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.title + "_" + num;
+            newItem['profile_url'] = req.body.title.replace(/\+s/g,'').toLowerCase() + "_" + num;
         }
 
         let result = await Item.create( newItem );

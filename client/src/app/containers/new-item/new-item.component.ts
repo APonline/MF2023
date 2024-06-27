@@ -43,9 +43,9 @@ export class NewitemComponent implements OnInit {
     // {name:'Merch', value:'merch'},
     {name:'Contacts', value:'contacts'},
     // // {name:'Friends', value:'friends'},
-    // {name:'Galleries', value:'galleries'},
-    // {name:'Images', value:'images'},
-    // {name:'Videos', value:'videos'},
+    {name:'Galleries', value:'galleries'},
+    {name:'Images', value:'images'},
+    {name:'Videos', value:'videos'},
   ]
 
   bkColor = ""

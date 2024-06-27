@@ -159,7 +159,7 @@ export class ArtistMembersUpdateComponent implements OnInit {
       artist_id: this.currentGroup.artist_id,
       active: 1,
       date_joined: this.selectedDateJoined,
-      profile_url: this.currentGroup.profile_url+'-'+this.selectedUser.profile_url,
+      profile_url: this.currentGroup.profile_url.replace(/\+s/g,'').toLowerCase() +'-'+this.selectedUser.profile_url.replace(/\+s/g,'').toLowerCase(),
       role: this.selectedRoles
     };
 

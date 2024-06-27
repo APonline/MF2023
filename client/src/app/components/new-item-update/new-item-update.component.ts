@@ -31,6 +31,7 @@ export class NewItemUpdateComponent implements OnInit {
 
   uploaderNeeds = ['image','video','document','song'];
   uploaderInstalled = false;
+  modUser=false;
 
   constructor(
       private formBuilder: FormBuilder,
@@ -45,7 +46,12 @@ export class NewItemUpdateComponent implements OnInit {
 
     this.action = data.action;
 
-    ( data.tool.substring(data.tool.length - 1) == 's' ? data.tool = data.tool.slice(0, -1) : data.tool = data.tool);
+    if(data.tool.toLowerCase() === 'galleries'){
+      data.tool = data.tool.slice(0, -3) + 'y';
+    }else{
+      ( data.tool.substring(data.tool.length - 1) == 's' ? data.tool = data.tool.slice(0, -1) : data.tool = data.tool);
+    }
+
     this.tool = `${data.tool}`;
 
     delete data.tool;
@@ -67,6 +73,12 @@ export class NewItemUpdateComponent implements OnInit {
       this.currentGroup = {name: 'Polarity', id:2};
     }
 
+    if(data.id != ''){
+      this.modUser = true;
+    }else{
+      this.modUser = false;
+    }
+
     this.requiresUploader();
 
 
@@ -74,6 +86,11 @@ export class NewItemUpdateComponent implements OnInit {
 
 
   doAction(){
+
+    // if(this.modUser){
+    //   newContact['id'] = this.data.id;
+    // }
+
     this.dialogRef.close({event:this.action,data:this.local_data[0]});
   }
 

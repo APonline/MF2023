@@ -46,11 +46,11 @@ export class ProfileComponent implements OnInit {
       age: [''],
       gender: [''],
       birthday: [''],
-      date_joined: ['', Validators.required],
-      last_login: ['', Validators.required],
-      login_count: ['', Validators.required],
-      profile_url: ['', Validators.required],
-      profile_image: ['', Validators.required],
+      date_joined: [''],
+      last_login: [''],
+      login_count: [''],
+      profile_url: [''],
+      profile_image: [''],
     });
 
     this.profileForm.controls['email'].setValue(this.currentUser.email);

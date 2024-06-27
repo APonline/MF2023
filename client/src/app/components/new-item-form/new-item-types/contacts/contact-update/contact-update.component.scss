@@ -72,6 +72,18 @@ app-tag-chips {
     }
 
   }
+
+  ::ng-deep {
+    app-tag-chips {
+      #tag-chips {
+        flex-direction: column!important;
+
+        p {
+          text-align:left!important;
+        }
+      }
+    }
+  }
 }
 
 @media (min-width:801px)  {
@@ -131,6 +143,18 @@ app-tag-chips {
       width:100%;
     }
 
+  }
+
+  ::ng-deep {
+    app-tag-chips {
+      #tag-chips {
+        flex-direction: row!important;
+
+        p {
+          text-align:right!important;
+        }
+      }
+    }
   }
 }
 // .content {

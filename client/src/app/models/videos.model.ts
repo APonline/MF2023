@@ -2,6 +2,7 @@ export class videos {
 id?: any;
 owner_user?: number;
 owner_group?: number;
+owner_gallery?: number;
 title?: string;
 description?: string;
 duration?: string;

@@ -16,7 +16,7 @@ exports[`create${itemTopic}`] = async (req, res) => {
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.first_name + "_" + num;
+            newItem['profile_url'] = req.body.first_name.replace(/\+s/g,'').toLowerCase() + "_" + num;
         }
 
         let result = await Item.create( newItem );
@@ -60,6 +60,24 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
     } catch (error) {
         return res.status(500).send({
             message: `Unable to get ${itemTopic}s!`
+        });
+    }
+}
+exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { owner_group: id },
+        }); 
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s! - `+ error.message
         });
     }
 }
