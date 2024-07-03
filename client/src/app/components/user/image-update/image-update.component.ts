@@ -94,6 +94,8 @@ export class ImageUpdateComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log('WTF');
+    //WTF
     await this.uploadService.getFile(0, this.data.profile_image, 'users/'+this.currentUser.id, 'png').subscribe(async res => {
       this.imageUrl = res[0].display;
       //this.selectedFiles = [this.dataURLtoFile(this.imageUrl,'profileimg.png')];

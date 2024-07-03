@@ -10,6 +10,7 @@ import { AlertService } from 'src/app/services/alert.service';
 import { ArtistsService } from 'src/app/services/artists.service';
 import { MFService } from 'src/app/services/MF.service';
 import { Router } from '@angular/router';
+import { GalleriesService } from 'src/app/services/galleries.service';
 
 @Component({
   selector: 'app-projects',
@@ -37,6 +38,7 @@ export class ProjectsContainer implements OnInit {
     private mfService: MFService,
     private artistsService: ArtistsService,
     private artistMembersService: ArtistMembersService,
+    private galleriesService: GalleriesService,
     private router: Router,
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
@@ -46,8 +48,11 @@ export class ProjectsContainer implements OnInit {
       for(let i=0; i<res.length; i++){
         if(res[i] != undefined || res[i].owner != 0){
           if(res[i].artists.profile_image != 'default' && res[i].artists.profile_image != ''){
-            let group = res[i].artists.name.replace(/\s+/g, '-').toLowerCase();
-             this.uploadService.getFile(0, res[i].artists.profile_image, group, 'png').subscribe(r => {
+            let type = res[i].artists.profile_image.split('.');
+            let format = type[type.length - 1];
+            console.log(0, res[i].artists.profile_image, 'artists/'+res[i].artist_id, format, 'ARTST:',res[i].name)
+            this.uploadService.getFile(0, res[i].artists.profile_image, 'artists/'+res[i].artist_id, format).subscribe(r => {
+              console.log(r)
               res[i]['display'] = r[0];
             });
           }else{
@@ -113,14 +118,30 @@ export class ProjectsContainer implements OnInit {
         profile_url: res.profile_url+'-'+this.currentUser.profile_url
       };
 
+
+      //create default gallery for images and docs
+      let gal = {
+        owner_user: this.currentUser.id,
+        owner_group: res.id,
+        title: 'misc',
+        description: 'Uncategorized uploaded items',
+        active: 1,
+        tags: '',
+        views: 0,
+        profile_url: res.profile_url+'-misc'
+      };
+
+      this.galleriesService.create(gal).subscribe(async res => {});
+
       this.projects.create(data2).subscribe(async res2 => {
 
         this.projects.getAllForUser(this.currentUser.id).subscribe( res3 => {
           for(let i=0; i<res.length; i++){
             if(res3[i] != undefined || res3[i].owner != 0){
               if(res3[i].artists.profile_image != 'default' && res3[i].artists.profile_image != ''){
-                let group = res3[i].artists.name.replace(/\s+/g, '-').toLowerCase();
-                 this.uploadService.getFile(0, res3[i].artists.profile_image, group, 'png').subscribe(r => {
+                let type = res3[i].artists.profile_image.split('.');
+                let format = type[type.length - 1];
+                this.uploadService.getFile(0, res3[i].artists.profile_image, 'artists/'+res3[i].id, format).subscribe(r => {
                   res3[i]['display'] = r[0];
                 });
               }else{

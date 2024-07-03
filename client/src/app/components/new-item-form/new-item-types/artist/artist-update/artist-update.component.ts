@@ -102,8 +102,8 @@ export class ArtistUpdateComponent implements OnInit {
   doAction(){
     //profile image
     if(this.local_data[0].profile_image != 'default' && this.local_data[0].profile_image != ''){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
-       this.uploadService.getFile(0, this.local_data[0].profile_image, group, 'png').subscribe(r => {
+      let group = this.data.id;
+       this.uploadService.getFile(0, this.local_data[0].profile_image, 'artists/'+group, 'png').subscribe(r => {
         this.local_data[0]['profile_image_img'] = r[0].display;
       });
     }else{
@@ -112,8 +112,8 @@ export class ArtistUpdateComponent implements OnInit {
 
     //profile banner
     if(this.local_data[0].profile_banner_image != 'default' && this.local_data[0].profile_banner_image != ''){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
-       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, group, 'png').subscribe(r => {
+      let group = this.data.id;
+       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, 'artists/'+group, 'png').subscribe(r => {
         this.local_data[0]['profile_banner_image_img'] = r[0].display;
       });
     }else{
@@ -158,18 +158,18 @@ export class ArtistUpdateComponent implements OnInit {
     this.local_data[0][e.field] = e.val;
 
     if(e.field=='profile_image'){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.id;
       let type = this.local_data[0].profile_banner_image.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].profile_image, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].profile_image, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['profile_image_img'] = r[0].display;
       });
     }
     if(e.field=='profile_banner_image'){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.id;
       let type = this.local_data[0].profile_banner_image.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].profile_banner_image, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['profile_banner_image_img'] = r[0].display;
       });
     }

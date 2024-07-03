@@ -127,8 +127,7 @@ app-tag-chips {
     flex-direction: row;
 
     p {
-      min-width:250px;
-      width: 100%;
+      width: 250px;
       display:flex;
       flex-direction: column;
       justify-content: center;
@@ -256,4 +255,9 @@ app-tag-chips {
   .mat-dialog-actions {
     justify-content: center;
   }
+
+  // app-tag-chips #tag-chips p {
+  //   min-width: 250px;
+  //   width: 100%;
+  // }
 }

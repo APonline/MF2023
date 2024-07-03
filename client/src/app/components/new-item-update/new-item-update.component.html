@@ -36,7 +36,7 @@
   <ng-template #uploaderTemplate let-row>
     <p><span *ngIf="row != 'title'">{{row | removeUnderscore}}</span></p>
     <div>
-      <app-upload-single (fileNew)="updateUploadValue($event)" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
+      <app-upload-single (fileNew)="updateUploadValue($event)" [dir]="'artists'" [field]="row" [file]="local_data[0][row]" [group]="currentGroup"></app-upload-single>
     </div>
   </ng-template>
 

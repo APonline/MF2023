@@ -227,8 +227,8 @@ export class VideosFormComponent implements OnInit, OnChanges {
 
       let type = res.location_url.split('.');
       let format = type[type.length - 1];
-      let group = this.artist?.name.replace(/\s+/g, '-').toLowerCase();
-      await this.uploadService.getFile(0, res.location_url, group, format).subscribe(r => {
+      let group = this.artist?.id;
+      await this.uploadService.getFile(0, res.location_url, 'artists/'+group, format).subscribe(r => {
         res.preview = r[0].display;
       });
 

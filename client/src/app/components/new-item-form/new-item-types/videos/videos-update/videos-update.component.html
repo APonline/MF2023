@@ -60,7 +60,7 @@
                 </li>
                 <li>
                   <div>
-                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'location_url'" [file]="local_data[0]['location_url']" [group]="currentGroup"></app-upload-single>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'" [field]="'location_url'" [file]="local_data[0]['location_url']" [group]="currentGroup"></app-upload-single>
                   </div>
                 </li>
               </ul>

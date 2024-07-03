@@ -31,6 +31,7 @@ export class UploadFileComponent implements OnInit {
   @Input() service: string;
   @Input() file: string;
   @Input() group: string;
+  @Input() dir: string;
   @Input() field: string;
   @Output() fileNew = new EventEmitter<any>();
 
@@ -72,7 +73,7 @@ export class UploadFileComponent implements OnInit {
 
     let type = this.file.split(".").pop();
 
-    this.fileInfos = this.uploadService.getFile(0, this.file, this.currentGroup.name.replace(/\s+/g, '-').toLowerCase(), type);
+    this.fileInfos = this.uploadService.getFile(0, this.file, this.dir+'/'+this.currentGroup.id, type);
 
   }
 
@@ -112,8 +113,8 @@ export class UploadFileComponent implements OnInit {
 
     if (file) {
       let type = file.name.split('.').pop();
-      let group = this.currentGroup.name.replace(/\s+/g, '-').toLowerCase();
-      this.uploadService.upload(file,group,type).subscribe({
+      let group = this.currentGroup.id;
+      this.uploadService.upload(file,this.dir+'/'+group,type).subscribe({
         next: (event: any) => {
           if (event.type === HttpEventType.UploadProgress) {
             this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);

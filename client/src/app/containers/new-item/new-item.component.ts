@@ -75,8 +75,9 @@ export class NewitemComponent implements OnInit {
 
       //profile image
       if(res.profile_image != 'default' && res.profile_image != ''){
-        let group = res.name.replace(/\s+/g, '-').toLowerCase();
-          this.uploadService.getFile(0, res.profile_image, group, 'png').subscribe(r => {
+        let type = res.profile_image.split('.');
+        let format = type[type.length - 1];
+        this.uploadService.getFile(0, res.profile_image, 'artists/'+res.id, format).subscribe(r => {
           obj['profile_image'] = r[0].display;
         });
       }else{
@@ -86,8 +87,9 @@ export class NewitemComponent implements OnInit {
 
       //profile banner
       if(res.profile_banner_image != 'default' && res.profile_banner_image != ''){
-        let group = res.name.replace(/\s+/g, '-').toLowerCase();
-          this.uploadService.getFile(0, res.profile_banner_image, group, 'png').subscribe(r => {
+        let type = res.profile_banner_image.split('.');
+        let format = type[type.length - 1];
+        this.uploadService.getFile(0, res.profile_banner_image, 'artists/'+res.id, format).subscribe(r => {
           obj['profile_banner_image'] = r[0].display;
 
           let fadeBy = 0;
@@ -110,8 +112,9 @@ export class NewitemComponent implements OnInit {
       //profile images
       for(let i=1; i<4; i++){
         if(res['artist_image_'+i] != 'default' && res['artist_image_'+i] != ''){
-          let group = res.name.replace(/\s+/g, '-').toLowerCase();
-            this.uploadService.getFile(0, res['artist_image_'+i], group, 'png').subscribe(r => {
+          let type = res['artist_image_'+i].split('.');
+          let format = type[type.length - 1];
+          this.uploadService.getFile(0, res['artist_image_'+i], 'artists/'+res.id, format).subscribe(r => {
             obj['artist_image_'+i] = r[0].display;
           });
         }else{

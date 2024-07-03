@@ -125,7 +125,41 @@ export class ImagesFormComponent implements OnInit, OnChanges {
           }
         });
 
-        this.dataSource.push(this.res);
+        this.galleriesService.getAllForArtist(this.artist?.id).subscribe(res => {
+          this.galleries = res;
+
+          let galtitle = this.galleries.filter(r => r.id == this.res.owner_gallery)[0];
+
+          this.imagesService.get(this.res.id).subscribe(async u => {
+            let newRes = {
+              'id': u.id,
+              'owner_id': u.owner_id,
+              'owner_group': u.owner_group,
+              'owner_gallery': u.owner_gallery,
+              'gallery': galtitle.title,
+              'title': u.title,
+              'preview':'',
+              'description': u.description,
+              'genre': u.genre,
+              'tags': u.tags,
+              'views': u.views,
+              'profile_url': u.profile_url,
+              'location_url': u.location_url,
+            };
+
+            let type = u.location_url.split('.');
+            let format = type[type.length - 1];
+            let group = this.artist?.id;
+            await this.uploadService.getFile(0, u.location_url, 'artists/'+u.owner_group, format).subscribe(r => {
+              newRes.preview = r[0].display;
+
+              this.dataSource.push(newRes);
+              this.table.renderRows();
+              console.log('YP',this.dataSource, this.res)
+            });
+          });
+        });
+
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
@@ -135,6 +169,8 @@ export class ImagesFormComponent implements OnInit, OnChanges {
           }
           return true;
         });
+        this.table.renderRows();
+
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
@@ -225,8 +261,8 @@ export class ImagesFormComponent implements OnInit, OnChanges {
 
       let type = res.location_url.split('.');
       let format = type[type.length - 1];
-      let group = this.artist?.name.replace(/\s+/g, '-').toLowerCase();
-      await this.uploadService.getFile(0, res.location_url, group, format).subscribe(r => {
+      let group = this.artist?.id;
+      await this.uploadService.getFile(0, res.location_url, 'artists/'+group, format).subscribe(r => {
         res.preview = r[0].display;
       });
 
@@ -266,10 +302,14 @@ export class ImagesFormComponent implements OnInit, OnChanges {
       data:obj
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       if(result){
         result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();;
         result.data.owner_group = this.artist?.id;
+
+        let type = result.data.location_url.split('.');
+        let format = type[type.length - 1];
+        let group = this.artist?.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

@@ -115,10 +115,10 @@ export class ImagesUpdateComponent implements OnInit {
   doAction(){
     //image
     if(this.local_data[0].location_url != 'default' && this.local_data[0].location_url != ''){
-      let group = this.data.groupName.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.groupId;
       let type = this.local_data[0].location_url.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['location_url_img'] = r[0].display;
       });
     }else{
@@ -126,17 +126,21 @@ export class ImagesUpdateComponent implements OnInit {
     }
     let type = this.local_data[0].location_url.split('.');
     let ext = type[type.length - 1];
+    let galtitle = this.galleries.filter(r => r.id == this.local_data[0].owner_gallery)[0];
 
     let newEdits = {
       id: this.local_data[0].id,
       title: this.local_data[0].title,
       extension: ext,
+      user_owner: this.currentUser.id,
       owner_gallery: this.local_data[0].owner_gallery,
       description: this.local_data[0].description,
       genre: this.local_data[0].genre,
       tags: this.local_data[0].tags,
       views: 0,
       location_url: this.local_data[0].location_url,
+      active: 1,
+      gallery: galtitle.title
     };
 
     console.log('data: ',newEdits)
@@ -166,10 +170,10 @@ export class ImagesUpdateComponent implements OnInit {
     this.local_data[0][e.field] = e.val;
 
     if(e.field=='location_url'){
-      let group = this.data.groupName.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.groupId;
       let type = this.local_data[0].location_url.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['location_url_img'] = r[0].display;
       });
     }

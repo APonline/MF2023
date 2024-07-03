@@ -145,8 +145,8 @@ export class ArtistFormComponent implements OnInit {
   getImages() {
     //profile image
     if(this.data.profile_image != 'default' && this.data.profile_image != ''){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
-       this.uploadService.getFile(0, this.data.profile_image, group, 'png').subscribe(r => {
+      let group = this.data.id;
+       this.uploadService.getFile(0, this.data.profile_image, 'artists/'+group, 'png').subscribe(r => {
         this.data['profile_image_img'] = r[0].display;
       });
     }else{
@@ -155,8 +155,8 @@ export class ArtistFormComponent implements OnInit {
 
     //profile banner
     if(this.data.profile_banner_image != 'default' && this.data.profile_banner_image != ''){
-      let group = this.data.name.replace(/\s+/g, '-').toLowerCase();
-       this.uploadService.getFile(0, this.data.profile_banner_image, group, 'png').subscribe(r => {
+      let group = this.data.id;
+       this.uploadService.getFile(0, this.data.profile_banner_image, 'artists/'+group, 'png').subscribe(r => {
         this.data['profile_banner_image_img'] = r[0].display;
       });
     }else{

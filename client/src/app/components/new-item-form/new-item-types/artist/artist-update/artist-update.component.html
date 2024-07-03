@@ -71,7 +71,7 @@
                 </li>
                 <li>
                   <div>
-                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
                   </div>
                 </li>
               </ul>
@@ -83,7 +83,7 @@
                 </li>
                 <li>
                   <div>
-                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
                   </div>
                 </li>
               </ul>

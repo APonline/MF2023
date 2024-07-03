@@ -115,10 +115,10 @@ export class VideosUpdateComponent implements OnInit {
   doAction(){
     //image
     if(this.local_data[0].location_url != 'default' && this.local_data[0].location_url != ''){
-      let group = this.data.groupName.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.groupId;
       let type = this.local_data[0].location_url.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['location_url_img'] = r[0].display;
       });
     }else{
@@ -166,10 +166,10 @@ export class VideosUpdateComponent implements OnInit {
     this.local_data[0][e.field] = e.val;
 
     if(e.field=='location_url'){
-      let group = this.data.groupName.replace(/\s+/g, '-').toLowerCase();
+      let group = this.data.groupId;
       let type = this.local_data[0].location_url.split('.');
       let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, group, format).subscribe(r => {
+       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
         this.local_data[0]['location_url_img'] = r[0].display;
       });
     }

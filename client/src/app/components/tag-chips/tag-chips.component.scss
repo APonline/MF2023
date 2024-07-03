@@ -1,25 +1,125 @@
 
-app-tag-chips {
-  width: 100%;
-}
-#tag-chips {
-  display:flex;
-  flex-direction: row;
+// app-tag-chips {
+//   width: 100%;
+// }
+// #tag-chips {
+//   display:flex;
+//   flex-direction: row;
 
-  p {
-    min-width:180px;
-    width:fit-content;
+//   p {
+//     max-width:144px;
+//     width:100%;
+//     display:flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     text-align:right;
+//     font-size: 14px;
+//     color: #0000008a;
+//     margin-right: 15px;
+//   }
+
+//   div {
+//     // min-width:250px;
+//     width:100%;
+//   }
+// }
+
+// @media (min-width:801px)  {
+//   #tag-chips {
+//     display:flex;
+//     flex-direction: row;
+
+//     p {
+//       min-width:inherit!important;
+//       max-width: 190px;
+//       width:100%;
+//       display:flex;
+//       flex-direction: column;
+//       justify-content: center;
+//       text-align:right;
+//       font-size: 14px;
+//       color: #0000008a;
+//       margin-right: 15px;
+//     }
+
+//     div {
+//       min-width:inherit;
+//       width:100%;
+//     }
+//   }
+// }
+
+
+// @media (min-width:1200px)  {
+//   #tag-chips {
+//     display:flex;
+//     flex-direction: row;
+
+//     p {
+//       min-width:inherit!important;
+//       max-width: 180px;
+//       width:100%;
+//       display:flex;
+//       flex-direction: column;
+//       justify-content: center;
+//       text-align:right;
+//       font-size: 14px;
+//       color: #0000008a;
+//       margin-right: 15px;
+//     }
+
+//     div {
+//       min-width:inherit;
+//       width:100%;
+//     }
+//   }
+// }
+
+@media (max-width:1200px)  {
+
+  #tag-chips {
     display:flex;
     flex-direction: column;
-    justify-content: center;
-    text-align:right;
-    font-size: 14px;
-    color: #0000008a;
-    margin-right: 15px;
   }
+}
 
-  div {
-    min-width:250px;
-    width:100%;
+@media (min-width:1200px)  {
+
+  #tag-chips {
+    display:flex;
+    flex-direction: row;
+
+    p {
+      display:flex;
+      flex-direction: column;
+      justify-content: center;
+      font-size: 14px;
+      margin-right: 15px;
+      color: #0000008a;
+      text-align:right;
+      width:250px;
+    }
+
+    div {
+      width:100%;
+    }
+
+    // p {
+    //   min-width:inherit!important;
+    //   max-width: 180px;
+    //   width:100%;
+    //   display:flex;
+    //   flex-direction: column;
+    //   justify-content: center;
+    //   text-align:right;
+    //   font-size: 14px;
+    //   color: #0000008a;
+    //   margin-right: 15px;
+    // }
+
+    // div {
+    //   min-width:inherit;
+    //   width:100%;
+    // }
   }
 }
