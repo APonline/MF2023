@@ -13,7 +13,9 @@ let storage = multer.diskStorage({
     let group = req.query.group;
     let type = getfileFormat(req.query.type);
     if(!fs.existsSync(__basedir + "/resources/static/" +group+'/'+type)){
-      fs.mkdirSync(__basedir + "/resources/static/" +group+'/');
+      if(!fs.existsSync(__basedir + "/resources/static/" +group)){
+        fs.mkdirSync(__basedir + "/resources/static/" +group+'/');
+      }
       fs.mkdirSync(__basedir + "/resources/static/" +group+'/'+type);
     }
     cb(null, __basedir + "/resources/static/" +group+'/'+type);

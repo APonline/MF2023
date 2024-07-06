@@ -51,7 +51,6 @@
                   </ng-container>
                 </ng-template>
 
-
                 <ng-container *ngIf="disCol != 'action'; else actionTemplate">
                   <tr>
                       <th mat-header-cell *matHeaderCellDef >
@@ -66,7 +65,7 @@
                           {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
                         </p>
                         <div class="image-inrow" *ngIf="disCol == 'preview'">
-                          <img width="85" [src]="element[disCol]" />
+                          <img style="cursor:pointer" width="85" [src]="element[disCol]" (click)="MF.openMediaPlayer(element)" />
                         </div>
 
                       </td>

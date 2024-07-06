@@ -1,0 +1,27 @@
+::ng-deep {
+  .mat-dialog-container:has(app-mediaplayer) {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+.mediaContainer {
+  width:60%;
+  margin: 0 auto;
+  position:relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    margin: 0 auto;
+    position:relative;
+  }
+
+  video {
+    width: 100%;
+    margin: 0 auto;
+    position:relative;
+  }
+}

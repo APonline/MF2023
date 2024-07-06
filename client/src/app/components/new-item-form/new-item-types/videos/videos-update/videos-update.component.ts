@@ -93,8 +93,9 @@ export class VideosUpdateComponent implements OnInit {
     this.local_data = [{...data}];
 
     this.currentGroup = {name: this.local_data[0].groupName, id: this.local_data[0].groupId };
+    console.log('YO:', this.local_data[0])
 
-    this.galleriesService.get(this.local_data[0].id).subscribe(res => {
+    this.galleriesService.getAllForArtist(this.local_data[0].groupId).subscribe(res => {
       this.galleries = res;
     });
 

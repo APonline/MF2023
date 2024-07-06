@@ -33,6 +33,7 @@ import { MFService } from 'src/app/services/MF.service';
 import { VideosUpdateComponent } from './videos-update/videos-update.component';
 import { GalleriesService } from 'src/app/services/galleries.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-videosForm',
@@ -42,7 +43,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 export class VideosFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: user;
   @Input() action: string;
   @Input() editUser: number;
 
@@ -101,8 +102,10 @@ export class VideosFormComponent implements OnInit, OnChanges {
       private galleriesService: GalleriesService,
       private uploadService: FileUploadService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      public MF: MFService
   ) {
+
+    this.currentUser = this.authenticationService.currentUserValue;
 
   }
 
@@ -125,7 +128,41 @@ export class VideosFormComponent implements OnInit, OnChanges {
           }
         });
 
-        this.dataSource.push(this.res);
+        this.galleriesService.getAllForArtist(this.artist?.id).subscribe(res => {
+          this.galleries = res;
+
+          let galtitle = this.galleries.filter(r => r.id == this.res.owner_gallery)[0];
+
+          this.videosService.get(this.res.id).subscribe(async u => {
+            let newRes = {
+              'id': u.id,
+              'owner_id': u.owner_id,
+              'owner_group': u.owner_group,
+              'owner_gallery': u.owner_gallery,
+              'gallery': galtitle.title,
+              'title': u.title,
+              'preview':'',
+              'description': u.description,
+              'duration': u.duration,
+              'genre': u.genre,
+              'extension': u.extension,
+              'tags': u.tags,
+              'views': u.views,
+              'profile_url': u.profile_url,
+              'location_url': u.location_url,
+            };
+
+            let type = u.location_url.split('.');
+            let format = type[type.length - 1];
+            let group = this.artist?.id;
+            await this.uploadService.getFile(0, u.location_url, 'artists/'+u.owner_group, format).subscribe(r => {
+              newRes.preview = r[0].display;
+
+              this.dataSource.push(newRes);
+              this.table.renderRows();
+            });
+          });
+        });
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
@@ -155,8 +192,10 @@ export class VideosFormComponent implements OnInit, OnChanges {
     let service = toolTitle2 + 'Service';
     let model = this.tool;
 
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
+    console.log(service)
 
+    await this[service].getAllForArtist(this.groupId).subscribe(res => {
+      console.log(res)
       this[this.tool] = res;
       this.toolSet = this[this.tool];
 
@@ -272,6 +311,8 @@ export class VideosFormComponent implements OnInit, OnChanges {
       if(result){
         result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
         result.data.owner_group = this.artist?.id;
+        result.data.active = 1;
+        result.data.owner_user = this.currentUser.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

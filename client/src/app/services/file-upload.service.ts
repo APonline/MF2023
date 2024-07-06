@@ -43,4 +43,13 @@ export class FileUploadService {
       return this.http.get(`${this.baseUrl}files/${name}?group=${group}&type=${type}`);
     }
   }
+
+  streamVideo(id: any, name: any, group: any, type: any) {
+    if(name=='' || name==null || name==undefined){
+      return;
+    }else{
+      name = name.replace(/\s+/g, '-');
+      return `${this.baseUrl}files/video/${name}?group=${group}&type=${type}`;
+    }
+  }
 }

@@ -75,6 +75,7 @@ export class ImagesUpdateComponent implements OnInit {
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
+    console.log("DATA:: ",data, data.tool);
 
     this.action = data.action;
 
@@ -96,6 +97,7 @@ export class ImagesUpdateComponent implements OnInit {
 
     this.galleriesService.getAllForArtist(this.local_data[0].groupId).subscribe(res => {
       this.galleries = res;
+      this.selectedGallery = this.galleries.find(x => x.id == this.local_data[0].owner_gallery).id;
     });
 
     if(data.id != ''){

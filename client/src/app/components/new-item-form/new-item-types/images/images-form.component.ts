@@ -33,6 +33,7 @@ import { MFService } from 'src/app/services/MF.service';
 import { ImagesUpdateComponent } from './images-update/images-update.component';
 import { GalleriesService } from 'src/app/services/galleries.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
+import { user } from 'src/app/models/users.model';
 
 @Component({
   selector: 'app-imagesForm',
@@ -42,7 +43,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 export class ImagesFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: user;
   @Input() action: string;
   @Input() editUser: number;
 
@@ -101,8 +102,9 @@ export class ImagesFormComponent implements OnInit, OnChanges {
       private galleriesService: GalleriesService,
       private uploadService: FileUploadService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      public MF: MFService
   ) {
+    this.currentUser = this.authenticationService.currentUserValue;
 
   }
 
@@ -155,7 +157,6 @@ export class ImagesFormComponent implements OnInit, OnChanges {
 
               this.dataSource.push(newRes);
               this.table.renderRows();
-              console.log('YP',this.dataSource, this.res)
             });
           });
         });
@@ -306,10 +307,8 @@ export class ImagesFormComponent implements OnInit, OnChanges {
       if(result){
         result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();;
         result.data.owner_group = this.artist?.id;
-
-        let type = result.data.location_url.split('.');
-        let format = type[type.length - 1];
-        let group = this.artist?.id;
+        result.data.active = 1;
+        result.data.owner_user = this.currentUser.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });
