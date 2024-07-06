@@ -62,9 +62,13 @@
                         </p>
                       </th>
                       <td mat-cell *matCellDef="let element"  class="action-link">
-                        <p *ngIf="disCol != 'id' && disCol != 'user_id' && disCol != 'profile_image' && disCol.indexOf('owner') === -1 && element[disCol] != null">
+                        <p *ngIf="disCol != 'id' && disCol != 'preview'  && disCol != 'user_id' && disCol != 'profile_image' && disCol.indexOf('owner') === -1 && element[disCol] != null">
                           {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
                         </p>
+
+                        <div class="image-inrow" *ngIf="disCol == 'preview'">
+                          <img width="75" [src]="element[disCol]" />
+                        </div>
                       </td>
                   </tr>
                 </ng-container>

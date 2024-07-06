@@ -231,16 +231,64 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       f = formData[0];
     }
 
-    this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
+    // this.displayedColumns.push('action');
+    // Object.keys(f).map(res => {
+    //   if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
+    //     this.displayedColumns.push(res);
+    //     form[res] = new FormControl('');
+    //     newForm[res] = '';
+    //   }
+    // });
 
-    this.toolSet.map((res,i) => {
+    this.displayedColumns.push('action');
+    form['action'] = new FormControl('');
+    newForm['action'] = '';
+    this.displayedColumns.push('id');
+    form['id'] = new FormControl('');
+    newForm['id'] = '';
+    this.displayedColumns.push('owner_user');
+    form['owner_user'] = new FormControl('');
+    newForm['owner_user'] = '';
+    this.displayedColumns.push('owner_group');
+    form['owner_group'] = new FormControl('');
+    newForm['owner_group'] = '';
+    this.displayedColumns.push('username');
+    form['username'] = new FormControl('');
+    newForm['username'] = '';
+    this.displayedColumns.push('preview');
+    form['preview'] = new FormControl('');
+    newForm['preview'] = '';
+    this.displayedColumns.push('name');
+    form['name'] = new FormControl('');
+    newForm['name'] = '';
+    this.displayedColumns.push('role');
+    form['role'] = new FormControl('');
+    newForm['role'] = '';
+    this.displayedColumns.push('email');
+    form['email'] = new FormControl('');
+    newForm['email'] = '';
+    this.displayedColumns.push('phone');
+    form['phone'] = new FormControl('');
+    newForm['phone'] = '';
+    this.displayedColumns.push('date_joined');
+    form['date_joined'] = new FormControl('');
+    newForm['date_joined'] = '';
+    this.displayedColumns.push('profile_url');
+    form['profile_url'] = new FormControl('');
+    newForm['profile_url'] = '';
+
+    this.toolSet.map(async (res,i) => {
+
+      if(res.profile_image!='default'){
+        let type = res.profile_image.split('.');
+        let format = type[type.length - 1];
+        await this.uploadService.getFile(0, res.profile_image, 'users/'+res.user_id, format).subscribe(r => {
+          res.preview = r[0].display;
+        });
+      }else{
+        res.preview = './assets/images/defaultprofile1.png';
+      }
+
       delete res.active;
       delete res.createdAt;
       delete res.updatedAt;

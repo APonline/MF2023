@@ -17,6 +17,14 @@ export class SongsService {
     return this.http.get<any[]>(baseUrl);
   }
 
+  getAllForArtist(id: any): Observable<any> {
+    return this.http.get<any[]>(`${baseUrl}/artist/${id}`);
+  }
+
+  getAllForAlbum(id: any): Observable<any> {
+    return this.http.get<any[]>(`${baseUrl}/album/${id}`);
+  }
+
   get(id: any): Observable<any> {
     return this.http.get(`${baseUrl}/${id}`);
   }

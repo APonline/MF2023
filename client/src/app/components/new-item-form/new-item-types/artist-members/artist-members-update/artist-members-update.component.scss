@@ -34,7 +34,7 @@ form {
 }
 
 .inner-content {
-  height: calc(100% - 45px);
+  height: calc(100% - 85px);
 }
 
 .sub-title {
@@ -65,6 +65,8 @@ form {
 
   li {
     margin-bottom:25px;
+    width: 100%;
+    overflow: hidden;
 
     div {
       width: calc(100% - 5px);
@@ -201,7 +203,7 @@ li {
 
     p {
       width:50px;
-      margin:0 10px;
+      margin:0 9px;
       text-align: center;
       min-width:inherit;
     }
@@ -295,15 +297,15 @@ select {
   }
 
   ::ng-deep {
-    app-tag-chips {
-      #tag-chips {
-        flex-direction: column!important;
+    // app-tag-chips {
+    //   #tag-chips {
+    //     flex-direction: column!important;
 
-        p {
-          text-align:left!important;
-        }
-      }
-    }
+    //     p {
+    //       text-align:left!important;
+    //     }
+    //   }
+    // }
   }
 }
 @media (min-width:801px)  {
@@ -402,5 +404,19 @@ select {
         }
       }
     }
+
+    // app-tag-chips #tag-chips p {
+    //   min-width: 180px;
+    //   width: fit-content;
+    // }
   }
+}
+
+li app-tag-chips {
+  width: 100%;
+}
+
+li app-tag-chips #tag-chips p {
+  min-width: 180px;
+  width: fit-content;
 }

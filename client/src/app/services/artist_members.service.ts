@@ -30,8 +30,9 @@ export class ArtistMembersService {
     project.subscribe(r => {
       r.map(res => {
         if(res.artists.profile_image != 'default' && res.artists.profile_image != ''){
-          let group = res.artists.name.replace(/\s+/g, '-').toLowerCase();
-           this.uploadService.getFile(0, res.artists.profile_image, group, 'png').subscribe(r => {
+          let type = res.artists.profile_image.split('.');
+          let format = type[type.length - 1];
+          this.uploadService.getFile(0, res.artists.profile_image, 'artists/'+res.artists.id, format).subscribe(r => {
             res['display'] = r[0];
           });
         }else{

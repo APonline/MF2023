@@ -29,6 +29,7 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MFService } from 'src/app/services/MF.service';
 
 @Component({
   selector: 'app-artistLinksForm',
@@ -93,7 +94,8 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      private MF: MFService
   ) {
 
   }
@@ -135,21 +137,9 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
     }
   }
 
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   async loadData() {
     let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    toolTitle = this.MF.capitalizeWords(toolTitle);
 
     let toolTitle2 = toolTitle.join(',');
     toolTitle2 = toolTitle2.replace(/ /g,"");
@@ -158,35 +148,12 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
     let service = toolTitle2 + 'Service';
     let model = this.tool;
 
-    await this[service].getAll().subscribe(res => {
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
-      });
-
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artist_id == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
+    await this[service].getAllForArtist(this.groupId).subscribe(res => {
 
       this[this.tool] = res;
       this.toolSet = this[this.tool];
 
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
+      this.setSettings(this.toolSet);
     });
 
   }
@@ -203,13 +170,29 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
     }
 
     this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
+    form['action'] = new FormControl('');
+    newForm['action'] = '';
+    this.displayedColumns.push('id');
+    form['id'] = new FormControl('');
+    newForm['id'] = '';
+    this.displayedColumns.push('owner_user');
+    form['owner_user'] = new FormControl('');
+    newForm['owner_user'] = '';
+    this.displayedColumns.push('owner_group');
+    form['owner_group'] = new FormControl('');
+    newForm['owner_group'] = '';
+    this.displayedColumns.push('url');
+    form['url'] = new FormControl('');
+    newForm['url'] = '';
+    this.displayedColumns.push('title');
+    form['title'] = new FormControl('');
+    newForm['title'] = '';
+    this.displayedColumns.push('description');
+    form['description'] = new FormControl('');
+    newForm['description'] = '';
+    this.displayedColumns.push('profile_url');
+    form['profile_url'] = new FormControl('');
+    newForm['profile_url'] = '';
 
     this.toolSet.map((res,i) => {
       delete res.active;
@@ -218,7 +201,6 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
     })
 
     this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource.data.shift();
     this.dataSource = this.dataSource.data;
 
     this.newRecord = newForm;
@@ -240,6 +222,7 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
+    delete obj.profile_url;
     const dialogRef = this.dialog.open(NewItemUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',
@@ -249,7 +232,7 @@ export class ArtistLinksFormComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.toLowerCase();
+        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
         result.data.owner_group = this.artist?.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }

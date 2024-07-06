@@ -1,0 +1,127 @@
+
+<div class="content mf-theme">
+  <!-- dialog-box.component.html -->
+  <h1><strong>{{action}} {{tool}}</strong></h1>
+  <br/>
+
+  <div class="inner-content" *ngIf="action != 'Delete'; else elseTemplate">
+    <mat-stepper [linear]="isLinear" #stepper>
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup" *ngIf="firstFormGroup">
+          <ng-template matStepLabel>Basic Info</ng-template>
+
+          <div class="step-card">
+            <ul class="center">
+              <li>
+                <p><span>Title</span></p>
+                <mat-form-field>
+                  <input matInput [(ngModel)]="local_data[0]['title']" formControlName="title" placeholder="My Photo"
+                  [ngClass]="{ 'is-invalid': submitted && f.title.errors }">
+                  <div *ngIf="submitted && f.title.errors" class="invalid-feedback">
+                    <div *ngIf="f.title.errors.required">Title is required</div>
+                  </div>
+                </mat-form-field>
+              </li>
+              <li>
+                <p><span>Description</span></p>
+                <mat-form-field>
+                  <input matInput [(ngModel)]="local_data[0]['description']" formControlName="description"  placeholder="">
+                </mat-form-field>
+              </li>
+              <li>
+                <p><span>Gallery</span></p>
+                <select (change)="onChangeGallery($event.target.value)" formControlName="gallery">
+                  <option *ngFor="let y of galleries" [selected]="y.id==selectedGallery? true: false" [value]="y.id">{{y.title}}</option>
+                </select>
+              </li>
+              <li>
+                <app-tag-chips (Tag)="getGenre($event)" [local_data]="local_data[0]['genre']" [chipType]="'Genre'" ></app-tag-chips>
+              </li>
+              <li>
+                <app-tag-chips (Tag)="getTag($event)" [local_data]="local_data[0]['tags']" [chipType]="'Tags'" ></app-tag-chips>
+              </li>
+            </ul>
+          </div>
+
+          <div class="step-card-actions">
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
+          <ng-template matStepLabel>Imagery</ng-template>
+
+          <div class="step-card">
+            <div class="card-half">
+              <ul class="center">
+                <li>
+                  <p style="text-align:left;"><span>Image</span></p>
+                </li>
+                <li>
+                  <div>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'location_url'" [file]="local_data[0]['location_url']" [group]="currentGroup"></app-upload-single>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="step-card-actions">
+            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Done</ng-template>
+
+        <div class="step-card">
+          <ul class="center summary row">
+            <li>
+              <div class="summary-info"><h4>Title</h4><p>{{ local_data[0]['title'] }}</p></div>
+            </li>
+            <li>
+              <div class="summary-info"><h4>Description</h4><p>{{ local_data[0]['description'] }}</p></div>
+            </li>
+            <li>
+              <div class="summary-info"><h4>Gallery</h4><p>{{ (this.selectedGallery == null ? 'n/a' : this.selectedGallery) }}</p></div>
+            </li>
+            <li>
+              <div class="summary-info"><h4>Genre</h4><p>{{ local_data[0]['genre'] }}</p></div>
+            </li>
+            <li>
+              <div class="summary-info"><h4>Tags</h4><p>{{ local_data[0]['tags'] }}</p></div>
+            </li>
+          </ul>
+
+          <ul class="center summary row">
+            <li>
+              <div class="summary-info"><h4>Image</h4><img id="final-profile-image" [src]="local_data[0]['location_url_img']"/></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="step-card-actions" style="margin-top: -41px;">
+          <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" (click)="stepper.reset()">Reset</button>
+        </div>
+
+        <div mat-dialog-actions>
+          <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+          <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </div>
+  <ng-template #elseTemplate>
+    <div class="inner-content">
+      Are you sure?
+
+      <div mat-dialog-actions>
+        <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
+        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -144,9 +144,18 @@
 
 .page {
   min-height: calc(100vh - 0px);
-  padding: 120px 0px 40px;
+  padding: 100px 0px 40px;
   box-sizing: border-box;
   position:relative;
+}
+
+@media only screen and (max-width:801px)  {
+  .page {
+    min-height: calc(100vh - 0px);
+    padding: 80px 0px 40px!important;
+    box-sizing: border-box;
+    position:relative;
+  }
 }
 
 #singleComponent {

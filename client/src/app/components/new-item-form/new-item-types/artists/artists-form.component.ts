@@ -213,7 +213,6 @@ export class ArtistsFormComponent implements OnInit, OnChanges {
     })
 
     this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource.data.shift();
     this.dataSource = this.dataSource.data;
 
     this.newRecord = newForm;

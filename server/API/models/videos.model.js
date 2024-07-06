@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
       owner_group: {
       type: Sequelize.INTEGER
     },
+      owner_gallery: {
+      type: Sequelize.INTEGER
+    },
       title: {
       type: Sequelize.STRING
     },

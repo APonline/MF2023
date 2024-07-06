@@ -1,3 +1,4 @@
+const { logging } = require("../../config/db.config");
 const db = require("../models");
 let p = require('path');
 const scriptName = p.basename(__filename).split('.')[0];
@@ -12,11 +13,11 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { title: req.body.title } });
+        let item = await Item.findOne({ where: { owner_group: req.body.owner_group, title: req.body.title } });
 
         if (item != null) { 
             var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.title + "_" + num;
+            newItem['profile_url'] = req.body.profile_url.replace(/\+s/g,'').toLowerCase() + "-" + num;
         }
 
         let result = await Item.create( newItem );
@@ -60,6 +61,24 @@ exports[`getAll${itemTopic}s`] = async (req, res) => {
     } catch (error) {
         return res.status(500).send({
             message: `Unable to get ${itemTopic}s!`
+        });
+    }
+}
+exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
+    try{
+        let id =req.params.id;
+        let result = await Item.findAll({ 
+            where: { owner_group: id, active: 1 },
+        });
+
+        if (result) {
+            return res.status(200).send( result );
+        }else{
+            return res.status(500).send({ result: null });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic}s! - `+ error.message
         });
     }
 }

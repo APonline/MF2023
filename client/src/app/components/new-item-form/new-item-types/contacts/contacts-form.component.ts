@@ -7,7 +7,6 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 
 /* services - make dynamic somehow later */
@@ -29,6 +28,8 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { ContactUpdateComponent } from './contact-update/contact-update.component';
+import { MFService } from 'src/app/services/MF.service';
 
 @Component({
   selector: 'app-contactsForm',
@@ -70,6 +71,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
 
   constructor(
       public dialog: MatDialog,
@@ -92,13 +94,17 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      private MF: MFService
   ) {
 
   }
 
   ngOnInit() {
 
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
   }
 
@@ -112,6 +118,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
         });
 
         this.dataSource.push(this.res);
+        this.table.renderRows();
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           if(value.id == this.res.id){
@@ -121,6 +128,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
           }
           return true;
         });
+        this.table.renderRows();
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
           return value.id != this.res;
@@ -130,21 +138,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     }
   }
 
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   async loadData() {
     let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    toolTitle = this.MF.capitalizeWords(toolTitle);
 
     let toolTitle2 = toolTitle.join(',');
     toolTitle2 = toolTitle2.replace(/ /g,"");
@@ -153,35 +149,12 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     let service = toolTitle2 + 'Service';
     let model = this.tool;
 
-    await this[service].getAll().subscribe(res => {
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
-      });
-
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artist_id == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
+    await this[service].getAllForArtist(this.groupId).subscribe(res => {
 
       this[this.tool] = res;
       this.toolSet = this[this.tool];
 
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
+      this.setSettings(this.toolSet);
     });
 
   }
@@ -198,13 +171,45 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     }
 
     this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
+    form['action'] = new FormControl('');
+    newForm['action'] = '';
+    this.displayedColumns.push('id');
+    form['id'] = new FormControl('');
+    newForm['id'] = '';
+    this.displayedColumns.push('owner_user');
+    form['owner_user'] = new FormControl('');
+    newForm['owner_user'] = '';
+    this.displayedColumns.push('owner_group');
+    form['owner_group'] = new FormControl('');
+    newForm['owner_group'] = '';
+    this.displayedColumns.push('first_name');
+    form['first_name'] = new FormControl('');
+    newForm['first_name'] = '';
+    this.displayedColumns.push('last_name');
+    form['last_name'] = new FormControl('');
+    newForm['last_name'] = '';
+    this.displayedColumns.push('nickname');
+    form['nickname'] = new FormControl('');
+    newForm['nickname'] = '';
+    this.displayedColumns.push('relation');
+    form['relation'] = new FormControl('');
+    newForm['relation'] = '';
+    this.displayedColumns.push('city');
+    form['city'] = new FormControl('');
+    newForm['city'] = '';
+    this.displayedColumns.push('phone');
+    form['phone'] = new FormControl('');
+    newForm['phone'] = '';
+    this.displayedColumns.push('email');
+    form['email'] = new FormControl('');
+    newForm['email'] = '';
+    this.displayedColumns.push('contact_image');
+    form['contact_image'] = new FormControl('');
+    newForm['contact_image'] = '';
+    this.displayedColumns.push('profile_url');
+    form['profile_url'] = new FormControl('');
+    newForm['profile_url'] = '';
+
 
     this.toolSet.map((res,i) => {
       delete res.active;
@@ -213,7 +218,6 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     })
 
     this.dataSource = new MatTableDataSource(this.toolSet);
-    this.dataSource.data.shift();
     this.dataSource = this.dataSource.data;
 
     this.newRecord = newForm;
@@ -235,7 +239,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   openDialog(action,obj) {
     obj.action = action;
     obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
+    obj.owner_id = this.artist?.id;
+    obj.group = this.artist?.name;
+    const dialogRef = this.dialog.open(ContactUpdateComponent, {
       panelClass: 'dialog-box',
       width: '85%',
       height: '80vh',
@@ -244,6 +250,8 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
+        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
+        result.data.owner_group = this.artist?.id;
         this.activeItem.emit({ action: result.event, data: result.data });
       }
     });

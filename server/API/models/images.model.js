@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
       owner_group: {
       type: Sequelize.INTEGER
     },
+      owner_gallery: {
+      type: Sequelize.INTEGER
+    },
       title: {
       type: Sequelize.STRING
     },
@@ -39,6 +42,10 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
  });
+
+//  ItemTopic.addScope('defaultScope', {
+//   limit: 99999
+// })
     
 return ItemTopic;
 };

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl + `gigs`;
+const baseUrl = environment.apiUrl + `galleries`;
 const signup = environment.apiUrl + 'auth/signup';
 
 @Injectable({
@@ -15,6 +15,10 @@ export class GalleriesService {
 
   getAll(): Observable<any> {
     return this.http.get<any[]>(baseUrl);
+  }
+
+  getAllForArtist(id: any): Observable<any> {
+    return this.http.get<any[]>(`${baseUrl}/artist/${id}`);
   }
 
   get(id: any): Observable<any> {

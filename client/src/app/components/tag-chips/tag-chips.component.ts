@@ -34,6 +34,10 @@ export class TagChipsComponent implements OnInit {
       this.placeholder='Rock, Pop, Metal...';
     }else if(this.chipType == 'Role'){
       this.placeholder='Vocals, Guitar, Drums...';
+    }else if(this.chipType == 'Relation'){
+      this.placeholder='Photographer, Promoter, Designer...';
+    }else if(this.chipType == 'Tags'){
+      this.placeholder='Demos, Promo, Photoset...';
     }
 
     if(this.local_data.indexOf('/') !== -1){

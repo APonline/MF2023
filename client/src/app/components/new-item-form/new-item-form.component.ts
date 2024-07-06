@@ -29,6 +29,7 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { GalleriesService } from 'src/app/services/galleries.service';
 
 @Component({
   selector: 'app-newItemForm',
@@ -76,6 +77,7 @@ export class NewItemFormComponent implements OnInit {
         private router: Router,
         private DialogService: DialogService,
         private alertService: AlertService,
+        private galleriesService: GalleriesService,
         private imagesService: ImagesService,
         private albumsService: AlbumsService,
         private artistLinksService: ArtistsLinksService,
@@ -144,8 +146,15 @@ export class NewItemFormComponent implements OnInit {
     createNew(data) {
       delete data.id;
       delete data.action;
-      let t = this.tool.split('_');
-      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      let t = null;
+      let tName = null;
+      if(this.tool.indexOf('_') !== -1){
+        t = this.tool.split('_');
+        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      }else{
+        tName = this.tool;
+      }
+
       const service = tName+'Service';
 
       this[service].create(data).subscribe(async res => {
@@ -160,7 +169,6 @@ export class NewItemFormComponent implements OnInit {
     update(data) {
       let id = data.id;
       delete data.action;
-      console.log('yo: ',this.tool);
       let t = null;
       let tName = null;
       if(this.tool.indexOf('_') !== -1){
@@ -171,7 +179,6 @@ export class NewItemFormComponent implements OnInit {
       }
 
       const service = tName+'Service';
-      console.log(service)
 
       this[service].update(id,data).subscribe(async res => {
         this.act = 'put';
@@ -184,8 +191,14 @@ export class NewItemFormComponent implements OnInit {
 
     //DELETE
     delete(id){
-      let t = this.tool.split('_');
-      let tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      let t = null;
+      let tName = null;
+      if(this.tool.indexOf('_') !== -1){
+        t = this.tool.split('_');
+        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+      }else{
+        tName = this.tool;
+      }
       const service = tName+'Service';
 
       this[service].delete(id).subscribe(async res => {

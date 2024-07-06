@@ -71,7 +71,7 @@
                 </li>
                 <li>
                   <div>
-                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
                   </div>
                 </li>
               </ul>
@@ -83,7 +83,7 @@
                 </li>
                 <li>
                   <div>
-                    <app-upload-single  (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
+                    <app-upload-single  (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
                   </div>
                 </li>
               </ul>
@@ -100,7 +100,7 @@
         <ng-template matStepLabel>Done</ng-template>
 
         <div class="step-card">
-          <ul class="center summary">
+          <ul class="center summary row">
             <li>
               <div class="summary-info"><h4>Name</h4><p>{{ local_data[0]['name'] }}</p></div>
             </li>
@@ -113,6 +113,11 @@
             <li>
               <div class="summary-info"><h4>Description</h4><p>{{ local_data[0]['description'] }}</p></div>
             </li>
+          </ul>
+
+
+
+          <ul class="center summary row">
             <li>
               <div class="summary-info"><h4>Bio</h4><p>{{ local_data[0]['bio'] }}</p></div>
             </li>

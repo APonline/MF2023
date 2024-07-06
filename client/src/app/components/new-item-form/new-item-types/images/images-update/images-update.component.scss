@@ -1,0 +1,297 @@
+.content {
+  height:100%;
+}
+
+.inner-content {
+  height: calc(100% - 45px);
+}
+
+ul {
+  width: 50%;
+  margin: 0 auto;
+}
+
+li {
+  display:flex;
+  flex-direction: row;
+
+  p {
+    width:250px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align:right;
+    font-size: 14px;
+    color: #0000008a;
+    margin-right: 15px;
+  }
+
+  div {
+    width:250px;
+  }
+
+}
+
+app-tag-chips {
+  width: 100%;
+}
+
+h4 {
+  color:red;
+}
+
+
+.box{
+
+  .list {
+    position:relative;
+    display:flex;
+    padding: 10px 0;
+    background: rgba(0,0,0, 0);
+    margin:3px 0;
+    cursor:pointer;
+    transition: 0.5s;
+    padding: 8px 20px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h2{
+
+    }
+    h4 {
+      font-size: 1.2em;
+    }
+    p {
+      font-size: .7em;
+    }
+  }
+
+  .imgBox {
+    overflow:hidden;
+    position:relative;
+    width:60px;
+    height:60px;
+    border-radius: 50%;
+    margin-right:10px;
+
+    img {
+      position:absolute;
+      top:0px;
+      left:0px;
+      width:100%;
+      height:100%;
+      max-width:60px;
+    }
+  }
+
+  .list:hover {
+    background: rgba(64,64,64, .3);
+    box-shadow: -15px 30px 50px rgba(0,0,0,0.5);
+    z-index:886;
+    transform:scale(1.05) translateX(2px);
+  }
+}
+
+.step-card {
+  display:flex;
+}
+
+.step-card-actions {
+  display:flex;
+  justify-content: center;
+  min-width:100%;
+  // position:absolute;
+  bottom:20px;
+
+  button {
+    margin:0 20px;
+  }
+}
+::ng-deep {
+
+  .mat-dialog-actions {
+    justify-content: center;
+  }
+}
+
+.summary {
+
+  li {
+    margin-bottom:10px!important;
+  }
+}
+
+.summary-info {
+  width:100%!important;
+
+  p {
+    width:calc(100% - 20px);
+    text-align:left;
+    margin:10px;
+  }
+}
+
+#final-profile-image, #final-profile-banner-image {
+  max-height: 120px;
+  margin-top: 10px;
+}
+
+.row {
+
+}
+
+select {
+  padding: 8px 12px;
+  font-family: 'Thin_lc';
+  font-size: 20px;
+  letter-spacing: 1px;
+  border-radius: 6px;
+  cursor:pointer;
+
+  option {
+    cursor:pointer;
+  }
+}
+
+
+@media (min-width:320px)  {
+  .step-card {
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height:100%;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    // height: 260px;
+    height:inherit;
+  }
+  .summary {
+    // height: 350px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+
+  ::ng-deep {
+    mat-stepper {
+      height: calc(100% - 110px);
+    }
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 130px);
+
+        .center {
+          height:100%;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+
+  form {
+    height: calc(100% - 50px);
+  }
+
+  ::ng-deep {
+    .mat-stepper-horizontal {
+      margin-top: 8px;
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+      display: block;
+      position: relative;
+    }
+    .mat-horizontal-content-container {
+      height: calc(100% - 50px);
+    }
+    .mat-form-field {
+      width:100%;
+    }
+  }
+}
+@media (min-width:801px)  {
+  .step-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-direction: column;
+  }
+  .card-half {
+    width: 100%;
+  }
+  ul{
+    // height: 260px;
+  }
+  .center {
+    width:100%;
+  }
+  h3 {
+    text-align: center;
+    font-size: 12px;
+    margin-bottom: -40px;
+  }
+  .summary {
+    // height: 350px;
+  }
+
+  // ::ng-deep {
+  //   mat-stepper {
+  //     height: calc(100% - 170px);
+  //   }
+  // }
+}
+@media (min-width:1200px) {
+  .step-card{
+    flex-direction: row;
+    height: calc(100% - 20px);
+  }
+  ::ng-deep {
+    .mat-horizontal-content-container {
+      height: calc(100% - 25px);
+    }
+    .mat-horizontal-stepper-content {
+      height: calc(100% - 50px);
+    }
+
+    .mat-horizontal-stepper-content:nth-child(3){
+      .step-card{
+        height: calc(100% - 80px);
+
+        .center {
+          height:100%;
+          width:50%!important;
+
+          li {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+  .card-half {
+    width:48%;
+    display: flex;
+    flex-direction: column;
+  }
+  .col-center {
+    height:100%;
+  }
+  ul {
+    height: inherit;
+    width:50%!important;
+  }
+}

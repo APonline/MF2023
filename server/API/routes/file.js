@@ -5,6 +5,7 @@ const controller = require("../controllers/file.controller");
 let routes = (app) => {
   router.post("/api/v1/upload", controller.upload);
   router.get("/api/v1/files/:name", controller.getFile);
+  router.get("/api/v1/files/video/:name", controller.streamVideo);
   router.get("/api/v1/files", controller.getListFiles);
   router.get("/api/v1/files/download/:name", controller.download);
 

@@ -2,14 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { MatDialog } from '@angular/material/dialog';
+
 import moment from 'moment';
+import { MediaplayerComponent } from '../components/mediaplayer/mediaplayer.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MFService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    public dialog: MatDialog,
+  ) { }
 
   capitalizeWords(arr) {
     return arr.map((word) => {
@@ -34,6 +40,21 @@ export class MFService {
     if (mm < 10) mm = 0 + mm;
 
     return day = yyyy + '-' + ('0' + mm).toString().slice(-2) + '-' + ('0' + dd).toString().slice(-2);
+  }
+
+  openMediaPlayer(obj) {
+    obj.tool = 'media';
+    const dialogRef = this.dialog.open(MediaplayerComponent, {
+      panelClass: 'dialog-box',
+      width: '85%',
+      height: '80vh',
+      data:obj
+    });
+
+    dialogRef.afterClosed().subscribe(async result => {
+      if(result){
+      }
+    });
   }
 
 }

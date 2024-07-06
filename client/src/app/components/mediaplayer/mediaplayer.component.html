@@ -1,0 +1,20 @@
+<div class="pagee">
+  <div *ngIf="mediaType=='image'">
+    <div class="mediaContainer" *ngIf="loaded">
+      <img [src]="fileToDisplay" />
+    </div>
+  </div>
+  <div *ngIf="mediaType=='video'">
+    <div class="mediaContainer">
+      <video controls autoplay>
+        <source [src]="fileToDisplay" >
+      </video>
+    </div>
+  </div>
+  <div *ngIf="mediaType=='music'">
+
+  </div>
+  <div *ngIf="mediaType=='document'">
+
+  </div>
+</div>

@@ -68,13 +68,13 @@
               <li>
                 <p><span>Profile Image</span></p>
                 <div>
-                  <app-upload-single formControlName="profile_image" (fileNew)="updateUploadValue($event)" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
+                  <app-upload-single formControlName="profile_image" (fileNew)="updateUploadValue($event)" [dir]="artist" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
                 </div>
               </li>
               <li>
                 <p><span>Profile Banner Image</span></p>
                 <div>
-                  <app-upload-single formControlName="profile_banner_image" (fileNew)="updateUploadValue($event)" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
+                  <app-upload-single formControlName="profile_banner_image" (fileNew)="updateUploadValue($event)" [dir]="artist" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
                 </div>
               </li>
             </ul>
