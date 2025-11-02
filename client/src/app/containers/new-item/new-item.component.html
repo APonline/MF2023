@@ -29,10 +29,23 @@
             <br/><br/>
           </div>
           <div id="recent-items">
-            <h3 *ngIf="recentItems.length == 0">No recent activity to display</h3>
-            <ul *ngIf="recentItems.length != 0">
-              <li>I made an action</li>
-            </ul>
+            <h4>Recent Activity:</h4>
+            <ng-container *ngIf="recentItems$ | async as recent; else loading">
+              <ul *ngIf="recent.length > 0; else empty">
+                <li *ngFor="let item of recent">
+                  <p class="recentItem" [innerHTML]="item.activity | safeHtml"></p>
+                </li>
+              </ul>
+            </ng-container>
+            
+            <ng-template #loading>
+              <h3>Loading activity…</h3>
+            </ng-template>
+            
+            <ng-template #empty>
+              <h3>No recent activity to display</h3>
+            </ng-template>
+
           </div>
         </div>
       </div>

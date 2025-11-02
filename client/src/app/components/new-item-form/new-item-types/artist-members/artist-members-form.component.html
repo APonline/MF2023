@@ -1,5 +1,10 @@
 <div id="newEditForm" class="page">
-    <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+    <div class="itemBK" [ngStyle]="{
+      background:
+        'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' +
+        (toolName?.split(' ').join('_') | capitalizeWord) +
+        '.jpg)'
+    }"></div>
     <div class="itemBKGrid"></div>
 
   <div class="glass">
@@ -26,21 +31,22 @@
                 <ng-template #actionTemplate>
                   <ng-container matColumnDef="action">
                     <tr>
-                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
+                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;width:80px;">
                         <p class="headerTitle" style="text-align:center;">
                           <mat-label>Actions</mat-label>
                         </p>
                       </th>
-                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;max-width:80px;width:80px;">
+                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;width:80px;">
                         <ng-container *ngIf="element.id != 0; else noActionTemplate">
 
-
-                          <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
-                            edit
-                          </button>
-                          <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
-                            delete
-                          </button>
+                          <div class="buttonsGroup">
+                            <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
+                              edit
+                            </button>
+                            <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
+                              delete
+                            </button>
+                          </div>
 
                         </ng-container>
                         <ng-template #noActionTemplate>
@@ -57,7 +63,7 @@
                       <th mat-header-cell *matHeaderCellDef >
                         <p class="headerTitle" *ngIf="disCol != 'id'  && disCol != 'user_id' && disCol != 'profile_image' && disCol.indexOf('owner') === -1">
                           <mat-label [for]="disCol">
-                                                  {{ disCol | removeUnderscore }}
+                            {{ disCol | removeUnderscore }}
                           </mat-label>
                         </p>
                       </th>

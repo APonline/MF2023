@@ -48,7 +48,7 @@ export class ArtistMembersService {
   }
 
   getProjects() {
-    return this.projects$.next();
+    return this.projects$.next({});
   }
 
   get(id: any): Observable<any> {

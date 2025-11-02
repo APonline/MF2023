@@ -4,8 +4,8 @@ const cookieSession = require("cookie-session");
 process.env.TZ = 'America/Toronto'
 
 global.__basedir = __dirname;
-global.baseUrl = "https://musefactory.app";
-//global.baseUrl = "http://localhost:4200";
+//global.baseUrl = "https://musefactory.app";
+global.baseUrl = "http://localhost:4200";
  
 // db
 const db = require("./API/models");
@@ -85,5 +85,5 @@ require("./socket")(io, hostname);
 
   
 http.listen(4000, () => {
-    console.log('listening on xxx:4000');
+    console.log('listening on '+global.baseUrl+':4000');
 });

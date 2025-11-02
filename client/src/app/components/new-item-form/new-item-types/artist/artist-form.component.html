@@ -1,5 +1,10 @@
 <div id="newEditForm" class="page">
-  <div class="itemBK" [ngStyle]="{background: 'url(./assets/images/' + (toolName.replace(' ', '_') | capitalizeWord) + '.jpg)'}"></div>
+  <div class="itemBK" [ngStyle]="{
+    background:
+      'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' +
+      (toolName?.split(' ').join('_') | capitalizeWord) +
+      '.jpg)'
+  }"></div>
   <div class="itemBKGrid"></div>
 
 <div class="glass">

@@ -19,6 +19,7 @@ import { FileUploadService } from './services/file-upload.service';
 import { AlbumsService } from './services/albums.service';
 import { ArtistsLinksService } from './services/artist_links.service';
 import { ArtistMembersService } from './services/artist_members.service';
+import { ArtistActivityService } from './services/artist_activity.service';
 import { ArtistsService } from './services/artists.service';
 import { CommentsService } from './services/comments.service';
 import { ContactsService } from './services/contacts.service';
@@ -179,6 +180,7 @@ import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.compo
     AlbumsService,
     ArtistsLinksService,
     ArtistMembersService,
+    ArtistActivityService,
     ArtistsService,
     CommentsService,
     ContactsService,

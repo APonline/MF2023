@@ -2,3 +2,35 @@
 @import "./styles/reset";
 @import "@angular/material/prebuilt-themes/deeppurple-amber.css";
 @import "./styles/theme";
+
+.content h1{
+    color:#000;
+}
+
+.content.topcontent h1, .content.device h1{
+    color:#fff;
+}
+
+.content p {
+    color:#919191;
+}
+
+.content.topcontent p, .content.device p{
+    color:#fff;
+}
+
+.headerTitle * {
+    color: #fff!important;
+}
+
+thead tr {
+    background-color: #919191!important;
+}
+
+p {
+    color:#000;
+}
+
+.content {
+    padding:20px;
+}

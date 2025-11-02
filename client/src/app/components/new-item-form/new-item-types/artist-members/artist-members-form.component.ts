@@ -10,6 +10,7 @@ import moment from 'moment';
 
 
 /* services - make dynamic somehow later */
+import { ArtistActivityService } from 'src/app/services/artist_activity.service';
 import { ImagesService } from 'src/app/services/images.service';
 import { AlbumsService } from 'src/app/services/albums.service';
 import { ArtistsLinksService } from 'src/app/services/artist_links.service';
@@ -39,7 +40,7 @@ import { ArtistMembersUpdateComponent } from './artist-members-update/artist-mem
 export class ArtistMembersFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
   @Input() action: string;
   @Input() editUser: number;
 
@@ -85,6 +86,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       private albumsService: AlbumsService,
       private artistLinksService: ArtistsLinksService,
       private artistMembersService: ArtistMembersService,
+      private artistActivityService: ArtistActivityService,
       private artistsService: ArtistsService,
       private commentsService: CommentsService,
       private contactsService: ContactsService,
@@ -98,6 +100,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       private uploadService: FileUploadService,
 
   ) {
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
@@ -134,6 +137,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
 
           this.dataSource.push(newRes);
           this.table.renderRows();
+          this.addTransaction('create', u);
         });
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
@@ -145,16 +149,45 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
             value['phone']= value.phone;
             value['date_joined']= this.res.date_joined;
             value['profile_url']= value.profile_url;
+
+            this.addTransaction('update', value);
           }
           return true;
         });
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
+          this.addTransaction('delete', value);
           return value.id != this.res;
         });
         this.table.renderRows();
       }
     }
+  }
+
+  addTransaction(act, data) {
+    let activityString = '';
+
+    if(act == 'create'){
+      activityString = 'created a new member <b>' + data.username + '</b>';
+    }else if(act == 'update'){
+      activityString = 'updated member <b>' + data.username + '</b>';
+    }else if(act == 'delete'){
+      activityString = 'deleted member <b>' + data.username + '</b>';
+    }
+
+    let transData = {
+      owner_user: this.currentUser.id,
+      owner_group: this.groupId,
+      user_id: this.currentUser.id,
+      artist_id: this.groupId,
+      activity: "<b>" + this.currentUser.username + "</b> " + activityString,
+      activity_url: "",
+      active: 1
+    };
+    
+    this.artistActivityService.create(transData).subscribe(u => {
+      this.artistActivityService.kickRefresh(); 
+    });
   }
 
   capitalizeWords(arr) {
@@ -243,15 +276,15 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     this.displayedColumns.push('action');
     form['action'] = new FormControl('');
     newForm['action'] = '';
-    this.displayedColumns.push('id');
-    form['id'] = new FormControl('');
-    newForm['id'] = '';
-    this.displayedColumns.push('owner_user');
-    form['owner_user'] = new FormControl('');
-    newForm['owner_user'] = '';
-    this.displayedColumns.push('owner_group');
-    form['owner_group'] = new FormControl('');
-    newForm['owner_group'] = '';
+    // this.displayedColumns.push('id');
+    // form['id'] = new FormControl('');
+    // newForm['id'] = '';
+    // this.displayedColumns.push('owner_user');
+    // form['owner_user'] = new FormControl('');
+    // newForm['owner_user'] = '';
+    // this.displayedColumns.push('owner_group');
+    // form['owner_group'] = new FormControl('');
+    // newForm['owner_group'] = '';
     this.displayedColumns.push('username');
     form['username'] = new FormControl('');
     newForm['username'] = '';

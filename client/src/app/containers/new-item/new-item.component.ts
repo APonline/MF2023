@@ -5,6 +5,9 @@ import { ArtistsService } from 'src/app/services/artists.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { environment } from 'src/environments/environment';
 import { FastAverageColor } from 'fast-average-color';
+import { ArtistActivityService } from 'src/app/services/artist_activity.service';
+
+import { Observable, Subject, switchMap, startWith, shareReplay, catchError, of } from 'rxjs';
 
 
 @Component({
@@ -54,13 +57,24 @@ export class NewitemComponent implements OnInit {
       private authenticationService: AuthenticationService,
       private artistsService: ArtistsService,
       private uploadService: FileUploadService,
+      private artistActivityService: ArtistActivityService,
   ) {
   }
+
+  recentItems$!: Observable<any[]>;          // <-- observable, not array
+  private refresh$ = new Subject<void>();    // <-- call .next() to reload
 
   async ngOnInit() {
     this.env = environment.apiUrl;
     this.groupId = window.location.href.split('/')[4];
     this.group = window.location.href.split('/')[5].replace(/_/g," ").replace(/@/g,"");
+
+    this.recentItems$ = this.refresh$.pipe(
+      startWith(void 0), // emit once immediately so template shows
+      switchMap(() => this.artistActivityService.getAll(this.groupId)),
+      catchError(_ => of([])),               // never break the template
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
 
     this.artistsService.get(this.groupId).subscribe(res => {
       let obj = {};
@@ -127,8 +141,12 @@ export class NewitemComponent implements OnInit {
 
       setTimeout(()=>{
         this.loaded = true;
-      },500);
+      },0);
     });
+  }
+
+  reloadActivities() {
+    this.refresh$.next();
   }
 
   cardShine(e) {

@@ -49,7 +49,7 @@ li{
   }
 
   #newEdit {
-    background-image: url("/assets/images/w1.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%), url("/assets/images/w1.jpg");
     background-size: cover;
     background-attachment: fixed;
     width: 100%;
@@ -308,7 +308,7 @@ li{
   .device { display: none; }
   .desktop { display: block; }
   #newEdit {
-    background-image: url("/assets/images/w1.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%), url("/assets/images/w1.jpg");
     background-size: cover;
     background-attachment: fixed;
     width: 100%;
@@ -386,6 +386,7 @@ li{
     display:flex;
     flex-direction: row;
     width: calc(100% - 80px);
+    max-width:1600px;
     justify-content: space-between;
   }
 
@@ -538,7 +539,20 @@ li{
 
 }
 
+#recent-items li {
+  list-style-type: disclosure-closed;
+}
+#recent-items h4 {
+  margin-left:-17px;
+}
+.recentItem{
+  font-family: "Thin_lc";
+  color:#fff;
+}
 
+:host ::ng-deep .recentItem b {
+  font-family: "Bold_lc"!important;
+}
 
 
 // .page {

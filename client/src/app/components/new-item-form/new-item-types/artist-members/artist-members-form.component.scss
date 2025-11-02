@@ -173,6 +173,10 @@ tr:nth-child(even) td.mat-cell:first-of-type {
   background-color:#ececec;
 }
 
+td:nth-child(1) {
+  background-color:#cbcbcb;
+}
+
 
 .headerTitle {
   text-transform: capitalize;
@@ -238,4 +242,14 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     border-radius: 50%;
     margin:auto;
   }
+}
+
+
+.mdc-data-table__cell {
+  padding: 0 8px;
+}
+.buttonsGroup {
+  display:flex;
+  justify-content: center;
+  width:100%;
 }

@@ -15,11 +15,11 @@ module.exports = function(io, hostname) {
 
     let domainpath = '';
 
-    if(hostname == 'AP74.local'){
+    //if(hostname == 'AP74.local'){
         domainpath = 'https://musefactory.app';
-    }else{
-        domainpath = 'http://127.0.0.1';
-    }
+    //}else{
+    //    domainpath = 'http://127.0.0.1';
+    //}
     
     io.use((socket, next) => {
         const token = socket.handshake.auth.token;

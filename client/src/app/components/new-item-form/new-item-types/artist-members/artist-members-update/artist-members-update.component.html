@@ -11,13 +11,13 @@
 
           <div class="step-card">
             <div class="card-half">
-              <div class="col-center">
+              <div class="col-center" style="justify-content: flex-start;">
                 <div>
                   <mat-form-field>
-                    <input [disabled]="true" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
+                    <input [disabled]="false" *ngIf="modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" [value]="data.username" >
                     <input *ngIf="!modUser" matInput #term placeholder="Search Users" (keyup)="onTyping(term.value)" >
                   </mat-form-field>
-                  <button mat-raised-button color="accent" matStepperPrevious (click)="showInvite = !showInvite">{{(showInvite ? 'Show':'Hide')}} User Invite</button>
+                  <button mat-raised-button style="margin-left:20px;" class="dalmation" color="accent" (click)="showInvite = !showInvite">{{(showInvite ? 'Show':'Hide')}} User Invite</button>
                   <br /><br />
                   <app-invite *ngIf="showInvite" [group]="data.group"></app-invite>
                 </div>
@@ -33,7 +33,7 @@
           </div>
 
           <div class="step-card-actions">
-            <button mat-raised-button color="primary" matStepperNext>Next</button>
+            <button mat-raised-button color="primary" class="dalmation" matStepperNext>Next</button>
           </div>
         </form>
       </mat-step>
@@ -68,8 +68,8 @@
           </div>
 
           <div class="step-card-actions">
-            <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" matStepperNext>Next</button>
+            <button mat-raised-button color="accent" class="dalmation" matStepperPrevious>Back</button>
+            <button mat-raised-button color="primary" class="dalmation" matStepperNext>Next</button>
           </div>
         </form>
       </mat-step>
@@ -97,13 +97,13 @@
         </div>
 
         <div class="step-card-actions">
-          <button mat-raised-button color="accent" matStepperPrevious>Back</button>
-          <button mat-raised-button color="primary" (click)="stepper.reset()">Reset</button>
+          <button mat-raised-button color="accent" class="dalmation" matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" class="dalmation" (click)="stepper.reset()">Reset</button>
         </div>
 
         <div mat-dialog-actions>
-          <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-          <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+          <button [disabled]="! isValid" (click)="doAction()" class="dalmation" mat-raised-button color="primary">{{action}}</button>
+          <button (click)="closeDialog()" class="dalmation" mat-raised-button color="accent">Cancel</button>
         </div>
       </mat-step>
     </mat-stepper>
@@ -113,8 +113,8 @@
       Are you sure?
 
       <div mat-dialog-actions>
-        <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+        <button [disabled]="! isValid" (click)="doAction()" mat-raised-button color="primary" class="dalmation">{{action}}</button>
+        <button (click)="closeDialog()" mat-raised-button color="accent" class="dalmation">Cancel</button>
       </div>
     </div>
   </ng-template>

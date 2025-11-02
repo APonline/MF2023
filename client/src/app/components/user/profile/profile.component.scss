@@ -5,6 +5,7 @@
 
 mat-card {
   margin: 0 auto;
+  padding:20px;
 }
 
 mat-form-field {
@@ -40,10 +41,11 @@ mat-form-field {
 
 #editImgBtn {
   position: absolute;
-  bottom: 9px;
+  bottom: -30px;
   left: calc(50% - 10px);
   cursor: pointer;
   color: #fff;
+  transition: bottom 1s ease, opacity 1s ease;
 }
 
 #cancelBtn {
@@ -80,12 +82,17 @@ mat-form-field {
     width: 110%;
     margin-left: -5%;
   }
+
 }
 .profile-pic:hover {
 
   img {
     transition: opacity .5s ease-in-out;
     opacity:1;
+  }
+
+  #editImgBtn {
+    bottom:9px;
   }
 }
 

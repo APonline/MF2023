@@ -125,7 +125,7 @@ export class ArtistMembersUpdateComponent implements OnInit {
       this.userService.findUsers(data.username).subscribe(res => {
 
           this.foundUsers = res;
-          this.selectedUser = {id:res[0].id, profile_image: res[0].profile_image, username: res[0].username, first_name: res[0].first_name, last_name: res[0].last_name};
+          this.selectedUser = {id:res[0].id, profile_image: res[0].profile_image, username: res[0].username, first_name: res[0].first_name, last_name: res[0].last_name, profile_url: res[0].profile_url};
           setTimeout(()=>{
             this.selectedUserSet = true;
           }, 100)
@@ -203,6 +203,7 @@ export class ArtistMembersUpdateComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
+    this.selectedUserSet = true;
     this.firstFormGroup.controls['user'].setValue(user);
   }
 

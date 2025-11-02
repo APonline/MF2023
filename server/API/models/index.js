@@ -32,21 +32,29 @@ let makeMyAPIForMe = () => {
     console.log(result);
     for(let i=0; i<result.length; i++){
       if(result[i] != 'index.js' &&
-      result[i] != 'user_roles' && 
-      result[i] != 'users' && 
-      result[i] != 'roles' &&
       result[i] != 'albums' &&
-      result[i] != 'artists' &&
+      result[i] != 'artists_activitys' &&
       result[i] != 'artists_links' &&
       result[i] != 'artist_members' &&
+      result[i] != 'artists' &&
+      result[i] != 'campaigns' &&
       result[i] != 'comments' &&
-      result[i] != 'gigs' &&
       result[i] != 'contacts' &&
       result[i] != 'documents' &&
       result[i] != 'friends' &&
+      result[i] != 'galleries' &&
+      result[i] != 'gigs' &&
       result[i] != 'images' &&
+      result[i] != 'lyrics' &&
+      result[i] != 'merch' &&
+      result[i] != 'merch_categories' &&
+      result[i] != 'roles' &&
+      result[i] != 'schedule' &&
       result[i] != 'socials' &&
       result[i] != 'songs' &&
+      result[i] != 'tasks' &&
+      result[i] != 'users' &&
+      result[i] != 'user_roles' &&  
       result[i] != 'videos'){
         let cols = await sequelize.query(`SELECT COLUMN_NAME, DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = 'MF2023' and table_name = '${result[i]}'`, { type: QueryTypes.SELECT });
         console.log(result[i]);
