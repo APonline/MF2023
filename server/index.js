@@ -1,89 +1,137 @@
+/* eslint-disable no-console */
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
-process.env.TZ = 'America/Toronto'
+const http = require("http");
+const os = require("os");
+const fs = require("fs");
 
-global.__basedir = __dirname;
-//global.baseUrl = "https://musefactory.app";
-global.baseUrl = "http://localhost:4200";
- 
-// db
+process.env.TZ = "America/Toronto";
+
+// --- helpers ---------------------------------------------------------------
+
+/** Treat localhost/127.0.0.1 (with or without port) as local */
+function isLocalHost(host = "") {
+    return /^localhost(:\d+)?$|^127\.0\.0\.1(:\d+)?$/.test(String(host).trim());
+}
+
+/** Build a base URL from the actual request (works behind proxies) */
+function getBaseUrl(req) {
+    const forwardedProto = req.headers["x-forwarded-proto"];
+    const proto = (forwardedProto || req.protocol || "http").split(",")[0].trim();
+    const host = req.get("host"); // includes port if present
+    if (!host) return "http://localhost:4200";
+    if (isLocalHost(host)) return "http://localhost:4200";
+    return `${proto}://${host}`;
+}
+
+/** Fallback base URL for non-HTTP contexts (no env vars). */
+function defaultBaseUrl() {
+    // Touch a .dev file locally if you want the default to be localhost.
+    return fs.existsSync(".dev") ? "http://localhost:4200" : "https://musefactory.app";
+}
+
+// --- globals you actually need --------------------------------------------
+global.__basedir = __dirname; // keep, other modules may rely on it
+
+// --- db --------------------------------------------------------------------
 const db = require("./API/models");
-
 db.sequelize.options.logging = false;
-//db.sequelize.sync();
+// db.sequelize.sync();
 
-// app server
+// --- app/server ------------------------------------------------------------
 const app = express();
+const server = http.createServer(app);
 
-app.use(cors());
+// If behind Nginx/Cloudflare, this ensures req.protocol honors x-forwarded-proto
+app.set("trust proxy", 1);
 
+// Per-request baseUrl (no envs, no global)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-});
-
-app.use(cors({
-  origin: ['https://musefactory.app','https://musefactory.app:3001','http://localhost:4200']
-}));
-
-// parse requests of content-type - application/json
-app.use(express.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
-
-// yum cookies
-app.use(
-  cookieSession({
-    name: "bezkoder-session",
-    secret: "COOKIE_SECRET", // should use as secret environment variable
-    httpOnly: true
-  })
-);
-
-// simple route
-const http = require('http').createServer(app);
-require("./API/routes")(app);
-
-// ---all routes
-app.all('/', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
+    res.locals.baseUrl = getBaseUrl(req);
     next();
 });
 
-//SOCKET
-let os = require("os");
-let hostname = os.hostname();
+// CORS: single, consistent policy for Express routes
+const allowedOrigins = [
+    /^http:\/\/localhost(:\d+)?$/,
+    /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+    "https://musefactory.app",
+    "https://musefactory.app:3001",
+    "https://musefactory.app:4000",
+    "https://musefactory.app:4001"
+];
 
-const io = require('socket.io')(http, {
-  cors: {
-    origins: [
-        "http://127.0.0.1:3001",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:4200",
-        "http://127.0.0.1:4001",
-        "http://127.0.0.1:4000",
-        "http://127.0.0.1:8080",
-        "http://localhost:3001",
-        "http://localhost:3000",
-        "http://localhost:4200",
-        "http://localhost:4001",
-        "http://localhost:8080",
-        "https://musefactory.app",
-        "https://musefactory.app:4001",
-        "https://musefactory.app:3001",
-        "https://musefactory.app:4000",
-    ],
-  }
-}, {secure: true});
+app.use(
+    cors({
+        origin: (origin, cb) => {
+            if (!origin) return cb(null, true); // curl/postman
+            const ok = allowedOrigins.some((rule) =>
+                rule instanceof RegExp ? rule.test(origin) : rule === origin
+            );
+            return cb(ok ? null : new Error("Not allowed by CORS"), ok);
+        },
+        credentials: true
+    })
+);
+
+// Let CORS handle preflights cleanly for all routes
+app.options("*", cors());
+
+// Body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Cookies (secure in prod, lax in dev; no env vars)
+app.use(
+    (req, res, next) =>
+        cookieSession({
+            name: "mf-session",
+            // NOTE: replace with a persisted secret (file read) for real security:
+            secret: "REPLACE_ME_WITH_A_PERSISTED_SECRET",
+            httpOnly: true,
+            sameSite: isLocalHost(req.get("host")) ? "lax" : "none",
+            secure: !isLocalHost(req.get("host")), // only secure over HTTPS
+            // Set cookie domain in prod; omit in local
+            domain: isLocalHost(req.get("host")) ? undefined : "musefactory.app"
+        })(req, res, next)
+);
+
+// Routes
+require("./API/routes")(app);
+
+// Health / debug
+app.get("/ping", (req, res) => {
+    res.json({
+        ok: true,
+        baseUrl: res.locals.baseUrl,
+        host: req.get("host"),
+        ip: req.ip
+    });
+});
+
+// --- Socket.IO -------------------------------------------------------------
+const hostname = os.hostname();
+
+// Socket.IO v4: use options.cors.origin (not "origins")
+const { Server } = require("socket.io");
+const io = new Server(server, {
+    cors: {
+        origin: (origin, cb) => {
+            if (!origin) return cb(null, true);
+            const ok = allowedOrigins.some((rule) =>
+                rule instanceof RegExp ? rule.test(origin) : rule === origin
+            );
+            return cb(ok ? null : new Error("Not allowed by CORS"), ok);
+        },
+        credentials: true
+    }
+});
 
 require("./socket")(io, hostname);
-//SOCKET
 
-  
-http.listen(4000, () => {
-    console.log('listening on '+global.baseUrl+':4000');
+// --- start -----------------------------------------------------------------
+const PORT = 4000;
+server.listen(PORT, () => {
+    console.log(`listening on ${defaultBaseUrl()}:${PORT}`);
 });
