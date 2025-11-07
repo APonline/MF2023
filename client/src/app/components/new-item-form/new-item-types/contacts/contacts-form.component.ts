@@ -8,21 +8,10 @@ import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
 
-
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
 import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
+
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -31,6 +20,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ContactUpdateComponent } from './contact-update/contact-update.component';
 import { MFService } from 'src/app/services/MF.service';
+import { contacts } from 'src/app/models/contacts.model';
 
 @Component({
   selector: 'app-contactsForm',
@@ -74,6 +64,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
   artist: any;
+  model = contacts;
 
   constructor(
       public dialog: MatDialog,
@@ -83,19 +74,8 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
-      private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
       private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
       private authenticationService: AuthenticationService,
       private uploadService: FileUploadService,
       public MF: MFService
@@ -103,6 +83,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
+  //mf-nov7
   ngOnInit() {
     this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
@@ -142,6 +123,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     }
   }
 
+  //mf-nov7
   async loadData() {
     this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
         .subscribe(result => {
@@ -152,72 +134,25 @@ export class ContactsFormComponent implements OnInit, OnChanges {
         });
   }
 
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
+  //mf-nov7
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],
+        modelKeys: this.model.keys(),
+        mutateRows: true
+      });
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
-
-    this.displayedColumns.push('action');
-    form['action'] = new FormControl('');
-    newForm['action'] = '';
-    this.displayedColumns.push('id');
-    form['id'] = new FormControl('');
-    newForm['id'] = '';
-    this.displayedColumns.push('owner_user');
-    form['owner_user'] = new FormControl('');
-    newForm['owner_user'] = '';
-    this.displayedColumns.push('owner_group');
-    form['owner_group'] = new FormControl('');
-    newForm['owner_group'] = '';
-    this.displayedColumns.push('first_name');
-    form['first_name'] = new FormControl('');
-    newForm['first_name'] = '';
-    this.displayedColumns.push('last_name');
-    form['last_name'] = new FormControl('');
-    newForm['last_name'] = '';
-    this.displayedColumns.push('nickname');
-    form['nickname'] = new FormControl('');
-    newForm['nickname'] = '';
-    this.displayedColumns.push('relation');
-    form['relation'] = new FormControl('');
-    newForm['relation'] = '';
-    this.displayedColumns.push('city');
-    form['city'] = new FormControl('');
-    newForm['city'] = '';
-    this.displayedColumns.push('phone');
-    form['phone'] = new FormControl('');
-    newForm['phone'] = '';
-    this.displayedColumns.push('email');
-    form['email'] = new FormControl('');
-    newForm['email'] = '';
-    this.displayedColumns.push('contact_image');
-    form['contact_image'] = new FormControl('');
-    newForm['contact_image'] = '';
-    this.displayedColumns.push('profile_url');
-    form['profile_url'] = new FormControl('');
-    newForm['profile_url'] = '';
-
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
+  //mf-nov7
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
@@ -229,40 +164,39 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     });
   }
 
+  //mf-nov7
   openDialog(action: string, row: any) {
-    // seed the dialog data with row + owner_id/group from the current artist
     const seed = this.MF
-        .compose(row || {})
-        .with({ owner_id: this.artist?.id, group: this.artist?.name })
-        .done();
+      .compose(row || {})
+      .with({ owner_id: this.artist?.id, group: this.artist?.name })
+      .done();
 
     const data = this.MF.buildDialogCtx({
-        action,
-        toolName: this.toolName,
-        artist: this.artist,          // gives id/name/profile_url
-        currentUser: this.currentUser,
-        seed
+      action,
+      toolName: this.toolName,
+      artist: this.artist,
+      currentUser: this.currentUser,
+      seed
     });
 
     this.MF
-        .openUpdateDialog<typeof data, { event: string; data: any }>(ContactUpdateComponent, data)
-        .subscribe(result => {
-            if (!result) return;
+      .openUpdateDialog<typeof data, { event: string; data: any }>(ContactUpdateComponent, data)
+      .subscribe(result => {
+          if (!result) return;
 
-            // match your original: remove spaces (not hyphenate), and set owner_group
-            const cooked = this.MF
-                .compose(result.data)
-                .with({
-                    profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
-                        .toString()
-                        .replace(/[^\w\s-]/g, '')   // strip punctuation (safer)
-                        .replace(/\s+/g, '')        // remove spaces (use '-' if you prefer hyphens)
-                        .toLowerCase()}`,
-                    owner_group: this.artist?.id
-                })
-                .done();
+          const cooked = this.MF
+              .compose(result.data)
+              .with({
+                  profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+                      .toString()
+                      .replace(/[^\w\s-]/g, '')
+                      .replace(/\s+/g, '')
+                      .toLowerCase()}`,
+                  owner_group: this.artist?.id
+              })
+              .done();
 
-            this.activeItem.emit({ action: result.event, data: cooked });
-        });
+          this.activeItem.emit({ action: result.event, data: cooked });
+      });
   }
 }

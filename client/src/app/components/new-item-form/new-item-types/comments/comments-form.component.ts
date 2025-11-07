@@ -6,13 +6,11 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
-import moment from 'moment';
 import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 
 /* services - make dynamic somehow later */
 import { ArtistsService } from 'src/app/services/artists.service';
-
 import { MFService } from 'src/app/services/MF.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -78,17 +76,19 @@ export class CommentsFormComponent implements OnInit, OnChanges {
       private uploadService: FileUploadService,
       public MF: MFService
   ) {
-    this.artistsService.get(this.groupId).subscribe(res => {
-      this.artist = res;
-    });
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
+  //mf-nov7
   ngOnInit() {
     this.imageKey = this.MF.buildImageKey(this.toolName);
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
   }
 
+  //mf-nov7
   ngOnChanges(changes: SimpleChanges): void {
     this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
@@ -118,6 +118,7 @@ export class CommentsFormComponent implements OnInit, OnChanges {
     }
   }
 
+  //mf-nov7
   async loadData() {
     this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
       .subscribe(result => {
@@ -126,33 +127,29 @@ export class CommentsFormComponent implements OnInit, OnChanges {
         this[this.tool] = result.rows;
         this.toolSet = result.rows;
 
-        // Always build columns/form, even with 0 or 1 row
         this.setSettings(this.toolSet?.length ? this.toolSet : []);
       });
   }
 
+  //mf-nov7
   setSettings(formData: any[]) {
     const { displayedColumns, formGroup, newRecord, rows } =
       this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
         exclude: ["active", "createdAt", "updatedAt"],
         includeAction: true,
-        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        pinnedOrder: ["id", "title"],
         modelKeys: this.model.keys(),
-        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+        mutateRows: true
       });
 
-    // keep your existing expectations
     this.displayedColumns = displayedColumns;
     this.adminForm = formGroup;
     this.newRecord = newRecord;
-
-    // Use your original toolSet reference for the table, but rows are already cleaned
-    // If you want to keep EXACT reference semantics:
-    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
   }
 
+  //mf-nov7
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
@@ -164,20 +161,21 @@ export class CommentsFormComponent implements OnInit, OnChanges {
     });
   }
 
+  //mf-nov7
   openDialog(action: string, row: any) {
     const data = this.MF.buildDialogCtx({
         action,
         toolName: this.toolName,
-        artist: this.artist,          // optional, but handy for consistency
+        artist: this.artist,
         currentUser: this.currentUser,
         seed: row
     });
 
     this.MF
-        .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
-        .subscribe(result => {
-            if (!result) return;
-            this.activeItem.emit({ action: result.event, data: result.data });
-        });
+      .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
+      .subscribe(result => {
+          if (!result) return;
+          this.activeItem.emit({ action: result.event, data: result.data });
+      });
   }
 }

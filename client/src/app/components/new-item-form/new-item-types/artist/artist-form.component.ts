@@ -86,6 +86,7 @@ export class ArtistFormComponent implements OnInit {
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
+  //mf-nov7
   async ngOnInit() {
     this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
@@ -99,6 +100,7 @@ export class ArtistFormComponent implements OnInit {
     this.imageKey = this.MF.buildImageKey(this.toolName);
   }
 
+  //mf-nov7
   async loadData() {
     this.MF.load(this.tool, { scope: 'one', id: this.groupId })
       .subscribe(result => {
@@ -111,7 +113,7 @@ export class ArtistFormComponent implements OnInit {
             ? { name: this.data?.name, id: this.data?.id }
             : { name: 'Polarity', id: 2 };
 
-        this.getImages(); // keep your existing helper
+        this.getImages();
       });
   }
 
@@ -154,8 +156,9 @@ export class ArtistFormComponent implements OnInit {
     this.editing = 0;
   }
 
+  //mf-nov7
   openDialog(action: 'Update' | 'Add') {
-    const seed = this.MF.clone(this.artist[0]); // your base row
+    const seed = this.MF.clone(this.artist[0]);
     const data = this.MF.buildDialogCtx({
         action,
         toolName: this.toolName,
@@ -169,15 +172,12 @@ export class ArtistFormComponent implements OnInit {
     ).subscribe(result => {
         if (!result) return;
 
-        // merge returned fields into current view model
-        // skip transient display-only properties
         this.MF.patchFrom<ArtistModel>(
             this.data,
             result.data,
             ['profile_image_img', 'profile_banner_image_img'] as any
         );
 
-        // fire event for backend save
         this.activeItem.emit({ action: result.event, data: result.data });
     });
   }

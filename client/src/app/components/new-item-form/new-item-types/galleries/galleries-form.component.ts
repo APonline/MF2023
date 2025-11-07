@@ -7,22 +7,10 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
-
 
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
-import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
 import { VidoesService } from 'src/app/services/videos.service';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
@@ -97,6 +85,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
+  //mf-nov7
   ngOnInit() {
     this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
@@ -105,6 +94,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     this.loadData();
   }
 
+  //mf-nov7
   ngOnChanges(changes: SimpleChanges): void {
     this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
@@ -134,6 +124,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     }
   }
 
+  //mf-nov7
   async loadData() {
     let toolTitle = this.tool.split("_");
     toolTitle = this.MF.capitalizeWords(toolTitle);
@@ -152,31 +143,27 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
 
       this.setSettings(this.toolSet);
     });
-
   }
 
+  //mf-nov7
   setSettings(formData: any[]) {
     const { displayedColumns, formGroup, newRecord, rows } =
       this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
         exclude: ["active", "createdAt", "updatedAt"],
         includeAction: true,
-        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        pinnedOrder: ["id", "title"],
         modelKeys: this.model.keys(),
-        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+        mutateRows: true
       });
 
-    // keep your existing expectations
     this.displayedColumns = displayedColumns;
     this.adminForm = formGroup;
     this.newRecord = newRecord;
-
-    // Use your original toolSet reference for the table, but rows are already cleaned
-    // If you want to keep EXACT reference semantics:
-    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
   }
 
+  //mf-nov7
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
@@ -188,11 +175,12 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     });
   }
 
+  //mf-nov7
   openDialog(action: string, row: any) {
     const data = this.MF.buildDialogCtx({
         action,
         toolName: this.toolName,
-        artist: this.artist,          // gives id/name/profile_url
+        artist: this.artist,
         currentUser: this.currentUser,
         seed: row
     });
@@ -207,11 +195,11 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
                 .with({
                     profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
                         .toString()
-                        .replace(/[^\w\s-]/g, '')   // remove punctuation
-                        .replace(/\s+/g, '')        // remove spaces (use '-' if you want hyphens)
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '')
                         .toLowerCase()}`,
                     owner_group: this.artist?.id,
-                    views: 0                       // custom field for galleries
+                    views: 0
                 })
                 .done();
 
