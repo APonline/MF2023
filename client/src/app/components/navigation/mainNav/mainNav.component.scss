@@ -293,3 +293,35 @@ a.disabled p, a.disabled:hover p {
   cursor: default;
   color:gray!important;
 }
+
+
+.view-toggle-btn {
+    display: inline-flex !important;      /* beat .nav-link block */
+    align-items: center;
+    justify-content: center;
+
+    /* kill the wide link padding */
+    padding: 0 !important;
+    margin: 0 6px;
+
+    /* exact icon box */
+    width: 28px;
+    height: 28px;
+
+    /* ligature font rules */
+    font-family: 'Material Symbols Outlined';
+    font-size: 22px;
+    line-height: 1;
+    text-transform: none !important;      /* keep ligature */
+    letter-spacing: normal;
+
+    /* outline vs filled—optional: toggle FILL via class if you want */
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* desktop only */
+@media (max-width: 1024px) {
+    .view-toggle-btn {
+        display: none !important;
+    }
+}

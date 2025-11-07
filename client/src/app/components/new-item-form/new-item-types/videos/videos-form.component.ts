@@ -43,7 +43,8 @@ import { user } from 'src/app/models/users.model';
 export class VideosFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  currentUser: user;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -104,12 +105,11 @@ export class VideosFormComponent implements OnInit, OnChanges {
       private authenticationService: AuthenticationService,
       public MF: MFService
   ) {
-
     this.currentUser = this.authenticationService.currentUserValue;
-
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -120,6 +120,7 @@ export class VideosFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -182,26 +183,19 @@ export class VideosFormComponent implements OnInit, OnChanges {
   }
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.MF.capitalizeWords(toolTitle);
+    // optional: mirror your old "service" name in logs for parity
+    const serviceName = `${this.tool.split('_').map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('') }Service`;
+    console.log(serviceName);
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+        .subscribe(result => {
+            console.log(result.rows); // mirrors your previous console.log(res)
 
-    console.log(service)
+            this[this.tool] = result.rows;
+            this.toolSet = result.rows;
 
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
-      console.log(res)
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      this.setSettings(this.toolSet);
-    });
-
+            this.setSettings(this.toolSet);
+        });
   }
 
   async setSettings(formData){
@@ -295,26 +289,41 @@ export class VideosFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    obj.groupId = this.artist?.id;
-    obj.groupName = this.artist?.name;
-    const dialogRef = this.dialog.open(VideosUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    // seed with row + explicit groupId/groupName (even though buildDialogCtx also injects them)
+    const seed = this.MF
+      .compose(row || {})
+      .with({ groupId: this.artist?.id, groupName: this.artist?.name })
+      .done();
+
+    const data = this.MF.buildDialogCtx({
+      action,
+      toolName: this.toolName,
+      artist: this.artist,          // gives id/name/profile_url
+      currentUser: this.currentUser,
+      seed
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
-        result.data.owner_group = this.artist?.id;
-        result.data.active = 1;
-        result.data.owner_user = this.currentUser.id;
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+    this.MF
+      .openUpdateDialog<typeof data, { event: string; data: any }>(VideosUpdateComponent, data)
+      .subscribe(result => {
+        if (!result) return;
+
+        const cooked = this.MF
+          .compose(result.data)
+          .with({
+            profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+              .toString()
+              .replace(/[^\w\s-]/g, '')   // strip punctuation
+              .replace(/\s+/g, '')        // remove spaces (swap to '-' if you prefer hyphens)
+              .toLowerCase()}`,
+            owner_group: this.artist?.id,
+            active: 1,
+            owner_user: this.currentUser.id
+          })
+          .done();
+
+          this.activeItem.emit({ action: result.event, data: cooked });
+        });
   }
 }

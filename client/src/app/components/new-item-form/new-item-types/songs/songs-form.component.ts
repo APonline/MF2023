@@ -11,6 +11,7 @@ import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update
 
 
 /* services - make dynamic somehow later */
+import { songs } from 'src/app/models/songs.model';
 import { ImagesService } from 'src/app/services/images.service';
 import { AlbumsService } from 'src/app/services/albums.service';
 import { ArtistsLinksService } from 'src/app/services/artist_links.service';
@@ -29,6 +30,7 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MFService } from 'src/app/services/MF.service';
 
 @Component({
@@ -39,7 +41,8 @@ import { MFService } from 'src/app/services/MF.service';
 export class SongsFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -61,7 +64,7 @@ export class SongsFormComponent implements OnInit, OnChanges {
   projectTypeClicked = false;
 
   thisUser: '';
-  toolSet: any = [];
+  toolSet: any[] = [];
   modelSet: any;
   @Input() group: string;
   @Input() groupId: string;
@@ -72,6 +75,9 @@ export class SongsFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
   artist: any;
+  model = songs;
+
+  private readonly EXCLUDE = new Set(["active", "createdAt", "updatedAt"]);
 
   constructor(
       public dialog: MatDialog,
@@ -95,12 +101,14 @@ export class SongsFormComponent implements OnInit, OnChanges {
       private songsService: SongsService,
       private videosService: VidoesService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      private uploadService: FileUploadService,
+      public MF: MFService
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue; 
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -108,6 +116,7 @@ export class SongsFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -136,86 +145,35 @@ export class SongsFormComponent implements OnInit, OnChanges {
   }
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.MF.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+      .subscribe(result => {
+          this[this.tool] = result.rows;
+          this.toolSet = result.rows;
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
-
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
-
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      this.setSettings(this.toolSet);
-    });
-
+          this.setSettings(this.toolSet);
+      });
   }
 
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        modelKeys: this.model.keys(),
+        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+      });
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
+    // keep your existing expectations
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
 
-    this.displayedColumns.push('action');
-    form['action'] = new FormControl('');
-    newForm['action'] = '';
-    this.displayedColumns.push('id');
-    form['id'] = new FormControl('');
-    newForm['id'] = '';
-    this.displayedColumns.push('owner_user');
-    form['owner_user'] = new FormControl('');
-    newForm['owner_user'] = '';
-    this.displayedColumns.push('owner_group');
-    form['owner_group'] = new FormControl('');
-    newForm['owner_group'] = '';
-    this.displayedColumns.push('owner_album');
-    form['owner_album'] = new FormControl('');
-    newForm['owner_album'] = '';
-    this.displayedColumns.push('title');
-    form['title'] = new FormControl('');
-    newForm['title'] = '';
-    this.displayedColumns.push('duration');
-    form['duration'] = new FormControl('');
-    newForm['duration'] = '';
-    this.displayedColumns.push('author');
-    form['author'] = new FormControl('');
-    newForm['author'] = '';
-    this.displayedColumns.push('tags');
-    form['tags'] = new FormControl('');
-    newForm['tags'] = '';
-    this.displayedColumns.push('plays');
-    form['plays'] = new FormControl('');
-    newForm['plays'] = '';
-    this.displayedColumns.push('profile_url');
-    form['profile_url'] = new FormControl('');
-    newForm['profile_url'] = '';
-    this.displayedColumns.push('location_url');
-    form['location_url'] = new FormControl('');
-    newForm['location_url'] = '';
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    // Use your original toolSet reference for the table, but rows are already cleaned
+    // If you want to keep EXACT reference semantics:
+    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -229,22 +187,33 @@ export class SongsFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+      action,
+      toolName: this.toolName,
+      artist: this.artist,          // provides id/profile_url/name
+      currentUser: this.currentUser,
+      seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
-        result.data.owner_group = this.artist?.id;
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+    this.MF
+      .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
+      .subscribe(result => {
+        if (!result) return;
+
+        // compose post-processing for this tool
+        const cooked = this.MF
+          .compose(result.data)
+          .with({
+            profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+              .toString()
+              .replace(/\s+/g, '')       // remove whitespace
+              .toLowerCase()}`,
+            owner_group: this.artist?.id
+          })
+          .done();
+
+        this.activeItem.emit({ action: result.event, data: cooked });
+      });
   }
 }

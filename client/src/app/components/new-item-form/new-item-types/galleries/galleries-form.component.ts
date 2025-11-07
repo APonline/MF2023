@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
@@ -30,8 +30,10 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MFService } from 'src/app/services/MF.service';
 import { GalleriesUpdateComponent } from './galleries-update/galleries-update.component';
+import { galleries } from 'src/app/models/galleries.model';
 
 @Component({
   selector: 'app-galleriesForm',
@@ -41,7 +43,8 @@ import { GalleriesUpdateComponent } from './galleries-update/galleries-update.co
 export class GalleriesFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -74,6 +77,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
   artist: any;
+  model = galleries;
 
   constructor(
       public dialog: MatDialog,
@@ -82,27 +86,19 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
       private user: UserService,
       private router: Router,
       private DialogService: DialogService,
-      private alertService: AlertService,
       private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
       private galleriesService: GalleriesService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
       private videosService: VidoesService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      private uploadService: FileUploadService,
+      public MF: MFService
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -110,6 +106,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -158,60 +155,26 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
 
   }
 
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        modelKeys: this.model.keys(),
+        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+      });
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
+    // keep your existing expectations
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
 
-    this.displayedColumns.push('action');
-    form['action'] = new FormControl('');
-    newForm['action'] = '';
-    this.displayedColumns.push('id');
-    form['id'] = new FormControl('');
-    newForm['id'] = '';
-    this.displayedColumns.push('owner_user');
-    form['owner_user'] = new FormControl('');
-    newForm['owner_user'] = '';
-    this.displayedColumns.push('owner_group');
-    form['owner_group'] = new FormControl('');
-    newForm['owner_group'] = '';
-    this.displayedColumns.push('title');
-    form['title'] = new FormControl('');
-    newForm['title'] = '';
-    this.displayedColumns.push('description');
-    form['description'] = new FormControl('');
-    newForm['description'] = '';
-    this.displayedColumns.push('genre');
-    form['genre'] = new FormControl('');
-    newForm['genre'] = '';
-    this.displayedColumns.push('tags');
-    form['tags'] = new FormControl('');
-    newForm['tags'] = '';
-    this.displayedColumns.push('views');
-    form['views'] = new FormControl('');
-    newForm['views'] = '';
-    this.displayedColumns.push('profile_url');
-    form['profile_url'] = new FormControl('');
-    newForm['profile_url'] = '';
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    // Use your original toolSet reference for the table, but rows are already cleaned
+    // If you want to keep EXACT reference semantics:
+    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -225,23 +188,34 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(GalleriesUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+        action,
+        toolName: this.toolName,
+        artist: this.artist,          // gives id/name/profile_url
+        currentUser: this.currentUser,
+        seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
-        result.data.owner_group = this.artist?.id;
-        result.data.views = 0;
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+    this.MF
+        .openUpdateDialog<typeof data, { event: string; data: any }>(GalleriesUpdateComponent, data)
+        .subscribe(result => {
+            if (!result) return;
+
+            const cooked = this.MF
+                .compose(result.data)
+                .with({
+                    profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+                        .toString()
+                        .replace(/[^\w\s-]/g, '')   // remove punctuation
+                        .replace(/\s+/g, '')        // remove spaces (use '-' if you want hyphens)
+                        .toLowerCase()}`,
+                    owner_group: this.artist?.id,
+                    views: 0                       // custom field for galleries
+                })
+                .done();
+
+            this.activeItem.emit({ action: result.event, data: cooked });
+        });
   }
 }

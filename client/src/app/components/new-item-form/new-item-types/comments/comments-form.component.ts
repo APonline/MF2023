@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
@@ -11,24 +11,15 @@ import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update
 
 
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
-import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
 
+import { MFService } from 'src/app/services/MF.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { comments } from 'src/app/models/comments.model';
 
 @Component({
   selector: 'app-commentsForm',
@@ -38,7 +29,8 @@ import { MatTableDataSource } from '@angular/material/table';
 export class CommentsFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -70,6 +62,8 @@ export class CommentsFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
+  model = comments;
 
   constructor(
       public dialog: MatDialog,
@@ -79,30 +73,24 @@ export class CommentsFormComponent implements OnInit, OnChanges {
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
-      private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      private uploadService: FileUploadService,
+      public MF: MFService
   ) {
-
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
-
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.loadData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -130,94 +118,39 @@ export class CommentsFormComponent implements OnInit, OnChanges {
     }
   }
 
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
-  dateAdjust(date) {
-    return moment(date).format("YYYY-MM-DD");
-  }
-
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+      .subscribe(result => {
+        this.modelSet = result.modelSet ?? result.rows.find((r: any) => r?.id === 1);
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
+        this[this.tool] = result.rows;
+        this.toolSet = result.rows;
 
-    await this[service].getAll().subscribe(res => {
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
+        // Always build columns/form, even with 0 or 1 row
+        this.setSettings(this.toolSet?.length ? this.toolSet : []);
+      });
+  }
+
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        modelKeys: this.model.keys(),
+        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
       });
 
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artist_id == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
+    // keep your existing expectations
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
 
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
-    });
-
-  }
-
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
-
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
-
-    this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    // Use your original toolSet reference for the table, but rows are already cleaned
+    // If you want to keep EXACT reference semantics:
+    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -231,20 +164,20 @@ export class CommentsFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+        action,
+        toolName: this.toolName,
+        artist: this.artist,          // optional, but handy for consistency
+        currentUser: this.currentUser,
+        seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+    this.MF
+        .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
+        .subscribe(result => {
+            if (!result) return;
+            this.activeItem.emit({ action: result.event, data: result.data });
+        });
   }
 }

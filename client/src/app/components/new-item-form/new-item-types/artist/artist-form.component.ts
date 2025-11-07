@@ -3,26 +3,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
 
-/* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
-import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
-import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
+import type { artists as ArtistModel } from 'src/app/models/artists.model';
 
+/* services - make dynamic somehow later */
+import { ArtistsService } from 'src/app/services/artists.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -39,7 +29,8 @@ import { ArtistUpdateComponent } from './artist-update/artist-update.component';
 export class ArtistFormComponent implements OnInit {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -88,26 +79,15 @@ export class ArtistFormComponent implements OnInit {
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
-      private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
       private authenticationService: AuthenticationService,
       private uploadService: FileUploadService,
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   async ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -115,31 +95,24 @@ export class ArtistFormComponent implements OnInit {
     this.loadData();
   }
 
+  ngOnChanges() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
+  }
+
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.MF.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'one', id: this.groupId })
+      .subscribe(result => {
+        this.modelSet = result.modelSet ?? result.first;
+        this[this.tool] = [result.first];
+        this.toolSet = this[this.tool];
+        this.data = result.first;
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2+ 's' + 'Service';
+        this.currentGroup = (this.tool === 'artist')
+            ? { name: this.data?.name, id: this.data?.id }
+            : { name: 'Polarity', id: 2 };
 
-    await this[service].get(this.groupId).subscribe(res => {
-      this.modelSet = res;
-
-      this[this.tool] = [res];
-      this.toolSet = this[this.tool];
-      this.data = this.toolSet[0]
-
-      if(this.tool == 'artist'){
-        this.currentGroup = {name: this.data.name, id: this.data.id };
-      }else{
-        this.currentGroup = {name: 'Polarity', id:2};
-      }
-
-      this.getImages();
-    });
+        this.getImages(); // keep your existing helper
+      });
   }
 
   getImages() {
@@ -181,36 +154,32 @@ export class ArtistFormComponent implements OnInit {
     this.editing = 0;
   }
 
-  openDialog(action) {
-    let obj = JSON.parse(JSON.stringify(this.artist[0]))
-    obj.action = action;
-    obj.tool = this.toolName;
-
-    const dialogRef = this.dialog.open(ArtistUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: 'Update' | 'Add') {
+    const seed = this.MF.clone(this.artist[0]); // your base row
+    const data = this.MF.buildDialogCtx({
+        action,
+        toolName: this.toolName,
+        artist: this.artist?.[0],
+        seed
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        let newUpdate = JSON.parse(JSON.stringify(result.data))
+    this.MF.openUpdateDialog<typeof data, { event: string; data: Partial<ArtistModel> }>(
+        ArtistUpdateComponent,
+        data
+    ).subscribe(result => {
+        if (!result) return;
 
-        this.data.name = newUpdate.name;
-        this.data.genre = newUpdate.genre;
-        this.data.location = newUpdate.location;
-        this.data.description = newUpdate.description;
-        this.data.bio = newUpdate.bio;
-        this.data.profile_image = newUpdate.profile_image;
-        this.data.profile_image_img = newUpdate.profile_image_img;
-        this.data.profile_banner_image = newUpdate.profile_banner_image;
-        this.data.profile_banner_image_img = newUpdate.profile_banner_image_img;
+        // merge returned fields into current view model
+        // skip transient display-only properties
+        this.MF.patchFrom<ArtistModel>(
+            this.data,
+            result.data,
+            ['profile_image_img', 'profile_banner_image_img'] as any
+        );
 
-        delete result.data.profile_image_img;
-        delete result.data.profile_banner_image_img;
+        // fire event for backend save
         this.activeItem.emit({ action: result.event, data: result.data });
-      }
     });
   }
 }
+ 

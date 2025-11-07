@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { user } from 'src/app/models/users.model';
+import { filter, map, startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { MFService } from 'src/app/services/MF.service';
 
 @Component({
   selector: 'app-mainNav',
@@ -13,22 +16,28 @@ export class MainNavComponent implements OnInit {
     currentUser: any;
     toggle:boolean = true;
 
+    inProject: boolean = false;
+
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private authenticationService: AuthenticationService
+        public MF: MFService,
+        private authenticationService: AuthenticationService,
     ) {
-
-        // redirect to home if already logged in
-        if (this.authenticationService.currentUserValue) {
-          this.currentUser = this.authenticationService.currentUserValue;
-        }else{
-          this.currentUser = false;
-        }
+        this.currentUser = this.authenticationService.currentUserValue || false;
     }
 
     ngOnInit() {
+      // Set once and on every navigation
+        this.router.events.pipe(
+            filter(e => e instanceof NavigationEnd),
+            map(() => this.router.url),
+            startWith(this.router.url)
+        ).subscribe(url => {
+            // show only on project pages (adjust if your project routes differ)
+            this.inProject = url.startsWith('/projects');
+        });
     }
 
     change(){

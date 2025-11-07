@@ -28,6 +28,7 @@ import { VidoesService } from 'src/app/services/videos.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
+import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MFService } from 'src/app/services/MF.service';
 
@@ -39,7 +40,8 @@ import { MFService } from 'src/app/services/MF.service';
 export class SocialsFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -95,12 +97,14 @@ export class SocialsFormComponent implements OnInit, OnChanges {
       private songsService: SongsService,
       private videosService: VidoesService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      private uploadService: FileUploadService,
+      public MF: MFService
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -108,6 +112,7 @@ export class SocialsFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -136,24 +141,13 @@ export class SocialsFormComponent implements OnInit, OnChanges {
   }
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.MF.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+        .subscribe(result => {
+            this[this.tool] = result.rows;
+            this.toolSet = result.rows;
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
-
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
-
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      this.setSettings(this.toolSet);
-    });
-
+            this.setSettings(this.toolSet);
+        });
   }
 
   setSettings(formData){
@@ -232,22 +226,33 @@ export class SocialsFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+        action,
+        toolName: this.toolName,
+        artist: this.artist,          // gives id/name/profile_url
+        currentUser: this.currentUser,
+        seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.title.replace(/\+s/g,'').toLowerCase();
-        result.data.owner_group = this.artist?.id;
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+    this.MF
+        .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
+        .subscribe(result => {
+            if (!result) return;
+
+            const cooked = this.MF
+                .compose(result.data)
+                .with({
+                    profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+                        .toString()
+                        .replace(/[^\w\s-]/g, '')   // strip punctuation
+                        .replace(/\s+/g, '')        // remove spaces (swap to '-' if you want hyphens)
+                        .toLowerCase()}`,
+                    owner_group: this.artist?.id
+                })
+                .done();
+
+            this.activeItem.emit({ action: result.event, data: cooked });
+        });
   }
 }

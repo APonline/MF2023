@@ -10,6 +10,7 @@ import moment from 'moment';
 
 
 /* services - make dynamic somehow later */
+import { artist_members } from 'src/app/models/artist_members.model';
 import { ArtistActivityService } from 'src/app/services/artist_activity.service';
 import { ImagesService } from 'src/app/services/images.service';
 import { AlbumsService } from 'src/app/services/albums.service';
@@ -25,6 +26,7 @@ import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
 import { VidoesService } from 'src/app/services/videos.service';
 
+import { MFService } from 'src/app/services/MF.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -41,6 +43,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
   currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -73,6 +76,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  model = artist_members;
 
   constructor(
       public dialog: MatDialog,
@@ -88,23 +92,15 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
       private artistMembersService: ArtistMembersService,
       private artistActivityService: ArtistActivityService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
       private authenticationService: AuthenticationService,
       private uploadService: FileUploadService,
-
+      public MF: MFService
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
-
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -113,6 +109,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
 
@@ -137,7 +134,14 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
 
           this.dataSource.push(newRes);
           this.table.renderRows();
-          this.addTransaction('create', u);
+          this.artistActivityService
+            .logMemberChange('create', { username: u.username }, {
+                actor: { id: this.currentUser.id, username: this.currentUser.username },
+                artistId: this.groupId,
+                groupId: this.groupId,
+                feature: { feature: this.toolName.replace(/s$/i, ""), extra: null}
+            })
+            .subscribe();
         });
       }else if(this.act == 'put'){
         this.dataSource = this.dataSource.filter((value,key)=>{
@@ -150,13 +154,27 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
             value['date_joined']= this.res.date_joined;
             value['profile_url']= value.profile_url;
 
-            this.addTransaction('update', value);
+            this.artistActivityService
+              .logMemberChange('update', { username: value.username }, {
+                  actor: { id: this.currentUser.id, username: this.currentUser.username },
+                  artistId: this.groupId,
+                  groupId: this.groupId,
+                feature: { feature: this.toolName.replace(/s$/i, ""), extra: null}
+              })
+              .subscribe();
           }
           return true;
         });
       }else if(this.act == 'delete'){
         this.dataSource = this.dataSource.filter((value,key)=>{
-          this.addTransaction('delete', value);
+          this.artistActivityService
+            .logMemberChange('delete', { username: value.username }, {
+                actor: { id: this.currentUser.id, username: this.currentUser.username },
+                artistId: this.groupId,
+                groupId: this.groupId,
+                feature: { feature: this.toolName.replace(/s$/i, ""), extra: null}
+            })
+            .subscribe();
           return value.id != this.res;
         });
         this.table.renderRows();
@@ -164,175 +182,62 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     }
   }
 
-  addTransaction(act, data) {
-    let activityString = '';
-
-    if(act == 'create'){
-      activityString = 'created a new member <b>' + data.username + '</b>';
-    }else if(act == 'update'){
-      activityString = 'updated member <b>' + data.username + '</b>';
-    }else if(act == 'delete'){
-      activityString = 'deleted member <b>' + data.username + '</b>';
-    }
-
-    let transData = {
-      owner_user: this.currentUser.id,
-      owner_group: this.groupId,
-      user_id: this.currentUser.id,
-      artist_id: this.groupId,
-      activity: "<b>" + this.currentUser.username + "</b> " + activityString,
-      activity_url: "",
-      active: 1
-    };
-    
-    this.artistActivityService.create(transData).subscribe(u => {
-      this.artistActivityService.kickRefresh(); 
-    });
-  }
-
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
   dateAdjust(date) {
     return moment(date).format("YYYY-MM-DD");
   }
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+      .subscribe(result => {
+        this.modelSet = result.modelSet;
+        this[this.tool] = result.rows;
+        this.toolSet = result.rows;
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
-
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
-      let cleanData = [];
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
-        let entry = {
-          'id': r.id,
-          'user_id': r.user_id,
-          'profile_image': r.members.profile_image,
-          'username': r.members.username,
-          'name': r.members.first_name + ' ' + r.members.last_name,
-          'role': r.role,
-          'email': r.members.email,
-          'phone': r.members.phone,
-          'date_joined': r.date_joined,
-          'profile_url': r.members.profile_url,
-        }
-        cleanData.push(entry);
-      });
-
-      this[this.tool] = cleanData;
-      this.toolSet = this[this.tool];
-
-      if(this.toolSet.length > 0){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
+        if (this.toolSet.length > 0) {
+          // attach previews (your existing snippet)
+          for (const row of this.toolSet) {
+              if (row.profile_image && row.profile_image !== 'default') {
+                  const type = row.profile_image.split('.').pop();
+                  this.uploadService.getFile(0, row.profile_image, 'users/' + row.user_id, type)
+                      .subscribe(r => row.preview = r[0].display);
+              } else {
+                  row.preview = './assets/images/defaultprofile1.png';
+              }
           }
-        });
-        this.newRecord = newForm;
-      }
-    });
 
+          const scaffold = this.MF.buildTableScaffold(this.toolSet, [
+              'username','preview','name','role','email','phone','date_joined','profile_url'
+          ]);
+          this.displayedColumns = scaffold.displayedColumns;
+          this.adminForm = scaffold.adminForm;
+          this.newRecord = scaffold.newRecord;
+          this.dataSource = scaffold.dataSource;
+        } else {
+          this.newRecord = this.MF.buildEmptyFromModel(this.modelSet);
+        }
+      });
   }
 
-  setSettings(formData){
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        modelKeys: this.model.keys(),
+        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+      });
 
-    let form ={};
-    let newForm ={}
+    // keep your existing expectations
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
-
-    // this.displayedColumns.push('action');
-    // Object.keys(f).map(res => {
-    //   if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-    //     this.displayedColumns.push(res);
-    //     form[res] = new FormControl('');
-    //     newForm[res] = '';
-    //   }
-    // });
-
-    this.displayedColumns.push('action');
-    form['action'] = new FormControl('');
-    newForm['action'] = '';
-    // this.displayedColumns.push('id');
-    // form['id'] = new FormControl('');
-    // newForm['id'] = '';
-    // this.displayedColumns.push('owner_user');
-    // form['owner_user'] = new FormControl('');
-    // newForm['owner_user'] = '';
-    // this.displayedColumns.push('owner_group');
-    // form['owner_group'] = new FormControl('');
-    // newForm['owner_group'] = '';
-    this.displayedColumns.push('username');
-    form['username'] = new FormControl('');
-    newForm['username'] = '';
-    this.displayedColumns.push('preview');
-    form['preview'] = new FormControl('');
-    newForm['preview'] = '';
-    this.displayedColumns.push('name');
-    form['name'] = new FormControl('');
-    newForm['name'] = '';
-    this.displayedColumns.push('role');
-    form['role'] = new FormControl('');
-    newForm['role'] = '';
-    this.displayedColumns.push('email');
-    form['email'] = new FormControl('');
-    newForm['email'] = '';
-    this.displayedColumns.push('phone');
-    form['phone'] = new FormControl('');
-    newForm['phone'] = '';
-    this.displayedColumns.push('date_joined');
-    form['date_joined'] = new FormControl('');
-    newForm['date_joined'] = '';
-    this.displayedColumns.push('profile_url');
-    form['profile_url'] = new FormControl('');
-    newForm['profile_url'] = '';
-
-    this.toolSet.map(async (res,i) => {
-
-      if(res.profile_image!='default'){
-        let type = res.profile_image.split('.');
-        let format = type[type.length - 1];
-        await this.uploadService.getFile(0, res.profile_image, 'users/'+res.user_id, format).subscribe(r => {
-          res.preview = r[0].display;
-        });
-      }else{
-        res.preview = './assets/images/defaultprofile1.png';
-      }
-
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    // Use your original toolSet reference for the table, but rows are already cleaned
+    // If you want to keep EXACT reference semantics:
+    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -346,25 +251,20 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    obj.owner_user = this.artist?.owner_user;
-    obj.artist_id = this.artist?.id;
-    obj.user_id = obj?.user_id;
-    obj.profile_url = this.artist?.profile_url;
-    obj.group = this.artist?.name;
-    const dialogRef = this.dialog.open(ArtistMembersUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+      action,
+      toolName: this.toolName,
+      artist: this.artist,      // has id/name/profile_url/owner_user
+      seed: row                 // the clicked row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
+    this.MF.openUpdateDialog<typeof data, { event: string; data: any }>(
+      ArtistMembersUpdateComponent,
+      data
+    ).subscribe(result => {
+      if (!result) return;
+      this.activeItem.emit({ action: result.event, data: result.data });
     });
   }
 }

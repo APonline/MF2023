@@ -28,7 +28,7 @@ function getBaseUrl(req) {
 /** Fallback base URL for non-HTTP contexts (no env vars). */
 function defaultBaseUrl() {
     // Touch a .dev file locally if you want the default to be localhost.
-    return fs.existsSync(".dev") ? "http://localhost:4200" : "https://musefactory.app";
+    return fs.existsSync(".dev") ? "http://localhost" : "https://musefactory.app";
 }
 
 // --- globals you actually need --------------------------------------------

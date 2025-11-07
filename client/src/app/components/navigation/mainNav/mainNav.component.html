@@ -8,6 +8,12 @@
       <div class="navbar-nav">
         <!-- <a class="nav-item nav-link" routerLink="/">Home</a> -->
         <a class="nav-item nav-link icon material-symbols-outlined" routerLink="/projects" title='Projects'>artist</a>
+        <a class="nav-item nav-link icon material-symbols-outlined view-toggle-btn"
+          *ngIf="inProject"
+          (click)="MF.toggleViewMode()"
+          [attr.title]="(MF.viewMode$ | async) === 'View' ? 'List mode' : 'View mode'">
+            {{ (MF.viewMode$ | async) === 'View' ? 'visibility_off' : 'visibility' }}
+        </a>
         <a class="disabled nav-item nav-link icon material-icons" title='Notifications'>notifications</a>
         <a class="disabled nav-item nav-link icon material-icons" routerLink="/release-notes" title='Release Notes'>info</a>
         <a class="disabled nav-item nav-link icon material-icons" routerLink="/help" title='Help'>help</a>

@@ -1,13 +1,8 @@
 <div id="newEditForm" class="page">
-  <div class="itemBK" [ngStyle]="{
-      background:
-        'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' +
-        (toolName?.split(' ').join('_') | capitalizeWord) +
-        '.jpg)'
-    }"></div>
+  <div class="itemBK" [style.background]="'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' + imageKey + '.jpg)'"></div>
     <div class="itemBKGrid"></div>
 
-  <div class="glass">
+  <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
     <div class="goback page-top-cta">
       <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
         Go Back
@@ -87,4 +82,15 @@
       </div>
     </div>
   </div>
+
+  <ng-template #noLineView>
+    <div class="view-container">
+      <div class="goback page-top-cta">
+        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
+          Go Back
+        </button>
+      </div>
+      <h1>poo</h1>
+    </div>
+  </ng-template>
 </div>

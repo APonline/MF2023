@@ -25,10 +25,12 @@ import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
 import { VidoesService } from 'src/app/services/videos.service';
 
+import { MFService } from 'src/app/services/MF.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { albums } from 'src/app/models/albums.model';
 
 @Component({
   selector: 'app-albumsForm',
@@ -38,7 +40,8 @@ import { MatTableDataSource } from '@angular/material/table';
 export class AlbumsFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -70,6 +73,8 @@ export class AlbumsFormComponent implements OnInit, OnChanges {
   startDate = new Date(2022, 0, 1);
 
   root = environment.root;
+  artist: any;
+  model = albums;
 
   constructor(
       public dialog: MatDialog,
@@ -92,17 +97,22 @@ export class AlbumsFormComponent implements OnInit, OnChanges {
       private socialsService: SocialsService,
       private songsService: SongsService,
       private videosService: VidoesService,
-      private authenticationService: AuthenticationService
+      private authenticationService: AuthenticationService,
+      public MF: MFService
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue;
   }
 
   ngOnInit() {
-
+    this.imageKey = this.MF.buildImageKey(this.toolName);
+    this.artistsService.get(this.groupId).subscribe(res => {
+      this.artist = res;
+    });
     this.loadData();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     if(this.updateTable){
       if(this.act == 'create'){
         Object.keys(this.res).map(res => {
@@ -130,94 +140,43 @@ export class AlbumsFormComponent implements OnInit, OnChanges {
     }
   }
 
-  capitalizeWords(arr) {
-    return arr.map((word) => {
-      const capitalizedFirst = word.charAt(0).toUpperCase();
-      const rest = word.slice(1).toLowerCase();
-      return capitalizedFirst + rest;
-    });
-  }
-
   dateAdjust(date) {
     return moment(date).format("YYYY-MM-DD");
   }
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+      .subscribe(result => {
+        this.modelSet = result.modelSet ?? result.rows.find((r: any) => r?.id === 1);
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
+        this[this.tool] = result.rows;
+        this.toolSet = result.rows;
 
-    await this[service].getAll().subscribe(res => {
-      res.map((r,i) => {
-        if(r.id == 1){
-          this.modelSet = r;
-        }
+        // Always build columns/form, even with 0 or 1 row
+        this.setSettings(this.toolSet?.length ? this.toolSet : []);
       });
-
-      if(this.tool == 'artist_members'){
-        res = res.filter(item => {
-          if(item.artist_id == this.groupId || item.id == 1){
-            return item;
-          }
-        });
-      }
-
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      if(this.toolSet.length > 1){
-        this.setSettings(this.toolSet);
-      }else {
-        let newForm ={}
-        Object.keys(this.modelSet).map(res => {
-          if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-            newForm[res] = '';
-          }
-        });
-        this.newRecord = newForm;
-      }
-    });
-
   }
 
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "title"],     // optional – pin important fields first
+        modelKeys: this.model.keys(),
+        mutateRows: true                   // keep your existing “delete fields from this.toolSet”
+      });
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
+    // keep your existing expectations
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
 
-    this.displayedColumns.push('action');
-    Object.keys(f).map(res => {
-      if(res != 'createdAt' && res != 'updatedAt' && res != 'active') {
-        this.displayedColumns.push(res);
-        form[res] = new FormControl('');
-        newForm[res] = '';
-      }
-    });
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    // Use your original toolSet reference for the table, but rows are already cleaned
+    // If you want to keep EXACT reference semantics:
+    // this.toolSet = rows; // rows === toolSet if mutateRows:true
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -231,20 +190,21 @@ export class AlbumsFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    // Build the dialog payload with shared context (action/tool/artist/currentUser/seed)
+    const data = this.MF.buildDialogCtx({
+      action,
+      toolName: this.toolName,
+      artist: this.artist ?? { id: this.groupId, name: this.group, profile_url: this.artist?.profile_url }, // fallback if artist not loaded here
+      currentUser: this.currentUser,
+      seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
+    this.MF
+      .openUpdateDialog<typeof data, { event: string; data: any }>(NewItemUpdateComponent, data)
+      .subscribe(result => {
+        if (!result) return;
         this.activeItem.emit({ action: result.event, data: result.data });
-      }
-    });
+      });
   }
 }

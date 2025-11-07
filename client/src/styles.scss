@@ -31,6 +31,8 @@ p {
     color:#000;
 }
 
-// .content {
-//     padding:20px;
-// }
+.popup.content {
+    padding:20px;
+    height: auto !important;
+    min-height: calc(100% - 40px);
+}
