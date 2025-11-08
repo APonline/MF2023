@@ -93,31 +93,15 @@ export class DocumentsFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.imageKey = this.MF.buildImageKey(this.toolName);
-    if(this.updateTable){
-      if(this.act == 'create'){
-        Object.keys(this.res).map(res => {
-          if(res == 'createdAt' || res == 'updatedAt' || res == 'active') {
-            delete this.res[res];
-          }
-        });
+    if (!this.updateTable) return;
 
-        this.dataSource.push(this.res);
-      }else if(this.act == 'put'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          if(value.id == this.res.id){
-            this.displayedColumns.map(res => {
-              value[res] = this.res[res];
-            })
-          }
-          return true;
-        });
-      }else if(this.act == 'delete'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          return value.id != this.res;
-        });
-      }
-      this.table.renderRows();
-    }
+    this.MF.mutateRowsAsync(this.dataSource ?? [], this.act, this.res, {
+        // generic table behavior
+        updateKeys: this.displayedColumns, // PUT: only update visible columns
+    }).then(next => {
+        this.dataSource = next;
+        this.table.renderRows();
+    });
   }
 
   //mf-nov7

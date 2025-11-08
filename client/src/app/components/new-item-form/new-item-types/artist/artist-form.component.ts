@@ -157,29 +157,36 @@ export class ArtistFormComponent implements OnInit {
   }
 
   //mf-nov7
-  openDialog(action: 'Update' | 'Add') {
-    const seed = this.MF.clone(this.artist[0]);
+  openDialog(action: string, row: any = this.data) {
     const data = this.MF.buildDialogCtx({
         action,
         toolName: this.toolName,
-        artist: this.artist?.[0],
-        seed
+        artist: this.artist,
+        currentUser: this.currentUser,
+        seed: row
     });
 
-    this.MF.openUpdateDialog<typeof data, { event: string; data: Partial<ArtistModel> }>(
-        ArtistUpdateComponent,
-        data
-    ).subscribe(result => {
-        if (!result) return;
+    this.MF
+        .openUpdateDialog<typeof data, { event: string; data: any }>(
+            ArtistUpdateComponent,
+            data
+        )
+        .subscribe(result => {
+            if (!result) return;
 
-        this.MF.patchFrom<ArtistModel>(
-            this.data,
-            result.data,
-            ['profile_image_img', 'profile_banner_image_img'] as any
-        );
+            const cooked = this.MF.compose(result.data)
+                .with({
+                    profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
+                        .toString()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '')
+                        .toLowerCase()}`,
+                    owner_group: this.artist?.id
+                })
+                .done();
 
-        this.activeItem.emit({ action: result.event, data: result.data });
-    });
-  }
+            this.activeItem.emit({ action: result.event, data: cooked });
+        });
+}
 }
  
