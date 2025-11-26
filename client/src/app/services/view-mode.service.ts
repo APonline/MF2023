@@ -6,7 +6,7 @@ export type ViewMode = 'View' | 'List';
 
 @Injectable({ providedIn: 'root' })
 export class ViewModeService {
-    private _mode = new BehaviorSubject<ViewMode>('View');
+    private _mode = new BehaviorSubject<ViewMode>('List');
     readonly mode$ = this._mode.asObservable();
 
     get value(): ViewMode {

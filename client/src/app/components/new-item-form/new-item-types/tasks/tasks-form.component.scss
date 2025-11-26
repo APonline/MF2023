@@ -205,7 +205,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 }
 
 .goback {
-  margin: 10px 0 50px 0;
+  margin: 10px 0 30px 0;
 }
 
 .add-new{
@@ -252,12 +252,16 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 /**********************************************
  * KANBAN BOARD
  **********************************************/
+.view-container {
+  max-height: calc(80vh - 140px);
+}
 .kanban-board {
     display: flex;
     flex-direction: row;
     gap: 20px;
     overflow-x: auto;
     padding-bottom: 25px;
+    height:100%;
 }
 
 .kanban-column {
@@ -351,6 +355,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     border-radius: 10px;
     margin-bottom: 12px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    
 
     cursor: grab;
     transition: 0.2s ease;
