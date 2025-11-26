@@ -26,17 +26,27 @@ module.exports = (sequelize, Sequelize) => {
      status: {
       type: Sequelize.STRING
     },
+    priority: {
+      type: Sequelize.STRING
+    },
      completed_by: {
       type: Sequelize.DATE
     },
      date_completed: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: true
     },
      active: {
       type: Sequelize.INTEGER
     },
      profile_url: {
       type: Sequelize.STRING
+     },
+     column_key: {
+      type: Sequelize.STRING
+    },
+     sort_index: {
+      type: Sequelize.INTEGER
      }
  });
     

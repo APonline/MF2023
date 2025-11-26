@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl + `gigs`;
+const baseUrl = environment.apiUrl + `tasks`;
 const signup = environment.apiUrl + 'auth/signup';
 
 @Injectable({
@@ -39,6 +39,15 @@ export class TasksService {
 
   deleteAll(): Observable<any> {
     return this.http.delete(baseUrl);
+  }
+
+  getBoard(): Observable<any> {
+      return this.http.get(`${baseUrl}/board`);
+  }
+
+  /** Move task: update column_key + sort_index */
+  moveTask(id: number, payload: { column_key?: string; sort_index?: number; status?: string }): Observable<any> {
+      return this.http.put(`${baseUrl}/${id}/move`, payload);
   }
 
   // findByUsername(username: any): Observable<User[]> {

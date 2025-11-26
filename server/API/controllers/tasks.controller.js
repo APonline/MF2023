@@ -5,6 +5,7 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 ( itemTopic.substring(itemTopic.length - 1) == 's' ? itemTopic = itemTopic.slice(0, -1) : itemTopic = itemTopic);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
+const User = db.user;   
 
 let datetime = new Date(); 
 
@@ -12,24 +13,32 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { event: req.body.event } });
+        let result1 = await Item.findOne({ where: { id: newItem.id } });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.event.replace(/\+s/g,'').toLowerCase() + "_" + num;
-        }
+        if (result1 == null) {
 
-        let result = await Item.create( newItem );
+            try {
+                let result = await Item.create( newItem );
 
-        if (result) {
-            return res.status(200).send( result );
+                if (result) {
+                    return res.status(200).send( result );
+                }else{
+                    return res.status(500).send({ result: null });
+                }
+
+            } catch (error) {
+                return res.status(500).send({
+                    message: `A Unable to create ${itemTopic}! - ` + error.message
+                });
+            }
+
         }else{
-            return res.status(500).send({ result: null });
+            return res.status(200).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
-        });
+            message: `B Unable to find ${itemTopic}! - ` + error.message
+        })
     }
 }
 exports[`get${itemTopic}`] = async (req, res) => {
@@ -113,6 +122,91 @@ exports[`delete${itemTopic}`] = async (req, res) => {
     } catch (error) {
         return res.status(500).send({
             message: `Unable to delete ${itemTopic}! - `+ error.message
+        });
+    }
+}
+exports[`get${itemTopic}Board`] = async (req, res) => {
+    try {
+        const { owner_group, owner_user } = req.query;
+
+        const where = { active: 1 };
+        if (owner_group) where.owner_group = owner_group;
+        if (owner_user) where.owner_user = owner_user;
+
+        const result = await Item.findAll({
+            where,
+            include: [
+                {
+                    model: User,
+                    as: 'assignee',
+                    attributes: ['id', 'username', 'first_name', 'last_name', 'profile_url']
+                },
+                // optional:
+                { model: User, as: 'assigner', attributes: ['id', 'username'] }
+            ],
+            order: [
+                ['column_key', 'ASC'],
+                ['sort_index', 'ASC'],
+                ['id', 'ASC']
+            ]
+        });
+
+        const grouped = result.reduce((acc, item) => {
+            const col = item.column_key || item.status || 'todo';
+            if (!acc[col]) acc[col] = [];
+            acc[col].push(item);
+            return acc;
+        }, {});
+
+        return res.status(200).send(grouped);
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get ${itemTopic} board! - ` + error.message
+        });
+    }
+};
+
+exports[`move${itemTopic}`] = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { column_key, status, sort_index } = req.body;
+
+        const item = await Item.findOne({ where: { id } });
+
+        if (!item) {
+            return res.status(404).send({
+                message: `${itemTopic} not found`
+            });
+        }
+
+        // Update kanban-related fields
+        if (column_key !== undefined) {
+            item.column_key = column_key;
+        }
+
+        // Optionally keep status in sync with column
+        if (status !== undefined) {
+            item.status = status;
+        } else if (column_key) {
+            // if you want, map column_key directly to status by default
+            item.status = column_key;
+        }
+
+        if (sort_index !== undefined) {
+            item.sort_index = sort_index;
+        }
+
+        // If it’s being moved into a "done" column, stamp completion date
+        if ((column_key === "done" || status === "done") && !item.date_completed) {
+            item.date_completed = new Date();
+        }
+
+        await item.save();
+
+        return res.status(200).send(item);
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to move ${itemTopic}! - ` + error.message
         });
     }
 }

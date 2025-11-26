@@ -1,13 +1,8 @@
 <div id="newEditForm" class="page">
-  <div class="itemBK" [ngStyle]="{
-      background:
-        'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' +
-        (toolName?.split(' ').join('_') | capitalizeWord) +
-        '.jpg)'
-    }"></div>
+  <div class="itemBK" [style.background]="'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' + imageKey + '.jpg)'"></div>
     <div class="itemBKGrid"></div>
 
-  <div class="glass">
+  <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
     <div class="goback page-top-cta">
       <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
         Go Back
@@ -83,4 +78,130 @@
       </div>
     </div>
   </div>
+
+  <ng-template #noLineView>
+    <div class="view-container">
+        <div class="goback page-top-cta">
+            <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
+                Go Back
+            </button>
+        </div>
+        
+        <div class="kanban-header">
+            <h1 class="kanban-title" style="text-transform: capitalize;">
+                {{ toolName }} - Board View
+            </h1>
+
+            <!-- <div class="kanban-header-actions">
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="openDialog('Add', newRecord)">
+                    Add Task
+                </button>
+            </div> -->
+        </div>
+
+        <!-- KANBAN BOARD -->
+        <div class="kanban-board" cdkDropListGroup>
+
+            <!-- One column per status / column_key -->
+            <div
+                class="kanban-column"
+                *ngFor="let column of columns"
+                cdkDropList
+                [cdkDropListData]="column.tasks"
+                [id]="column.key"
+                [cdkDropListConnectedTo]="columnIds"
+                (cdkDropListDropped)="onTaskDrop($event, column)">
+
+                <!-- Column header -->
+                <div class="kanban-column-header">
+                    <div class="kanban-column-title">
+                        {{ column.title }}
+                    </div>
+                    <div class="kanban-column-count">
+                        {{ (column.tasks && column.tasks.length) || 0 }}
+                    </div>
+                </div>
+
+                <!-- Optional: add task to specific column -->
+                <div class="kanban-column-add">
+                    <button
+                        mat-stroked-button
+                        color="primary"
+                        (click)="addTaskInColumn(column)">
+                        + Add
+                    </button>
+                </div>
+
+                <!-- Task list -->
+                <div class="kanban-task-list">
+                    <div
+                        class="kanban-card"
+                        *ngFor="let task of column.tasks"
+                        cdkDrag>
+
+                        <div class="kanban-card-header">
+                            <div class="kanban-card-title">
+                                {{ task.task }}
+                            </div>
+                            <div [ngClass]="'kanban-card-priority ' + task.priority" *ngIf="task.priority">
+                                {{ task.priority | removeUnderscore }}
+                            </div>
+                        </div>
+
+                        <div class="kanban-card-body" *ngIf="task.description">
+                            {{ task.description }}
+                        </div>
+
+                        <div class="kanban-card-meta">
+                            <!-- Due date -->
+                            <span class="kanban-meta-item" *ngIf="task.completed_by">
+                                <mat-icon inline>schedule</mat-icon>
+                                Due:
+                                {{ task.completed_by | date:'MMM d, y' }}
+                            </span>
+
+                            <!-- Completed date -->
+                            <span class="kanban-meta-item" *ngIf="task.date_completed">
+                                <mat-icon inline>done</mat-icon>
+                                Completed:
+                                {{ task.date_completed | date:'MMM d, y' }}
+                            </span>
+
+                            <!-- Assigned to (if you map the user name later) -->
+                            <span class="kanban-meta-item" *ngIf="task.assigned_to">
+                                <mat-icon inline>person</mat-icon>
+                                {{ task.assignee?.first_name }} {{ task.assignee?.last_name }}
+                            </span>
+                        </div>
+
+                        <div class="kanban-card-actions">
+                            <button
+                                mat-icon-button
+                                (click)="openDialog('Update', task)"
+                                title="Edit">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button
+                                mat-icon-button
+                                color="warn"
+                                (click)="openDialog('Delete', task)"
+                                title="Delete">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="kanban-empty" *ngIf="!column.tasks || !column.tasks.length">
+                        <span>No tasks in this column yet.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </ng-template>
+
 </div>

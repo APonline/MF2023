@@ -274,4 +274,7 @@ button.mat-accent:hover {
   transition: all .4s ease-in-out;
 }
 
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    background: transparent !important;
+}
 

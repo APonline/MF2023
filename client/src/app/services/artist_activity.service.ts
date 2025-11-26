@@ -22,7 +22,7 @@ export class ArtistActivityService {
 
   logMemberChange(
       action: MemberActivityAction,
-      member: { username: string },
+      topic: { type: string, item: string, link: string },
       ctx: {
           actor: { id: number; username: string };
           artistId: number | string;
@@ -32,12 +32,12 @@ export class ArtistActivityService {
       }
   ): Observable<any> {
       const verb =
-          action === 'create' ? `created a new ${ctx.actor.username}` :
+          action === 'create' ? `created a new ${topic.type}` :
           action === 'update' ? `updated ${ctx.actor.username}` :
           `deleted ${ctx.actor.username}`;
 
       const activityHtml =
-          `<b>${ctx.actor.username}</b> ${verb} <b>${member.username}</b>`;
+          `<b>${ctx.actor.username}</b> ${verb} <a href="${topic.link}"><b>${topic.item}</b></a>`;
 
       const payload = {
           owner_user: ctx.actor.id,
@@ -48,6 +48,8 @@ export class ArtistActivityService {
           activity_url: ctx.activityUrl ?? '',
           active: 1
       };
+
+      console.log('activity',payload)
 
       return this.http.post(baseUrl, payload).pipe(
           tap(() => this.kickRefresh())

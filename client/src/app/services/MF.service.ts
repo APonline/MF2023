@@ -18,6 +18,7 @@ import { ArtistMembersService } from 'src/app/services/artist_members.service';
 import { AlbumsService } from 'src/app/services/albums.service';
 import { SongsService } from 'src/app/services/songs.service';
 import { LyricsService } from 'src/app/services/lyrics.service';
+import { TasksService } from 'src/app/services/tasks.service';
 import { DocumentsService } from 'src/app/services/documents.service';
 import { ArtistsLinksService } from 'src/app/services/artist_links.service';
 import { SocialsService } from 'src/app/services/socials.service';
@@ -92,6 +93,7 @@ export class MFService {
         private albumsService: AlbumsService,
         private songsService: SongsService,
         private lyricsService: LyricsService,
+        private tasksService: TasksService,
         private documentsService: DocumentsService,
         private artistLinksService: ArtistsLinksService,
         private socialsService: SocialsService,
@@ -107,6 +109,7 @@ export class MFService {
             albums: this.albumsService,
             songs: this.songsService,
             lyrics: this.lyricsService,
+            tasks: this.tasksService,
             documents: this.documentsService,
             artist_links: this.artistLinksService,
             socials: this.socialsService,
@@ -198,7 +201,7 @@ export class MFService {
     ): Observable<TResult | undefined> {
         const dialogRef = this.dialog.open(component, {
             panelClass: 'dialog-box',
-            width: '85%',
+            // width: '85%',
             height: '80vh',
             data,
             ...config
@@ -474,5 +477,12 @@ export class MFService {
             renderRows?.();
             return next;
         });
+    }
+
+
+    ////// SIMPLE REUSED CALLS
+
+    getArtistMembers(aristId) {
+      return this.artistMembersService.getAllForArtist(aristId);
     }
 }

@@ -94,7 +94,7 @@ export class ArtistMembersFormComponent implements OnInit, OnChanges {
             const feature = { feature: this.toolName.replace(/s$/i, ''), extra: null };
             const verb = action === 'put' ? 'update' : action; // your API expects 'update'
             this.artistActivityService
-                .logMemberChange(verb, { username: row.username }, {
+                .logMemberChange(verb, { type: 'user', item: row.username, link: row.profile_url }, {
                     actor, artistId: this.groupId, groupId: this.groupId, feature
                 })
                 .subscribe();

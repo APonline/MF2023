@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // used to create fake backend
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -88,6 +89,8 @@ import { GalleriesUpdateComponent } from './components/new-item-form/new-item-ty
 import { ImagesUpdateComponent } from './components/new-item-form/new-item-types/images/images-update/images-update.component';
 import { VideosUpdateComponent } from './components/new-item-form/new-item-types/videos/videos-update/videos-update.component';
 import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.component';
+import { TaskCardComponent } from './components/new-item-form/new-item-types/tasks/task-card/task-card.component';
+
 
 // export const PICK_FORMATS = {
 //   parse: {dateInput: {month: 'short', year: 'numeric', day: 'numeric'}},
@@ -141,6 +144,7 @@ import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.compo
     ProjectsContainer,
     GalleriesFormComponent,
     TasksFormComponent,
+    TaskCardComponent,
     ScheduleFormComponent,
     MerchFormComponent,
     MerchCategoriesFormComponent,
@@ -165,7 +169,8 @@ import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.compo
     SharedModule,
     UserModule,
     BrowserAnimationsModule,
-    BrowserModule
+    BrowserModule,
+    DragDropModule
   ],
   providers: [
     SocketioService,

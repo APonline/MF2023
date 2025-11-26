@@ -2,35 +2,51 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
-import moment from 'moment';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
-import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
-import { TasksService } from 'src/app/services/tasks.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MFService } from 'src/app/services/MF.service';
+import { TasksService } from 'src/app/services/tasks.service';
+import { tasks } from 'src/app/models/tasks.model';
+import { TaskCardComponent } from './task-card/task-card.component';
+import { ArtistActivityService } from 'src/app/services/artist_activity.service';
+
+interface Task {
+    id: number;
+    task: string;
+    description?: string;
+    status?: string;
+    column_key?: string;
+    sort_index?: number;
+
+    owner_user?: number;
+    owner_group?: number;
+    assigned_to?: number;
+    assigned_by?: number;
+    completed_by?: string | Date | null;     // due date
+    date_completed?: string | Date | null;   // actual completion
+
+    profile_url?: string;
+    // add any other fields from your API if needed
+}
+
+interface Column {
+    key: string;        // 'todo' | 'in_progress' | 'done'
+    title: string;      // 'To Do' | 'In Progress' | 'Done'
+    tasks: Task[];
+}
 
 @Component({
   selector: 'app-tasksForm',
@@ -40,13 +56,19 @@ import { MFService } from 'src/app/services/MF.service';
 export class TasksFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
   displayedColumns: string[] = [];
   dataSource=null;
   newRecord=null;
+
+  columns: Column[] = [];
+  columnIds: string[] = [];
+  isBoardLoading = false;
+  boardError: string | null = null;
 
   @ViewChild(MatTable,{static:true}) table: MatTable<any>;
 
@@ -73,150 +95,65 @@ export class TasksFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
   artist: any;
+  model = tasks;
 
   constructor(
       public dialog: MatDialog,
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
-      private user: UserService,
+      private userService: UserService,
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
-      private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
+      private tasksService: TasksService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
+      private artistActivityService: ArtistActivityService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      public MF: MFService
   ) {
-
+    this.currentUser = this.authenticationService.currentUserValue; 
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
     this.loadData();
+    this.loadBoard();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.updateTable){
-      if(this.act == 'create'){
-        Object.keys(this.res).map(res => {
-          if(res == 'createdAt' || res == 'updatedAt' || res == 'active') {
-            delete this.res[res];
-          }
-        });
-
-        this.dataSource.push(this.res);
-      }else if(this.act == 'put'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          if(value.id == this.res.id){
-            this.displayedColumns.map(res => {
-              value[res] = this.res[res];
-            })
-          }
-          return true;
-        });
-      }else if(this.act == 'delete'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          return value.id != this.res;
-        });
-      }
-      this.table.renderRows();
-    }
+    this.imageKey = this.MF.buildImageKey(this.toolName);
   }
+
+
 
   async loadData() {
-    let toolTitle = this.tool.split("_");
-    toolTitle = this.MF.capitalizeWords(toolTitle);
+    this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
+      .subscribe(result => {
+          this[this.tool] = result.rows;
+          this.toolSet = result.rows;
 
-    let toolTitle2 = toolTitle.join(',');
-    toolTitle2 = toolTitle2.replace(/ /g,"");
-    toolTitle2 = toolTitle2.replace(/,/g,"");
-    toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-    let service = toolTitle2 + 'Service';
-    let model = this.tool;
-
-    await this[service].getAllForArtist(this.groupId).subscribe(res => {
-
-      this[this.tool] = res;
-      this.toolSet = this[this.tool];
-
-      this.setSettings(this.toolSet);
-    });
-
+          this.setSettings(this.toolSet);
+      });
   }
 
-  setSettings(formData){
-    let form ={};
-    let newForm ={}
+  setSettings(formData: any[]) {
+    const { displayedColumns, formGroup, newRecord, rows } =
+      this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
+        exclude: ["active", "createdAt", "updatedAt"],
+        includeAction: true,
+        pinnedOrder: ["id", "task"],
+        modelKeys: this.model.keys(),
+        mutateRows: true
+      });
 
-    let f = null;
-    if(formData.length == 0){
-      f = formData;
-    }else{
-      f = formData[0];
-    }
-
-    this.displayedColumns.push('action');
-    form['action'] = new FormControl('');
-    newForm['action'] = '';
-    this.displayedColumns.push('id');
-    form['id'] = new FormControl('');
-    newForm['id'] = '';
-    this.displayedColumns.push('owner_user');
-    form['owner_user'] = new FormControl('');
-    newForm['owner_user'] = '';
-    this.displayedColumns.push('owner_group');
-    form['owner_group'] = new FormControl('');
-    newForm['owner_group'] = '';
-    this.displayedColumns.push('task');
-    form['task'] = new FormControl('');
-    newForm['task'] = '';
-    this.displayedColumns.push('description');
-    form['description'] = new FormControl('');
-    newForm['description'] = '';
-    this.displayedColumns.push('assigned_to');
-    form['assigned_to'] = new FormControl('');
-    newForm['assigned_to'] = '';
-    this.displayedColumns.push('assigned_by');
-    form['assigned_by'] = new FormControl('');
-    newForm['assigned_by'] = '';
-    this.displayedColumns.push('status');
-    form['status'] = new FormControl('');
-    newForm['status'] = '';
-    this.displayedColumns.push('completed_by');
-    form['completed_by'] = new FormControl('');
-    newForm['completed_by'] = '';
-    this.displayedColumns.push('date_completed');
-    form['date_completed'] = new FormControl('');
-    newForm['date_completed'] = '';
-    this.displayedColumns.push('profile_url');
-    form['profile_url'] = new FormControl('');
-    newForm['profile_url'] = '';
-
-    this.toolSet.map((res,i) => {
-      delete res.active;
-      delete res.createdAt;
-      delete res.updatedAt;
-    })
-
+    this.displayedColumns = displayedColumns;
+    this.adminForm = formGroup;
+    this.newRecord = newRecord;
     this.dataSource = new MatTableDataSource(this.toolSet);
     this.dataSource = this.dataSource.data;
-
-    this.newRecord = newForm;
-    this.adminForm = new FormGroup(form);
-
   }
 
   validateAllFormFields(formGroup: FormGroup) {
@@ -230,22 +167,246 @@ export class TasksFormComponent implements OnInit, OnChanges {
     });
   }
 
-  openDialog(action,obj) {
-    obj.action = action;
-    obj.tool = this.toolName;
-    const dialogRef = this.dialog.open(NewItemUpdateComponent, {
-      panelClass: 'dialog-box',
-      width: '85%',
-      height: '80vh',
-      data:obj
+  openDialog(action: string, row: any) {
+    const data = this.MF.buildDialogCtx({
+        action,
+        toolName: this.toolName,
+        artist: this.artist,
+        currentUser: this.currentUser,
+        seed: row
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        result.data.profile_url = this.artist?.profile_url+'-'+result.data.task.replace(/\+s/g,'').toLowerCase();
-        result.data.owner_group = this.artist?.id;
-        this.activeItem.emit({ action: result.event, data: result.data });
-      }
+    this.MF
+        .openUpdateDialog<typeof data, { event: 'create' | 'put' | 'delete'; data: any }>(
+            TaskCardComponent,
+            data
+        )
+        .subscribe(result => {
+            if (!result) {
+                return;
+            }
+
+            const cooked = this.MF
+                .compose(result.data)
+                .with({
+                    profile_url: `${this.artist?.profile_url}-${(result.data?.task ?? '')
+                        .toString()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '')
+                        .toLowerCase()}`,
+                    owner_group: this.artist?.id,
+                })
+                .done();
+
+            console.log('TASK DIALOG RESULT', result.event, cooked);
+
+            // Decide which HTTP call to use
+            let persist$;
+            if (result.event === 'create') {
+                persist$ = this.tasksService.create(cooked);
+            } else if (result.event === 'put') {
+                persist$ = this.tasksService.update(cooked.id, cooked);
+            } else { // 'delete'
+                persist$ = this.tasksService.delete(cooked.id).pipe(
+                    map(() => cooked) // so downstream always has a "row"
+                );
+            }
+            this.updateTable = true;
+
+            persist$.subscribe({
+                next: serverRow => {
+                    // After server says OK, update local table rows
+                    const afterApply = ({ action, row }: { action: 'create' | 'put' | 'delete'; row: any }) => {
+                        const actor = { id: this.currentUser.id, username: this.currentUser.username };
+                        const feature = {
+                            feature: this.toolName.replace(/s$/i, ''), // "tasks" -> "task"
+                            extra: null
+                        };
+
+                        const verb: 'create' | 'update' | 'delete' =
+                            action === 'put' ? 'update' : action;
+
+                        console.log('WTF – afterApply fired', action, row);
+
+                        this.artistActivityService
+                            .logMemberChange(
+                                verb,
+                                {
+                                    type: `task titled ${row.task} in ${row.status} set as ${row.priority}`,
+                                    item: row.task,
+                                    link: row.profile_url
+                                },
+                                {
+                                    actor,
+                                    artistId: this.groupId,
+                                    groupId: this.groupId,
+                                    feature
+                                }
+                            )
+                            .subscribe();
+                    };
+
+                    // apply local table change + log
+                    this.MF.applyTableChange(
+                        this.dataSource ?? [],
+                        result.event,          // 'create' | 'put' | 'delete'
+                        serverRow,
+                        {
+                            stripKeys: ['createdAt', 'updatedAt', 'active'],
+                            updateKeys: [
+                                'task',
+                                'description',
+                                'assigned_to',
+                                'assigned_by',
+                                'status',
+                                'priority',
+                                'completed_by',
+                                'date_completed',
+                                'profile_url'
+                            ],
+                            afterApply
+                        },
+                        () => this.table?.renderRows()
+                    ).then(next => {
+                        this.dataSource = next;
+                        this.loadBoard();
+                    });
+
+                    // If you still want the parent to know:
+                    this.activeItem.emit({ action: result.event, data: serverRow });
+                },
+                error: err => {
+                    console.error('Failed to persist task change', err);
+                    // optional: show a toast
+                    this.alertService.error('Unable to save task');
+                }
+            });
+        });
+  }
+
+
+  loadBoard(): void {
+    this.isBoardLoading = true;
+    this.boardError = null;
+
+    this.tasksService.getBoard().subscribe({
+        next: (data: Record<string, Task[]>) => {
+            const defaultKeys = ['backlog', 'todo', 'in_progress', 'done'];
+
+            const cols: Column[] = defaultKeys.map((key) => ({
+                key,
+                title: this.mapKeyToTitle(key),
+                tasks: (data[key] || []).map((t, index) => ({
+                    ...t,
+                    column_key: t.column_key || key,
+                    sort_index: t.sort_index ?? index
+                }))
+            }));
+
+            this.columns = cols;
+            this.columnIds = this.columns.map(c => c.key);
+            this.isBoardLoading = false;
+        },
+        error: (err) => {
+            console.error('Failed to load board', err);
+            this.boardError = 'Unable to load board.';
+            this.isBoardLoading = false;
+        }
     });
   }
+
+
+  private mapKeyToTitle(key: string): string {
+    switch (key) {
+        case 'todo':
+            return 'To Do';
+        case 'in_progress':
+        case 'in-progress':
+            return 'In Progress';
+        case 'done':
+            return 'Done';
+        case 'backlog':
+            return 'Backlog';
+        default:
+            // Capitalize first letter by default
+            return key.charAt(0).toUpperCase() + key.slice(1);
+    }
+  }
+
+  onTaskDrop(event: CdkDragDrop<Task[]>, targetColumn: Column): void {
+    const prevContainer = event.previousContainer;
+    const currContainer = event.container;
+
+    // No data? bail
+    if (!prevContainer || !currContainer) {
+        return;
+    }
+
+    if (prevContainer === currContainer) {
+        // Same column: reorder inside the same array
+        moveItemInArray(currContainer.data, event.previousIndex, event.currentIndex);
+
+        // Re-index sort_index locally
+        currContainer.data.forEach((task, idx) => {
+            task.sort_index = idx;
+        });
+
+        const movedTask = currContainer.data[event.currentIndex];
+        this.persistTaskMove(movedTask, targetColumn.key, movedTask.sort_index ?? event.currentIndex);
+
+    } else {
+        // Different column: transfer between lists
+        transferArrayItem(
+            prevContainer.data,
+            currContainer.data,
+            event.previousIndex,
+            event.currentIndex
+        );
+
+        // Re-index sort_index in the target column
+        currContainer.data.forEach((task, idx) => {
+            task.sort_index = idx;
+            task.column_key = targetColumn.key;
+        });
+
+        const movedTask = currContainer.data[event.currentIndex];
+        this.persistTaskMove(movedTask, targetColumn.key, movedTask.sort_index ?? event.currentIndex);
+    }
+  }
+
+  private persistTaskMove(task: Task, columnKey: string, sortIndex: number): void {
+    if (!task || !task.id) {
+        return;
+    }
+
+    const payload = {
+        column_key: columnKey,
+        sort_index: sortIndex,
+        // keep status in sync with column if you want
+        status: columnKey
+    };
+
+    this.tasksService.moveTask(task.id, payload).subscribe({
+        next: (updated) => {
+            // Optionally merge server response back into local task
+            Object.assign(task, updated);
+        },
+        error: (err) => {
+            console.error('Failed to move task', err);
+            // Optional: reload board to avoid desync
+            this.loadBoard();
+        }
+    });
+  }
+
+  addTaskInColumn(column: Column): void {
+    const payload = {
+        ...this.newRecord,
+        column_key: column.key
+    };
+
+    this.openDialog('Add', payload);
+  }
+
+
 }

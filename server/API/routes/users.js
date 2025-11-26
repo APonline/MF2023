@@ -2,6 +2,7 @@ const { authJwt } = require("../middleware");
 let path = require('path');
 let itemTopic = path.basename(__filename).split('.')[0];
 const controller = require(`../controllers/${itemTopic}.controller`);
+let baseName = itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1); 
 
 module.exports = function(app) {
     // defaults
@@ -18,18 +19,18 @@ module.exports = function(app) {
     // app.get("/api/test/admin", [authJwt.verifyToken, authJwt.isAdmin], controller.adminBoard);
     // defaults end
 
-    app.get(`/api/v1/${itemTopic}`, controller[`getAll${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}s`] );
-    app.get(`/api/v1/${itemTopic}/find/:user`, controller[`findAll${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}s`] );
-    app.get(`/api/v1/${itemTopic}/:id`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
-    app.put(`/api/v1/${itemTopic}/:id`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
-    app.put(`/api/v1/${itemTopic}/online/:id`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
-    app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}`] );
+    app.get(`/api/v1/${itemTopic}`, controller[`getAll${baseName}s`] );
+    app.get(`/api/v1/${itemTopic}/find/:user`, controller[`findAll${baseName}s`] );
+    app.get(`/api/v1/${itemTopic}/:id`, controller[`get${baseName}`] );
+    app.put(`/api/v1/${itemTopic}/:id`, controller[`update${baseName}`] );
+    app.put(`/api/v1/${itemTopic}/online/:id`, controller[`update${baseName}`] );
+    app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${baseName}`] );
     app.post(`/api/v1/${itemTopic}/passwordReset`, controller.requestPassword );
     app.post(`/api/v1/${itemTopic}/invite`, controller.invite );
     app.put(`/api/v1/${itemTopic}/verify/:id`, controller.verifyUser ); 
     app.put(`/api/v1/${itemTopic}/tna/:id`, controller.tnaUser ); 
 
-    app.get(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`get${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
-    app.put(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`update${itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1).slice(0, -1)}ChatHistoryWith`] );
+    app.get(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`get${baseName}ChatHistoryWith`] );
+    app.put(`/api/v1/${itemTopic}/chatHistoryWith/:group/:id/:chatee`, controller[`update${baseName}ChatHistoryWith`] );
 }
  
