@@ -16,7 +16,7 @@ export class ArtistActivityService {
   constructor(private http: HttpClient) { }
 
   private refresh$ = new Subject<void>();
-  refreshChanges$ = this.refresh$.asObservable();   // the feed will listen to this
+  refreshChanges$ = this.refresh$.asObservable();  
 
   kickRefresh() { this.refresh$.next(); }  
 
@@ -49,7 +49,33 @@ export class ArtistActivityService {
           active: 1
       };
 
-      console.log('activity',payload)
+      return this.http.post(baseUrl, payload).pipe(
+          tap(() => this.kickRefresh())
+      );
+  }
+
+  logChange(
+      activity: any,
+      ctx: {
+          actor: { id: number; username: string };
+          artistId: number | string;
+          groupId?: number | string;
+          activityUrl?: string;
+          feature: {feature: string, extra: string};
+      }
+  ): Observable<any> {
+
+      const activityHtml = `<b>${ctx.actor.username}</b> ${activity}`;
+
+      const payload = {
+          owner_user: ctx.actor.id,
+          owner_group: ctx.groupId ?? ctx.artistId,
+          user_id: ctx.actor.id,
+          artist_id: ctx.artistId,
+          activity: activityHtml,
+          activity_url: ctx.activityUrl ?? '',
+          active: 1
+      };
 
       return this.http.post(baseUrl, payload).pipe(
           tap(() => this.kickRefresh())

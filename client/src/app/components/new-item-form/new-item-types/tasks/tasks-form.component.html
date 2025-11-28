@@ -136,69 +136,79 @@
                 </div>
 
                 <!-- Task list -->
+                <!-- Task list -->
                 <div class="kanban-task-list">
                     <div
                         class="kanban-card"
                         *ngFor="let task of column.tasks"
-                        cdkDrag>
-
+                        cdkDrag
+                        (click)="openDialog('Update', task)"
+                    >
                         <div class="kanban-card-header">
                             <div class="kanban-card-title">
                                 {{ task.task }}
                             </div>
-                            <div [ngClass]="'kanban-card-priority ' + task.priority" *ngIf="task.priority">
-                                {{ task.priority | removeUnderscore }}
+
+                            <div class="kanban-card-header-right">
+                                <div
+                                    [ngClass]="'kanban-card-priority ' + task.priority"
+                                    *ngIf="task.priority"
+                                >
+                                    {{ task.priority | removeUnderscore }}
+                                </div>
+
+                                <!-- visual 6-dot grip, no special behavior -->
+                                <div class="kanban-card-grip">
+                                    <span class="dot-row">
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                    </span>
+                                    <span class="dot-row">
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                    </span>
+                                    <span class="dot-row">
+                                        <span class="dot"></span>
+                                        <span class="dot"></span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- rest of card unchanged -->
                         <div class="kanban-card-body" *ngIf="task.description">
-                            {{ task.description }}
+                            {{ task.description.length > 75
+                            ? (task.description | slice:0:75) + '...'
+                            : task.description }}
                         </div>
 
                         <div class="kanban-card-meta">
-                            <!-- Due date -->
                             <span class="kanban-meta-item" *ngIf="task.completed_by">
                                 <mat-icon inline>schedule</mat-icon>
                                 Due:
                                 {{ task.completed_by | date:'MMM d, y' }}
                             </span>
 
-                            <!-- Completed date -->
                             <span class="kanban-meta-item" *ngIf="task.date_completed">
                                 <mat-icon inline>done</mat-icon>
                                 Completed:
                                 {{ task.date_completed | date:'MMM d, y' }}
                             </span>
 
-                            <!-- Assigned to (if you map the user name later) -->
-                            <span class="kanban-meta-item" *ngIf="task.assigned_to">
+                            <span class="kanban-meta-item" *ngIf="task.assignee">
                                 <mat-icon inline>person</mat-icon>
-                                {{ task.assignee?.first_name }} {{ task.assignee?.last_name }}
+                                {{ task.assignee.first_name }} {{ task.assignee.last_name }}
                             </span>
                         </div>
-
-                        <div class="kanban-card-actions">
-                            <button
-                                mat-icon-button
-                                (click)="openDialog('Update', task)"
-                                title="Edit">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button
-                                mat-icon-button
-                                color="warn"
-                                (click)="openDialog('Delete', task)"
-                                title="Delete">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </div>
                     </div>
+
 
                     <!-- Empty state -->
                     <div class="kanban-empty" *ngIf="!column.tasks || !column.tasks.length">
                         <span>No tasks in this column yet.</span>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -357,7 +357,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     box-shadow: 0 3px 10px rgba(0,0,0,0.25);
     
 
-    cursor: grab;
+    cursor: pointer;
     transition: 0.2s ease;
 
     display: flex;
@@ -374,6 +374,24 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     box-shadow: 0 3px 12px rgba(0,0,0,0.33);
 }
 
+.kanban-card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.kanban-card-footer-spacer {
+    flex: 1;
+}
+
+.kanban-drag-handle {
+    cursor: grab;
+}
+
+.kanban-drag-handle:active {
+    cursor: grabbing;
+}
+
 
 /**********************************************
  * CARD HEADER
@@ -382,6 +400,43 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.kanban-card-header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 6-dot grip */
+.kanban-card-grip {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.55;
+    pointer-events: none;   
+}
+
+.kanban-card-grip .dot-row {
+    display: flex;
+    gap: 2px;
+    line-height: 0;
+}
+
+.kanban-card-grip .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.kanban-card:hover .kanban-card-grip {
+    opacity: 0.9;
 }
 
 .kanban-card-title {
@@ -463,6 +518,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     line-height: 1.4;
     opacity: 0.9;
     word-break: break-word;
+    margin:6px 0px 12px 0px;
 }
 
 

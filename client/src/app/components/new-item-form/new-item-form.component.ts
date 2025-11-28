@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 import moment from 'moment';
 import { NewItemUpdateComponent } from '../new-item-update/new-item-update.component';
 
-
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
 import { AlbumsService } from 'src/app/services/albums.service';
@@ -32,42 +31,42 @@ import { MatTableDataSource } from '@angular/material/table';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
 @Component({
-  selector: 'app-newItemForm',
-  templateUrl: './new-item-form.component.html',
-  styleUrls: ['./new-item-form.component.scss']
- })
+    selector: 'app-newItemForm',
+    templateUrl: './new-item-form.component.html',
+    styleUrls: ['./new-item-form.component.scss']
+})
 export class NewItemFormComponent implements OnInit {
-  public currentUser: Observable<any>;
-  @Input() action: string;
-  @Input() editUser: number;
+    public currentUser: Observable<any>;
+    @Input() action: string;
+    @Input() editUser: number;
 
-  displayedColumns: string[] = [];
-  dataSource=null;
-  newRecord=null;
+    displayedColumns: string[] = [];
+    dataSource: any = null;
+    newRecord: any = null;
 
-  @ViewChild(MatTable,{static:true}) table: MatTable<any>;
+    @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
-  dataReady = false;
-  tool = "";
-  toolName = "";
-  modeSubmit = "Submit";
-  delUser = false;
-  projectTypeClicked = false;
+    dataReady = false;
+    tool = '';
+    toolName = '';
+    modeSubmit = 'Submit';
+    delUser = false;
+    projectTypeClicked = false;
 
-  thisUser: '';
-  toolSet: any = [];
-  modelSet: any;
-  group = null;
-  groupId = null;
-  updateTable = false;
-  res: any;
-  act: string;
+    thisUser: '';
+    toolSet: any = [];
+    modelSet: any;
+    group: string | null = null;      // e.g. "abysmalwhore" (no @)
+    groupId: string | null = null;    // e.g. "12"
+    updateTable = false;
+    res: any;
+    act: string;
 
-  adminForm = this.formBuilder.group({});
+    adminForm: FormGroup = this.formBuilder.group({});
 
-  startDate = new Date(2022, 0, 1);
+    startDate = new Date(2022, 0, 1);
 
-  root = environment.root;
+    root = environment.root;
 
     constructor(
         public dialog: MatDialog,
@@ -91,122 +90,140 @@ export class NewItemFormComponent implements OnInit {
         private socialsService: SocialsService,
         private songsService: SongsService,
         private videosService: VidoesService,
-        private authenticationService: AuthenticationService,
+        private authenticationService: AuthenticationService
     ) {
-      //this.currentUser = this.authenticationService.currentUserValue;
-
+        // this.currentUser = this.authenticationService.currentUserValue;
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
+        /**
+         * Example URL:
+         *   /projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=@abysmalwhore-hopefukl
+         *
+         * router.url gives us the path + query (no protocol/host).
+         * We strip the query, then split on '/'.
+         */
+        const rawUrl = this.router.url;          // "/projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=..."
+        const [pathOnly] = rawUrl.split('?');    // "/projects/new-edit/12/abysmalwhore/tasks"
 
-      this.groupId = window.location.href.split('/')[5];
-      this.group = window.location.href.split('/')[6].replace(/_/g," ").replace(/@/g,"");
-      this.tool = window.location.href.split('/')[7];
-      this.toolName = this.tool.replace(/_/g," ");
+        const parts = pathOnly.split('/').filter(Boolean);
+        // parts => ["projects", "new-edit", "12", "abysmalwhore", "tasks"]
 
-      this.loadData();
+        const projectId = parts[2] || null;
+        const group = parts[3] || null;
+        const tool = parts[4] || null;
 
+        this.groupId = projectId;
+        // strip underscores and @ for the internal group key,
+        // the external "@handle" still lives on the artist.profile_url
+        this.group = group ? group.replace(/_/g, ' ').replace(/@/g, '') : null;
+
+        this.tool = tool || '';
+        this.toolName = this.tool.replace(/_/g, ' ');
+
+        this.loadData();
     }
 
-    capitalizeWords(arr) {
-      return arr.map((word) => {
-        const capitalizedFirst = word.charAt(0).toUpperCase();
-        const rest = word.slice(1).toLowerCase();
-        return capitalizedFirst + rest;
-      });
+    capitalizeWords(arr: string[]): string[] {
+        return arr.map(word => {
+            const capitalizedFirst = word.charAt(0).toUpperCase();
+            const rest = word.slice(1).toLowerCase();
+            return capitalizedFirst + rest;
+        });
     }
 
-    async loadData() {
-      let toolTitle = this.tool.split("_");
-      toolTitle = this.capitalizeWords(toolTitle);
+    async loadData(): Promise<void> {
+        let toolTitle: any = this.tool.split('_');
+        toolTitle = this.capitalizeWords(toolTitle);
 
-      let toolTitle2 = toolTitle.join(',');
-      toolTitle2 = toolTitle2.replace(/ /g,"");
-      toolTitle2 = toolTitle2.replace(/,/g,"");
-      toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
-      let service = toolTitle2 + 'Service';
-      let model = this.tool;
+        let toolTitle2 = toolTitle.join(',');
+        toolTitle2 = toolTitle2.replace(/ /g, '');
+        toolTitle2 = toolTitle2.replace(/,/g, '');
+        toolTitle2 = toolTitle2.charAt(0).toLowerCase() + toolTitle2.slice(1);
+        const service = toolTitle2 + 'Service';
+        const model = this.tool;
 
+        // you were not actually using service/model here,
+        // leaving as-is in case you wire it up later
     }
 
-    takeAction(obj) {
-      if(obj){
-        if(obj.action == 'Add'){
-          this.createNew(obj.data);
-        }else if(obj.action == 'Update'){
-          this.update(obj.data);
-        }else if(obj.action == 'Delete'){
-          this.delete(obj.data.id);
+    takeAction(obj: any): void {
+        if (!obj) {
+            return;
         }
-      }
+
+        if (obj.action === 'Add') {
+            this.createNew(obj.data);
+        } else if (obj.action === 'Update') {
+            this.update(obj.data);
+        } else if (obj.action === 'Delete') {
+            this.delete(obj.data.id);
+        }
     }
 
+    // CREATE
+    createNew(data: any): void {
+        delete data.id;
+        delete data.action;
 
-    //CREATE
-    createNew(data) {
-      delete data.id;
-      delete data.action;
-      let t = null;
-      let tName = null;
-      if(this.tool.indexOf('_') !== -1){
-        t = this.tool.split('_');
-        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
-      }else{
-        tName = this.tool;
-      }
+        let tName: string | null = null;
+        if (this.tool.indexOf('_') !== -1) {
+            const t = this.tool.split('_');
+            tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+        } else {
+            tName = this.tool;
+        }
 
-      const service = tName+'Service';
+        const service = tName + 'Service';
 
-      this[service].create(data).subscribe(async res => {
-        this.act = 'create';
-        this.res = res;
-        this.updateTable = true;
-        this.alertService.success('Item has been created!', true);
-      });
+        this[service].create(data).subscribe(async (res: any) => {
+            this.act = 'create';
+            this.res = res;
+            this.updateTable = true;
+            this.alertService.success('Item has been created!', true);
+        });
     }
 
-    //UPDATE
-    update(data) {
-      let id = data.id;
-      delete data.action;
-      let t = null;
-      let tName = null;
-      if(this.tool.indexOf('_') !== -1){
-        t = this.tool.split('_');
-        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
-      }else{
-        tName = this.tool;
-      }
+    // UPDATE
+    update(data: any): void {
+        const id = data.id;
+        delete data.action;
 
-      const service = tName+'Service';
+        let tName: string | null = null;
+        if (this.tool.indexOf('_') !== -1) {
+            const t = this.tool.split('_');
+            tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+        } else {
+            tName = this.tool;
+        }
 
-      this[service].update(id,data).subscribe(async res => {
-        this.act = 'put';
-        this.res = data;
-        this.updateTable = true;
-        this.alertService.success('Item has been updated!', true);
-      });
+        const service = tName + 'Service';
 
+        this[service].update(id, data).subscribe(async (res: any) => {
+            this.act = 'put';
+            this.res = data;
+            this.updateTable = true;
+            this.alertService.success('Item has been updated!', true);
+        });
     }
 
-    //DELETE
-    delete(id){
-      let t = null;
-      let tName = null;
-      if(this.tool.indexOf('_') !== -1){
-        t = this.tool.split('_');
-        tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
-      }else{
-        tName = this.tool;
-      }
-      const service = tName+'Service';
+    // DELETE
+    delete(id: any): void {
+        let tName: string | null = null;
+        if (this.tool.indexOf('_') !== -1) {
+            const t = this.tool.split('_');
+            tName = t[0] + t[1].charAt(0).toUpperCase() + t[1].slice(1);
+        } else {
+            tName = this.tool;
+        }
 
-      this[service].delete(id).subscribe(async res => {
-        this.act = 'delete';
-        this.res = id;
-        this.updateTable = true;
-        this.alertService.success('Item has been deleted!', true);
-      });
+        const service = tName + 'Service';
 
+        this[service].delete(id).subscribe(async (res: any) => {
+            this.act = 'delete';
+            this.res = id;
+            this.updateTable = true;
+            this.alertService.success('Item has been deleted!', true);
+        });
     }
 }

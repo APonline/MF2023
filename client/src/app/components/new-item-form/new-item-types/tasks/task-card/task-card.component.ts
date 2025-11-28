@@ -66,7 +66,7 @@ export class TaskCardComponent implements OnInit {
 
     ngOnInit(): void {
         this.action = this.data.action;              // 'Add' | 'Update' | 'Delete'
-        const seed: TaskDialogSeed = this.data.seed || {};
+        const seed: TaskDialogSeed = (this.data.seed ?? this.data) || {};
 
         this.titleText = this.action === 'Add' ? 'Create Task' : 'Edit Task';
 
@@ -84,7 +84,7 @@ export class TaskCardComponent implements OnInit {
             assigned_to: [seed.assigned_to ?? null, Validators.required],
             column_key: [defaultStatus],
 
-            completed_by: [seed.completed_by || null],   // due date
+            completed_by: [seed.completed_by || null],  
             date_completed: [seed.date_completed || null],
 
             owner_group: [seed.owner_group ?? this.data.artist_id ?? null],
@@ -110,9 +110,7 @@ export class TaskCardComponent implements OnInit {
         this.dialogRef.close();
     }
 
-    // task-card.component.ts
-
-    delete(): void {
+    onArchive(): void {
         if (!this.form.value.id) {
             this.dialogRef.close();
             return;

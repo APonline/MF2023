@@ -250,16 +250,13 @@ db.video.belongsTo(db['gallerie'], {
 
 //tasks
 db.task.belongsTo(db.user, {
-  foreignKey: 'assigned_to',   // column on tasks table
-  as: 'assignee'               // alias used in includes
+  foreignKey: 'assigned_to',  
+  as: 'assignee'   
 });
-
 db.user.hasMany(db.task, {
   foreignKey: 'assigned_to',
   as: 'assignedTasks'
 });
-
-// (optionally: who created/assigned the task)
 db.task.belongsTo(db.user, {
   foreignKey: 'assigned_by',
   as: 'assigner'
