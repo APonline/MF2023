@@ -44,6 +44,7 @@ interface Task {
     date_completed?: string | Date | null;
 
     profile_url?: string;
+    priority?: string;
     assignee?: {
         id: number;
         username: string;
@@ -80,6 +81,12 @@ export class TasksFormComponent implements OnInit, OnChanges {
     columnIds: string[] = [];
     isBoardLoading = false;
     boardError: string | null = null;
+
+    // full, unfiltered snapshot used by the global filter
+    private allColumns: Column[] = [];
+    globalFilterTerm: string = '';
+
+    sortMode: 'manual' | 'title' | 'title-backwards' | 'priority' | 'due' = 'manual';
 
     @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
@@ -211,25 +218,24 @@ export class TasksFormComponent implements OnInit, OnChanges {
                 const basePayload = this.MF
                     .compose(result.data)
                     .with({
-                        owner_group: this.artist?.id
+                        owner_group: this.artist?.id,
+                        // make sure assigned_by is always set
+                        assigned_by: result.data.assigned_by ?? this.currentUser.id
                     })
                     .done();
 
                 let persist$;
 
                 if (result.event === 'create') {
-                    // LET THE SERVER GIVE US THE REAL ROW, THEN NORMALISE IT
+                    // Let server give us ID, then normalise
                     persist$ = this.tasksService.create(basePayload).pipe(
                         map((created: any) => {
-                            // try to unwrap common shapes
                             let serverRow = created;
-                            if (serverRow && serverRow.data)       { serverRow = serverRow.data; }
-                            if (serverRow && serverRow.row)        { serverRow = serverRow.row; }
+                            if (serverRow && serverRow.data) { serverRow = serverRow.data; }
+                            if (serverRow && serverRow.row) { serverRow = serverRow.row; }
                             if (serverRow && Array.isArray(serverRow.rows)) {
                                 serverRow = serverRow.rows[0];
                             }
-
-                            // merge payload + serverRow, server wins on id
                             return {
                                 ...(basePayload || {}),
                                 ...(serverRow || {})
@@ -237,7 +243,7 @@ export class TasksFormComponent implements OnInit, OnChanges {
                         })
                     );
                 } else if (result.event === 'put') {
-                    // update existing row, keep its id
+                    // update existing row, keep id
                     persist$ = this.tasksService.update(row.id, basePayload).pipe(
                         map(() => ({
                             ...(row || {}),
@@ -245,9 +251,13 @@ export class TasksFormComponent implements OnInit, OnChanges {
                         }))
                     );
                 } else {
-                    // delete – keep original row for logging
-                    persist$ = this.tasksService.delete(row.id).pipe(
-                        map(() => row)
+                    // "delete" from dialog == archive (active: 0)
+                    const archivedPayload = {
+                        ...(row || {}),
+                        active: 0
+                    };
+                    persist$ = this.tasksService.update(row.id, { active: 0 }).pipe(
+                        map(() => archivedPayload)
                     );
                 }
 
@@ -255,7 +265,7 @@ export class TasksFormComponent implements OnInit, OnChanges {
 
                 persist$.subscribe({
                     next: (effectiveRow: any) => {
-                        // *** AT THIS POINT effectiveRow SHOULD HAVE A REAL id ***
+                        // ensure we have ID, then build deep link if not archiving
                         if (result.event !== 'delete' && effectiveRow.id) {
                             const handle = this.artist?.profile_url || `@${this.group}`;   // e.g. "@abysmalwhore"
                             const taskSlug = (effectiveRow.task || '')
@@ -266,7 +276,7 @@ export class TasksFormComponent implements OnInit, OnChanges {
 
                             const slug = `${handle}-${taskSlug}`;  // "@abysmalwhore-tasky"
 
-                            // NOTE: route segment uses this.group (no @)
+                            // route segment uses this.group (no @)
                             const deepLink =
                                 `/projects/new-edit/${this.groupId}/${this.group}/${featurePath}` +
                                 `?taskId=${effectiveRow.id}&slug=${slug}`;
@@ -277,7 +287,7 @@ export class TasksFormComponent implements OnInit, OnChanges {
                             this.tasksService.update(effectiveRow.id, { profile_url: deepLink }).subscribe();
                         }
 
-                        // activity logger – uses the row AFTER applyTableChange
+                        // activity logger – uses row AFTER table update
                         const afterApply = ({ action, row }: { action: 'create' | 'put' | 'delete'; row: any }) => {
                             const actor = {
                                 id: this.currentUser.id,
@@ -291,6 +301,11 @@ export class TasksFormComponent implements OnInit, OnChanges {
                             const verb: 'create' | 'update' | 'delete' =
                                 action === 'put' ? 'update' : action;
 
+                            let verbText = '';
+                            if (verb === 'create')      verbText = 'created';
+                            else if (verb === 'update') verbText = 'updated';
+                            else if (verb === 'delete') verbText = 'archived';
+
                             let color = '';
                             if (row.priority === 'none')          color = '#616161';
                             else if (row.priority === 'very_low') color = '#81c784';
@@ -300,11 +315,20 @@ export class TasksFormComponent implements OnInit, OnChanges {
                             else if (row.priority === 'very_high') color = '#f44336';
                             else if (row.priority === 'critical')  color = '#b71c1c';
 
-                            const activity =
-                                `${verb}d a task ` +
-                                `<a href="${row.profile_url}">` +
-                                `<b style="color:${color}">${row.task}</b>` +
-                                `</a>`;
+                            let label = `<b style="color:${color}">${row.task}</b>`;
+                            let activity: string;
+
+                            if (verb === 'delete' || !row.profile_url) {
+                                // archived / deleted – no link
+                                activity = `${verbText} a task ${label}`;
+                            } else {
+                                // normal create/update – keep deep link
+                                activity =
+                                    `${verbText} a task ` +
+                                    `<a href="${row.profile_url}">` +
+                                    `${label}` +
+                                    `</a>`;
+                            }
 
                             this.artistActivityService
                                 .logChange(
@@ -335,7 +359,8 @@ export class TasksFormComponent implements OnInit, OnChanges {
                                     'priority',
                                     'completed_by',
                                     'date_completed',
-                                    'profile_url'
+                                    'profile_url',
+                                    'active'
                                 ],
                                 afterApply
                             },
@@ -355,7 +380,9 @@ export class TasksFormComponent implements OnInit, OnChanges {
             });
     }
 
-
+    /**
+     * Load board columns from API and then apply any active global filter.
+     */
     loadBoard(): void {
         this.isBoardLoading = true;
         this.boardError = null;
@@ -374,13 +401,16 @@ export class TasksFormComponent implements OnInit, OnChanges {
                     }))
                 }));
 
-                this.columns = cols;
-                this.columnIds = this.columns.map(c => c.key);
+                this.allColumns = cols;
+
+                // this will filter + sort + set this.columns / columnIds
+                this.applyGlobalFilter();
+
                 this.isBoardLoading = false;
 
-                // deep-link handling
+                // deep-link handling – search full snapshot, not filtered columns
                 if (this.deepLinkTaskId && !this.deepLinkHandled) {
-                    const allTasks: Task[] = this.columns.reduce(
+                    const allTasks: Task[] = this.allColumns.reduce(
                         (acc: Task[], c: Column) => acc.concat(c.tasks || []),
                         []
                     );
@@ -399,6 +429,83 @@ export class TasksFormComponent implements OnInit, OnChanges {
             }
         });
     }
+
+    /**
+     * Global text filter across all columns (task + description).
+     */
+    applyGlobalFilter(): void {
+        const term = (this.globalFilterTerm || '').trim().toLowerCase();
+
+        const filterTask = (t: Task): boolean => {
+            if (!term) { return true; }
+            const title = (t.task || '').toLowerCase();
+            const desc  = (t.description || '').toLowerCase();
+            return title.includes(term) || desc.includes(term);
+        };
+
+        // build filtered columns from snapshot
+        this.columns = this.allColumns.map(col => ({
+            ...col,
+            tasks: (col.tasks || []).filter(filterTask)
+        }));
+
+        // apply sort inside each column
+        this.applySortToColumns();
+
+        this.columnIds = this.columns.map(c => c.key);
+    }
+
+    private applySortToColumns(): void {
+        const priorityRank: Record<string, number> = {
+            'critical':   1,
+            'very_high':  2,
+            'high':       3,
+            'medium':     4,
+            'low':        5,
+            'very_low':   6,
+            'none':       7
+        };
+
+        for (const col of this.columns) {
+            if (!col.tasks) { continue; }
+
+            col.tasks.sort((a, b) => {
+                const ta = (a.task || '').toLowerCase();
+                const tb = (b.task || '').toLowerCase();
+
+                switch (this.sortMode) {
+                    case 'title':
+                        return ta.localeCompare(tb);
+
+                    case 'title-backwards':
+                        return tb.localeCompare(ta);
+
+                    case 'priority': {
+                        const pa = priorityRank[(a.priority || 'none').toLowerCase()] ?? 999;
+                        const pb = priorityRank[(b.priority || 'none').toLowerCase()] ?? 999;
+                        if (pa !== pb) return pa - pb;
+                        return ta.localeCompare(tb);
+                    }
+
+                    case 'due': {
+                        const da = a.completed_by ? new Date(a.completed_by as any).getTime() : Number.MAX_SAFE_INTEGER;
+                        const db = b.completed_by ? new Date(b.completed_by as any).getTime() : Number.MAX_SAFE_INTEGER;
+                        if (da !== db) return da - db;
+                        return ta.localeCompare(tb);
+                    }
+
+                    case 'manual':
+                    default: {
+                        const ia = a.sort_index ?? 0;
+                        const ib = b.sort_index ?? 0;
+                        return ia - ib;
+                    }
+                }
+            });
+        }
+    }
+
+
 
     private mapKeyToTitle(key: string): string {
         switch (key) {

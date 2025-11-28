@@ -11,7 +11,7 @@
 .task-card-dialog {
     min-width: 520px;
     min-height: 70vh;
-    max-height: calc(100vh - 210px);  /* leave a little breathing room */
+    max-height: calc(100vh - 222px);  /* leave a little breathing room */
     height:100%;
     padding: 18px 0 10px 0;
     // background: radial-gradient(circle at top left, #252944 0%, #101018 45%, #050509 100%);
@@ -291,4 +291,22 @@
 .priority-critical.is-active {
     background: rgb(233 30 99 / 40%);
     box-shadow: 0 0 0 1px rgba(255, 64, 129, 0.8);
+}
+
+:host ::ng-deep .mat-mdc-dialog-surface {
+    max-height: 90vh;          /* still safe on smaller screens */
+    overflow-y: auto;          /* allow scroll if it ever needs it */
+    overflow-x: hidden;
+}
+
+/* Firefox: hide scrollbar */
+:host ::ng-deep .mat-mdc-dialog-surface {
+    scrollbar-width: none;
+}
+
+/* WebKit: hide scrollbar */
+:host ::ng-deep .mat-mdc-dialog-surface::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent;
 }

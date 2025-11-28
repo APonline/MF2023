@@ -100,6 +100,33 @@
                     Add Task
                 </button>
             </div> -->
+            <div class="kanban-header-actions">
+                <!-- Global search pill -->
+                <div class="kanban-search">
+                    <mat-icon class="kanban-search-icon">search</mat-icon>
+                    <input
+                        type="text"
+                        placeholder="Filter tasks..."
+                        [(ngModel)]="globalFilterTerm"
+                        (ngModelChange)="applyGlobalFilter()"
+                    />
+                </div>
+
+                <!-- Sort dropdown -->
+                <mat-form-field class="kanban-sort" appearance="outline">
+                    <mat-label>Sort</mat-label>
+                    <mat-select
+                        [(ngModel)]="sortMode"
+                        (selectionChange)="applyGlobalFilter()">
+
+                        <mat-option value="manual">Default</mat-option>
+                        <mat-option value="title">Title (A–Z)</mat-option>
+                        <mat-option value="title-backwards">Title (Z–A)</mat-option>
+                        <mat-option value="priority">Priority</mat-option>
+                        <mat-option value="due">Due Date</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
 
         <!-- KANBAN BOARD -->

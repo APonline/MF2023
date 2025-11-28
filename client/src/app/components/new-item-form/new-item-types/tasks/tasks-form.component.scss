@@ -235,18 +235,117 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     align-items: center;
     margin-bottom: 25px;
     position: relative;
+    gap: 16px;
 }
 
 .kanban-title {
-    font-size: 28px;
-    font-weight: 700;
-    padding-left: 5px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
 }
 
 .kanban-header-actions {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
 }
+
+/* -------------------------------------------
+   Search pill – 40px glass chip
+------------------------------------------- */
+.kanban-search {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.kanban-search-icon {
+    font-size: 18px;
+    margin-right: 6px;
+    opacity: 0.85;
+}
+
+.kanban-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-size: 0.9rem;
+    min-width: 220px;
+}
+
+.kanban-search input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* -------------------------------------------
+   Sort dropdown – same height / glass vibe
+------------------------------------------- */
+/* Sort dropdown – solid dark pill, white text */
+/* Solid dark-grey sort pill with white text */
+:host ::ng-deep .kanban-sort {
+    min-width: 170px;
+}
+
+/* Wrapper around the whole field */
+:host ::ng-deep .kanban-sort .mat-mdc-text-field-wrapper {
+    height: 40px;
+    border-radius: 999px !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+    transform: translateY(12px);
+    background: #2b2b2b !important;             /* solid dark grey */
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    align-items: center;
+    display: flex;
+}
+
+
+:host ::ng-deep .kanban-sort .mdc-floating-label {
+    transform: translateY(-2px);
+}
+/* Outline stroke */
+:host ::ng-deep .kanban-sort .mdc-notched-outline__leading,
+:host ::ng-deep .kanban-sort .mdc-notched-outline__notch,
+:host ::ng-deep .kanban-sort .mdc-notched-outline__trailing {
+    border: none !important;
+}
+
+:host ::ng-deep .kanban-sort .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* "Sort" label */
+:host ::ng-deep .kanban-sort .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Selected value text */
+:host ::ng-deep .kanban-sort .mat-mdc-select-value,
+:host ::ng-deep .kanban-sort .mat-mdc-select-value-text {
+    color: #ffffff !important;
+    font-size: 0.9rem;
+}
+
+/* Dropdown arrow */
+:host ::ng-deep .kanban-sort .mat-mdc-select-arrow {
+    color: #ffffff !important;
+}
+:host ::ng-deep .mat-mdc-select-panel {
+    background: #262626;
+    color: #ffffff;
+}
+
 
 
 /**********************************************
@@ -262,6 +361,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     overflow-x: auto;
     padding-bottom: 25px;
     height:100%;
+    overflow-x: hidden;
 }
 
 .kanban-column {

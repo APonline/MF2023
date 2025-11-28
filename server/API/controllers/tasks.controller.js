@@ -91,21 +91,37 @@ exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
     }
 }
 exports[`update${itemTopic}`] = async (req, res) => {
-    try{
-        let id =req.body.id;
-        let result = await Item.update( req.body,{ where: { id } });
+    try {
+        const id = req.params.id;        // ✅ from URL /tasks/:id
 
-        if (result) {
-            return res.status(200).send( result );
-        }else{
-            return res.status(500).send({ result: null });
+        if (!id) {
+            return res.status(400).send({
+                message: `Missing id for ${itemTopic} update`
+            });
+        }
+
+        // don't let id in the body mess with the update
+        const payload = { ...req.body };
+        delete payload.id;
+
+        const [affectedRows] = await Item.update(payload, { where: { id } });
+
+        if (affectedRows === 1) {
+            return res.status(200).send({ result: true });
+        } else {
+            return res.status(404).send({
+                result: null,
+                message: `${itemTopic} not found`
+            });
         }
     } catch (error) {
+        console.error(`update${itemTopic} error`, error);
         return res.status(500).send({
-            message: `Unable to update ${itemTopic}!`
+            message: `Unable to update ${itemTopic}! - ` + error.message
         });
     }
-}
+};
+
 // Archive instead of hard delete
 exports[`delete${itemTopic}`] = async (req, res) => {
     try {
