@@ -638,6 +638,9 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     padding-top: 0 !important;
 }
 
-.add-contact {
+.add-contact-btn {
   height: 32px!important;
+}
+.mf-sort-dir {
+  cursor:pointer;
 }

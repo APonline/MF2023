@@ -125,15 +125,19 @@
                                   (ngModelChange)="onRollodexSortChange($event)">
 
                                   <mat-option value="name">Name</mat-option>
-                                  <mat-option value="relation">Relation</mat-option>
+                                  <mat-option value="relation">Skill</mat-option>
                                   <mat-option value="city">City</mat-option>
                               </mat-select>
                           </mat-form-field>
+
+                          <button class="mf-sort-dir" (click)="toggleSortDirection()">
+                              <span *ngIf="sortDirection === 'asc'">▲</span>
+                              <span *ngIf="sortDirection === 'desc'">▼</span>
+                          </button>
                       </div>
                   </div>
 
                   <button
-                    class="add-contact"
                       mat-raised-button
                       color="primary"
                       class="add-contact-btn"

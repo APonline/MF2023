@@ -71,6 +71,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   rollodexFilterTerm: string = '';
   rollodexSortMode: 'name' | 'relation' | 'city' = 'name';
   sortKey: 'name' | 'relation' | 'city' = 'relation';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   private deepLinkContactId: number | null = null;
   private deepLinkHandled = false;
@@ -409,35 +410,47 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       const safe = (v: any) => (v || '').toString().toLowerCase();
 
       list.sort((a: any, b: any) => {
+          let result = 0;
+
           switch (this.rollodexSortMode) {
               case 'relation': {
                   const ar = safe(a.relation);
                   const br = safe(b.relation);
                   if (ar !== br) {
-                      return ar.localeCompare(br);
+                      result = ar.localeCompare(br);
+                  } else {
+                      result = safe(a.first_name).localeCompare(safe(b.first_name));
                   }
-                  return safe(a.first_name).localeCompare(safe(b.first_name));
+                  break;
               }
 
               case 'city': {
                   const ac = safe(a.city);
                   const bc = safe(b.city);
                   if (ac !== bc) {
-                      return ac.localeCompare(bc);
+                      result = ac.localeCompare(bc);
+                  } else {
+                      result = safe(a.first_name).localeCompare(safe(b.first_name));
                   }
-                  return safe(a.first_name).localeCompare(safe(b.first_name));
+                  break;
               }
 
               case 'name':
               default: {
-                  const an = `${safe(a.first_name)} ${safe(a.last_name)}`.trim() || safe(a.company) || safe(a.title);
-                  const bn = `${safe(b.first_name)} ${safe(b.last_name)}`.trim() || safe(b.company) || safe(b.title);
-                  return an.localeCompare(bn);
+                  const an = `${safe(a.first_name)} ${safe(a.last_name)}`.trim()
+                      || safe(a.company) || safe(a.title);
+                  const bn = `${safe(b.first_name)} ${safe(b.last_name)}`.trim()
+                      || safe(b.company) || safe(b.title);
+                  result = an.localeCompare(bn);
+                  break;
               }
           }
+
+          return this.sortDirection === 'asc' ? result : -result;
       });
 
       this.rollodexContacts = list;
+
   }
 
   onRollodexFilterChange(term: string): void {
@@ -446,11 +459,20 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   }
 
   onRollodexSortChange(mode: string): void {
-      if (mode === 'name' || mode === 'relation' || mode === 'city') {
-          this.rollodexSortMode = mode;
-          this.buildRollodex();
-      }
+    if (mode === 'name' || mode === 'relation' || mode === 'city') {
+        this.rollodexSortMode = mode;
+        this.sortKey = mode;          // keep table + rolodex in sync
+        this.applySort();             // table
+        this.buildRollodex();         // cards
+    }
   }
+
+  toggleSortDirection(): void {
+    this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    this.applySort();
+    this.buildRollodex();
+  }
+
 
   getContactDisplayName(contact: any): string {
       const first = contact.first_name || '';
@@ -480,30 +502,31 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   }
 
   applySort(): void {
-      if (!this.dataSource || !Array.isArray(this.dataSource)) {
-          return;
-      }
+    if (!this.dataSource || !Array.isArray(this.dataSource)) {
+        return;
+    }
 
-      const key = this.sortKey;
+    const key = this.sortKey;
 
-      this.dataSource.sort((a: any, b: any) => {
-          let aVal = '';
-          let bVal = '';
+    this.dataSource.sort((a: any, b: any) => {
+        let aVal = '';
+        let bVal = '';
 
-          if (key === 'name') {
-              aVal = `${a.first_name || ''} ${a.last_name || ''}`.trim().toLowerCase();
-              bVal = `${b.first_name || ''} ${b.last_name || ''}`.trim().toLowerCase();
-          } else {
-              aVal = (a[key] || '').toString().toLowerCase();
-              bVal = (b[key] || '').toString().toLowerCase();
-          }
+        if (key === 'name') {
+            aVal = `${a.first_name || ''} ${a.last_name || ''}`.trim().toLowerCase();
+            bVal = `${b.first_name || ''} ${b.last_name || ''}`.trim().toLowerCase();
+        } else {
+            aVal = (a[key] || '').toString().toLowerCase();
+            bVal = (b[key] || '').toString().toLowerCase();
+        }
 
-          return aVal.localeCompare(bVal);
-      });
+        const cmp = aVal.localeCompare(bVal);
+        return this.sortDirection === 'asc' ? cmp : -cmp;
+    });
 
-      this.table?.renderRows();
-
-      this.buildRollodex();
+    this.table?.renderRows();
+    this.buildRollodex();
   }
+
 
 }
