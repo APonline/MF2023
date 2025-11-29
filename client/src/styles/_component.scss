@@ -307,8 +307,12 @@ button.mat-accent:hover {
 }
 
 .mf-pill-select .mat-mdc-form-field-infix {
-    min-height: 40px;
-    padding: 0 1.1rem !important;
+    min-height: 33px!important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex
+;
+    align-items: center;
 }
 
 .mf-pill-select .mat-mdc-select-value,

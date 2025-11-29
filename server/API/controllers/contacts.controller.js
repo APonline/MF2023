@@ -12,19 +12,19 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { first_name: req.body.first_name } });
+        let result1 = await Item.findOne({ where: { first_name: req.body.first_name } });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.first_name.replace(/\+s/g,'').toLowerCase() + "_" + num;
-        }
+        if (result1 == null) {
 
-        let result = await Item.create( newItem );
+            let result = await Item.create( newItem );
 
-        if (result) {
-            return res.status(200).send( result );
+            if (result) {
+                return res.status(200).send( result );
+            }else{
+                return res.status(500).send({ result: null });
+            }
         }else{
-            return res.status(500).send({ result: null });
+            return res.status(200).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
@@ -93,7 +93,7 @@ exports[`update${itemTopic}`] = async (req, res) => {
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to update ${itemTopic}!`
+            message: `Unable to update ${itemTopic}! - ${error.message}`
         });
     }
 }

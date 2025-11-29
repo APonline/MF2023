@@ -72,6 +72,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   rollodexSortMode: 'name' | 'relation' | 'city' = 'name';
   sortKey: 'name' | 'relation' | 'city' = 'relation';
 
+  private deepLinkContactId: number | null = null;
+  private deepLinkHandled = false;
+
   constructor(
       public dialog: MatDialog,
       private formBuilder: FormBuilder,
@@ -93,6 +96,12 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   //mf-nov7
   ngOnInit() {
     this.imageKey = this.MF.buildImageKey(this.toolName);
+
+    this.route.queryParamMap.subscribe(params => {
+        const id = params.get('contactId');
+        this.deepLinkContactId = id ? +id : null;
+    });
+
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
@@ -102,45 +111,12 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.imageKey = this.MF.buildImageKey(this.toolName);
 
-    if (!this.updateTable) {
-        return;
+    if (changes['groupId'] && !changes['groupId'].firstChange) {
+        this.artistsService.get(this.groupId).subscribe(res => {
+            this.artist = res;
+            this.loadData();          
+        });
     }
-
-    // <-- table might not be ready yet on first change
-    if (!this.table) {
-        this.buildRollodex();  // still keep rollodex in sync
-        return;
-    }
-    
-      if(this.act == 'create'){
-        Object.keys(this.res).map(res => {
-          if(res == 'createdAt' || res == 'updatedAt' || res == 'active') {
-            delete this.res[res];
-          }
-        });
-
-        this.dataSource.push(this.res);
-        this.table.renderRows();
-      }else if(this.act == 'put'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          if(value.id == this.res.id){
-            this.displayedColumns.map(res => {
-              value[res] = this.res[res];
-            })
-          }
-          return true;
-        });
-        this.table.renderRows();
-      }else if(this.act == 'delete'){
-        this.dataSource = this.dataSource.filter((value,key)=>{
-          return value.id != this.res;
-        });
-      }
-      this.applySort();
-      this.table?.renderRows();
-      this.buildRollodex();
-
-      this.updateTable = false;
     
   }
 
@@ -152,6 +128,17 @@ export class ContactsFormComponent implements OnInit, OnChanges {
             this.toolSet = result.rows;
 
             this.setSettings(this.toolSet);
+
+            if (this.deepLinkContactId && !this.deepLinkHandled && Array.isArray(this.toolSet)) {
+                const match = this.toolSet.find((c: any) => c.id === this.deepLinkContactId);
+
+                if (match) {
+                    this.deepLinkHandled = true;
+
+                    // open the contact card popup
+                    setTimeout(() => this.openDialog('Update', match), 0);
+                }
+            }
         });
   }
 
@@ -172,7 +159,6 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       this.dataSource = new MatTableDataSource(this.toolSet);
       this.dataSource = this.dataSource.data;
 
-      // 🔹 apply initial sort
       this.applySort();
 
   }
@@ -210,129 +196,198 @@ export class ContactsFormComponent implements OnInit, OnChanges {
             data
         )
         .subscribe(result => {
-            if (!result) {
-                return;
-            }
+            if (!result) return;
 
-            const raw = result.data || {};
+            const raw   = result.data || {};
+            const evt   = (result.event || action || '').toString().toLowerCase();
+            const rowId = row?.id ?? null;
+            const rawId = raw?.id ?? null;
+            const hasId = !!(rawId ?? rowId);
 
-            // ---- map dialog events: "Add" | "Update" | "Delete" ----
-            const evt = (result.event || '').toString().toLowerCase();
-            let op: 'create' | 'update' | 'delete' = 'update';
+            let op: 'create' | 'update' | 'delete';
+            if (evt === 'delete')      op = 'delete';
+            else if (!hasId)           op = 'create';
+            else                       op = 'update';
 
-            if (evt === 'add') {
-                op = 'create';
-            } else if (evt === 'delete') {
-                op = 'delete';
-            } else {
-                op = 'update';
-            }
+            const targetId = (rawId ?? rowId) || null;
 
-            // ---- build display name & slug ----
-            const displayName = this.getContactDisplayName(raw);
-            const nameForSlug =
-                displayName ||
-                raw.company ||
-                raw.title ||
-                'contact';
+            // ---- common helper to build slug + deepLink ----
+            const buildDeepLink = (id: number | null, src: any): string | null => {
+                if (!id) return null;
 
-            const nameSlug = nameForSlug
-                .toString()
-                .replace(/[^\w\s-]/g, '')
-                .replace(/\s+/g, '-')
-                .toLowerCase();
+                const displayName = this.getContactDisplayName(src);
+                const nameForSlug =
+                    displayName || src.company || src.title || 'contact';
 
-            const handle = this.artist?.profile_url || `@${this.group}`;
-            const featurePath = (this.toolName || 'contacts').toLowerCase();
+                const nameSlug = nameForSlug
+                    .toString()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .toLowerCase();
 
-            const baseLink =
-                `/projects/new-edit/${this.groupId}/${this.group}/${featurePath}`;
+                const handle      = this.artist?.profile_url || `@${this.group}`;
+                const featurePath = (this.toolName || 'contacts').toLowerCase();
+                const baseLink    =
+                    `/projects/new-edit/${this.groupId}/${this.group}/${featurePath}`;
 
-            const deepLink =
-                raw.id
-                    ? `${baseLink}?contactId=${raw.id}&slug=${handle}-${nameSlug}`
-                    : `${baseLink}?slug=${handle}-${nameSlug}`;
+                return `${baseLink}?contactId=${id}&slug=${handle}-${nameSlug}`;
+            };
 
-            const cooked = this.MF
+            // ---- base payload WITHOUT profile_url (we might add it below) ----
+            const baseCore = this.MF
                 .compose(raw)
                 .with({
-                    profile_url: deepLink,
-                    owner_group: this.artist?.id
+                    id: targetId || undefined,
+                    owner_group: this.artist?.id,
+                    owner_user: raw.owner_user ?? this.currentUser.id,
+                    active: op === 'delete' ? 0 : 1
                 })
                 .done();
 
-            // ---- LOCAL TABLE / ROLODEX UPDATE (no page refresh) ----
-            if (!Array.isArray(this.dataSource)) {
-                this.dataSource = [];
-            }
+            let persist$;
 
             if (op === 'create') {
-                // add to array
-                this.dataSource = [...this.dataSource, cooked];
+                // CREATE: first call with no profile_url, then patch it after we know id
+                persist$ = this.contactsService.create(baseCore);
             } else if (op === 'update') {
-                // replace in array
-                this.dataSource = this.dataSource.map((c: any) =>
-                    c.id === cooked.id ? { ...c, ...cooked } : c
-                );
-            } else if (op === 'delete') {
-                // remove from array
-                this.dataSource = this.dataSource.filter(
-                    (c: any) => c.id !== cooked.id
-                );
+                if (!targetId) {
+                    this.alertService.error('Unable to update Contact (no id).');
+                    return;
+                }
+
+                // For UPDATE we already know the id, so we can build deepLink now
+                const deepLink = buildDeepLink(targetId, baseCore);
+
+                const basePayload = {
+                    ...baseCore,
+                    profile_url: deepLink || undefined
+                };
+
+                persist$ = this.contactsService.update(targetId, basePayload);
+            } else {
+                // DELETE (soft)
+                if (!targetId) {
+                    this.alertService.error('Unable to delete Contact (no id).');
+                    return;
+                }
+                persist$ = this.contactsService.update(targetId, { active: 0 });
             }
 
-            // keep the legacy table view happy if it's present
-            this.table?.renderRows?.();
+            persist$.subscribe({
+                next: (serverRes: any) => {
+                    // normalise response
+                    let serverRow = serverRes;
+                    if (serverRow && serverRow.data) serverRow = serverRow.data;
+                    if (serverRow && serverRow.row)  serverRow = serverRow.row;
+                    if (serverRow && Array.isArray(serverRow.rows)) {
+                        serverRow = serverRow.rows[0];
+                    }
 
-            // re-sort + rebuild card grid
-            this.applySort();
-            this.buildRollodex();
+                    let effectiveRow: any = {
+                        ...(baseCore || {}),
+                        ...(serverRow || {})
+                    };
 
-              // --- log artist activity (like tasks) ---
-            const actor = {
-                id: this.currentUser.id,
-                username: this.currentUser.username
-            };
+                    if (!effectiveRow.id && targetId) {
+                        effectiveRow.id = targetId;
+                    }
 
-            const feature = {
-                feature: (this.toolName || 'Contact').replace(/s$/i, ''), // "Contacts" -> "Contact"
-                extra: null
-            };
+                    // If this was a CREATE, now we know id, so compute deepLink
+                    if (op === 'create' && effectiveRow.id) {
+                        const deepLink = buildDeepLink(effectiveRow.id, effectiveRow);
+                        if (deepLink) {
+                            effectiveRow.profile_url = deepLink;
 
-            const verb: 'create' | 'update' | 'delete' =
-                op === 'create'
-                    ? 'create'
-                    : op === 'delete'
-                    ? 'delete'
-                    : 'update';
+                            // one *extra* tiny call ONLY for create
+                            this.contactsService
+                                .update(effectiveRow.id, {
+                                    id: effectiveRow.id,
+                                    profile_url: deepLink
+                                })
+                                .subscribe({
+                                    error: err =>
+                                        console.warn('[contacts] profile_url patch failed', err)
+                                });
+                        }
+                    }
 
-            let verbText = '';
-            if (verb === 'create')      verbText = 'created';
-            else if (verb === 'update') verbText = 'updated';
-            else if (verb === 'delete') verbText = 'deleted';
+                    // ---- local table / rolodex ----
+                    if (!Array.isArray(this.dataSource)) {
+                        this.dataSource = [];
+                    }
 
-            const label = `<b>${displayName || nameForSlug}</b>`;
+                    if (op === 'create') {
+                        this.dataSource = [...this.dataSource, effectiveRow];
+                    } else if (op === 'update') {
+                        this.dataSource = this.dataSource.map((c: any) =>
+                            c.id === effectiveRow.id ? { ...c, ...effectiveRow } : c
+                        );
+                    } else if (op === 'delete') {
+                        this.dataSource = this.dataSource.filter(
+                            (c: any) => c.id !== effectiveRow.id
+                        );
+                    }
 
-            const activity =
-                verb === 'delete' || !cooked.profile_url
-                    ? `${verbText} a contact ${label}`
-                    : `${verbText} a contact ` +
-                      `<a href="${cooked.profile_url}">${label}</a>`;
+                    this.table?.renderRows?.();
+                    this.applySort();
+                    this.buildRollodex();
 
-            this.artistActivityService
-                .logChange(activity, {
-                    actor,
-                    artistId: this.groupId,
-                    groupId: this.groupId,
-                    feature
-                })
-                .subscribe();
+                    // ---- activity ----
+                    const displayName = this.getContactDisplayName(effectiveRow);
+                    const nameForSlug =
+                        displayName ||
+                        effectiveRow.company ||
+                        effectiveRow.title ||
+                        'contact';
 
-            // still tell the parent so it can persist / log / whatever
-            this.activeItem.emit({ action: op, data: cooked });
+                    const nameSlug = nameForSlug
+                        .toString()
+                        .replace(/[^\w\s-]/g, '')
+                        .replace(/\s+/g, '-')
+                        .toLowerCase();
+
+                    const actor = {
+                        id: this.currentUser.id,
+                        username: this.currentUser.username
+                    };
+
+                    const feature = {
+                        feature: (this.toolName || 'Contact').replace(/s$/i, ''),
+                        extra: null
+                    };
+
+                    const verb: 'create' | 'update' | 'delete' = op;
+                    let verbText = '';
+                    if (verb === 'create')      verbText = 'created';
+                    else if (verb === 'update') verbText = 'updated';
+                    else if (verb === 'delete') verbText = 'deleted';
+
+                    const label = `<b>${displayName || nameSlug}</b>`;
+
+                    const activity =
+                        verb === 'delete' || !effectiveRow.profile_url
+                            ? `${verbText} a contact ${label}`
+                            : `${verbText} a contact ` +
+                              `<a href="${effectiveRow.profile_url}" style="color:#fff">${label}</a>`;
+
+                    this.artistActivityService
+                        .logChange(activity, {
+                            actor,
+                            artistId: this.groupId,
+                            groupId: this.groupId,
+                            feature
+                        })
+                        .subscribe();
+
+                    this.activeItem.emit({ action: op, data: effectiveRow });
+                },
+                error: err => {
+                    console.error('Failed to persist contact change', err);
+                    this.alertService.error('Unable to save contact');
+                }
+            });
         });
   }
-
 
   private buildRollodex(): void {
       const term = (this.rollodexFilterTerm || '').trim().toLowerCase();
@@ -424,7 +479,6 @@ export class ContactsFormComponent implements OnInit, OnChanges {
       return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
   }
 
-  // 🔹 sort contacts based on sortKey
   applySort(): void {
       if (!this.dataSource || !Array.isArray(this.dataSource)) {
           return;
@@ -451,6 +505,5 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
       this.buildRollodex();
   }
-
 
 }
