@@ -208,13 +208,11 @@
 }
 
 .mf-contact-dialog .primary {
-    border-radius: 999px !important;
     padding-inline: 1.4rem;
     font-weight: 600;
 }
 
 .mf-contact-dialog .ghost {
-    border-radius: 999px !important;
     border-width: 1px;
 }
 
@@ -258,4 +256,85 @@
     .mf-contact-dialog .field-row.three {
         grid-template-columns: 1fr;
     }
+}
+
+
+.mf-contact-dialog .contact-divider {
+    height: 1px;
+    width: 100%;
+    margin: 0.4rem 0 0.6rem;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.18),
+        rgba(255, 255, 255, 0.06)
+    );
+}
+
+.mf-contact-dialog .divider-actions {
+    margin-top: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.mf-contact-dialog .contact-actions {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.mf-contact-dialog .left-actions,
+.mf-contact-dialog .right-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mf-contact-dialog .actions-spacer {
+    flex: 1 1 auto;
+}
+
+/* primary pill */
+.mf-contact-dialog .primary {
+    padding-inline: 1.4rem;
+    font-weight: 600;
+}
+
+/* Cancel – stroked white pill */
+.mf-contact-dialog .ghost.mat-mdc-button-base,
+.mf-contact-dialog .ghost.mat-mdc-stroked-button {
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+}
+
+/* Archive – warn outline, like tasks */
+.mf-contact-dialog .archive.mat-mdc-stroked-button.mat-warn {
+    // border-color: rgba(244, 67, 54, 0.7);
+    // color: #ff8a80;
+}
+
+.task-card-dialog .mat-stroked-button.mat-warn {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+
+/* Cancel – same outline look as tasks.dalmatian */
+:host ::ng-deep .mf-contact-dialog .mat-raised-button.dalmatian {
+    background: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+    box-shadow: none;
+}
+
+/* Archive – same stroked warn styling as task dialog */
+:host ::ng-deep .mf-contact-dialog .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+:host ::ng-deep .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
 }

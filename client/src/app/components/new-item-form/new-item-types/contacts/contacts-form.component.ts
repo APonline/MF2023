@@ -271,7 +271,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
                     this.alertService.error('Unable to delete Contact (no id).');
                     return;
                 }
-                persist$ = this.contactsService.update(targetId, { active: 0 });
+                persist$ = this.contactsService.delete(targetId);
             }
 
             persist$.subscribe({
@@ -391,67 +391,61 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   }
 
   private buildRollodex(): void {
-      const term = (this.rollodexFilterTerm || '').trim().toLowerCase();
+    const term = (this.rollodexFilterTerm || '').trim().toLowerCase();
+    let list = [...(this.dataSource || [])];
 
-      // always build from the current table rows
-      let list = [...(this.dataSource || [])];
+    if (term) {
+        list = list.filter((c: any) => {
+            const name = `${c.first_name || ''} ${c.last_name || ''} ${c.company || ''} ${c.title || ''}`.toLowerCase();
+            const relation = (c.relation || '').toLowerCase();
+            const city = (c.city || '').toLowerCase();
+            return name.includes(term) || relation.includes(term) || city.includes(term);
+        });
+    }
 
-      if (term) {
-          list = list.filter((c: any) => {
-              const name = `${c.first_name || ''} ${c.last_name || ''} ${c.company || ''} ${c.title || ''}`
-                  .toLowerCase();
-              const relation = (c.relation || '').toLowerCase();
-              const city = (c.city || '').toLowerCase();
+    const safe = (v: any) => (v || '').toString().toLowerCase();
 
-              return name.includes(term) || relation.includes(term) || city.includes(term);
-          });
-      }
+    list.sort((a: any, b: any) => {
+        let result = 0;
 
-      const safe = (v: any) => (v || '').toString().toLowerCase();
+        switch (this.rollodexSortMode) {
+            case 'relation': {
+                const ar = safe(a.relation);
+                const br = safe(b.relation);
+                result = ar.localeCompare(br);
+                if (result === 0) {
+                    result = safe(a.first_name).localeCompare(safe(b.first_name));
+                }
+                break;
+            }
 
-      list.sort((a: any, b: any) => {
-          let result = 0;
+            case 'city': {
+                const ac = safe(a.city);
+                const bc = safe(b.city);
+                result = ac.localeCompare(bc);
+                if (result === 0) {
+                    result = safe(a.first_name).localeCompare(safe(b.first_name));
+                }
+                break;
+            }
 
-          switch (this.rollodexSortMode) {
-              case 'relation': {
-                  const ar = safe(a.relation);
-                  const br = safe(b.relation);
-                  if (ar !== br) {
-                      result = ar.localeCompare(br);
-                  } else {
-                      result = safe(a.first_name).localeCompare(safe(b.first_name));
-                  }
-                  break;
-              }
+            case 'name':
+            default: {
+                const an = `${safe(a.first_name)} ${safe(a.last_name)}`.trim()
+                    || safe(a.company) || safe(a.title);
+                const bn = `${safe(b.first_name)} ${safe(b.last_name)}`.trim()
+                    || safe(b.company) || safe(b.title);
+                result = an.localeCompare(bn);
+                break;
+            }
+        }
 
-              case 'city': {
-                  const ac = safe(a.city);
-                  const bc = safe(b.city);
-                  if (ac !== bc) {
-                      result = ac.localeCompare(bc);
-                  } else {
-                      result = safe(a.first_name).localeCompare(safe(b.first_name));
-                  }
-                  break;
-              }
+        return this.sortDirection === 'asc' ? result : -result;
+    });
 
-              case 'name':
-              default: {
-                  const an = `${safe(a.first_name)} ${safe(a.last_name)}`.trim()
-                      || safe(a.company) || safe(a.title);
-                  const bn = `${safe(b.first_name)} ${safe(b.last_name)}`.trim()
-                      || safe(b.company) || safe(b.title);
-                  result = an.localeCompare(bn);
-                  break;
-              }
-          }
-
-          return this.sortDirection === 'asc' ? result : -result;
-      });
-
-      this.rollodexContacts = list;
-
+    this.rollodexContacts = list;
   }
+
 
   onRollodexFilterChange(term: string): void {
       this.rollodexFilterTerm = term;
@@ -502,9 +496,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   }
 
   applySort(): void {
-    if (!this.dataSource || !Array.isArray(this.dataSource)) {
-        return;
-    }
+    if (!this.dataSource || !Array.isArray(this.dataSource)) return;
 
     const key = this.sortKey;
 
@@ -527,6 +519,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     this.table?.renderRows();
     this.buildRollodex();
   }
+
 
 
 }

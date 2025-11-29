@@ -328,3 +328,24 @@ button.mat-accent:hover {
 .mf-pill-select .mat-mdc-form-field-flex {
     padding-top: 0 !important;
 }
+
+/* --- Global warn button overrides (Archive, etc.) --- */
+
+/* Outlined / stroked warn buttons */
+.mat-mdc-button-base.mat-mdc-outlined-button.mat-warn,
+.mat-mdc-button-base.mat-mdc-stroked-button.mat-warn {
+    border-color: rgba(244, 67, 54, 0.7) !important;   /* red border */
+    color: #ff8a80 !important;                         /* same red as tasks */
+}
+
+/* Raised warn buttons, just in case you use them */
+.mat-mdc-button-base.mat-mdc-raised-button.mat-warn {
+    background: #f44336 !important;   /* material red 500 */
+    color: #fff !important;
+}
+
+
+:host ::ng-deep
+.mf-contact-dialog .archive.mat-mdc-outlined-button .mat-mdc-button-persistent-ripple {
+    background-color: rgba(244, 67, 54, 0.32) !important;
+}

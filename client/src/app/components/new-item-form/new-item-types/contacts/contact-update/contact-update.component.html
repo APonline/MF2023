@@ -15,6 +15,8 @@
         </div>
     </div>
 
+    <div class="contact-divider" *ngIf="action !== 'Delete'"></div>
+
     <!-- MAIN CONTENT (non-delete) -->
     <ng-container *ngIf="action !== 'Delete'; else deleteTemplate">
         <div class="contact-grid">
@@ -111,23 +113,45 @@
             </div>
         </div>
 
-        <!-- ACTIONS -->
-        <div class="contact-actions" mat-dialog-actions>
-            <button
-                mat-stroked-button
-                class="ghost"
-                (click)="closeDialog()">
-                Cancel
-            </button>
+        <!-- contact-update.component.html -->
 
-            <button
-                mat-raised-button
-                color="primary"
-                class="primary"
-                (click)="doAction()">
-                {{ action }}
-            </button>
+        <!-- divider line above actions, same idea as tasks -->
+        <mat-divider class="contact-divider"></mat-divider>
+
+        <div class="contact-actions" mat-dialog-actions>
+            <div class="left-actions">
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="doAction()">
+                    {{ action === 'Add' ? 'Create' : 'Save' }}
+                </button>
+
+                <!-- fix typo + reuse same outlined cancel style as tasks -->
+                <button
+                    mat-raised-button
+                    color="accent"
+                    class="dalmatian"
+                    (click)="closeDialog()">
+                    Cancel
+                </button>
+            </div>
+
+            <span class="actions-spacer"></span>
+
+            <!-- only show Archive when editing an existing contact -->
+            <div class="right-actions" *ngIf="modUser">
+                <button
+                    mat-stroked-button
+                    color="warn"
+                    class="archive"
+                    (click)="archiveContact()">
+                    Archive
+                </button>
+            </div>
         </div>
+
+
     </ng-container>
 
     <!-- DELETE STATE -->

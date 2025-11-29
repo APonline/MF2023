@@ -123,4 +123,33 @@ export class ContactUpdateComponent implements OnInit {
     this.selectedRelations = this.local_data[0]['relation'];
   }
 
+  archiveContact() {
+    // nothing to archive if it's a brand new contact
+    if (!this.modUser) {
+        this.closeDialog();
+        return;
+    }
+
+    const archivedContact: any = {
+        owner_user: this.currentUser.id,
+        owner_group: this.data.owner_id,
+        first_name: this.local_data[0].first_name,
+        last_name: this.local_data[0].last_name,
+        company: this.local_data[0].company,
+        relation: this.selectedRelations || this.local_data[0].relation,
+        city: this.local_data[0].city,
+        phone: this.local_data[0].phone,
+        email: this.local_data[0].email,
+        id: this.data.id,
+        active: 0
+    };
+
+    // event is 'delete' so contactsForm.openDialog() maps to op = 'delete'
+    this.dialogRef.close({
+        event: 'delete',
+        data: archivedContact
+    });
+  }
+
+
 }
