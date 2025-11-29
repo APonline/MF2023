@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
       last_name: {
       type: Sequelize.STRING
     },
-      nickname: {
+      company: {
       type: Sequelize.STRING
     },
       relation: {

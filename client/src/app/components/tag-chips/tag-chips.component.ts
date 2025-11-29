@@ -16,6 +16,7 @@ export class TagChipsComponent implements OnInit {
   @Output() Tag = new EventEmitter<any>();
   @Input() local_data: any;
   @Input() chipType: string;
+  @Input() showTitle: boolean = true;
   readonly separatorKeysCodes: number[] = [ENTER, COMMA, BACKSLASH, SLASH];
   chips: Chips[] = [];
   visible = true;

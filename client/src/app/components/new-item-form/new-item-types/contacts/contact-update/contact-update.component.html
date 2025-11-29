@@ -1,96 +1,157 @@
+<div class="popup content mf-theme mf-contact-dialog">
+    <!-- HEADER (non-delete) -->
+    <div class="contact-header" *ngIf="action !== 'Delete'">
+        <div class="avatar-ring">
+            <div class="avatar-circle">
+                <span>@</span>
+            </div>
+        </div>
 
-<div class="popup content mf-theme">
-  <!-- dialog-box.component.html -->
-  <h1><strong>{{action}} {{tool}}</strong></h1>
-  <br/>
-
-
-  <div *ngIf="action != 'Delete'; else elseTemplate">
-    <div class="section">
-      <ul class="row">
-        <li>
-          <p><span>First Name</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['first_name']">
-            </mat-form-field>
-          </div>
-        </li>
-        <li>
-          <p><span>Last Name</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['last_name']">
-            </mat-form-field>
-          </div>
-        </li>
-        <li>
-          <p><span>Nickname</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['nickname']">
-            </mat-form-field>
-          </div>
-        </li>
-      </ul>
+        <div class="header-text">
+            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
+            <p>
+                Save helpful individuals, venues, collaborators, media, promoters...
+            </p>
+        </div>
     </div>
 
-    <div class="section">
-      <ul class="row">
-        <li>
-          <p><span>Phone</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['phone']">
-            </mat-form-field>
-          </div>
-        </li>
-        <li>
-          <p><span>Email</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['email']">
-            </mat-form-field>
-          </div>
-        </li>
-        <li>
-          <p><span>City</span></p>
-          <div>
-            <mat-form-field>
-              <input matInput [(ngModel)]="local_data[0]['city']">
-            </mat-form-field>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <!-- MAIN CONTENT (non-delete) -->
+    <ng-container *ngIf="action !== 'Delete'; else deleteTemplate">
+        <div class="contact-grid">
+            <!-- IDENTITY -->
+            <div class="section-label">Identity</div>
 
-    <div class="section">
-      <ul class="row">
-        <li>
-          <app-tag-chips (Tag)="getRelation($event)" [local_data]="local_data[0]['relation']" [chipType]="'Relation'"></app-tag-chips>
-        </li>
-        <!-- <li>
-          <p><span>Contact Image</span></p>
-          <div>
-            <app-upload-single (fileNew)="updateUploadValue($event)" [dir]="'artists'"  [field]="'contact_image'" [file]="local_data[0]['contact_image']" [group]="currentGroup"></app-upload-single>
-          </div>
-        </li> -->
-      </ul>
-    </div>
+            <!-- row 1: first / last -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">First name</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['first_name']"
+                            placeholder="First name" />
+                    </mat-form-field>
+                </div>
 
-    <div mat-dialog-actions>
-      <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-      <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
-    </div>
-  </div>
-  <ng-template #elseTemplate>
-    <div class="inner-content">
-      Are you sure?
+                <div class="field-with-label">
+                    <span class="field-label">Last name</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['last_name']"
+                            placeholder="Last name" />
+                    </mat-form-field>
+                </div>
+            </div>
 
-      <div mat-dialog-actions>
-        <button (click)="doAction()" mat-raised-button color="primary">{{action}}</button>
-        <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
-      </div>
-    </div>
-  </ng-template>
+            <!-- row 2: company / city -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">Company</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['company']"
+                            placeholder="Company" />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">City</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['city']"
+                            placeholder="City" />
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- RELATION – full width -->
+            <div class="section-label"></div>
+
+            <div class="field-row single">
+                <div class="tag-chips-wrap">
+                  <div class="field-with-label">
+                    <span class="field-label">Skills / Relation</span>
+                      <app-tag-chips
+                          (Tag)="getRelation($event)"
+                          [local_data]="local_data[0]['relation']"
+                          [chipType]="'Relation'"
+                          [showTitle]="false">
+                      </app-tag-chips>
+                  </div>
+                </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="section-label"></div>
+            <div class="section-label">Contact</div>
+
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">Phone</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['phone']"
+                            placeholder="Phone" />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">Email</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['email']"
+                            placeholder="Email" />
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="contact-actions" mat-dialog-actions>
+            <button
+                mat-stroked-button
+                class="ghost"
+                (click)="closeDialog()">
+                Cancel
+            </button>
+
+            <button
+                mat-raised-button
+                color="primary"
+                class="primary"
+                (click)="doAction()">
+                {{ action }}
+            </button>
+        </div>
+    </ng-container>
+
+    <!-- DELETE STATE -->
+    <ng-template #deleteTemplate>
+        <div class="delete-content">
+            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
+            <p>Are you sure you want to remove this contact from the rollodex?</p>
+
+            <div class="contact-actions" mat-dialog-actions>
+                <button
+                    mat-raised-button
+                    color="warn"
+                    class="primary"
+                    (click)="doAction()">
+                    {{ action }}
+                </button>
+
+                <button
+                    mat-stroked-button
+                    class="ghost"
+                    (click)="closeDialog()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </ng-template>
 </div>

@@ -4,7 +4,7 @@ export class contacts {
     owner_group?: number;
     first_name?: string;
     last_name?: string;
-    nickname?: string;
+    company?: string;
     relation?: string;
     city?: string;
     profile_url?: string;
@@ -20,7 +20,7 @@ export class contacts {
         "owner_group",
         "first_name",
         "last_name",
-        "nickname",
+        "company",
         "relation",
         "city",
         "profile_url",

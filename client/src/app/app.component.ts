@@ -16,11 +16,11 @@ import { user } from 'src/app/models/users.model';
         group([
           query(':enter', [
             style({ opacity: 0 }),
-            animate('0.8s ease-in-out', style({ opacity: 1 }))
+            animate('0.4s ease-in-out', style({ opacity: 1 }))
           ], { optional: true }),
           query(':leave', [
             style({ opacity: 1 }),
-            animate('0.5s ease-in-out', style({  opacity: 0 }))
+            animate('0.2s ease-in-out', style({  opacity: 0 }))
           ], { optional: true }),
         ])
       ])

@@ -1,263 +1,261 @@
-ul {
-  width: 50%;
-  margin: 0 auto;
+/* ===========================
+   CONTACT DIALOG SHELL
+   =========================== */
+
+.mf-contact-dialog {
+    padding: 1.25rem 1.6rem 1.6rem;
+    min-width: 520px;
+    max-width: 720px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-height: none;   /* no forced cap; let dialog height drive it */
 }
 
-li {
-  display:flex;
-  flex-direction: row;
+/* HEADER */
 
-  p {
-    min-width:250px;
-    width: 100%;
-    display:flex;
-    flex-direction: column;
+.mf-contact-dialog .contact-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.mf-contact-dialog .avatar-ring {
+    padding: 2px;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 0% 0%, #ffffff66, transparent 60%),
+        radial-gradient(circle at 100% 100%, #ffffff22, transparent 60%);
+}
+
+.mf-contact-dialog .avatar-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    text-align:right;
-    font-size: 14px;
-    color: #0000008a;
-    margin-right: 15px;
-  }
-
-  div {
-    min-width:250px;
-    width:100%;
-  }
-
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 34px;
+    color: #ffffff; /* @ symbol white */
 }
 
-.section {
-  display:flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width:100%;
-  margin-bottom:10px;
+.mf-contact-dialog .header-text h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #ffffff;
 }
 
-.row {
-  // display:flex;
-  // flex-direction: row;
-  // justify-content: space-between;
-  // width:100%;
+.mf-contact-dialog .header-text p {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: #ffffff;
 }
 
-app-tag-chips {
-  width: 100%;
-}
+/* ===========================
+   GRID / ROWS / LABELS
+   =========================== */
 
-@media (min-width:320px)  {
-  ul {
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  li {
-    display:flex;
+.mf-contact-dialog .contact-grid {
+    display: flex;
     flex-direction: column;
-
-    p {
-      min-width:inherit;
-      width: 100%;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:left;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:inherit;
-    }
-
-  }
-
-  ::ng-deep {
-    app-tag-chips {
-      #tag-chips {
-        flex-direction: column!important;
-
-        p {
-          text-align:left!important;
-        }
-      }
-    }
-  }
+    gap: 0.4rem;
+    /* no overflow-y here – we don’t want an inner scroll */
 }
 
-@media (min-width:801px)  {
-  ul {
-    width: 100%;
-    margin: 0 auto;
-  }
+.mf-contact-dialog .section-label {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.7;
+    margin-top: 1.1rem;
+    margin-bottom: 0.4rem;
+    color: #ffffff;
+}
 
-  li {
-    display:flex;
+.mf-contact-dialog .field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.1rem;
+}
+
+.mf-contact-dialog .field-row.single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.mf-contact-dialog .field-row.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mf-contact-dialog .field-with-label {
+    display: flex;
     flex-direction: column;
-
-    p {
-      min-width:inherit;
-      width: 100%;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:left;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:inherit;
-      width:100%;
-    }
-
-  }
+    gap: 0.25rem;
 }
 
-@media (min-width:1200px) {
-  ul {
-    width: 50%;
-    margin: 0 auto;
-  }
-
-  li {
-    display:flex;
-    flex-direction: row;
-
-    p {
-      width: 250px;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:right;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:250px;
-      width:100%;
-    }
-
-  }
-
-  ::ng-deep {
-    app-tag-chips {
-      #tag-chips {
-        flex-direction: row!important;
-
-        p {
-          text-align:right!important;
-        }
-      }
-    }
-  }
+.mf-contact-dialog .field-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #ffffff;
+    opacity: 0.78;
 }
-// .content {
-//   width:100%;
-//   min-height:450px;
-//   box-sizing: border-box;
-// }
 
-// #contact-form {
-//   display: flex;
-//   flex-direction: column;
-// }
+.mf-contact-dialog .field-label.subtle {
+    opacity: 0.6;
+    font-size: 0.72rem;
+}
 
-// textarea {
-//   min-height: 200px;
-// }
+/* ===========================
+   MAT-FORM-FIELD SKIN
+   =========================== */
 
-
-// mat-form-field {
-//   width:100%;
-//   margin-right: 3px;
-// }
-// .form-box {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-wrap: wrap;
-//   flex-basis: 20%;
-//   margin-top:20px;
-// }
-// .form-box-horizontal {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-direction: row;
-
-//   mat-checkbox {
-//     margin-right:40px;
-//   }
-// }
-// .form-box-vertical {
-//   display:flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   min-height: 100px;
-//   margin-bottom: 10px;
-//   line-height: 33px;
-
-//   mat-radio-group {
-//     display:flex;
-//     justify-content: flex-start;
-
-//     mat-radio-button {
-//       margin-right:40px;
-//     }
-//   }
-// }
-// .mat-select {
-//   margin: 20px 0 ;
-//   max-width: 300px;
-// }
-
-// .submit {
-//   display:flex;
-//   justify-content: space-between;
-//   width:200px;
-// }
-
-// .user-reqs{
-//   width:100%;
-//   display: block;
-// }
-
-// :host ::ng-deep .user-reqs .glass {
-//   background:transparent!important;
-//   box-shadow: none;
-//   -moz-box-shadow: none;
-//   -webkit-box-shadow: none;
-//   backdrop-filter: none;
-//   -moz-backdrop-filter: none;
-//   -webkit-backdrop-filter: none;
-// }
-
-// table tr {
-//   display: flex;
-//   flex-direction: column;
-//   min-width: 500px;
-
-// }
-
-// td {
-//   width:100%;
-// }
-
-::ng-deep {
-
-  .mat-form-field {
+:host ::ng-deep .mf-contact-dialog .mat-mdc-form-field {
     width: 100%;
-  }
+    margin-bottom: 8px;
+}
 
-  .mat-dialog-actions {
-    justify-content: center;
-  }
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
 
-  // app-tag-chips #tag-chips p {
-  //   min-width: 250px;
-  //   width: 100%;
-  // }
+/* Taller infix so label + value don’t collide */
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-infix {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.4rem !important;
+    min-height: 46px;
+    display: block;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-input-element {
+    color: #ffffff;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+/* ===========================
+   TAG CHIPS ROW – FULL WIDTH
+   =========================== */
+
+.mf-contact-dialog .tag-chips-wrap {
+    width: 100%;
+}
+
+/* the “Skills / Relation” label uses the same .field-with-label rules */
+
+/* Style the chips container so it looks like the other dark inputs */
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips {
+    width: 100%;
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips mat-form-field .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips .mat-mdc-chip-set {
+    padding: 0.25rem 0.45rem 0.35rem;
+    min-height: 38px;
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips .mat-mdc-standard-chip {
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+/* ===========================
+   ACTIONS
+   =========================== */
+
+.mf-contact-dialog .contact-actions {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.mf-contact-dialog .primary {
+    border-radius: 999px !important;
+    padding-inline: 1.4rem;
+    font-weight: 600;
+}
+
+.mf-contact-dialog .ghost {
+    border-radius: 999px !important;
+    border-width: 1px;
+}
+
+/* ===========================
+   DELETE STATE
+   =========================== */
+
+.mf-contact-dialog .delete-content {
+    text-align: left;
+    padding-top: 0.5rem;
+    color: #ffffff;
+}
+
+.mf-contact-dialog .delete-content h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.mf-contact-dialog .delete-content p {
+    margin: 0 0 1rem;
+    opacity: 0.85;
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .mf-contact-dialog {
+        min-width: 0;
+        width: 100%;
+        max-width: 95vw;
+        padding: 1rem;
+    }
+
+    .mf-contact-dialog .field-row,
+    .mf-contact-dialog .field-row.three {
+        grid-template-columns: 1fr;
+    }
 }

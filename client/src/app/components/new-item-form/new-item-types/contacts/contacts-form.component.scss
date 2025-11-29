@@ -217,3 +217,423 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 .mild-container {
   position:relative;
 }
+
+
+.contacts-rollodex {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem 2rem;
+}
+
+.rollodex-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rollodex-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rollodex-search {
+    display: flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+}
+
+.rollodex-search mat-icon {
+    margin-right: 0.5rem;
+}
+
+.rollodex-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+}
+
+.rollodex-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rollodex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.rollodex-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.rollodex-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+.rollodex-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 20%, #ffffff33, #000000dd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.rollodex-avatar.has-image span {
+    display: none;
+}
+
+.rollodex-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    overflow: hidden;
+}
+
+.rollodex-name {
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.rollodex-meta {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.rollodex-meta .separator {
+    opacity: 0.5;
+}
+
+.rollodex-empty {
+    margin-top: 2.5rem;
+    text-align: center;
+    opacity: 0.8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.contacts-rollodex {
+    padding: 1.5rem 2.25rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.rollodex-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    margin-top: 0.75rem;
+    padding: 1.75rem 2rem 2.25rem;
+    border-radius: 26px;
+    background: radial-gradient(circle at 10% -10%, rgba(255,255,255,0.08), transparent 55%),
+                radial-gradient(circle at 90% 110%, rgba(255,255,255,0.06), transparent 55%),
+                rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(18px);
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.rollodex-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+}
+
+.rollodex-title-block h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.rollodex-title-block .subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.rollodex-toolbar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.5rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.85);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(18px);
+}
+
+.toolbar-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+}
+
+.toolbar-search mat-icon {
+    font-size: 1.1rem;
+}
+
+.toolbar-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-size: 0.9rem;
+    min-width: 180px;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255,255,255,0.3),
+        transparent
+    );
+}
+
+.toolbar-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.sort-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+}
+
+.toolbar-select ::ng-deep .mat-mdc-form-field {
+    width: 140px;
+    margin-bottom: -0.25rem;
+}
+
+.toolbar-add {
+    border-radius: 999px !important;
+    padding: 0.35rem 1.1rem;
+    font-weight: 600;
+}
+
+/* body / grid */
+
+.rollodex-body {
+    margin-top: 0.5rem;
+}
+
+.rollodex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.rollodex-card {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.rollodex-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.86);
+}
+
+.rollodex-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 55%),
+        radial-gradient(circle at 80% 120%, rgba(255,255,255,0.12), transparent 55%),
+        #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.rollodex-avatar.has-image span {
+    display: none;
+}
+
+.rollodex-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    overflow: hidden;
+}
+
+.rollodex-name {
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.rollodex-meta {
+    font-size: 0.78rem;
+    opacity: 0.85;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.rollodex-meta .separator {
+    opacity: 0.5;
+}
+
+/* empty state */
+
+.rollodex-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem 0 1rem;
+}
+
+.glassy.empty-card {
+    text-align: center;
+    max-width: 420px;
+    padding: 1.5rem 1.75rem 1.75rem;
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.78);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.8),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+}
+
+.empty-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 0.75rem;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3), transparent 55%),
+                #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon mat-icon {
+    font-size: 1.8rem;
+}
+
+.glassy.empty-card h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.3rem;
+}
+
+.glassy.empty-card p {
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
+/* contacts-form.component.scss */
+
+.sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sort-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+/* PILL SELECT */
+:host ::ng-deep .mf-pill-select .mat-mdc-text-field-wrapper {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+    padding-inline: 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+:host ::ng-deep .mf-pill-select .mdc-line-ripple {
+    display: none;
+}
+
+:host ::ng-deep .mf-pill-select .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+:host ::ng-deep .mf-pill-select .mat-mdc-form-field-infix {
+    min-height: 40px;
+    padding: 0 1.1rem !important;
+}
+
+:host ::ng-deep .mf-pill-select .mat-mdc-select-value,
+:host ::ng-deep .mf-pill-select .mat-mdc-select-placeholder {
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+:host ::ng-deep .mf-pill-select .mat-mdc-select-arrow {
+    color: #ffffff;
+}
+
+:host ::ng-deep .mf-pill-select .mat-mdc-form-field-flex {
+    padding-top: 0 !important;
+}

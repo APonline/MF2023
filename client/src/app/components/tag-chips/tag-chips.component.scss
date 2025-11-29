@@ -1,125 +1,75 @@
-
-// app-tag-chips {
-//   width: 100%;
-// }
-// #tag-chips {
-//   display:flex;
-//   flex-direction: row;
-
-//   p {
-//     max-width:144px;
-//     width:100%;
-//     display:flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     text-align:right;
-//     font-size: 14px;
-//     color: #0000008a;
-//     margin-right: 15px;
-//   }
-
-//   div {
-//     // min-width:250px;
-//     width:100%;
-//   }
-// }
-
-// @media (min-width:801px)  {
-//   #tag-chips {
-//     display:flex;
-//     flex-direction: row;
-
-//     p {
-//       min-width:inherit!important;
-//       max-width: 190px;
-//       width:100%;
-//       display:flex;
-//       flex-direction: column;
-//       justify-content: center;
-//       text-align:right;
-//       font-size: 14px;
-//       color: #0000008a;
-//       margin-right: 15px;
-//     }
-
-//     div {
-//       min-width:inherit;
-//       width:100%;
-//     }
-//   }
-// }
-
-
-// @media (min-width:1200px)  {
-//   #tag-chips {
-//     display:flex;
-//     flex-direction: row;
-
-//     p {
-//       min-width:inherit!important;
-//       max-width: 180px;
-//       width:100%;
-//       display:flex;
-//       flex-direction: column;
-//       justify-content: center;
-//       text-align:right;
-//       font-size: 14px;
-//       color: #0000008a;
-//       margin-right: 15px;
-//     }
-
-//     div {
-//       min-width:inherit;
-//       width:100%;
-//     }
-//   }
-// }
-
-@media (max-width:1200px)  {
-
-  #tag-chips {
-    display:flex;
+#tag-chips {
+    display: flex;
     flex-direction: column;
-  }
+    gap: 0.35rem;
+    width: 100%;
 }
 
-@media (min-width:1200px)  {
-
-  #tag-chips {
-    display:flex;
-    flex-direction: row;
-
+#tag-chips.inline {
+    // when showTitle = false → no internal label
     p {
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      font-size: 14px;
-      margin-right: 15px;
-      color: #0000008a;
-      text-align:right;
-      width:250px;
+        display: none;
     }
+}
 
-    div {
-      width:100%;
-    }
+#tag-chips > p {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+}
 
-    // p {
-    //   min-width:inherit!important;
-    //   max-width: 180px;
-    //   width:100%;
-    //   display:flex;
-    //   flex-direction: column;
-    //   justify-content: center;
-    //   text-align:right;
-    //   font-size: 14px;
-    //   color: #0000008a;
-    //   margin-right: 15px;
-    // }
+#tag-chips .chips-field {
+    width: 100%;
+}
 
-    // div {
-    //   min-width:inherit;
-    //   width:100%;
-    // }
-  }
+/* make the chips field look like the other dark inputs */
+:host ::ng-deep #tag-chips .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep #tag-chips .mat-mdc-form-field-infix {
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.35rem !important;
+    min-height: 46px;
+}
+
+:host ::ng-deep #tag-chips .mat-mdc-input-element {
+    color: #ffffff;
+}
+
+:host ::ng-deep #tag-chips .mat-mdc-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+:host ::ng-deep #tag-chips .mat-mdc-chip-set {
+    padding: 0.25rem 0.45rem 0.35rem;
+}
+
+:host ::ng-deep #tag-chips .mat-mdc-standard-chip {
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+/* Make chip grid wrap and push the input onto its own line */
+:host ::ng-deep #tag-chips .mat-mdc-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+/* Chips in the first row(s) */
+:host ::ng-deep #tag-chips .mat-mdc-standard-chip {
+    margin: 0 0.35rem 0.25rem 0;
+}
+
+/* Input sits full-width under the chips */
+:host ::ng-deep #tag-chips .mat-mdc-chip-grid .mat-mdc-input-element {
+    flex: 1 0 100%;       /* take whole row */
+    width: 100%;
+    min-width: 0;
+    margin-top: 0.35rem;
 }

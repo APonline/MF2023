@@ -56,8 +56,6 @@ export class ContactUpdateComponent implements OnInit {
     data.owner_user = this.currentUser.id;
     data.active = 1;
 
-    console.log('D: ', data)
-
     Object.keys(data).map(res => {
       this.displayedColumns.push(res)
     })
@@ -82,14 +80,13 @@ export class ContactUpdateComponent implements OnInit {
       owner_group: this.data.owner_id,
       first_name: this.local_data[0].first_name,
       last_name: this.local_data[0].last_name,
-      nickname: this.local_data[0].nickname,
+      company: this.local_data[0].company,
       relation: this.selectedRelations,
       city: this.local_data[0].city,
       phone: this.local_data[0].phone,
       email: this.local_data[0].email,
       active: 1,
       // contact_image: this.local_data[0].contact_image,
-      profile_url: ('@'+(this.data.group).replace(/\s+/g, '')+'-'+this.local_data[0].first_name+'-'+this.local_data[0].last_name).toLowerCase(),
     };
 
     if(this.modUser){

@@ -239,6 +239,7 @@ button.mat-primary:hover {
   background-color:#bfbfbf!important;
   transition: all .4s ease-in-out;
 }
+
 .mat-dialog-container button.mat-primary, button.dalmation.mat-primary{
   border-radius:12px;
   border: 2px solid #000;
@@ -278,3 +279,48 @@ button.mat-accent:hover {
     background: transparent !important;
 }
 
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    background: url('/assets/images/loginbk.jpg') !important;
+    background-size: cover !important;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border-radius: 8px !important;      /* ⬅️ round popup */
+    overflow: hidden;                   /* ⬅️ no inner scrollbars */
+    max-height: none !important; 
+}
+/* _component.scss (global) */
+
+.mf-pill-select .mat-mdc-text-field-wrapper {
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 999px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+    padding-inline: 0.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mf-pill-select .mdc-line-ripple {
+    display: none;
+}
+
+.mf-pill-select .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+.mf-pill-select .mat-mdc-form-field-infix {
+    min-height: 40px;
+    padding: 0 1.1rem !important;
+}
+
+.mf-pill-select .mat-mdc-select-value,
+.mf-pill-select .mat-mdc-select-placeholder {
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.mf-pill-select .mat-mdc-select-arrow {
+    color: #ffffff;
+}
+
+.mf-pill-select .mat-mdc-form-field-flex {
+    padding-top: 0 !important;
+}

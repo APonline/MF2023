@@ -80,13 +80,139 @@
   </div>
 
   <ng-template #noLineView>
-    <div class="view-container">
-      <div class="goback page-top-cta">
-        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-          Go Back
-        </button>
-      </div>
-      <h1>poo</h1>
+    <div class="view-container contacts-rollodex">
+        <div class="goback page-top-cta">
+            <button
+                [routerLink]="['/projects', groupId, group]"
+                id="goBack"
+                mat-raised-button
+                color="accent">
+                Go Back
+            </button>
+        </div>
+
+        <div class="rollodex-main">
+            <!-- heading / intro -->
+            <div class="rollodex-header-row">
+                <div class="rollodex-title-block">
+                    <h1>{{ toolName || 'Contacts' }}</h1>
+
+                </div>
+
+                <!-- toolbar pill -->
+                <div class="rollodex-toolbar">
+                    <div class="toolbar-search">
+                        <mat-icon>search</mat-icon>
+                        <input
+                            matInput
+                            type="text"
+                            placeholder="Filter contacts..."
+                            (input)="onRollodexFilterChange($event.target.value)" />
+                    </div>
+
+                    <div class="toolbar-divider"></div>
+
+                    <div class="toolbar-right">
+                      <div class="sort-wrap">
+                          <span class="sort-label">Sort by</span>
+
+                          <mat-form-field
+                              appearance="fill"
+                              class="mf-pill-select">
+
+                              <mat-select
+                                  [(ngModel)]="rollodexSortMode"
+                                  (ngModelChange)="onRollodexSortChange($event)">
+
+                                  <mat-option value="name">Name</mat-option>
+                                  <mat-option value="relation">Relation</mat-option>
+                                  <mat-option value="city">City</mat-option>
+                              </mat-select>
+                          </mat-form-field>
+                      </div>
+                  </div>
+
+                  <button
+                          mat-raised-button
+                          color="primary"
+                          class="add-contact-btn"
+                          (click)="openDialog('Add', newRecord)">
+                          Add Contact
+                      </button>
+
+                </div>
+            </div>
+
+            <!-- grid / empty state -->
+            <div class="rollodex-body">
+                <div
+                    class="rollodex-grid"
+                    *ngIf="rollodexContacts?.length; else emptyRollodex">
+                    <div
+                        class="rollodex-card"
+                        *ngFor="let contact of rollodexContacts"
+                        (click)="openDialog('Update', contact)">
+                        <div
+                            class="rollodex-avatar"
+                            [ngClass]="{ 'has-image': !!contact.contact_image }"
+                            [ngStyle]="contact.contact_image ? {'background-image': 'url(' + contact.contact_image + ')'} : null">
+                            <span *ngIf="!contact.contact_image">
+                                {{ getContactInitials(contact) }}
+                            </span>
+                        </div>
+
+                        <div class="rollodex-info">
+                            <div class="rollodex-name">
+                                {{ getContactDisplayName(contact) }}
+                            </div>
+
+                            <div class="rollodex-meta line">
+                                <span class="relation" *ngIf="contact.relation">
+                                    {{ contact.relation }}
+                                </span>
+                                <span class="separator" *ngIf="contact.relation && contact.city">•</span>
+                                <span class="city" *ngIf="contact.city">
+                                    {{ contact.city }}
+                                </span>
+                            </div>
+
+                            <div class="rollodex-meta line">
+                                <span class="phone" *ngIf="contact.phone">
+                                    {{ contact.phone }}
+                                </span>
+                                <span class="separator" *ngIf="contact.phone && contact.email">•</span>
+                                <span class="email" *ngIf="contact.email">
+                                    {{ contact.email }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-template #emptyRollodex>
+                    <div class="rollodex-empty">
+                        <div class="empty-card glassy">
+                            <div class="empty-icon">
+                                <mat-icon>contact_mail</mat-icon>
+                            </div>
+                            <h2>No contacts yet</h2>
+                            <p>
+                                Save bands, venues, engineers, whoever matters for this project -
+                                they'll show up here as a neat little deck of cards.
+                            </p>
+                            <button
+                                mat-raised-button
+                                color="primary"
+                                (click)="openDialog('Add', newRecord)">
+                                Add your first contact
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
     </div>
   </ng-template>
+
+
 </div>
