@@ -41,8 +41,11 @@ export class TasksService {
     return this.http.delete(baseUrl);
   }
 
-  getBoard(): Observable<any> {
-      return this.http.get(`${baseUrl}/board`);
+  getBoard(params?: { owner_group?: number | string; owner_user?: number | string }) {
+    return this.http.get<any>(
+        `${baseUrl}/board`,
+        { params: params as any }
+    );
   }
 
   /** Move task: update column_key + sort_index */

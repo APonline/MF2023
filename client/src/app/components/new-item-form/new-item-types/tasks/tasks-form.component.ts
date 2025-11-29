@@ -146,14 +146,24 @@ export class TasksFormComponent implements OnInit, OnChanges {
 
         this.artistsService.get(this.groupId).subscribe(res => {
             this.artist = res;
-        });
 
-        this.loadData();
-        this.loadBoard();
+            this.loadData();
+            this.loadBoard();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         this.imageKey = this.MF.buildImageKey(this.toolName);
+
+        if (changes['groupId'] && !changes['groupId'].firstChange) {
+          // when artist / project changes, reload artist + tasks + board
+          this.artistsService.get(this.groupId).subscribe(res => {
+              this.artist = res;
+
+              this.loadData();
+              this.loadBoard();
+          });
+      }
     }
 
     async loadData(): Promise<void> {
@@ -387,14 +397,16 @@ export class TasksFormComponent implements OnInit, OnChanges {
         this.isBoardLoading = true;
         this.boardError = null;
 
-        this.tasksService.getBoard().subscribe({
-            next: (data: Record<string, Task[]>) => {
+        const owner_group = this.artist?.id || this.groupId;
+
+        this.tasksService.getBoard({ owner_group }).subscribe({
+            next: (data) => {  
                 const defaultKeys = ['backlog', 'todo', 'in_progress', 'done'];
 
                 const cols: Column[] = defaultKeys.map(key => ({
                     key,
                     title: this.mapKeyToTitle(key),
-                    tasks: (data[key] || []).map((t, index) => ({
+                    tasks: (data[key] || []).map((t: any, index: number) => ({
                         ...t,
                         column_key: t.column_key || key,
                         sort_index: t.sort_index ?? index
@@ -402,13 +414,9 @@ export class TasksFormComponent implements OnInit, OnChanges {
                 }));
 
                 this.allColumns = cols;
-
-                // this will filter + sort + set this.columns / columnIds
                 this.applyGlobalFilter();
-
                 this.isBoardLoading = false;
 
-                // deep-link handling – search full snapshot, not filtered columns
                 if (this.deepLinkTaskId && !this.deepLinkHandled) {
                     const allTasks: Task[] = this.allColumns.reduce(
                         (acc: Task[], c: Column) => acc.concat(c.tasks || []),
@@ -422,13 +430,14 @@ export class TasksFormComponent implements OnInit, OnChanges {
                     }
                 }
             },
-            error: err => {
+            error: (err) => {
                 console.error('Failed to load board', err);
                 this.boardError = 'Unable to load board.';
                 this.isBoardLoading = false;
             }
         });
     }
+
 
     /**
      * Global text filter across all columns (task + description).

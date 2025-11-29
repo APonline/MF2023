@@ -170,11 +170,10 @@ exports[`Xdelete${itemTopic}`] = async (req, res) => {
 }
 exports[`get${itemTopic}Board`] = async (req, res) => {
     try {
-        const { owner_group, owner_user } = req.query;
+        const { owner_group } = req.query;
 
         const where = { active: 1 };
         if (owner_group) where.owner_group = owner_group;
-        if (owner_user) where.owner_user = owner_user;
 
         const result = await Item.findAll({
             where,
