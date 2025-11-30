@@ -15,13 +15,37 @@ function isLocalHost(host = "") {
     return /^localhost(:\d+)?$|^127\.0\.0\.1(:\d+)?$/.test(String(host).trim());
 }
 
+/** Treat localhost / 127.* origins as dev origins */
+function isDevOrigin(origin = "") {
+    const o = String(origin).trim();
+    if (!o) return false;
+
+    return (
+        /^http:\/\/localhost(:\d+)?$/.test(o) ||
+        /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(o)
+    );
+}
+
 /** Build a base URL from the actual request (works behind proxies) */
 function getBaseUrl(req) {
     const forwardedProto = req.headers["x-forwarded-proto"];
     const proto = (forwardedProto || req.protocol || "http").split(",")[0].trim();
+
+    const origin = req.headers.origin;
+    // If the browser origin is non-dev (e.g. https://musefactory.app),
+    // trust that as the base URL.
+    if (origin && !isDevOrigin(origin)) {
+        return origin.replace(/\/+$/, "");
+    }
+
     const host = req.get("host"); // includes port if present
-    if (!host) return "http://localhost:4200";
-    if (isLocalHost(host)) return "http://localhost:4200";
+    if (!host) {
+        return "http://localhost:4200";
+    }
+    if (isLocalHost(host)) {
+        return "http://localhost:4200";
+    }
+
     return `${proto}://${host}`;
 }
 
@@ -65,7 +89,7 @@ const allowedOrigins = [
 app.use(
     cors({
         origin: (origin, cb) => {
-            if (!origin) return cb(null, true); // curl/postman
+            if (!origin) return cb(null, true); // curl/postman/no-origin
             const ok = allowedOrigins.some((rule) =>
                 rule instanceof RegExp ? rule.test(origin) : rule === origin
             );
@@ -83,29 +107,38 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Cookies (secure in prod, lax in dev; no env vars)
-app.use(
-    (req, res, next) =>
-        cookieSession({
-            name: "mf-session",
-            // NOTE: replace with a persisted secret (file read) for real security:
-            secret: "REPLACE_ME_WITH_A_PERSISTED_SECRET",
-            httpOnly: true,
-            sameSite: isLocalHost(req.get("host")) ? "lax" : "none",
-            secure: !isLocalHost(req.get("host")), // only secure over HTTPS
-            // Set cookie domain in prod; omit in local
-            domain: isLocalHost(req.get("host")) ? undefined : "musefactory.app"
-        })(req, res, next)
-);
+app.use((req, res, next) => {
+    const origin = req.headers.origin || "";
+    const host = req.get("host") || "";
+    const dev = isDevOrigin(origin) || isLocalHost(host);
+
+    cookieSession({
+        name: "mf-session",
+        // NOTE: replace with a persisted secret (file read) for real security:
+        secret: "REPLACE_ME_WITH_A_PERSISTED_SECRET",
+        httpOnly: true,
+        sameSite: dev ? "lax" : "none",
+        secure: !dev, // only secure over HTTPS in non-dev
+        // Set cookie domain in prod; omit in local/dev
+        domain: dev ? undefined : "musefactory.app"
+    })(req, res, next);
+});
 
 // Routes
 require("./API/routes")(app);
 
 // Health / debug
 app.get("/ping", (req, res) => {
+    const origin = req.headers.origin || "";
+    const host = req.get("host") || "";
+    const dev = isDevOrigin(origin) || isLocalHost(host);
+
     res.json({
         ok: true,
         baseUrl: res.locals.baseUrl,
-        host: req.get("host"),
+        host,
+        origin,
+        dev,
         ip: req.ip
     });
 });
