@@ -70,7 +70,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   rollodexContacts: any[] = [];
   rollodexFilterTerm: string = '';
   rollodexSortMode: 'name' | 'relation' | 'city' = 'name';
-  sortKey: 'name' | 'relation' | 'city' = 'relation';
+  sortKey: 'name' | 'relation' | 'city' = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -541,6 +541,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
         this.activeLetter = letter;
     }
   }
+
 
   onHoverLetter(letter: string | null): void {
       this.activeLetter = letter;

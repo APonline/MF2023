@@ -150,15 +150,33 @@
 
             <!-- grid / empty state -->
             <div class="rollodex-body">
+                <div class="alpha-nav" *ngIf="rollodexContacts?.length">
+                    <div
+                        *ngFor="let letter of alphabet"
+                        class="alpha-letter"
+                        [class.is-active]="letter === activeLetter"
+                        (mouseenter)="onHoverLetter(letter)"
+                        (mouseleave)="onHoverLetter(null)"
+                        (click)="scrollToLetter(letter)">
+                        {{ letter }}
+                    </div>
+
+                    <div class="alpha-floater" *ngIf="activeLetter">
+                        {{ activeLetter }}
+                    </div>
+                </div>
+
+                <!-- Long horizontal cards -->
                 <div
-                    class="rollodex-grid"
+                    class="rollodex-list"
                     *ngIf="rollodexContacts?.length; else emptyRollodex">
 
                     <div
-                        class="rollodex-card"
+                        class="rollodex-card mf-contact-card"
                         *ngFor="let contact of rollodexContacts"
                         [attr.data-letter]="getContactInitialLetter(contact)"
                         (click)="openDialog('Update', contact)">
+
                         <div
                             class="rollodex-avatar"
                             [ngClass]="{ 'has-image': !!contact.contact_image }"
@@ -193,23 +211,6 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- A–Z rail -->
-                <div class="alpha-nav" *ngIf="rollodexContacts?.length">
-                    <div
-                        *ngFor="let letter of alphabet"
-                        class="alpha-letter"
-                        [class.is-active]="letter === activeLetter"
-                        (mouseenter)="onHoverLetter(letter)"
-                        (mouseleave)="onHoverLetter(null)"
-                        (click)="scrollToLetter(letter)">
-                        {{ letter }}
-                    </div>
-
-                    <div class="alpha-floater" *ngIf="activeLetter">
-                        {{ activeLetter }}
                     </div>
                 </div>
 
