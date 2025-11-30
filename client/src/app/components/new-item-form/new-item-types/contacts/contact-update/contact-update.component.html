@@ -60,11 +60,30 @@
 
                 <div class="field-with-label">
                     <span class="field-label">City</span>
-                    <mat-form-field appearance="fill">
+                    <!-- <mat-form-field appearance="fill">
                         <input
                             matInput
                             [(ngModel)]="local_data[0]['city']"
                             placeholder="City" />
+                    </mat-form-field> -->
+
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [matAutocomplete]="cityAuto"
+                            [(ngModel)]="local_data[0]['city']"
+                            (ngModelChange)="onCityInputChange($event)"
+                            placeholder="City" />
+
+                        <mat-autocomplete
+                            #cityAuto="matAutocomplete"
+                            (optionSelected)="onCitySelected($event.option.value)">
+                            <mat-option
+                                *ngFor="let option of filteredCities"
+                                [value]="option">
+                                {{ option }}
+                            </mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
                 </div>
             </div>

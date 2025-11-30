@@ -4,11 +4,22 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { AuthenticationService } from '../../../../../services/authentication.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
-
+import citiesData from 'cities.json';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import moment from 'moment';
 
+interface CityOption {
+    name: string;
+    country: string;
+    subcountry?: string;
+}
+
+interface CityEntry {
+    name: string;
+    country: string;
+    subcountry?: string;
+}
 
 @Component({
   selector: 'app-contactUpdate',
@@ -34,6 +45,9 @@ export class ContactUpdateComponent implements OnInit {
   modUser=false;
 
   selectedRelations= '';
+
+  cityOptions: string[] = [];
+  filteredCities: string[] = [];
 
   constructor(
       private formBuilder: FormBuilder,
@@ -71,6 +85,49 @@ export class ContactUpdateComponent implements OnInit {
     }
 
     this.requiresUploader();
+
+    const entries: CityEntry[] = (citiesData as any[]).map((c: any) => ({
+        name: c.name,
+        country: c.country,
+        subcountry: c.subcountry
+    }));
+
+    // e.g. "Toronto, Ontario" or just "Toronto" if no subcountry
+    const labels = entries.map(c =>
+        c.subcountry ? `${c.name}, ${c.subcountry}` : c.name
+    );
+
+    this.cityOptions = Array.from(new Set(labels)).sort((a, b) =>
+        a.localeCompare(b)
+    );
+
+    // seed filtered list
+    const initialCity = this.local_data?.[0]?.city || '';
+    this.updateFilteredCities(initialCity);
+  }
+
+  onCityInputChange(value: string): void {
+      this.local_data[0].city = value;
+      this.updateFilteredCities(value);
+  }
+
+  // called when an option is actually picked
+  onCitySelected(value: string): void {
+      this.local_data[0].city = value;
+  }
+
+  private updateFilteredCities(term: string): void {
+      const q = (term || '').toLowerCase();
+
+      if (!q) {
+          // maybe just show a small subset when empty
+          this.filteredCities = this.cityOptions.slice(0, 25);
+          return;
+      }
+
+      this.filteredCities = this.cityOptions
+          .filter(label => label.toLowerCase().includes(q))
+          .slice(0, 25);  // cap to keep the list short
   }
 
 

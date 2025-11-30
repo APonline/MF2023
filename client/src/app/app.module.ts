@@ -6,6 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 // used to create fake backend
 import { ErrorInterceptor } from './helpers/error.interceptor';
@@ -170,7 +171,8 @@ import { TaskCardComponent } from './components/new-item-form/new-item-types/tas
     UserModule,
     BrowserAnimationsModule,
     BrowserModule,
-    DragDropModule
+    DragDropModule,
+    MatAutocompleteModule
   ],
   providers: [
     SocketioService,

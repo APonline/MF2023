@@ -259,6 +259,10 @@ export class ContactsFormComponent implements OnInit, OnChanges {
                 // For UPDATE we already know the id, so we can build deepLink now
                 const deepLink = buildDeepLink(targetId, baseCore);
 
+                if (deepLink) {
+                    (baseCore as any).profile_url = deepLink;   // make sure effectiveRow sees it
+                }
+
                 const basePayload = {
                     ...baseCore,
                     profile_url: deepLink || undefined
@@ -266,12 +270,12 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
                 persist$ = this.contactsService.update(targetId, basePayload);
             } else {
-                // DELETE (soft)
+                // DELETE (soft) – mirror tasks: just mark active = 0
                 if (!targetId) {
                     this.alertService.error('Unable to delete Contact (no id).');
                     return;
                 }
-                persist$ = this.contactsService.delete(targetId);
+                persist$ = this.contactsService.update(targetId, { active: 0 });
             }
 
             persist$.subscribe({
@@ -389,6 +393,7 @@ export class ContactsFormComponent implements OnInit, OnChanges {
             });
         });
   }
+
 
   private buildRollodex(): void {
     const term = (this.rollodexFilterTerm || '').trim().toLowerCase();
