@@ -153,9 +153,11 @@
                 <div
                     class="rollodex-grid"
                     *ngIf="rollodexContacts?.length; else emptyRollodex">
+
                     <div
                         class="rollodex-card"
                         *ngFor="let contact of rollodexContacts"
+                        [attr.data-letter]="getContactInitialLetter(contact)"
                         (click)="openDialog('Update', contact)">
                         <div
                             class="rollodex-avatar"
@@ -194,6 +196,23 @@
                     </div>
                 </div>
 
+                <!-- A–Z rail -->
+                <div class="alpha-nav" *ngIf="rollodexContacts?.length">
+                    <div
+                        *ngFor="let letter of alphabet"
+                        class="alpha-letter"
+                        [class.is-active]="letter === activeLetter"
+                        (mouseenter)="onHoverLetter(letter)"
+                        (mouseleave)="onHoverLetter(null)"
+                        (click)="scrollToLetter(letter)">
+                        {{ letter }}
+                    </div>
+
+                    <div class="alpha-floater" *ngIf="activeLetter">
+                        {{ activeLetter }}
+                    </div>
+                </div>
+
                 <ng-template #emptyRollodex>
                     <div class="rollodex-empty">
                         <div class="empty-card glassy">
@@ -215,6 +234,7 @@
                     </div>
                 </ng-template>
             </div>
+
         </div>
     </div>
   </ng-template>

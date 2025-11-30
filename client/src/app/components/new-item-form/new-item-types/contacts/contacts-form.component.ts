@@ -73,6 +73,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   sortKey: 'name' | 'relation' | 'city' = 'relation';
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  activeLetter: string | null = null;
+
   private deepLinkContactId: number | null = null;
   private deepLinkHandled = false;
 
@@ -525,6 +528,28 @@ export class ContactsFormComponent implements OnInit, OnChanges {
     this.buildRollodex();
   }
 
+  scrollToLetter(letter: string): void {
+    const el = document.querySelector<HTMLElement>(
+        `.mf-contact-card[data-letter="${letter}"]`
+    );
+    if (el) {
+        el.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest'
+        });
+        this.activeLetter = letter;
+    }
+  }
 
+  onHoverLetter(letter: string | null): void {
+      this.activeLetter = letter;
+  }
+
+  getContactInitialLetter(contact: any): string {
+      const name = this.getContactDisplayName(contact) || '';
+      const ch   = name.trim().charAt(0).toUpperCase();
+      return ch && ch >= 'A' && ch <= 'Z' ? ch : '#';
+  }
 
 }
