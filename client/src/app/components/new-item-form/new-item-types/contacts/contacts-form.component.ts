@@ -270,12 +270,13 @@ export class ContactsFormComponent implements OnInit, OnChanges {
 
                 persist$ = this.contactsService.update(targetId, basePayload);
             } else {
-                // DELETE (soft) – mirror tasks: just mark active = 0
+                // DELETE (soft) – use your delete() endpoint which sets active = 0
                 if (!targetId) {
                     this.alertService.error('Unable to delete Contact (no id).');
                     return;
                 }
-                persist$ = this.contactsService.update(targetId, { active: 0 });
+
+                persist$ = this.contactsService.delete(targetId);
             }
 
             persist$.subscribe({
@@ -394,7 +395,6 @@ export class ContactsFormComponent implements OnInit, OnChanges {
         });
   }
 
-
   private buildRollodex(): void {
     const term = (this.rollodexFilterTerm || '').trim().toLowerCase();
     let list = [...(this.dataSource || [])];
@@ -460,9 +460,9 @@ export class ContactsFormComponent implements OnInit, OnChanges {
   onRollodexSortChange(mode: string): void {
     if (mode === 'name' || mode === 'relation' || mode === 'city') {
         this.rollodexSortMode = mode;
-        this.sortKey = mode;          // keep table + rolodex in sync
-        this.applySort();             // table
-        this.buildRollodex();         // cards
+        this.sortKey = mode;        
+        this.applySort();  
+        this.buildRollodex();   
     }
   }
 

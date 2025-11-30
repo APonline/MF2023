@@ -60,13 +60,6 @@
 
                 <div class="field-with-label">
                     <span class="field-label">City</span>
-                    <!-- <mat-form-field appearance="fill">
-                        <input
-                            matInput
-                            [(ngModel)]="local_data[0]['city']"
-                            placeholder="City" />
-                    </mat-form-field> -->
-
                     <mat-form-field appearance="fill">
                         <input
                             matInput
@@ -94,7 +87,7 @@
             <div class="field-row single">
                 <div class="tag-chips-wrap">
                   <div class="field-with-label">
-                    <span class="field-label">Skills / Relation</span>
+                    <span class="field-label">Skills</span>
                       <app-tag-chips
                           (Tag)="getRelation($event)"
                           [local_data]="local_data[0]['relation']"
@@ -110,26 +103,37 @@
             <div class="section-label">Contact</div>
 
             <div class="field-row">
-                <div class="field-with-label">
-                    <span class="field-label">Phone</span>
-                    <mat-form-field appearance="fill">
-                        <input
-                            matInput
-                            [(ngModel)]="local_data[0]['phone']"
-                            placeholder="Phone" />
-                    </mat-form-field>
-                </div>
+              <div class="field-with-label">
+                  <span class="field-label">Phone</span>
+                  <mat-form-field
+                      appearance="fill"
+                      [ngClass]="{ 'has-error': phoneError }">
+                      <input
+                          matInput
+                          [(ngModel)]="local_data[0]['phone']"
+                          placeholder="Phone" />
+                  </mat-form-field>
+                  <div *ngIf="phoneError" class="field-error">
+                      {{ phoneError }}
+                  </div>
+              </div>
 
-                <div class="field-with-label">
-                    <span class="field-label">Email</span>
-                    <mat-form-field appearance="fill">
-                        <input
-                            matInput
-                            [(ngModel)]="local_data[0]['email']"
-                            placeholder="Email" />
-                    </mat-form-field>
-                </div>
-            </div>
+              <div class="field-with-label">
+                  <span class="field-label">Email</span>
+                  <mat-form-field
+                      appearance="fill"
+                      [ngClass]="{ 'has-error': emailError }">
+                      <input
+                          matInput
+                          [(ngModel)]="local_data[0]['email']"
+                          placeholder="Email" />
+                  </mat-form-field>
+                  <div *ngIf="emailError" class="field-error">
+                      {{ emailError }}
+                  </div>
+              </div>
+          </div>
+
         </div>
 
         <!-- contact-update.component.html -->

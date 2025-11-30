@@ -49,6 +49,12 @@ export class ContactUpdateComponent implements OnInit {
   cityOptions: string[] = [];
   filteredCities: string[] = [];
 
+  phoneError = '';
+  emailError = '';
+
+  private readonly phonePattern = /^[0-9+()\-\s]{7,20}$/;
+  private readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
@@ -132,6 +138,38 @@ export class ContactUpdateComponent implements OnInit {
 
 
   doAction(){
+    this.phoneError = '';
+    this.emailError = '';
+
+    const phone = (this.local_data[0].phone || '').trim();
+    const email = (this.local_data[0].email || '').trim();
+
+    // at least one way to contact them
+    if (!phone && !email) {
+        const msg = 'Please provide at least a phone number or an email.';
+        this.phoneError = msg;
+        this.emailError = msg;
+    }
+
+    // phone format
+    if (phone && !this.phonePattern.test(phone)) {
+        this.phoneError = 'Phone number looks invalid.';
+    }
+
+    // email format
+    if (email && !this.emailPattern.test(email)) {
+        this.emailError = 'Email address looks invalid.';
+    }
+
+    // if any error set -> DO NOT CLOSE dialog
+    if (this.phoneError || this.emailError) {
+        return;
+    }
+
+    // if we got here, normalise trimmed values
+    this.local_data[0].phone = phone;
+    this.local_data[0].email = email;
+    
     let newContact = {
       owner_user: this.currentUser.id,
       owner_group: this.data.owner_id,
