@@ -205,7 +205,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 }
 
 .goback {
-  margin: 10px 0 50px 0;
+  margin: 10px 0 10px 0;
 }
 
 .add-new{
@@ -223,7 +223,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 1.5rem 2rem 2rem;
+    padding: 0rem 2rem 2rem;
 }
 
 .rollodex-header {
@@ -349,7 +349,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
                 rgba(0, 0, 0, 0.72);
     backdrop-filter: blur(18px);
     box-shadow:
-        0 24px 70px rgba(0, 0, 0, 0.75),
+        0 24px 36px rgba(0, 0, 0, 0.75),
         inset 0 0 0 1px rgba(255, 255, 255, 0.04);
     display: flex;
     flex-direction: column;
@@ -450,9 +450,11 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 .rollodex-body {
     position: relative;
     margin-top: 0.5rem;
-    display: flex;
     align-items: flex-start;
     gap: 0.75rem;
+    max-height: 50vh;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .rollodex-grid {
