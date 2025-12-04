@@ -59,7 +59,6 @@ export class NewitemComponent implements OnInit {
         { name: 'Tasks',             value: 'tasks' },
         { name: 'Schedule',          value: 'schedule' },
         { name: 'Documents',         value: 'documents' },
-        { name: 'Artist Links',      value: 'artist_links' },
         { name: 'Socials',           value: 'socials' },
         { name: 'Campaigns',         value: 'campaigns' },
         { name: 'Comments',          value: 'comments' },
@@ -80,7 +79,6 @@ export class NewitemComponent implements OnInit {
                 { name: 'Artist',         value: 'artist' },
                 { name: 'Artist Members', value: 'artist_members' },
                 { name: 'Contacts',       value: 'contacts' },
-                { name: 'Artist Links',   value: 'artist_links' }
             ]
         },
         {

@@ -58,7 +58,6 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { NewItemFormComponent } from './components/new-item-form/new-item-form.component';
 import { ProjectsContainer } from './containers/projects/projects.component';
 import { ArtistMembersFormComponent } from './components/new-item-form/new-item-types/artist-members/artist-members-form.component';
-import { ArtistLinksFormComponent } from './components/new-item-form/new-item-types/artist-links/artist-links-form.component';
 import { ArtistsFormComponent } from './components/new-item-form/new-item-types/artists/artists-form.component';
 import { AlbumsFormComponent } from './components/new-item-form/new-item-types/albums/albums-form.component';
 import { CommentsFormComponent } from './components/new-item-form/new-item-types/comments/comments-form.component';
@@ -91,6 +90,8 @@ import { ImagesUpdateComponent } from './components/new-item-form/new-item-types
 import { VideosUpdateComponent } from './components/new-item-form/new-item-types/videos/videos-update/videos-update.component';
 import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.component';
 import { TaskCardComponent } from './components/new-item-form/new-item-types/tasks/task-card/task-card.component';
+import { LinksUpdateComponent } from './components/new-item-form/new-item-types/socials/links-update/links-update.component';
+import { SocialsUpdateComponent } from './components/new-item-form/new-item-types/socials/socials-update/socials-update.component';
 
 
 // export const PICK_FORMATS = {
@@ -129,7 +130,6 @@ import { TaskCardComponent } from './components/new-item-form/new-item-types/tas
     ArtistFormComponent,
     ArtistsFormComponent,
     ArtistMembersFormComponent,
-    ArtistLinksFormComponent,
     AlbumsFormComponent,
     CommentsFormComponent,
     ContactsFormComponent,
@@ -162,7 +162,9 @@ import { TaskCardComponent } from './components/new-item-form/new-item-types/tas
     GalleriesUpdateComponent,
     ImagesUpdateComponent,
     VideosUpdateComponent,
-    MediaplayerComponent
+    MediaplayerComponent,
+    LinksUpdateComponent,
+    SocialsUpdateComponent
   ],
   imports: [
     AppRoutingModule,

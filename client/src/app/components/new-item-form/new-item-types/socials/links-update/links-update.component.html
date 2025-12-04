@@ -1,0 +1,204 @@
+<div class="popup content mf-theme mf-contact-dialog">
+    <!-- HEADER (non-delete) -->
+    <div class="contact-header" *ngIf="action !== 'Delete'">
+        <div class="avatar-ring">
+            <div class="avatar-circle">
+                <span>@</span>
+            </div>
+        </div>
+
+        <div class="header-text">
+            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
+            <p>
+                Save helpful individuals, venues, collaborators, media, promoters...
+            </p>
+        </div>
+    </div>
+
+    <div class="contact-divider" *ngIf="action !== 'Delete'"></div>
+
+    <!-- MAIN CONTENT (non-delete) -->
+    <ng-container *ngIf="action !== 'Delete'; else deleteTemplate">
+        <div class="contact-grid">
+            <!-- IDENTITY -->
+            <div class="section-label">Identity</div>
+
+            <!-- row 1: first / last -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">First name</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['first_name']"
+                            placeholder="First name" />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">Last name</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['last_name']"
+                            placeholder="Last name" />
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- row 2: company / city -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">Company</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['company']"
+                            placeholder="Company" />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">City</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [matAutocomplete]="cityAuto"
+                            [(ngModel)]="local_data[0]['city']"
+                            (ngModelChange)="onCityInputChange($event)"
+                            placeholder="City" />
+
+                        <mat-autocomplete
+                            #cityAuto="matAutocomplete"
+                            (optionSelected)="onCitySelected($event.option.value)">
+                            <mat-option
+                                *ngFor="let option of filteredCities"
+                                [value]="option">
+                                {{ option }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- RELATION – full width -->
+            <div class="section-label"></div>
+
+            <div class="field-row single">
+                <div class="tag-chips-wrap">
+                  <div class="field-with-label">
+                    <span class="field-label">Skills</span>
+                      <app-tag-chips
+                          (Tag)="getRelation($event)"
+                          [local_data]="local_data[0]['relation']"
+                          [chipType]="'Relation'"
+                          [showTitle]="false">
+                      </app-tag-chips>
+                  </div>
+                </div>
+            </div>
+
+            <!-- CONTACT -->
+            <div class="section-label"></div>
+            <div class="section-label">Contact</div>
+
+            <div class="field-row">
+              <div class="field-with-label">
+                  <span class="field-label">Phone</span>
+                  <mat-form-field
+                      appearance="fill"
+                      [ngClass]="{ 'has-error': phoneError }">
+                      <input
+                          matInput
+                          [(ngModel)]="local_data[0]['phone']"
+                          placeholder="Phone" />
+                  </mat-form-field>
+                  <div *ngIf="phoneError" class="field-error">
+                      {{ phoneError }}
+                  </div>
+              </div>
+
+              <div class="field-with-label">
+                  <span class="field-label">Email</span>
+                  <mat-form-field
+                      appearance="fill"
+                      [ngClass]="{ 'has-error': emailError }">
+                      <input
+                          matInput
+                          [(ngModel)]="local_data[0]['email']"
+                          placeholder="Email" />
+                  </mat-form-field>
+                  <div *ngIf="emailError" class="field-error">
+                      {{ emailError }}
+                  </div>
+              </div>
+          </div>
+
+        </div>
+
+        <!-- contact-update.component.html -->
+
+        <!-- divider line above actions, same idea as tasks -->
+        <mat-divider class="contact-divider"></mat-divider>
+
+        <div class="contact-actions" mat-dialog-actions>
+            <div class="left-actions">
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="doAction()">
+                    {{ action === 'Add' ? 'Create' : 'Save' }}
+                </button>
+
+                <!-- fix typo + reuse same outlined cancel style as tasks -->
+                <button
+                    mat-raised-button
+                    color="accent"
+                    class="dalmatian"
+                    (click)="closeDialog()">
+                    Cancel
+                </button>
+            </div>
+
+            <span class="actions-spacer"></span>
+
+            <!-- only show Archive when editing an existing contact -->
+            <div class="right-actions" *ngIf="modUser">
+                <button
+                    mat-stroked-button
+                    color="warn"
+                    class="archive"
+                    (click)="archiveContact()">
+                    Archive
+                </button>
+            </div>
+        </div>
+
+
+    </ng-container>
+
+    <!-- DELETE STATE -->
+    <ng-template #deleteTemplate>
+        <div class="delete-content">
+            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
+            <p>Are you sure you want to remove this contact from the rollodex?</p>
+
+            <div class="contact-actions" mat-dialog-actions>
+                <button
+                    mat-raised-button
+                    color="warn"
+                    class="primary"
+                    (click)="doAction()">
+                    {{ action }}
+                </button>
+
+                <button
+                    mat-stroked-button
+                    class="ghost"
+                    (click)="closeDialog()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>

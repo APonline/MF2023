@@ -1,0 +1,351 @@
+/* ===========================
+   CONTACT DIALOG SHELL
+   =========================== */
+
+.mf-contact-dialog {
+    padding: 1.25rem 1.6rem 1.6rem;
+    min-width: 520px;
+    max-width: 720px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-height: none;   /* no forced cap; let dialog height drive it */
+}
+
+/* HEADER */
+
+.mf-contact-dialog .contact-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.mf-contact-dialog .avatar-ring {
+    padding: 2px;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 0% 0%, #ffffff66, transparent 60%),
+        radial-gradient(circle at 100% 100%, #ffffff22, transparent 60%);
+}
+
+.mf-contact-dialog .avatar-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 34px;
+    color: #ffffff; /* @ symbol white */
+}
+
+.mf-contact-dialog .header-text h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.mf-contact-dialog .header-text p {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: #ffffff;
+}
+
+/* ===========================
+   GRID / ROWS / LABELS
+   =========================== */
+
+.mf-contact-dialog .contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    /* no overflow-y here – we don’t want an inner scroll */
+}
+
+.mf-contact-dialog .section-label {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.7;
+    margin-top: 1.1rem;
+    margin-bottom: 0.4rem;
+    color: #ffffff;
+}
+
+.mf-contact-dialog .field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.1rem;
+}
+
+.mf-contact-dialog .field-row.single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.mf-contact-dialog .field-row.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mf-contact-dialog .field-with-label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.mf-contact-dialog .field-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #ffffff;
+    opacity: 0.78;
+}
+
+.mf-contact-dialog .field-label.subtle {
+    opacity: 0.6;
+    font-size: 0.72rem;
+}
+
+/* ===========================
+   MAT-FORM-FIELD SKIN
+   =========================== */
+
+:host ::ng-deep .mf-contact-dialog .mat-mdc-form-field {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Taller infix so label + value don’t collide */
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-infix {
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.4rem !important;
+    min-height: 46px;
+    display: block;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-input-element {
+    color: #ffffff;
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+:host ::ng-deep
+.mf-contact-dialog .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+}
+
+/* ===========================
+   TAG CHIPS ROW – FULL WIDTH
+   =========================== */
+
+.mf-contact-dialog .tag-chips-wrap {
+    width: 100%;
+}
+
+/* the “Skills / Relation” label uses the same .field-with-label rules */
+
+/* Style the chips container so it looks like the other dark inputs */
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips {
+    width: 100%;
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips mat-form-field .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips .mat-mdc-chip-set {
+    padding: 0.25rem 0.45rem 0.35rem;
+    min-height: 38px;
+}
+
+:host ::ng-deep
+.mf-contact-dialog app-tag-chips #tag-chips .mat-mdc-standard-chip {
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+/* ===========================
+   ACTIONS
+   =========================== */
+
+.mf-contact-dialog .contact-actions {
+    margin-top: 0.9rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.mf-contact-dialog .primary {
+    padding-inline: 1.4rem;
+    font-weight: 600;
+}
+
+.mf-contact-dialog .ghost {
+    border-width: 1px;
+}
+
+/* ===========================
+   DELETE STATE
+   =========================== */
+
+.mf-contact-dialog .delete-content {
+    text-align: left;
+    padding-top: 0.5rem;
+    color: #ffffff;
+}
+
+.mf-contact-dialog .delete-content h2 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.mf-contact-dialog .delete-content p {
+    margin: 0 0 1rem;
+    opacity: 0.85;
+    font-size: 0.9rem;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+    .mf-contact-dialog {
+        min-width: 0;
+        width: 100%;
+        max-width: 95vw;
+        padding: 1rem;
+    }
+
+    .mf-contact-dialog .field-row,
+    .mf-contact-dialog .field-row.three {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.mf-contact-dialog .contact-divider {
+    height: 1px;
+    width: 100%;
+    margin: 0.4rem 0 0.6rem;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.18),
+        rgba(255, 255, 255, 0.06)
+    );
+}
+
+.mf-contact-dialog .divider-actions {
+    margin-top: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.mf-contact-dialog .contact-actions {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.mf-contact-dialog .left-actions,
+.mf-contact-dialog .right-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mf-contact-dialog .actions-spacer {
+    flex: 1 1 auto;
+}
+
+/* primary pill */
+.mf-contact-dialog .primary {
+    padding-inline: 1.4rem;
+    font-weight: 600;
+}
+
+/* Cancel – stroked white pill */
+.mf-contact-dialog .ghost.mat-mdc-button-base,
+.mf-contact-dialog .ghost.mat-mdc-stroked-button {
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+}
+
+/* Archive – warn outline, like tasks */
+.mf-contact-dialog .archive.mat-mdc-stroked-button.mat-warn {
+    // border-color: rgba(244, 67, 54, 0.7);
+    // color: #ff8a80;
+}
+
+.task-card-dialog .mat-stroked-button.mat-warn {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+
+/* Cancel – same outline look as tasks.dalmatian */
+:host ::ng-deep .mf-contact-dialog .mat-raised-button.dalmatian {
+    background: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+    box-shadow: none;
+}
+
+/* Archive – same stroked warn styling as task dialog */
+:host ::ng-deep .mf-contact-dialog .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+:host ::ng-deep .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+
+.mf-contact-dialog .mat-mdc-form-field.has-error 
+.mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    box-shadow: inset 0 0 0 1px #ff5252;
+}
+
+.mf-contact-dialog .field-error {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: #ff8a80;
+}

@@ -81,12 +81,208 @@
 
   <ng-template #noLineView>
     <div class="view-container">
-      <div class="goback page-top-cta">
-        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-          Go Back
-        </button>
-      </div>
-      <h1>poo</h1>
+        <div class="goback page-top-cta">
+            <button
+                [routerLink]="['/projects', groupId, group]"
+                id="goBack"
+                mat-raised-button
+                color="accent"
+            >
+                Go Back
+            </button>
+        </div>
+
+        <div class="links-socials-page">
+
+            <div class="ls-header">
+                <div>
+                    <h1 class="ls-title">Links &amp; Social Engines</h1>
+                    <p>Where your artist lives online and how posts get blasted out.</p>
+                </div>
+                <div class="ls-header-actions">
+                    <button
+                        mat-stroked-button
+                        color="primary"
+                        (click)="openAddLink()"
+                    >
+                        + Add Link
+                    </button>
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        (click)="openAddSocial()"
+                    >
+                        + Add Social Engine
+                    </button>
+                </div>
+            </div>
+
+            <div class="ls-columns">
+
+                <!-- LEFT: PUBLIC LINKS -->
+                <section class="ls-column links-column">
+                    <header>
+                        <h2>Public Links</h2>
+                        <span class="hint">
+                            These show up on your profile, EPK, and link pages.
+                        </span>
+                    </header>
+
+                    <div class="link-list">
+                        <div
+                            class="link-card"
+                            *ngFor="let link of artistLinks"
+                            (click)="editLink(link)"
+                        >
+                            <div class="link-card-main">
+                                <div class="link-icon">
+                                    <span class="emoji">{{ getLinkEmoji(link) }}</span>
+                                </div>
+                                <div class="link-text">
+                                    <h3>{{ link.title }}</h3>
+                                    <p class="url">{{ link.url }}</p>
+                                    <p
+                                        class="desc"
+                                        *ngIf="link.description"
+                                    >
+                                        {{ link.description }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="link-meta">
+                                <span
+                                    class="handle"
+                                    *ngIf="link.profile_url"
+                                >
+                                    {{ link.profile_url }}
+                                </span>
+                                <span
+                                    class="status-dot"
+                                    [class.inactive]="!link.active"
+                                    [title]="link.active ? 'Visible' : 'Hidden'"
+                                ></span>
+                                <span
+                                    class="drag-handle"
+                                    title="Reorder"
+                                >
+                                    ⋮⋮
+                                </span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="empty-hint"
+                            *ngIf="!artistLinks || artistLinks.length === 0"
+                        >
+                            No links yet. Click “Add Link” to get started.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RIGHT: SOCIAL ENGINES -->
+                <section class="ls-column socials-column">
+                    <header>
+                        <h2>Social Engines</h2>
+                        <span class="hint">
+                            API-connected profiles for one-click posting.
+                        </span>
+                    </header>
+
+                    <div class="social-grid">
+                        <div
+                            class="social-card"
+                            *ngFor="let social of socialsList"
+                            (click)="editSocial(social)"
+                        >
+                            <div class="social-header">
+                                <div class="social-platform-icon">
+                                    <span class="emoji">{{ getPlatformEmoji(social.platform) }}</span>
+                                </div>
+                                <div class="social-title">
+                                    <h3>{{ social.title || (social.platform | titlecase) }}</h3>
+                                    <span
+                                        class="handle"
+                                        *ngIf="social.profile_url"
+                                    >
+                                        {{ social.profile_url }}
+                                    </span>
+                                </div>
+                                <div class="social-status">
+                                    <span
+                                        class="status-pill"
+                                        [class.connected]="social.is_api_enabled"
+                                    >
+                                        {{ social.is_api_enabled ? 'Connected' : 'Not connected' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="social-body">
+                                <p
+                                    class="url"
+                                    *ngIf="social.url"
+                                >
+                                    {{ social.url }}
+                                </p>
+
+                                <div
+                                    class="capabilities"
+                                    *ngIf="social.post_json?.supports"
+                                >
+                                    <span
+                                        class="cap-chip"
+                                        [class.on]="social.post_json.supports.text"
+                                    >
+                                        Text
+                                    </span>
+                                    <span
+                                        class="cap-chip"
+                                        [class.on]="social.post_json.supports.image"
+                                    >
+                                        Image
+                                    </span>
+                                    <span
+                                        class="cap-chip"
+                                        [class.on]="social.post_json.supports.video"
+                                    >
+                                        Video
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="social-footer">
+                                <button
+                                    mat-stroked-button
+                                    color="primary"
+                                    class="tiny-btn"
+                                    (click)="editSocial(social); $event.stopPropagation()"
+                                >
+                                    {{ social.is_api_enabled ? 'Edit connection' : 'Connect' }}
+                                </button>
+                                <button
+                                    mat-stroked-button
+                                    color="accent"
+                                    class="tiny-btn"
+                                    [disabled]="!social.is_api_enabled"
+                                    (click)="testPost(social); $event.stopPropagation()"
+                                >
+                                    Test post
+                                </button>
+                            </div>
+                        </div>
+
+                        <div
+                            class="empty-hint"
+                            *ngIf="!socialsList || socialsList.length === 0"
+                        >
+                            No social engines yet. Connect Facebook, Instagram, YouTube…
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
     </div>
   </ng-template>
 </div>
