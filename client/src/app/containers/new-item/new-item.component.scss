@@ -145,7 +145,7 @@ li{
   .controlpanel {
     position: relative;
     width: calc(100% - 0px);
-    margin: 20px auto;
+    margin: 0px auto 20px auto;
     background: none;
     backdrop-filter: none;
   }
@@ -160,6 +160,15 @@ li{
     border-radius: 50%;
     overflow: hidden;
   }
+  #recent-items {
+    h4 {
+      margin-left:0px!important;
+    }
+    ul {
+      margin-left: 18px;
+    }
+    
+  }
 
   #cards {
     display: flex;
@@ -168,6 +177,10 @@ li{
     // max-width: 1000px;
     // min-width:50vw;
     width: calc(100% - 0px);
+
+    .tool-tabs {
+      justify-content: space-between;
+    }
   }
 
   #cards:hover > .card::after {
@@ -439,6 +452,10 @@ li{
     // max-width: 1000px;
     // min-width:50vw;
     width: calc(100% - 0px);
+
+    .tool-tabs {
+      justify-content: flex-start;
+    }
   }
 
   #cards:hover > .card::after {
@@ -679,3 +696,95 @@ li{
 //   //   background-position: 90% 100%
 //   // }
 // }
+
+/* ────────────────────────────────────────────── */
+/* TOOL TABS – for Office / Studio / Work / etc. */
+/* ────────────────────────────────────────────── */
+
+.tool-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    padding: 4px 2px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width:100%;
+
+    /* hide scrollbar on WebKit */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.tool-tab {
+    position: relative;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 10px 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: 999px;
+    transition:
+        color 180ms ease-out,
+        background 180ms ease-out,
+        transform 120ms ease-out;
+
+    &:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateY(-1px);
+    }
+
+    &.active {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* underline / glow line */
+    &.active::after {
+        content: "";
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: -4px;
+        height: 2px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+    }
+}
+
+/* Colour accents per group key
+   (matches [ngClass]="'tool-tab--' + g.key") */
+
+.tool-tab--office.active::after {
+    background: #ff4e4e;  /* red-ish */
+}
+
+.tool-tab--studio.active::after {
+    background: #c763ff;  /* purple */
+}
+
+.tool-tab--work.active::after {
+    background: #4fb6ff;  /* blue */
+}
+
+.tool-tab--public.active::after {
+    background: #52ff9a;  /* green */
+}
+
+.tool-tab--media.active::after {
+    background: #ffe95a;  /* yellow */
+}
+
+/* tiny tweak so cards don’t feel crushed up against tabs */
+#cards {
+    margin-top: 6px;
+}
