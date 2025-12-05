@@ -349,3 +349,36 @@
     font-size: 0.78rem;
     color: #ff8a80;
 }
+
+// Make text + placeholders light inside the popup
+:host {
+    .mf-contact-dialog {
+        // old Angular Material (mat-input-element)
+        .mat-input-element {
+            color: #fff !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+        }
+
+        // MDC-based Angular Material (v15+ uses mat-mdc-input-element)
+        .mat-mdc-input-element {
+            color: #fff !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+        }
+
+        // textarea explicitly just in case
+        textarea.mat-input-element,
+        textarea.mat-mdc-input-element {
+            color: #fff !important;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+        }
+    }
+}

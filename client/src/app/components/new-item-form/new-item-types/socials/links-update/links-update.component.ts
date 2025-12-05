@@ -1,19 +1,17 @@
-import { Component, Input, OnInit, Inject, Optional, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnInit,
+    Inject,
+    Optional,
+    ChangeDetectorRef
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { AuthenticationService } from '../../../../../services/authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { AlertService } from 'src/app/services/alert.service';
 import citiesData from 'cities.json';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-
-import moment from 'moment';
-
-interface CityOption {
-    name: string;
-    country: string;
-    subcountry?: string;
-}
 
 interface CityEntry {
     name: string;
@@ -30,15 +28,15 @@ export class LinksUpdateComponent implements OnInit {
     currentUser: any;
     @Input() record: any;
 
-    adminForm = this.formBuilder.group({});
-    newRecord = null;
+    adminForm: FormGroup = this.formBuilder.group({});
+    newRecord: any = null;
 
     displayedColumns: string[] = [];
 
     action: string;
     tool: string;
-    local_data: any;
-    currentGroup = null;
+    local_data: any[] = [];
+    currentGroup: { name: string; id: any } | null = null;
 
     uploaderNeeds = ['image', 'video', 'document', 'song'];
     uploaderInstalled = false;
@@ -64,35 +62,53 @@ export class LinksUpdateComponent implements OnInit {
         private cdr: ChangeDetectorRef,
         @Optional() @Inject(MAT_DIALOG_DATA) public data: any
     ) {
-        this.currentUser = this.authenticationService.currentUserValue;
+        this.currentUser = this.authenticationService.currentUserValue || {};
 
-        this.action = data.action;
+        // Always work on a safe clone
+        const incoming: any = { ...(data || {}) };
+        console.log('[LinksUpdateComponent] dialog data:', incoming);
 
-        (data.tool.substring(data.tool.length - 1) == 's'
-            ? (data.tool = data.tool.slice(0, -1))
-            : (data.tool = data.tool));
-        this.tool = `${data.tool}`;
+        // Action
+        this.action = incoming.action || 'Add';
 
-        delete data.tool;
+        // Tool normalization
+        const rawTool = String(incoming.tool || 'artist-links');
+        const normalizedTool = rawTool.endsWith('s')
+            ? rawTool.slice(0, -1)
+            : rawTool;
+        this.tool = normalizedTool;
+        delete incoming.tool;
 
-        data.owner_user = this.currentUser.id;
-        data.active = 1;
-
-        Object.keys(data).map(res => {
-            this.displayedColumns.push(res);
-        });
-        this.local_data = [{ ...data }];
-
-        this.currentGroup = { name: this.data.group, id: this.data.owner_id };
-
-        if (data.id != '') {
-            this.modUser = true;
-        } else {
-            this.modUser = false;
+        // Enforce owner + active flags
+        if (!incoming.owner_user) {
+            incoming.owner_user = this.currentUser.id;
         }
+        if (typeof incoming.active === 'undefined') {
+            incoming.active = 1;
+        }
+
+        // Local row backing the form
+        this.local_data = [{ ...incoming }];
+
+        // Columns list (if needed for generic handling)
+        this.displayedColumns = Object.keys(this.local_data[0] || {});
+
+        // Group context
+        if (incoming.group && incoming.owner_id != null) {
+            this.currentGroup = {
+                name: incoming.group,
+                id: incoming.owner_id
+            };
+        } else {
+            this.currentGroup = null;
+        }
+
+        // Are we editing an existing record?
+        this.modUser = !!incoming.id && incoming.id !== '';
 
         this.requiresUploader();
 
+        // Cities dataset
         const entries: CityEntry[] = (citiesData as any[]).map((c: any) => ({
             name: c.name,
             country: c.country,
@@ -110,6 +126,12 @@ export class LinksUpdateComponent implements OnInit {
         const initialCity = this.local_data?.[0]?.city || '';
         this.updateFilteredCities(initialCity);
     }
+
+    async ngOnInit(): Promise<void> {}
+
+    /* ======================================================================
+       CITY AUTOCOMPLETE
+       ====================================================================== */
 
     onCityInputChange(value: string): void {
         this.local_data[0].city = value;
@@ -133,9 +155,11 @@ export class LinksUpdateComponent implements OnInit {
             .slice(0, 25);
     }
 
-    doAction() {
-        // For links, same idea: just return edited data.
-        // SocialsFormComponent will map this into artist-links API payload.
+    /* ======================================================================
+       ACTIONS
+       ====================================================================== */
+
+    doAction(): void {
         const payload = {
             ...this.local_data[0]
         };
@@ -143,33 +167,33 @@ export class LinksUpdateComponent implements OnInit {
         this.dialogRef.close({ event: this.action, data: payload });
     }
 
-    closeDialog() {
+    closeDialog(): void {
         this.dialogRef.close({ event: 'Cancel' });
     }
 
-    async ngOnInit() {}
-
-    requiresUploader() {
+    requiresUploader(): boolean {
         if (this.uploaderNeeds.indexOf(this.tool) !== -1) {
             this.uploaderInstalled = true;
             return true;
         }
+        this.uploaderInstalled = false;
+        return false;
     }
 
     ngAfterContentChecked(): void {
         this.cdr.detectChanges();
     }
 
-    updateUploadValue(e: any) {
+    updateUploadValue(e: any): void {
         this.local_data[0][e.field] = e.val;
     }
 
-    getRelation(e: any) {
+    getRelation(e: any): void {
         this.local_data[0]['relation'] = e;
         this.selectedRelations = this.local_data[0]['relation'];
     }
 
-    archiveContact() {
+    archiveContact(): void {
         if (!this.modUser) {
             this.closeDialog();
             return;
@@ -178,8 +202,8 @@ export class LinksUpdateComponent implements OnInit {
         const archived: any = {
             ...this.local_data[0],
             owner_user: this.currentUser.id,
-            owner_group: this.data.owner_id,
-            id: this.data.id,
+            owner_group: this.data?.owner_id,
+            id: this.data?.id,
             active: 0
         };
 

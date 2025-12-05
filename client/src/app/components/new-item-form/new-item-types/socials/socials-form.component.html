@@ -1,86 +1,15 @@
 <div id="newEditForm" class="page">
-  <div class="itemBK" [style.background]="'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' + imageKey + '.jpg)'"></div>
+    <div
+        class="itemBK"
+        [style.background]="
+            'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' +
+            imageKey +
+            '.jpg)'
+        "
+    ></div>
     <div class="itemBKGrid"></div>
 
-  <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
-    <div class="goback page-top-cta">
-      <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-        Go Back
-      </button>
-    </div>
-
-    <div class="mild-container">
-      <h1 style="text-transform: capitalize;">{{toolName}}</h1>
-
-      <div class="add-new">
-        <button (click)="openDialog('Add',newRecord)" mat-raised-button color="primary">Add Row</button>
-      </div>
-
-      <div class="content masked-overflow">
-        <!-- app.component.html -->
-        <div class="container text-center">
-          <div id="table">
-            <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
-              <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-
-                <ng-template #actionTemplate>
-                  <ng-container matColumnDef="action">
-                    <tr>
-                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;width:80px;">
-                        <p class="headerTitle" style="text-align:center;">
-                          <mat-label>Actions</mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;width:80px;">
-                        <ng-container *ngIf="element.id != 0; else noActionTemplate">
-
-
-                          <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
-                            edit
-                          </button>
-                          <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
-                            delete
-                          </button>
-
-                        </ng-container>
-                        <ng-template #noActionTemplate>
-                          Rendering...
-                        </ng-template>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </ng-template>
-
-
-                <ng-container *ngIf="disCol != 'action'; else actionTemplate">
-                  <tr>
-                      <th mat-header-cell *matHeaderCellDef >
-                        <p class="headerTitle" *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
-                          <mat-label [for]="disCol">
-                                                  {{ disCol | removeUnderscore }}
-                          </mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element"  class="action-link">
-                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null">
-                          {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
-                        </p>
-                      </td>
-                  </tr>
-                </ng-container>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <ng-template #noLineView>
-    <div class="view-container">
+    <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
         <div class="goback page-top-cta">
             <button
                 [routerLink]="['/projects', groupId, group]"
@@ -92,197 +21,362 @@
             </button>
         </div>
 
-        <div class="links-socials-page">
+        <div class="mild-container">
+            <h1 style="text-transform: capitalize;">{{ toolName }}</h1>
 
-            <div class="ls-header">
-                <div>
-                    <h1 class="ls-title">Links &amp; Social Engines</h1>
-                    <p>Where your artist lives online and how posts get blasted out.</p>
-                </div>
-                <div class="ls-header-actions">
-                    <button
-                        mat-stroked-button
-                        color="primary"
-                        (click)="openAddLink()"
-                    >
-                        + Add Link
-                    </button>
-                    <button
-                        mat-raised-button
-                        color="primary"
-                        (click)="openAddSocial()"
-                    >
-                        + Add Social Engine
-                    </button>
-                </div>
+            <div class="add-new">
+                <button
+                    (click)="openDialog('Add', newRecord)"
+                    mat-raised-button
+                    color="primary"
+                >
+                    Add Row
+                </button>
             </div>
 
-            <div class="ls-columns">
-
-                <!-- LEFT: PUBLIC LINKS -->
-                <section class="ls-column links-column">
-                    <header>
-                        <h2>Public Links</h2>
-                        <span class="hint">
-                            These show up on your profile, EPK, and link pages.
-                        </span>
-                    </header>
-
-                    <div class="link-list">
-                        <div
-                            class="link-card"
-                            *ngFor="let link of artistLinks"
-                            (click)="editLink(link)"
+            <div class="content masked-overflow">
+                <div class="container text-center">
+                    <div id="table">
+                        <table
+                            mat-table
+                            [dataSource]="dataSource"
+                            #mytable
+                            class="my-table mat-elevation-z8"
                         >
-                            <div class="link-card-main">
-                                <div class="link-icon">
-                                    <span class="emoji">{{ getLinkEmoji(link) }}</span>
-                                </div>
-                                <div class="link-text">
-                                    <h3>{{ link.title }}</h3>
-                                    <p class="url">{{ link.url }}</p>
-                                    <p
-                                        class="desc"
-                                        *ngIf="link.description"
-                                    >
-                                        {{ link.description }}
-                                    </p>
-                                </div>
-                            </div>
+                            <ng-container
+                                *ngFor="let disCol of displayedColumns; let colIndex = index"
+                                matColumnDef="{{ disCol }}"
+                            >
+                                <ng-template #actionTemplate>
+                                    <ng-container matColumnDef="action">
+                                        <tr>
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                                style="flex-direction: row; justify-content: space-around; width: 80px;"
+                                            >
+                                                <p
+                                                    class="headerTitle"
+                                                    style="text-align: center;"
+                                                >
+                                                    <mat-label>Actions</mat-label>
+                                                </p>
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                                class="action-link"
+                                                style="flex-direction: row; justify-content: space-around; width: 80px;"
+                                            >
+                                                <ng-container
+                                                    *ngIf="element.id != 0; else noActionTemplate"
+                                                >
+                                                    <button
+                                                        id="editBtn"
+                                                        class="material-icons"
+                                                        title="Edit"
+                                                        (click)="openDialog('Update', element)"
+                                                    >
+                                                        edit
+                                                    </button>
+                                                    <button
+                                                        id="cancelBtn"
+                                                        class="material-icons"
+                                                        title="Delete"
+                                                        (click)="openDialog('Delete', element)"
+                                                    >
+                                                        delete
+                                                    </button>
+                                                </ng-container>
+                                                <ng-template #noActionTemplate>
+                                                    Rendering...
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-template>
 
-                            <div class="link-meta">
-                                <span
-                                    class="handle"
-                                    *ngIf="link.profile_url"
+                                <ng-container
+                                    *ngIf="disCol != 'action'; else actionTemplate"
                                 >
-                                    {{ link.profile_url }}
-                                </span>
-                                <span
-                                    class="status-dot"
-                                    [class.inactive]="!link.active"
-                                    [title]="link.active ? 'Visible' : 'Hidden'"
-                                ></span>
-                                <span
-                                    class="drag-handle"
-                                    title="Reorder"
-                                >
-                                    ⋮⋮
-                                </span>
-                            </div>
-                        </div>
+                                    <tr>
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <p
+                                                class="headerTitle"
+                                                *ngIf="
+                                                    disCol != 'id' &&
+                                                    disCol.indexOf('owner') === -1
+                                                "
+                                            >
+                                                <mat-label [for]="disCol">
+                                                    {{ disCol | removeUnderscore }}
+                                                </mat-label>
+                                            </p>
+                                        </th>
+                                        <td
+                                            mat-cell
+                                            *matCellDef="let element"
+                                            class="action-link"
+                                        >
+                                            <p
+                                                *ngIf="
+                                                    disCol != 'id' &&
+                                                    disCol.indexOf('owner') === -1 &&
+                                                    element[disCol] != null
+                                                "
+                                            >
+                                                {{
+                                                    element[disCol].length > 30
+                                                        ? (element[disCol] | slice : 0 : 30) + '...'
+                                                        : element[disCol]
+                                                }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
 
-                        <div
-                            class="empty-hint"
-                            *ngIf="!artistLinks || artistLinks.length === 0"
-                        >
-                            No links yet. Click “Add Link” to get started.
-                        </div>
+                            <tr
+                                mat-header-row
+                                *matHeaderRowDef="displayedColumns"
+                            ></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: displayedColumns;"
+                            ></tr>
+                        </table>
                     </div>
-                </section>
-
-                <!-- RIGHT: SOCIAL ENGINES -->
-                <section class="ls-column socials-column">
-                    <header>
-                        <h2>Social Engines</h2>
-                        <span class="hint">
-                            API-connected profiles for one-click posting.
-                        </span>
-                    </header>
-
-                    <div class="social-grid">
-                        <div
-                            class="social-card"
-                            *ngFor="let social of socialsList"
-                            (click)="editSocial(social)"
-                        >
-                            <div class="social-header">
-                                <div class="social-platform-icon">
-                                    <span class="emoji">{{ getPlatformEmoji(social.platform) }}</span>
-                                </div>
-                                <div class="social-title">
-                                    <h3>{{ social.title || (social.platform | titlecase) }}</h3>
-                                    <span
-                                        class="handle"
-                                        *ngIf="social.profile_url"
-                                    >
-                                        {{ social.profile_url }}
-                                    </span>
-                                </div>
-                                <div class="social-status">
-                                    <span
-                                        class="status-pill"
-                                        [class.connected]="social.is_api_enabled"
-                                    >
-                                        {{ social.is_api_enabled ? 'Connected' : 'Not connected' }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="social-body">
-                                <p
-                                    class="url"
-                                    *ngIf="social.url"
-                                >
-                                    {{ social.url }}
-                                </p>
-
-                                <div
-                                    class="capabilities"
-                                    *ngIf="social.post_json?.supports"
-                                >
-                                    <span
-                                        class="cap-chip"
-                                        [class.on]="social.post_json.supports.text"
-                                    >
-                                        Text
-                                    </span>
-                                    <span
-                                        class="cap-chip"
-                                        [class.on]="social.post_json.supports.image"
-                                    >
-                                        Image
-                                    </span>
-                                    <span
-                                        class="cap-chip"
-                                        [class.on]="social.post_json.supports.video"
-                                    >
-                                        Video
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="social-footer">
-                                <button
-                                    mat-stroked-button
-                                    color="primary"
-                                    class="tiny-btn"
-                                    (click)="editSocial(social); $event.stopPropagation()"
-                                >
-                                    {{ social.is_api_enabled ? 'Edit connection' : 'Connect' }}
-                                </button>
-                                <button
-                                    mat-stroked-button
-                                    color="accent"
-                                    class="tiny-btn"
-                                    [disabled]="!social.is_api_enabled"
-                                    (click)="testPost(social); $event.stopPropagation()"
-                                >
-                                    Test post
-                                </button>
-                            </div>
-                        </div>
-
-                        <div
-                            class="empty-hint"
-                            *ngIf="!socialsList || socialsList.length === 0"
-                        >
-                            No social engines yet. Connect Facebook, Instagram, YouTube…
-                        </div>
-                    </div>
-                </section>
-
+                </div>
             </div>
         </div>
     </div>
-  </ng-template>
+
+    <!-- ====================== PRETTY "NO-LINE" VIEW ====================== -->
+    <ng-template #noLineView>
+        <div class="view-container">
+            <div class="goback page-top-cta">
+                <button
+                    [routerLink]="['/projects', groupId, group]"
+                    id="goBack"
+                    mat-raised-button
+                    color="accent"
+                >
+                    Go Back
+                </button>
+            </div>
+
+            <div class="links-socials-page">
+                <div class="ls-header">
+                    <div>
+                        <h1 class="ls-title">Links &amp; Social Engines</h1>
+                        <p>
+                            Where your artist lives online and how posts get blasted out.
+                        </p>
+                    </div>
+                    <div class="ls-header-actions">
+                        <button
+                            mat-stroked-button
+                            color="primary"
+                            (click)="openAddLink()"
+                        >
+                            + Add Link
+                        </button>
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            (click)="openAddSocial()"
+                        >
+                            + Add Social Engine
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ls-columns">
+                    <!-- LEFT: PUBLIC LINKS -->
+                    <section class="ls-column links-column">
+                        <header>
+                            <h2>Public Links</h2>
+                            <span class="hint">
+                                These show up on your profile, EPK, and link pages.
+                            </span>
+                        </header>
+
+                        <div class="link-list">
+                            <div
+                                class="link-card"
+                                *ngFor="let link of artistLinks"
+                                (click)="editLink(link)"
+                            >
+                                <div class="link-card-main">
+                                    <div class="link-icon">
+                                        <span class="emoji">
+                                            {{ getLinkEmoji(link) }}
+                                        </span>
+                                    </div>
+                                    <div class="link-text">
+                                        <h3>{{ link.title }}</h3>
+                                        <a
+                                            [href]="link.url"
+                                            target="_blank"
+                                        >
+                                            <p class="url">{{ link.url }}</p>
+                                        </a>
+                                        <p
+                                            class="desc"
+                                            *ngIf="link.description"
+                                        >
+                                            {{ link.description }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="link-meta">
+                                    <span
+                                        class="status-dot"
+                                        [class.inactive]="!link.active"
+                                        [title]="link.active ? 'Visible' : 'Hidden'"
+                                    ></span>
+                                    <span
+                                        class="drag-handle"
+                                        title="Reorder"
+                                    >
+                                        ⋮⋮
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div
+                                class="empty-hint"
+                                *ngIf="!artistLinks || artistLinks.length === 0"
+                            >
+                                No links yet. Click “Add Link” to get started.
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- RIGHT: SOCIAL ENGINES -->
+                    <section class="ls-column socials-column">
+                        <header>
+                            <h2>Social Engines</h2>
+                            <span class="hint">
+                                API-connected profiles for one-click posting.
+                            </span>
+                        </header>
+
+                        <div class="social-grid">
+                            <div
+                                class="social-card"
+                                *ngFor="let social of socialsList"
+                                (click)="editSocial(social)"
+                            >
+                                <div class="social-header">
+                                    <div class="social-platform-icon">
+                                        <span class="emoji">
+                                            {{ getPlatformEmoji(social.platform) }}
+                                        </span>
+                                    </div>
+                                    <div class="social-title">
+                                        <h3>
+                                            {{
+                                                social.title ||
+                                                    (social.platform | titlecase)
+                                            }}
+                                        </h3>
+                                        <span
+                                            class="handle"
+                                            *ngIf="social.profile_url"
+                                        >
+                                            {{ social.profile_url }}
+                                        </span>
+                                    </div>
+                                    <div class="social-status">
+                                        <span
+                                            class="status-pill"
+                                            [class.connected]="social.is_api_enabled"
+                                        >
+                                            {{
+                                                social.is_api_enabled
+                                                    ? 'Connected'
+                                                    : 'Not connected'
+                                            }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="social-body">
+                                    <p
+                                        class="url"
+                                        *ngIf="social.url"
+                                    >
+                                        {{ social.url }}
+                                    </p>
+
+                                    <div
+                                        class="capabilities"
+                                        *ngIf="social.post_json?.supports"
+                                    >
+                                        <span
+                                            class="cap-chip"
+                                            [class.on]="social.post_json.supports.text"
+                                        >
+                                            Text
+                                        </span>
+                                        <span
+                                            class="cap-chip"
+                                            [class.on]="social.post_json.supports.image"
+                                        >
+                                            Image
+                                        </span>
+                                        <span
+                                            class="cap-chip"
+                                            [class.on]="social.post_json.supports.video"
+                                        >
+                                            Video
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="social-footer">
+                                    <button
+                                        mat-stroked-button
+                                        color="primary"
+                                        class="tiny-btn"
+                                        (click)="
+                                            editSocial(social);
+                                            $event.stopPropagation()
+                                        "
+                                    >
+                                        {{
+                                            social.is_api_enabled
+                                                ? 'Edit connection'
+                                                : 'Connect'
+                                        }}
+                                    </button>
+                                    <button
+                                        mat-stroked-button
+                                        color="accent"
+                                        class="tiny-btn"
+                                        [disabled]="!social.is_api_enabled"
+                                        (click)="
+                                            testPost(social);
+                                            $event.stopPropagation()
+                                        "
+                                    >
+                                        Test post
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="empty-hint"
+                                *ngIf="!socialsList || socialsList.length === 0"
+                            >
+                                No social engines yet. Connect Facebook, Instagram, YouTube…
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </div>

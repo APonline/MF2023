@@ -3,14 +3,15 @@
     <div class="contact-header" *ngIf="action !== 'Delete'">
         <div class="avatar-ring">
             <div class="avatar-circle">
-                <span>@</span>
+                <span>🔌</span>
             </div>
         </div>
 
         <div class="header-text">
-            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
+            <h2>{{ action === 'Add' ? 'Add Social Engine' : 'Edit Social Engine' }}</h2>
             <p>
-                Save helpful individuals, venues, collaborators, media, promoters...
+                Connect API-capable social profiles so MuseFactory can post on behalf
+                of this artist – Facebook, Instagram, YouTube, TikTok and more.
             </p>
         </div>
     </div>
@@ -20,125 +21,176 @@
     <!-- MAIN CONTENT (non-delete) -->
     <ng-container *ngIf="action !== 'Delete'; else deleteTemplate">
         <div class="contact-grid">
-            <!-- IDENTITY -->
-            <div class="section-label">Identity</div>
+            <!-- BASIC DETAILS -->
+            <div class="section-label">Profile</div>
 
-            <!-- row 1: first / last -->
+            <!-- row 1: engine name / platform -->
             <div class="field-row">
                 <div class="field-with-label">
-                    <span class="field-label">First name</span>
+                    <span class="field-label">Engine name</span>
                     <mat-form-field appearance="fill">
                         <input
                             matInput
-                            [(ngModel)]="local_data[0]['first_name']"
-                            placeholder="First name" />
+                            [(ngModel)]="local_data[0]['title']"
+                            placeholder="e.g. Facebook Page, Instagram Biz, YouTube Channel"
+                        />
                     </mat-form-field>
                 </div>
 
                 <div class="field-with-label">
-                    <span class="field-label">Last name</span>
+                    <span class="field-label">Platform</span>
                     <mat-form-field appearance="fill">
-                        <input
-                            matInput
-                            [(ngModel)]="local_data[0]['last_name']"
-                            placeholder="Last name" />
+                        <mat-select
+                            [(ngModel)]="local_data[0]['platform']"
+                            placeholder="Select platform"
+                        >
+                            <mat-option value="facebook">Facebook</mat-option>
+                            <mat-option value="instagram">Instagram</mat-option>
+                            <mat-option value="youtube">YouTube</mat-option>
+                            <mat-option value="tiktok">TikTok</mat-option>
+                            <mat-option value="x">X / Twitter</mat-option>
+                            <mat-option value="spotify">Spotify</mat-option>
+                            <mat-option value="other">Other</mat-option>
+                        </mat-select>
                     </mat-form-field>
                 </div>
             </div>
 
-            <!-- row 2: company / city -->
+            <!-- row 2: username / profile url slug -->
             <div class="field-row">
                 <div class="field-with-label">
-                    <span class="field-label">Company</span>
+                    <span class="field-label">Username / handle</span>
                     <mat-form-field appearance="fill">
                         <input
                             matInput
-                            [(ngModel)]="local_data[0]['company']"
-                            placeholder="Company" />
+                            [(ngModel)]="local_data[0]['username']"
+                            placeholder="@handle or page name"
+                        />
                     </mat-form-field>
                 </div>
 
                 <div class="field-with-label">
-                    <span class="field-label">City</span>
+                    <span class="field-label">
+                        Profile URL slug
+                        <span class="hint-text">(optional)</span>
+                    </span>
                     <mat-form-field appearance="fill">
                         <input
                             matInput
-                            [matAutocomplete]="cityAuto"
-                            [(ngModel)]="local_data[0]['city']"
-                            (ngModelChange)="onCityInputChange($event)"
-                            placeholder="City" />
-
-                        <mat-autocomplete
-                            #cityAuto="matAutocomplete"
-                            (optionSelected)="onCitySelected($event.option.value)">
-                            <mat-option
-                                *ngFor="let option of filteredCities"
-                                [value]="option">
-                                {{ option }}
-                            </mat-option>
-                        </mat-autocomplete>
+                            [(ngModel)]="local_data[0]['profile_url']"
+                            placeholder="auto-generated if left blank"
+                        />
                     </mat-form-field>
                 </div>
             </div>
 
-            <!-- RELATION – full width -->
-            <div class="section-label"></div>
-
+            <!-- row 3: public URL -->
             <div class="field-row single">
-                <div class="tag-chips-wrap">
-                  <div class="field-with-label">
-                    <span class="field-label">Skills</span>
-                      <app-tag-chips
-                          (Tag)="getRelation($event)"
-                          [local_data]="local_data[0]['relation']"
-                          [chipType]="'Relation'"
-                          [showTitle]="false">
-                      </app-tag-chips>
-                  </div>
+                <div class="field-with-label">
+                    <span class="field-label">Public profile URL</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['url']"
+                            placeholder="https://... (public link to this profile)"
+                        />
+                    </mat-form-field>
                 </div>
             </div>
 
-            <!-- CONTACT -->
-            <div class="section-label"></div>
-            <div class="section-label">Contact</div>
+            <!-- API CONFIG -->
+            <div class="section-label">API configuration</div>
 
+            <!-- row 4: API base URL / account id -->
             <div class="field-row">
-              <div class="field-with-label">
-                  <span class="field-label">Phone</span>
-                  <mat-form-field
-                      appearance="fill"
-                      [ngClass]="{ 'has-error': phoneError }">
-                      <input
-                          matInput
-                          [(ngModel)]="local_data[0]['phone']"
-                          placeholder="Phone" />
-                  </mat-form-field>
-                  <div *ngIf="phoneError" class="field-error">
-                      {{ phoneError }}
-                  </div>
-              </div>
+                <div class="field-with-label">
+                    <span class="field-label">
+                        API base URL
+                        <span class="hint-text">(optional)</span>
+                    </span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['api_url']"
+                            placeholder="https://graph.facebook.com/..., https://api.twitter.com/..."
+                        />
+                    </mat-form-field>
+                </div>
 
-              <div class="field-with-label">
-                  <span class="field-label">Email</span>
-                  <mat-form-field
-                      appearance="fill"
-                      [ngClass]="{ 'has-error': emailError }">
-                      <input
-                          matInput
-                          [(ngModel)]="local_data[0]['email']"
-                          placeholder="Email" />
-                  </mat-form-field>
-                  <div *ngIf="emailError" class="field-error">
-                      {{ emailError }}
-                  </div>
-              </div>
-          </div>
+                <div class="field-with-label">
+                    <span class="field-label">
+                        Platform account ID
+                        <span class="hint-text">(optional)</span>
+                    </span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['platform_account_id']"
+                            placeholder="Page ID / Channel ID / Business ID"
+                        />
+                    </mat-form-field>
+                </div>
+            </div>
 
+            <!-- row 5: credentials -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">Access key</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['access_key']"
+                            placeholder="API key / client ID"
+                        />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">Token key</span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['token_key']"
+                            placeholder="Access token / bearer token"
+                        />
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <!-- row 6: secret / notes -->
+            <div class="field-row">
+                <div class="field-with-label">
+                    <span class="field-label">
+                        Secret
+                        <span class="hint-text">(optional)</span>
+                    </span>
+                    <mat-form-field appearance="fill">
+                        <input
+                            matInput
+                            [(ngModel)]="local_data[0]['secret_id']"
+                            placeholder="Client secret / app secret"
+                        />
+                    </mat-form-field>
+                </div>
+
+                <div class="field-with-label">
+                    <span class="field-label">
+                        Notes
+                        <span class="hint-text">(optional)</span>
+                    </span>
+                    <mat-form-field appearance="fill">
+                        <textarea
+                            matInput
+                            rows="2"
+                            [(ngModel)]="local_data[0]['notes']"
+                            placeholder="Any extra info about this connection (scopes, sandbox/live, etc.)"
+                        ></textarea>
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
 
-        <!-- contact-update.component.html -->
-
-        <!-- divider line above actions, same idea as tasks -->
+        <!-- divider line above actions -->
         <mat-divider class="contact-divider"></mat-divider>
 
         <div class="contact-actions" mat-dialog-actions>
@@ -146,56 +198,58 @@
                 <button
                     mat-raised-button
                     color="primary"
-                    (click)="doAction()">
-                    {{ action === 'Add' ? 'Create' : 'Save' }}
+                    (click)="doAction()"
+                >
+                    {{ action === 'Add' ? 'Create Engine' : 'Save Changes' }}
                 </button>
 
-                <!-- fix typo + reuse same outlined cancel style as tasks -->
                 <button
                     mat-raised-button
                     color="accent"
                     class="dalmatian"
-                    (click)="closeDialog()">
+                    (click)="closeDialog()"
+                >
                     Cancel
                 </button>
             </div>
 
             <span class="actions-spacer"></span>
 
-            <!-- only show Archive when editing an existing contact -->
+            <!-- only show Archive when editing an existing social engine -->
             <div class="right-actions" *ngIf="modUser">
                 <button
                     mat-stroked-button
                     color="warn"
                     class="archive"
-                    (click)="archiveContact()">
-                    Archive
+                    (click)="archiveContact()"
+                >
+                    Remove Engine
                 </button>
             </div>
         </div>
-
-
     </ng-container>
 
     <!-- DELETE STATE -->
     <ng-template #deleteTemplate>
         <div class="delete-content">
-            <h2>{{ action | uppercase }} {{ tool | uppercase }}</h2>
-            <p>Are you sure you want to remove this contact from the rollodex?</p>
+            <h2>Remove Social Engine</h2>
+            <p>Are you sure you want to disconnect this social engine from the artist?</p>
 
             <div class="contact-actions" mat-dialog-actions>
                 <button
                     mat-raised-button
                     color="warn"
                     class="primary"
-                    (click)="doAction()">
+                    (click)="doAction()"
+                >
                     {{ action }}
                 </button>
 
                 <button
                     mat-stroked-button
                     class="ghost"
-                    (click)="closeDialog()">
+                    (click)="closeDialog()"
+                >
                     Cancel
                 </button>
             </div>

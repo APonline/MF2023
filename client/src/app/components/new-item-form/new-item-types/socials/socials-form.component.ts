@@ -9,9 +9,8 @@ import {
     ViewChild
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
@@ -19,7 +18,8 @@ import { environment } from 'src/environments/environment';
 /* services - make dynamic somehow later */
 import { ArtistsService } from 'src/app/services/artists.service';
 import { SocialsService } from 'src/app/services/socials.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service'; 
+import { ArtistsLinksService } from 'src/app/services/artist_links.service';
+import { ArtistActivityService } from 'src/app/services/artist_activity.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -56,8 +56,8 @@ export class SocialsFormComponent implements OnInit, OnChanges {
     @Input() act: any;
 
     dataReady = false;
-    @Input() tool: string;
-    @Input() toolName: string;
+    @Input() tool: string;          // usually "socials"
+    @Input() toolName: string;      // pretty label
     modeSubmit = 'Submit';
     delUser = false;
     projectTypeClicked = false;
@@ -65,10 +65,10 @@ export class SocialsFormComponent implements OnInit, OnChanges {
     thisUser: '';
     toolSet: any = [];
     modelSet: any;
-    @Input() group: string;
-    @Input() groupId: string;
+    @Input() group: string;         // route segment (e.g. "abysmalwhore")
+    @Input() groupId: string;       // artist id
 
-    adminForm = this.formBuilder.group({});
+    adminForm: FormGroup = this.formBuilder.group({});
 
     startDate = new Date(2022, 0, 1);
 
@@ -79,6 +79,12 @@ export class SocialsFormComponent implements OnInit, OnChanges {
     // collections for the pretty view
     artistLinks: any[] = [];
     socialsList: any[] = [];
+
+    // deep-link routing
+    private deepLinkSlug: string | null = null;
+    private deepLinkSocialId: number | null = null;
+    private deepLinkLinkId: number | null = null;
+    private deepLinkHandled = false;
 
     constructor(
         public dialog: MatDialog,
@@ -92,54 +98,69 @@ export class SocialsFormComponent implements OnInit, OnChanges {
         private socialsService: SocialsService,
         private artistsLinksService: ArtistsLinksService,
         private authenticationService: AuthenticationService,
+        private artistActivityService: ArtistActivityService,
         private uploadService: FileUploadService,
         public MF: MFService
     ) {
         this.currentUser = this.authenticationService.currentUserValue;
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.imageKey = this.MF.buildImageKey(this.toolName);
+
+        // grab ?slug=, ?socialId=, ?linkId= for deep links
+        this.route.queryParamMap.subscribe(params => {
+            const slug = params.get('slug');
+            const socialId = params.get('socialId');
+            const linkId = params.get('linkId');
+
+            this.deepLinkSlug = slug || null;
+            this.deepLinkSocialId = socialId ? +socialId : null;
+            this.deepLinkLinkId = linkId ? +linkId : null;
+        });
+
         this.artistsService.get(this.groupId).subscribe(res => {
             this.artist = res;
         });
+
         this.loadData();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         this.imageKey = this.MF.buildImageKey(this.toolName);
+
         if (this.updateTable) {
-            if (this.act == 'create') {
-                Object.keys(this.res).map(res => {
+            if (this.act === 'create') {
+                Object.keys(this.res).map(resKey => {
                     if (
-                        res == 'createdAt' ||
-                        res == 'updatedAt' ||
-                        res == 'active'
+                        resKey === 'createdAt' ||
+                        resKey === 'updatedAt' ||
+                        resKey === 'active'
                     ) {
-                        delete this.res[res];
+                        delete this.res[resKey];
                     }
                 });
 
                 this.dataSource.push(this.res);
-            } else if (this.act == 'put') {
-                this.dataSource = this.dataSource.filter((value, key) => {
-                    if (value.id == this.res.id) {
-                        this.displayedColumns.map(res => {
-                            value[res] = this.res[res];
+            } else if (this.act === 'put') {
+                this.dataSource = this.dataSource.filter((value) => {
+                    if (value.id === this.res.id) {
+                        this.displayedColumns.map(col => {
+                            value[col] = this.res[col];
                         });
                     }
                     return true;
                 });
-            } else if (this.act == 'delete') {
-                this.dataSource = this.dataSource.filter((value, key) => {
-                    return value.id != this.res;
+            } else if (this.act === 'delete') {
+                this.dataSource = this.dataSource.filter((value) => {
+                    return value.id !== this.res;
                 });
             }
             this.table.renderRows();
         }
     }
 
-    async loadData() {
+    async loadData(): Promise<void> {
         // SOCIAL ENGINES (via MF tool, usually "socials")
         this.MF.load(this.tool, { scope: 'allForArtist', artistId: this.groupId })
             .subscribe(result => {
@@ -149,17 +170,56 @@ export class SocialsFormComponent implements OnInit, OnChanges {
                 this.socialsList = result.rows || [];
 
                 this.setSettings(this.toolSet);
+
+                // --- deep link handling for SOCIALS ---
+                if (!this.deepLinkHandled && this.socialsList.length) {
+                    let match: any = null;
+
+                    if (this.deepLinkSocialId) {
+                        match = this.socialsList.find(s => s.id === this.deepLinkSocialId);
+                    } else if (this.deepLinkSlug) {
+                        match = this.socialsList.find(s => {
+                            const url = s.profile_url || '';
+                            const slugPart = url.split('slug=').pop();
+                            return slugPart === this.deepLinkSlug;
+                        });
+                    }
+
+                    if (match) {
+                        this.deepLinkHandled = true;
+                        setTimeout(() => this.editSocial(match), 0);
+                    }
+                }
             });
 
         // ARTIST LINKS (simple URLs via artist-links API)
         this.artistsLinksService.getAllForArtist(this.groupId).subscribe(rows => {
-            // your controller returns a plain array
             this.artistLinks = rows || [];
+
+            // --- deep link handling for LINKS ---
+            if (!this.deepLinkHandled && this.artistLinks.length) {
+                let match: any = null;
+
+                if (this.deepLinkLinkId) {
+                    match = this.artistLinks.find(l => l.id === this.deepLinkLinkId);
+                } else if (this.deepLinkSlug) {
+                    match = this.artistLinks.find(l => {
+                        const url = l.profile_url || '';
+                        const slugPart = url.split('slug=').pop();
+                        return slugPart === this.deepLinkSlug;
+                    });
+                }
+
+                if (match) {
+                    this.deepLinkHandled = true;
+                    setTimeout(() => this.editLink(match), 0);
+                }
+            }
         });
     }
 
-    setSettings(formData: any[]) {
-        const { displayedColumns, formGroup, newRecord, rows } =
+    setSettings(formData: any[]): void {
+        const { displayedColumns, formGroup, newRecord } =
             this.MF.buildFromData(formData?.length ? formData : this.toolSet, {
                 exclude: ['active', 'createdAt', 'updatedAt'],
                 includeAction: true,
@@ -175,7 +235,7 @@ export class SocialsFormComponent implements OnInit, OnChanges {
         this.dataSource = (this.dataSource as MatTableDataSource<any>).data;
     }
 
-    validateAllFormFields(formGroup: FormGroup) {
+    validateAllFormFields(formGroup: FormGroup): void {
         Object.keys(formGroup.controls).forEach(field => {
             const control = formGroup.get(field);
             if (control instanceof FormControl) {
@@ -186,57 +246,117 @@ export class SocialsFormComponent implements OnInit, OnChanges {
         });
     }
 
-    // ----------------- SOCIAL ENGINES (using MF + SocialsUpdateComponent) -----------------
+    /* ======================================================================
+       SOCIAL ENGINES (SocialsService + SocialsUpdateComponent)
+       ====================================================================== */
 
-    openDialog(action: string, row: any) {
-        const data = this.MF.buildDialogCtx({
+    openDialog(action: string, seed: any): void {
+        const base = {
             action,
-            toolName: this.toolName,
-            artist: this.artist,
-            currentUser: this.currentUser,
-            seed: row
+            tool: 'socials',
+            group: this.toolName,
+            owner_id: this.artist?.id,
+            ...seed
+        };
+
+        const dialogRef = this.dialog.open(SocialsUpdateComponent, {
+            width: '560px',
+            data: base
         });
 
-        this.MF
-            .openUpdateDialog<typeof data, { event: string; data: any }>(
-                SocialsUpdateComponent, // <-- use socials-specific update dialog
-                data
-            )
-            .subscribe(result => {
-                if (!result) return;
+        dialogRef.afterClosed().subscribe(result => {
+            if (!result || result.event === 'Cancel') return;
 
-                const cooked = this.MF.compose(result.data)
-                    .with({
-                        profile_url: `${this.artist?.profile_url}-${(result.data?.title ?? '')
-                            .toString()
-                            .replace(/[^\w\s-]/g, '')
-                            .replace(/\s+/g, '')
-                            .toLowerCase()}`,
-                        owner_group: this.artist?.id
-                    })
-                    .done();
+            if (result.event === 'delete') {
+                // DELETE / ARCHIVE
+                const id = seed.id;
+                if (!id) return;
 
-                this.activeItem.emit({ action: result.event, data: cooked });
-            });
+                this.socialsService.delete(id).subscribe(() => {
+                    this.socialsList = this.socialsList.filter(s => s.id !== id);
+                    this.logSocialActivity('delete', seed);
+                });
+
+                return;
+            }
+
+            // CREATE or UPDATE
+            const raw = result.data || {};
+            const payload: any = {
+                ...raw,
+                owner_user: this.currentUser.id,
+                owner_group: this.artist?.id,
+                active: 1
+            };
+
+            if (action === 'Add' || !seed.id) {
+                // CREATE – first create, then build deep link using returned row (with id)
+                this.socialsService.create(payload).subscribe(created => {
+                    const row = { ...created };
+
+                    row.profile_url = this.MF.buildProfileSlug(
+                        this.artist,
+                        this.group,
+                        row,
+                        {
+                            featurePath: 'socials',
+                            idParam: 'socialId',
+                            labelKeys: ['title', 'platform', 'username']
+                        }
+                    );
+
+                    if (row.id) {
+                        this.socialsService.update(row.id, { profile_url: row.profile_url }).subscribe();
+                    }
+
+                    this.socialsList = [...this.socialsList, row];
+                    this.logSocialActivity('create', row);
+                });
+            } else {
+                // UPDATE
+                const id = seed.id;
+                const updatedRow = { ...seed, ...payload };
+
+                updatedRow.profile_url = this.MF.buildProfileSlug(
+                    this.artist,
+                    this.group,
+                    updatedRow,
+                    {
+                        featurePath: 'socials',
+                        idParam: 'socialId',
+                        labelKeys: ['title', 'platform', 'username']
+                    }
+                );
+
+                this.socialsService.update(id, updatedRow).subscribe(() => {
+                    this.socialsList = this.socialsList.map(s =>
+                        s.id === id ? updatedRow : s
+                    );
+                    this.logSocialActivity('put', updatedRow);
+                });
+            }
+        });
     }
 
-    openAddSocial() {
+    openAddSocial(): void {
         // reuse MF newRecord seed
         this.openDialog('Add', this.newRecord);
     }
 
-    editSocial(social: any) {
+    editSocial(social: any): void {
         this.openDialog('Update', social);
     }
 
-    testPost(social: any) {
+    testPost(social: any): void {
         console.log('Test post for', social);
         // later: call your API to do a dry-run / test content call
     }
 
-    // ----------------- ARTIST LINKS (using LinksUpdateComponent directly) -----------------
+    /* ======================================================================
+       ARTIST LINKS (LinksUpdateComponent + ArtistsLinksService)
+       ====================================================================== */
 
-    openAddLink() {
+    openAddLink(): void {
         const base = {
             action: 'Add',
             tool: 'artist-links',
@@ -258,21 +378,44 @@ export class SocialsFormComponent implements OnInit, OnChanges {
         dialogRef.afterClosed().subscribe(result => {
             if (!result || result.event === 'Cancel') return;
 
-            const payload = {
+            const payload: any = {
                 ...result.data,
                 owner_user: this.currentUser.id,
                 owner_group: this.artist?.id,
                 active: 1
             };
 
-            // create via artist-links API
+            // 1) CREATE first so we get the real DB id
             this.artistsLinksService.create(payload).subscribe(created => {
-                this.artistLinks = [...this.artistLinks, created];
+                const row: any = { ...created };
+
+                // 2) Build deep link with ?linkId= and slug
+                row.profile_url = this.MF.buildProfileSlug(
+                    this.artist,
+                    this.group,
+                    row,
+                    {
+                        featurePath: 'socials',          // lives on the socials page
+                        idParam: 'linkId',               // ?linkId=123
+                        labelKeys: ['title', 'url']      // slug from title/url
+                    }
+                );
+
+                // 3) Patch profile_url back to server
+                if (row.id) {
+                    this.artistsLinksService
+                        .update(row.id, { profile_url: row.profile_url })
+                        .subscribe();
+                }
+
+                // 4) Update local list + activity
+                this.artistLinks = [...this.artistLinks, row];
+                this.logLinkActivity('create', row);
             });
         });
     }
 
-    editLink(link: any) {
+    editLink(link: any): void {
         const data = {
             action: 'Update',
             tool: 'artist-links',
@@ -293,28 +436,143 @@ export class SocialsFormComponent implements OnInit, OnChanges {
                 // DELETE
                 this.artistsLinksService.delete(link.id).subscribe(() => {
                     this.artistLinks = this.artistLinks.filter(l => l.id !== link.id);
+                    this.logLinkActivity('delete', link);
                 });
                 return;
             }
 
             if (result.event === 'Update' || result.event === 'Add') {
-                const payload = {
+                const payload: any = {
                     ...result.data,
                     owner_user: this.currentUser.id,
                     owner_group: this.artist?.id,
                     active: 1
                 };
 
-                this.artistsLinksService.update(link.id, payload).subscribe(() => {
+                const updatedRow: any = { ...link, ...payload };
+
+                updatedRow.profile_url = this.MF.buildProfileSlug(
+                    this.artist,
+                    this.group,
+                    updatedRow,
+                    {
+                        featurePath: 'socials',
+                        idParam: 'linkId',
+                        labelKeys: ['title', 'url']
+                    }
+                );
+
+                this.artistsLinksService.update(link.id, updatedRow).subscribe(() => {
                     this.artistLinks = this.artistLinks.map(l =>
-                        l.id === link.id ? { ...l, ...payload } : l
+                        l.id === link.id ? updatedRow : l
                     );
+                    this.logLinkActivity('put', updatedRow);
                 });
             }
         });
     }
 
-    // ---------- UI helpers for new view ----------
+    /* ======================================================================
+       ACTIVITY LOGGING
+       ====================================================================== */
+
+    private logLinkActivity(
+        action: 'create' | 'put' | 'delete',
+        row: any
+    ): void {
+        const actor = {
+            id: this.currentUser.id,
+            username: this.currentUser.username
+        };
+
+        const feature = {
+            feature: 'link',
+            extra: null
+        };
+
+        const verb: 'create' | 'update' | 'delete' =
+            action === 'put' ? 'update' : action;
+
+        let verbText = '';
+        if (verb === 'create')      verbText = 'created';
+        else if (verb === 'update') verbText = 'updated';
+        else if (verb === 'delete') verbText = 'removed';
+
+        const labelText = row.title || row.url || 'link';
+        const label = `<b>${labelText}</b>`;
+
+        let activity: string;
+
+        if (verb === 'delete' || !row.profile_url) {
+            activity = `${verbText} a link ${label}`;
+        } else {
+            activity =
+                `${verbText} a link ` +
+                `<a href="${row.profile_url}">` +
+                `${label}` +
+                `</a>`;
+        }
+
+        this.artistActivityService
+            .logChange(activity, {
+                actor,
+                artistId: this.groupId,
+                groupId: this.groupId,
+                feature
+            })
+            .subscribe();
+    }
+
+    private logSocialActivity(
+        action: 'create' | 'put' | 'delete',
+        row: any
+    ): void {
+        const actor = {
+            id: this.currentUser.id,
+            username: this.currentUser.username
+        };
+
+        const feature = {
+            feature: 'social',
+            extra: null
+        };
+
+        const verb: 'create' | 'update' | 'delete' =
+            action === 'put' ? 'update' : action;
+
+        let verbText = '';
+        if (verb === 'create')      verbText = 'connected';
+        else if (verb === 'update') verbText = 'updated';
+        else if (verb === 'delete') verbText = 'disconnected';
+
+        const labelText = row.title || row.platform || row.username || 'social engine';
+        const label = `<b>${labelText}</b>`;
+
+        let activity: string;
+
+        if (verb === 'delete' || !row.profile_url) {
+            activity = `${verbText} a social engine ${label}`;
+        } else {
+            activity =
+                `${verbText} a social engine ` +
+                `<a href="${row.profile_url}">` +
+                `${label}` +
+                `</a>`;
+        }
+
+        this.artistActivityService
+            .logChange(activity, {
+                actor,
+                artistId: this.groupId,
+                groupId: this.groupId,
+                feature
+            })
+            .subscribe();
+    }
+
+    /* ======================================================================
+       UI HELPERS
+       ====================================================================== */
 
     getLinkEmoji(link: any): string {
         const t = (link?.title || '').toLowerCase();

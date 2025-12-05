@@ -479,6 +479,61 @@ export class MFService {
         });
     }
 
+    /**
+     * Build a deep-link profile URL for items that live on a feature page.
+     *
+     * Examples:
+     *  /projects/new-edit/12/abysmalwhore/tasks?taskId=2&slug=@abysmalwhore-test-10link
+     *  /projects/new-edit/94/dronewolf/socials?linkId=5&slug=@dronewolf-soundcloud
+     *  /projects/new-edit/94/dronewolf/socials?socialId=7&slug=@dronewolf-instagram
+     */
+    buildProfileSlug(
+        artist: any,
+        groupSlug: string,
+        row: any,
+        opts: {
+            featurePath: string;          // "tasks" | "socials"
+            idParam?: string;             // "taskId" | "linkId" | "socialId"
+            labelKeys?: string[];         // e.g. ["title", "username", "url"]
+        }
+    ): string {
+        const featurePath = opts.featurePath;
+        const idParam = opts.idParam;
+        const labelKeys = (opts.labelKeys && opts.labelKeys.length)
+            ? opts.labelKeys
+            : ['title', 'username', 'url'];
+
+        const handle = artist?.profile_url || `@${groupSlug}`;
+
+        // pick the first non-empty label
+        let rawLabel = '';
+        for (const key of labelKeys) {
+            if (row && row[key]) {
+                rawLabel = String(row[key]);
+                break;
+            }
+        }
+
+        const base = rawLabel
+            .toString()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .toLowerCase();
+
+        const slugBase = base ? `${handle}-${base}` : handle;
+
+        const id = row?.id;
+
+        // 🔑 THIS is what adds ?linkId= / ?socialId=
+        if (idParam && id) {
+            return `/projects/new-edit/${artist?.id}/${groupSlug}/${featurePath}` +
+                `?${idParam}=${id}&slug=${slugBase}`;
+        }
+
+        // fallback: slug-only if we somehow don't have the id yet
+        return `/projects/new-edit/${artist?.id}/${groupSlug}/${featurePath}?slug=${slugBase}`;
+    }
+
 
     ////// SIMPLE REUSED CALLS
 
