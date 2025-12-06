@@ -1,0 +1,112 @@
+<div class="task-card-dialog" [formGroup]="form" (ngSubmit)="save()">
+
+    <div class="task-card-header">
+        <mat-icon class="task-card-icon">assignment</mat-icon>
+        <div class="task-card-header-main">
+            <input
+                matInput
+                placeholder="Task title"
+                [formControl]="form.get('task')"
+                class="task-card-title-input" />
+            <div class="task-card-subtitle">
+                {{ titleText }}
+            </div>
+        </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="task-card-body">
+
+        <!-- Details row -->
+        <div class="task-card-section">
+            <div class="section-title">Details</div>
+
+            <div class="details-grid">
+                <!-- Status / Column -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let s of statuses" [value]="s.value">
+                            {{ s.label }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Assign To</mat-label>
+                    <mat-select formControlName="assigned_to">
+                        <mat-option *ngFor="let m of members" [value]="m.members.id">
+                            {{ m.members.first_name }}  {{ m.members.last_name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- Due date -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Due date</mat-label>
+                    <input matInput [matDatepicker]="pickerDue" formControlName="completed_by">
+                    <mat-datepicker-toggle matSuffix [for]="pickerDue"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerDue></mat-datepicker>
+                </mat-form-field>
+
+                <!-- Completed date (read-only if you want) -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Completed</mat-label>
+                    <input matInput [matDatepicker]="pickerDone" formControlName="date_completed">
+                    <mat-datepicker-toggle matSuffix [for]="pickerDone"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerDone></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="task-card-section">
+            <div class="section-title">Priority</div>
+
+            <div class="priority-strip">
+                <div
+                    class="priority-pill"
+                    *ngFor="let p of priority"
+                    [ngClass]="['priority-' + p.value, priorityValue === p.value ? 'is-active' : '']"
+                    (click)="setPriority(p.value)">
+                    <span class="dot"></span>
+                    <span class="label">{{ p.label }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="task-card-section">
+            <div class="section-title">Description</div>
+            <mat-form-field appearance="fill" class="full-width">
+                <textarea
+                    matInput
+                    rows="5"
+                    placeholder="Add a more detailed description..."
+                    formControlName="description">
+                </textarea>
+            </mat-form-field>
+        </div>
+
+        <!-- (Optional) you can add comments/activity here later -->
+
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="task-card-actions">
+        <div class="left-actions">
+            <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
+                {{ action === 'Add' ? 'Create' : 'Save' }}
+            </button>
+            <button mat-raised-button color="accent" class="dalmatian" (click)="close()">Cancel</button>
+        </div>
+
+        <div class="right-actions" *ngIf="form.get('id')?.value">
+            <button mat-stroked-button color="warn" (click)="onArchive()">
+                Archive
+            </button>
+        </div>
+    </div>
+
+</div>

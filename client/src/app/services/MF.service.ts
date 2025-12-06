@@ -27,6 +27,7 @@ import { ContactsService } from 'src/app/services/contacts.service';
 import { GalleriesService } from 'src/app/services/galleries.service';
 import { ImagesService } from 'src/app/services/images.service';
 import { VidoesService } from 'src/app/services/videos.service';
+import { PlannerService } from 'src/app/services/planner.service';
 
 // MF Components
 import { MediaplayerComponent } from '../components/mediaplayer/mediaplayer.component';
@@ -102,6 +103,7 @@ export class MFService {
         private galleriesService: GalleriesService,
         private imagesService: ImagesService,
         private videosService: VidoesService,
+        private plannerService: PlannerService
     ) {
         this.svcByTool = {
             artist: this.artistsService,
@@ -116,6 +118,7 @@ export class MFService {
             comments: this.commentsService,
             contacts: this.contactsService,
             galleries: this.galleriesService,
+            planner: this.plannerService,
             images: this.imagesService,
             videos: this.videosService,
         };

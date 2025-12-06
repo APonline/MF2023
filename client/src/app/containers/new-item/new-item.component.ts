@@ -56,7 +56,7 @@ export class NewitemComponent implements OnInit {
         { name: 'Songs',             value: 'songs' },
         { name: 'Lyrics',            value: 'lyrics' },
         { name: 'Tasks',             value: 'tasks' },
-        { name: 'Schedule',          value: 'schedule' },
+        { name: 'Planner',           value: 'planner' },
         { name: 'Documents',         value: 'documents' },
         { name: 'Socials',           value: 'socials' },
         { name: 'Campaigns',         value: 'campaigns' },
@@ -93,7 +93,7 @@ export class NewitemComponent implements OnInit {
             label: 'Work',
             key: 'work',
             tools: [
-                { name: 'Schedule',  value: 'schedule' },
+                { name: 'Planner',   value: 'planner' },
                 { name: 'Tasks',     value: 'tasks' },
                 { name: 'Documents', value: 'documents' },
                 { name: 'Comments',  value: 'comments' }

@@ -31,7 +31,7 @@ import { ImagesService } from './services/images.service';
 import { SocialsService } from './services/socials.service';
 import { SongsService } from './services/songs.service';
 import { VidoesService } from './services/videos.service';
-import { GigsService } from './services/gigs.service';
+import { PlannerService } from './services/planner.service';
 import { DialogService } from './services/dialog.service';
 import { MFService } from './services/MF.service';
 
@@ -72,7 +72,7 @@ import { VideosFormComponent } from './components/new-item-form/new-item-types/v
 import { ArtistFormComponent } from './components/new-item-form/new-item-types/artist/artist-form.component';
 import { GalleriesFormComponent } from './components/new-item-form/new-item-types/galleries/galleries-form.component';
 import { TasksFormComponent } from './components/new-item-form/new-item-types/tasks/tasks-form.component';
-import { ScheduleFormComponent } from './components/new-item-form/new-item-types/schedule/schedule-form.component';
+import { PlannerFormComponent } from './components/new-item-form/new-item-types/planner/planner-form.component';
 import { MerchFormComponent } from './components/new-item-form/new-item-types/merch/merch-form.component';
 import { MerchCategoriesFormComponent } from './components/new-item-form/new-item-types/merch-categories/merch-categories-form.component';
 import { CampaignsFormComponent } from './components/new-item-form/new-item-types/campaigns/campaigns-form.component';
@@ -92,6 +92,7 @@ import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.compo
 import { TaskCardComponent } from './components/new-item-form/new-item-types/tasks/task-card/task-card.component';
 import { LinksUpdateComponent } from './components/new-item-form/new-item-types/socials/links-update/links-update.component';
 import { SocialsUpdateComponent } from './components/new-item-form/new-item-types/socials/socials-update/socials-update.component';
+import { EventCardComponent } from './components/new-item-form/new-item-types/planner/event-card/event-card.component';
 
 
 // export const PICK_FORMATS = {
@@ -146,7 +147,7 @@ import { SocialsUpdateComponent } from './components/new-item-form/new-item-type
     GalleriesFormComponent,
     TasksFormComponent,
     TaskCardComponent,
-    ScheduleFormComponent,
+    PlannerFormComponent,
     MerchFormComponent,
     MerchCategoriesFormComponent,
     CampaignsFormComponent,
@@ -164,7 +165,8 @@ import { SocialsUpdateComponent } from './components/new-item-form/new-item-type
     VideosUpdateComponent,
     MediaplayerComponent,
     LinksUpdateComponent,
-    SocialsUpdateComponent
+    SocialsUpdateComponent,
+    EventCardComponent
   ],
   imports: [
     AppRoutingModule,
@@ -199,7 +201,7 @@ import { SocialsUpdateComponent } from './components/new-item-form/new-item-type
     SocialsService,
     SongsService,
     VidoesService,
-    GigsService,
+    PlannerService,
     DialogService,
     MFService
   ],

@@ -49,7 +49,7 @@ let makeMyAPIForMe = () => {
       result[i] != 'merch' &&
       result[i] != 'merch_categories' &&
       result[i] != 'roles' &&
-      result[i] != 'schedule' &&
+      result[i] != 'planner' &&
       result[i] != 'socials' &&
       result[i] != 'songs' &&
       result[i] != 'tasks' &&

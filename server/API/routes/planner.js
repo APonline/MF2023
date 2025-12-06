@@ -1,18 +1,17 @@
 let path = require('path');
 let itemTopic = path.basename(__filename).split('.')[0];
 const controller = require(`../controllers/${itemTopic}.controller`);
-let baseName = itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1); 
+let baseName = itemTopic.charAt(0).toUpperCase() + itemTopic.slice(1);
 
-module.exports = function(app) {
+module.exports = function (app) {
     // defaults
-    app.use(function(req, res, next) {
+    app.use(function (req, res, next) {
         res.header(
-            "Access-Control-Allow-Headers",
-            "Origin, Content-Type, Accept"
+            'Access-Control-Allow-Headers',
+            'Origin, Content-Type, Accept'
         );
         next();
     });
-    // defaults en
 
     app.post(`/api/v1/${itemTopic}`, controller[`create${baseName}`]);
     app.get(`/api/v1/${itemTopic}`, controller[`getAll${baseName}s`]);
@@ -21,4 +20,6 @@ module.exports = function(app) {
     app.put(`/api/v1/${itemTopic}/:id`, controller[`update${baseName}`]);
     app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${baseName}`]);
 
-} 
+    // NEW: get a date range for calendar views
+    app.get(`/api/v1/${itemTopic}/range`, controller[`get${baseName}Range`]);
+};
