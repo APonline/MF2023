@@ -375,3 +375,55 @@ html {
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
+
+/* Ultra-global placeholder styling */
+*::placeholder {
+   font-size:9px!important;
+   letter-spacing:1px!important;
+    color: rgba(255, 255, 255, 0.22)!important;   // nice deep, subtle white
+    opacity: 1;                          // make sure browsers don't add extra fade
+}
+
+/* Safari / old Edge / etc. (optional but nice) */
+*::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.22)!important;
+     font-size:9px!important;
+     letter-spacing:1px!important;
+}
+*:-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.22)!important;
+     font-size:9px!important;
+     letter-spacing:1px!important;
+}
+*::-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.22)!important;
+     font-size:9px!important;
+     letter-spacing:1px!important;
+}
+.mat-input-element::placeholder {
+    color: rgba(255, 255, 255, 0.22)!important;
+    font-size:9px!important;
+    letter-spacing:1px!important;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+select option {
+    color: #000;         // dark dropdown background → white text is unreadable
+    background: #fff;    // OR match your theme
+}
+
+// but if you want a dark dropdown with white text:
+select option {
+    color: #fff;
+    background: #000;
+}

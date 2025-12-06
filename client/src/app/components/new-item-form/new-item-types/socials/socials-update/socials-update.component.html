@@ -32,7 +32,7 @@
                         <input
                             matInput
                             [(ngModel)]="local_data[0]['title']"
-                            placeholder="e.g. Facebook Page, Instagram Biz, YouTube Channel"
+                            placeholder="e.g. Polarity - Instagram, Band Facebook Page"
                         />
                     </mat-form-field>
                 </div>
@@ -71,6 +71,21 @@
 
                 <div class="field-with-label">
                     <span class="field-label">
+                        Password
+                        <span class="hint-text">(optional)</span>
+                    </span>
+                    <mat-form-field appearance="fill">
+                        <input
+                                matInput
+                                type="password"
+                                [(ngModel)]="local_data[0]['password']"
+                                placeholder="Password / app password (if used)"
+                        />
+                    </mat-form-field>
+                </div>
+
+                <!-- <div class="field-with-label">
+                    <span class="field-label">
                         Profile URL slug
                         <span class="hint-text">(optional)</span>
                     </span>
@@ -81,7 +96,7 @@
                             placeholder="auto-generated if left blank"
                         />
                     </mat-form-field>
-                </div>
+                </div> -->
             </div>
 
             <!-- row 3: public URL -->
@@ -110,9 +125,9 @@
                     </span>
                     <mat-form-field appearance="fill">
                         <input
-                            matInput
-                            [(ngModel)]="local_data[0]['api_url']"
-                            placeholder="https://graph.facebook.com/..., https://api.twitter.com/..."
+                                matInput
+                                [(ngModel)]="local_data[0]['api_base_url']"
+                                placeholder="e.g. https://graph.facebook.com/v21.0"
                         />
                     </mat-form-field>
                 </div>
@@ -124,9 +139,9 @@
                     </span>
                     <mat-form-field appearance="fill">
                         <input
-                            matInput
-                            [(ngModel)]="local_data[0]['platform_account_id']"
-                            placeholder="Page ID / Channel ID / Business ID"
+                                matInput
+                                [(ngModel)]="local_data[0]['platform_account_id']"
+                                placeholder="e.g. 123456789012345 (Facebook Page ID)"
                         />
                     </mat-form-field>
                 </div>
@@ -135,12 +150,12 @@
             <!-- row 5: credentials -->
             <div class="field-row">
                 <div class="field-with-label">
-                    <span class="field-label">Access key</span>
+                    <span class="field-label">Access key / Client ID</span>
                     <mat-form-field appearance="fill">
                         <input
-                            matInput
-                            [(ngModel)]="local_data[0]['access_key']"
-                            placeholder="API key / client ID"
+                                matInput
+                                [(ngModel)]="local_data[0]['client_id']"
+                                placeholder="e.g. 123456789012345 or abc123CLIENTID"
                         />
                     </mat-form-field>
                 </div>
@@ -149,9 +164,9 @@
                     <span class="field-label">Token key</span>
                     <mat-form-field appearance="fill">
                         <input
-                            matInput
-                            [(ngModel)]="local_data[0]['token_key']"
-                            placeholder="Access token / bearer token"
+                                matInput
+                                [(ngModel)]="local_data[0]['access_token']"
+                                placeholder="Your access token / bearer token"
                         />
                     </mat-form-field>
                 </div>
@@ -166,9 +181,9 @@
                     </span>
                     <mat-form-field appearance="fill">
                         <input
-                            matInput
-                            [(ngModel)]="local_data[0]['secret_id']"
-                            placeholder="Client secret / app secret"
+                                matInput
+                                [(ngModel)]="local_data[0]['client_secret']"
+                                placeholder="Client secret / app secret"
                         />
                     </mat-form-field>
                 </div>
@@ -180,10 +195,10 @@
                     </span>
                     <mat-form-field appearance="fill">
                         <textarea
-                            matInput
-                            rows="2"
-                            [(ngModel)]="local_data[0]['notes']"
-                            placeholder="Any extra info about this connection (scopes, sandbox/live, etc.)"
+                                matInput
+                                rows="2"
+                                [(ngModel)]="local_data[0]['metadata_json']"
+                                placeholder="Any extra info about this connection (scopes, sandbox/live, etc.)"
                         ></textarea>
                     </mat-form-field>
                 </div>

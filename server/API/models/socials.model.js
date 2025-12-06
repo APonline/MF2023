@@ -95,7 +95,7 @@ module.exports = (sequelize, Sequelize) => {
         }
     }, {
         tableName: scriptName,
-        timestamps: false   // or true if you're using createdAt/updatedAt through Sequelize
+        timestamps: true   // or true if you're using createdAt/updatedAt through Sequelize
     });
 
     return Social;
