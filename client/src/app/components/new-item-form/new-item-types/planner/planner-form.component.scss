@@ -223,7 +223,8 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 0px 20px;
+    margin-top: -10px;
     color: #fff;
 
     .planner-glass {
