@@ -55,7 +55,6 @@ export class NewitemComponent implements OnInit {
         { name: 'Albums',            value: 'albums' },
         { name: 'Songs',             value: 'songs' },
         { name: 'Lyrics',            value: 'lyrics' },
-        { name: 'Gigs',              value: 'gigs' },
         { name: 'Tasks',             value: 'tasks' },
         { name: 'Schedule',          value: 'schedule' },
         { name: 'Documents',         value: 'documents' },

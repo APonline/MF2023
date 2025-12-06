@@ -31,6 +31,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MFService } from 'src/app/services/MF.service';
+import { schedule } from 'src/app/models/schedule.model';
 
 @Component({
   selector: 'app-scheduleForm',
@@ -40,7 +41,8 @@ import { MFService } from 'src/app/services/MF.service';
 export class ScheduleFormComponent implements OnInit, OnChanges {
   @Output() activeItem = new EventEmitter<any>();
 
-  public currentUser: Observable<any>;
+  currentUser: any;
+  imageKey = '';
   @Input() action: string;
   @Input() editUser: number;
 
@@ -73,6 +75,7 @@ export class ScheduleFormComponent implements OnInit, OnChanges {
 
   root = environment.root;
   artist: any;
+  model = schedule;
 
   constructor(
       public dialog: MatDialog,
@@ -82,26 +85,15 @@ export class ScheduleFormComponent implements OnInit, OnChanges {
       private router: Router,
       private DialogService: DialogService,
       private alertService: AlertService,
-      private imagesService: ImagesService,
-      private albumsService: AlbumsService,
-      private artistLinksService: ArtistsLinksService,
-      private artistMembersService: ArtistMembersService,
       private artistsService: ArtistsService,
-      private commentsService: CommentsService,
-      private contactsService: ContactsService,
-      private documentsService: DocumentsService,
-      private friendsService: FriendsService,
-      private gigsService: GigsService,
-      private socialsService: SocialsService,
-      private songsService: SongsService,
-      private videosService: VidoesService,
       private authenticationService: AuthenticationService,
-      private MF: MFService
+      public MF: MFService
   ) {
 
   }
 
   ngOnInit() {
+    this.imageKey = this.MF.buildImageKey(this.toolName);
     this.artistsService.get(this.groupId).subscribe(res => {
       this.artist = res;
     });
