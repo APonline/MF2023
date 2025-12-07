@@ -54,10 +54,8 @@
                 <!-- Duration -->
                 <mat-form-field appearance="fill">
                     <mat-label>Duration</mat-label>
-                    <mat-select formControlName="duration_minutes">
-                        <mat-option
-                            *ngFor="let d of durationOptions"
-                            [value]="d.value">
+                    <mat-select formControlName="duration_minutes" panelClass="mf-dark-select">
+                        <mat-option *ngFor="let d of durationOptions" [value]="d.value">
                             {{ d.label }}
                         </mat-option>
                     </mat-select>
@@ -66,10 +64,8 @@
                 <!-- Type -->
                 <mat-form-field appearance="fill">
                     <mat-label>Session Type</mat-label>
-                    <mat-select formControlName="session_type">
-                        <mat-option
-                            *ngFor="let t of sessionTypes"
-                            [value]="t.value">
+                    <mat-select formControlName="session_type" panelClass="mf-dark-select">
+                        <mat-option *ngFor="let t of sessionTypes" [value]="t.value">
                             {{ t.label }}
                         </mat-option>
                     </mat-select>
@@ -82,15 +78,11 @@
                     Recurring session
                 </mat-checkbox>
 
-                <mat-form-field
-                    appearance="fill"
-                    *ngIf="form.get('is_recurring')?.value">
+                <mat-form-field appearance="fill" *ngIf="form.get('is_recurring')?.value">
                     <mat-label>Repeat</mat-label>
-                    <mat-select formControlName="recurrence_freq">
-                        <mat-option value="weekly">
-                            Weekly (same day &amp; time)
-                        </mat-option>
-                        <!-- future: monthly, custom, etc -->
+                    <mat-select formControlName="recurrence_freq" panelClass="mf-dark-select">
+                        <mat-option value="weekly">Weekly (same day &amp; time)</mat-option>
+                        <mat-option value="biweekly">Every 2 weeks (same day &amp; time)</mat-option>
                     </mat-select>
                 </mat-form-field>
 
@@ -123,10 +115,8 @@
 
                 <mat-form-field appearance="fill">
                     <mat-label>Attendees</mat-label>
-                    <mat-select formControlName="attendees" multiple>
-                        <mat-option
-                            *ngFor="let m of members"
-                            [value]="m.members?.id || m.id">
+                    <mat-select formControlName="attendees" multiple panelClass="mf-dark-select">
+                        <mat-option *ngFor="let m of members" [value]="m.members?.id || m.id">
                             {{ m.members?.first_name || m.first_name }}
                             {{ m.members?.last_name || m.last_name }}
                         </mat-option>

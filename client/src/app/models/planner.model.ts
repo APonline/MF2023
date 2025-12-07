@@ -4,14 +4,15 @@ export class planner {
     owner_group?: number;
     start_at?: string;        // ISO datetime from API
     duration?: number;        // minutes
+
+    is_recurring?: number | boolean;   // 0/1 from API, boolean in UI
+    recurrence_freq?: string | null;   // e.g. 'weekly'
+    recurrence_until?: string | null;  // ISO datetime
+
     attendees?: string;       // for now: comma string or JSON string
     title?: string;
     description?: string;
     session_type?: string;
-    // NEW: recurrence metadata
-    is_recurring?: number;            // 0/1 from API
-    recurrence_freq?: string | null;  // e.g. 'weekly'
-    recurrence_until?: string | null; // ISO datetime
     location?: string;
     active?: number;
     profile_url?: string | null;
@@ -25,13 +26,13 @@ export class planner {
         'owner_group',
         'start_at',
         'duration',
+        'is_recurring',
+        'recurrence_freq',
+        'recurrence_until',
         'attendees',
         'title',
         'description',
         'session_type',
-        'is_recurring',
-        'recurrence_freq',
-        'recurrence_until',
         'location',
         'profile_url',
         'active',

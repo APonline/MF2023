@@ -17,37 +17,36 @@ interface SessionTypeMeta {
 
 const SESSION_TYPE_META: { [key: string]: SessionTypeMeta } = {
     // PERFORMANCE – red
-    gig:               { value: 'gig',               label: 'Gig',                          color: '#E74C3C', group: 'performance' },
-    soundcheck:        { value: 'soundcheck',        label: 'Soundcheck / Load-in',         color: '#E74C3C', group: 'performance' },
-    travel:            { value: 'travel',            label: 'Travel / Transit',             color: '#E74C3C', group: 'performance' },
+    gig:               { value: 'gig',               label: 'Gig',                          color: '#ff4d4d', group: 'performance' },
+    soundcheck:        { value: 'soundcheck',        label: 'Soundcheck / Load-in',         color: '#ff4d4d', group: 'performance' },
+    travel:            { value: 'travel',            label: 'Travel / Transit',             color: '#ff4d4d', group: 'performance' },
 
-    // REHEARSAL – orange
-    rehearsal:         { value: 'rehearsal',         label: 'Jam / Rehearsal',              color: '#E67E22', group: 'rehearsal' },
-    tour_rehearsal:    { value: 'tour_rehearsal',    label: 'Tour Rehearsal',               color: '#E67E22', group: 'rehearsal' },
-    acoustic_rehearsal:{ value: 'acoustic_rehearsal',label: 'Acoustic Rehearsal',           color: '#E67E22', group: 'rehearsal' },
+    // PRACTICE & PREP – orange
+    rehearsal:         { value: 'rehearsal',         label: 'Jam / Rehearsal',              color: '#ff9a3c', group: 'practice' },
+    tour_rehearsal:    { value: 'tour_rehearsal',    label: 'Tour Rehearsal',               color: '#ff9a3c', group: 'practice' },
+    acoustic_rehearsal:{ value: 'acoustic_rehearsal',label: 'Acoustic Rehearsal',           color: '#ff9a3c', group: 'practice' },
 
-    // STUDIO / CREATIVE – purple
-    studio:            { value: 'studio',            label: 'Studio Session',               color: '#9B59B6', group: 'studio' },
-    writing:           { value: 'writing',           label: 'Writing Session',              color: '#9B59B6', group: 'studio' },
-    preprod:           { value: 'preprod',           label: 'Pre-Production',               color: '#9B59B6', group: 'studio' },
-    tracking:          { value: 'tracking',          label: 'Tracking Session',             color: '#9B59B6', group: 'studio' },
-    overdub:           { value: 'overdub',           label: 'Overdub Session',              color: '#9B59B6', group: 'studio' },
-    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#9B59B6', group: 'studio' },
-    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#9B59B6', group: 'studio' },
+    // STUDIO / CONTENT – blue
+    studio:            { value: 'studio',            label: 'Studio Session',               color: '#3aa5ff', group: 'studio' },
+    writing:           { value: 'writing',           label: 'Writing Session',              color: '#3aa5ff', group: 'studio' },
+    preprod:           { value: 'preprod',           label: 'Pre-Production',               color: '#3aa5ff', group: 'studio' },
+    recording:         { value: 'recording',         label: 'Recording Session',            color: '#3aa5ff', group: 'studio' },
+    overdub:           { value: 'overdub',           label: 'Overdub Session',              color: '#3aa5ff', group: 'studio' },
+    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#f8ff3aff', group: 'studio' },
+    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#f8ff3aff', group: 'studio' },
 
-    // MEDIA / CONTENT – blue
-    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3498DB', group: 'media' },
-    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3498DB', group: 'media' },
-    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3498DB', group: 'media' },
-    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3498DB', group: 'media' },
+    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3aff40ff', group: 'studio' },
+    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3aff40ff', group: 'studio' },
+    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3aff40ff', group: 'studio' },
+    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3aff40ff', group: 'studio' },
 
-    // BUSINESS – green
-    band_meeting:      { value: 'band_meeting',      label: 'Band Meeting',                 color: '#2ECC71', group: 'business' },
-    management_meeting:{ value: 'management_meeting',label: 'Management Meeting',           color: '#2ECC71', group: 'business' },
-    marketing_planning:{ value: 'marketing_planning',label: 'Marketing / Release Planning', color: '#2ECC71', group: 'business' },
+    // BUSINESS – purple
+    band_meeting:      { value: 'band_meeting',      label: 'Band Meeting',                 color: '#b366ff', group: 'business' },
+    management_meeting:{ value: 'management_meeting',label: 'Management Meeting',           color: '#b366ff', group: 'business' },
+    marketing_planning:{ value: 'marketing_planning',label: 'Marketing / Release Planning', color: '#b366ff', group: 'business' },
 
     // OTHER – grey
-    other:             { value: 'other',             label: 'Other',                        color: '#95A5A6', group: 'other' }
+    other:             { value: 'other',             label: 'Other',                        color: '#7a7a7a', group: 'other' }
 };
 
 function getSessionTypeMeta(type: string | null | undefined): SessionTypeMeta {
@@ -141,7 +140,9 @@ export class EventCardComponent implements OnInit {
                 ? seed.is_recurring
                 : !!seed.is_recurring;
 
-        const defaultFreq = seed.recurrence_freq || 'weekly';
+        // ✅ only default freq if actually recurring
+        const defaultFreq = defaultIsRecurring ? (seed.recurrence_freq || 'weekly') : null;
+
         const defaultUntil = seed.recurrence_until
             ? new Date(seed.recurrence_until as any)
             : null;
@@ -273,11 +274,8 @@ export class EventCardComponent implements OnInit {
         const timeMoment = moment(time, 'HH:mm');
         let timePart = '';
         if (timeMoment.isValid()) {
-            const fmt = timeMoment.minute() === 0 ? 'h A' : 'h:mm A';
-            timePart = timeMoment
-                .format(fmt)
-                .replace('AM', 'am')
-                .replace('PM', 'pm');
+            const fmt = timeMoment.minute() === 0 ? 'h a' : 'h:mm a';
+            timePart = timeMoment.format(fmt);
         }
 
         this.headerSubtitle = timePart
@@ -331,10 +329,21 @@ export class EventCardComponent implements OnInit {
         value.selected_date = start_at; // legacy compatibility
 
         // normalise recurring flags
-        value.is_recurring = value.is_recurring ? 1 : 0;
+        const isRecurring = !!value.is_recurring;
+        value.is_recurring = isRecurring ? 1 : 0;
 
-        if (value.recurrence_until instanceof Date) {
-            value.recurrence_until = (value.recurrence_until as Date).toISOString();
+        if (!isRecurring) {
+            // ✅ if not recurring, wipe recurrence config
+            value.recurrence_freq = null;
+            value.recurrence_until = null;
+        } else {
+            // ensure we have a freq for recurring
+            if (!value.recurrence_freq) {
+                value.recurrence_freq = 'weekly';
+            }
+            if (value.recurrence_until instanceof Date) {
+                value.recurrence_until = (value.recurrence_until as Date).toISOString();
+            }
         }
 
         if (Array.isArray(value.attendees)) {

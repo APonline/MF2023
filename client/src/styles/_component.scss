@@ -427,3 +427,70 @@ select option {
     color: #fff;
     background: #000;
 }
+
+/* ===== Global dark select for EventCard / Planner ===== */
+
+.mf-dark-select.mat-mdc-select-panel {
+    background: #000;
+    color: #fff;
+
+    /* kill purple primary in this panel */
+    --mdc-theme-primary: #ffffff;
+}
+
+/* base option text */
+.mf-dark-select.mat-mdc-select-panel
+    .mat-mdc-option .mdc-list-item__primary-text {
+    color: #ffffff !important;
+}
+
+/* selected + active option text */
+.mf-dark-select.mat-mdc-select-panel
+    .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text,
+.mf-dark-select.mat-mdc-select-panel
+    .mat-mdc-option.mat-mdc-option-active .mdc-list-item__primary-text {
+    color: #ffffff !important;
+}
+
+/* selected / active option container (fallback) */
+.mf-dark-select.mat-mdc-select-panel
+    .mat-mdc-option.mdc-list-item--selected,
+.mf-dark-select.mat-mdc-select-panel
+    .mat-mdc-option.mat-mdc-option-active {
+    color: #ffffff !important;
+    background-color: rgba(255, 77, 77, 0.14);
+}
+
+/* tick/check colour – red instead of purple */
+.mf-dark-select.mat-mdc-select-panel
+    .mat-pseudo-checkbox-checked,
+.mf-dark-select.mat-mdc-select-panel
+    .mat-pseudo-checkbox-checked::after {
+    border-color: #ff4d4d !important;
+    background-color: #ff4d4d !important;
+}
+/* ===== Global datepicker theming – kill purple ===== */
+
+/* Selected day circle */
+.mat-calendar-body-selected,
+.mat-calendar-body-selected:hover,
+.mat-calendar-body-selected:focus {
+    background-color: #ff4d4d !important;  /* red */
+    color: #000000 !important;            /* text inside circle */
+}
+
+/* Range support (in case you use range pickers later) */
+.mat-calendar-body-in-range,
+.mat-calendar-body-in-range:hover {
+    background-color: rgba(255, 77, 77, 0.25) !important;
+}
+
+/* Today outline when not selected */
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+    border-color: #ff4d4d !important;
+}
+/* Datepicker toggle icon colour – globally */
+.mat-datepicker-toggle .mat-mdc-icon-button,
+.mat-datepicker-toggle .mat-icon {
+    color: #ffffff !important;   /* or #ff4d4d if you want red */
+}

@@ -97,9 +97,9 @@
     overflow-y: auto;
 }
 
-.event-card-section {
-    margin-bottom: 18px;
-}
+// .event-card-section {
+//     margin-bottom: 18px;
+// }
 
 .section-title {
     font-size: 12px;
@@ -161,6 +161,14 @@
 
 .event-card-dialog textarea.mat-input-element {
     min-height: 200px;
+    color: #ffffff;
+    caret-color: #ffffff; 
+}
+
+.event-card-dialog input,
+.event-card-dialog textarea {
+    caret-color: #ffffff;
+    color: #ffffff;
 }
 
 /**********************************************
@@ -352,9 +360,9 @@
     margin-top: 4px;
 }
 
-.event-card-section {
-    margin-top: 18px;
-}
+// .event-card-section {
+//     margin-top: 18px;
+// }
 
 .section-title {
     font-size: 11px;
@@ -424,5 +432,84 @@
 }
 
 .full-width textarea {
-    height: 52px!important;
+    height: 30px!important;
 }
+
+/* Recurring row layout (keep if you don't already have it) */
+.recurring-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom:18px;
+}
+
+/* Force checkbox + label to white (MDC version) */
+.recurring-row ::ng-deep .mat-mdc-checkbox {
+    /* checkbox square / outline colors */
+    --mdc-checkbox-unselected-icon-color: #fff;
+    --mdc-checkbox-unselected-hover-icon-color: #fff;
+    --mdc-checkbox-unselected-focus-icon-color: #fff;
+    --mdc-checkbox-unselected-pressed-icon-color: #fff;
+
+    --mdc-checkbox-selected-icon-color: #fff;
+    --mdc-checkbox-selected-hover-icon-color: #fff;
+    --mdc-checkbox-selected-focus-icon-color: #fff;
+    --mdc-checkbox-selected-pressed-icon-color: #fff;
+
+    /* tick color */
+    --mdc-checkbox-selected-checkmark-color: #000;
+    margin-top: -15px;
+}
+
+/* Label text */
+.recurring-row ::ng-deep .mat-mdc-checkbox .mdc-label {
+    color: #fff !important;
+}
+
+/* Kill Material purple just for this dialog */
+:host ::ng-deep .event-card-dialog {
+
+    /* --- labels / text / arrows --- */
+    .mat-mdc-form-field .mdc-floating-label,
+    .mat-mdc-form-field .mdc-floating-label--float-above,
+    .mat-mdc-select-min-line,
+    .mat-mdc-select-arrow {
+        color: #ffffff !important;   /* label + selected text white */
+    }
+
+    /* underline + focus ripple = red */
+    .mat-mdc-form-field.mat-focused .mdc-line-ripple::before,
+    .mat-mdc-form-field.mat-focused .mdc-line-ripple::after {
+        border-bottom-color: #ff4d4d !important;
+    }
+
+    /* --- select dropdown panel --- */
+    .mat-mdc-select-panel {
+        background: #000000;         /* dark dropdown */
+    }
+
+    .mat-mdc-select-panel .mat-mdc-option {
+        color: #ffffff;              /* normal options white */
+    }
+
+    /* selected option highlight = red, not purple */
+    .mat-mdc-select-panel
+    .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+        background-color: rgba(255, 77, 77, 0.12); /* subtle red bg */
+    }
+
+    .mat-mdc-select-panel
+    .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+        color: #ffffff;              /* keep text white */
+    }
+
+    /* red checkmark box instead of purple */
+    .mat-mdc-select-panel
+    .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-full,
+    .mat-mdc-select-panel
+    .mat-pseudo-checkbox-indeterminate.mat-pseudo-checkbox-full {
+        background-color: #ff4d4d !important;
+        border-color: #ff4d4d !important;
+    }
+}
+

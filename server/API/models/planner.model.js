@@ -18,6 +18,19 @@ module.exports = (sequelize, Sequelize) => {
             duration: {
                 type: Sequelize.INTEGER
             },
+            is_recurring: {
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
+            },
+            recurrence_freq: {
+                type: Sequelize.STRING(32),
+                allowNull: true
+            },
+            recurrence_until: {
+                type: Sequelize.DATE,
+                allowNull: true
+            },
             attendees: {
                 type: Sequelize.TEXT      // more room than STRING(255)
             },
@@ -26,17 +39,6 @@ module.exports = (sequelize, Sequelize) => {
             },
             session_type: {
                 type: Sequelize.STRING
-            },
-            // NEW: recurrence flags
-            is_recurring: {
-                type: Sequelize.BOOLEAN,
-                defaultValue: false
-            },
-            recurrence_freq: {
-                type: Sequelize.STRING    // e.g. "weekly"
-            },
-            recurrence_until: {
-                type: Sequelize.DATE      // optional end date
             },
             description: {
                 type: Sequelize.STRING

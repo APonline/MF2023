@@ -72,15 +72,15 @@ const SESSION_TYPE_META: { [key: string]: SessionTypeMeta } = {
     studio:            { value: 'studio',            label: 'Studio Session',               color: '#3aa5ff', group: 'studio' },
     writing:           { value: 'writing',           label: 'Writing Session',              color: '#3aa5ff', group: 'studio' },
     preprod:           { value: 'preprod',           label: 'Pre-Production',               color: '#3aa5ff', group: 'studio' },
-    tracking:          { value: 'tracking',          label: 'Tracking Session',             color: '#3aa5ff', group: 'studio' },
+    recording:         { value: 'recording',         label: 'Recording Session',            color: '#3aa5ff', group: 'studio' },
     overdub:           { value: 'overdub',           label: 'Overdub Session',              color: '#3aa5ff', group: 'studio' },
-    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#3aa5ff', group: 'studio' },
-    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#3aa5ff', group: 'studio' },
+    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#f8ff3aff', group: 'studio' },
+    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#f8ff3aff', group: 'studio' },
 
-    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3aa5ff', group: 'studio' },
-    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3aa5ff', group: 'studio' },
-    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3aa5ff', group: 'studio' },
-    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3aa5ff', group: 'studio' },
+    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3aff40ff', group: 'studio' },
+    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3aff40ff', group: 'studio' },
+    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3aff40ff', group: 'studio' },
+    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3aff40ff', group: 'studio' },
 
     // BUSINESS – purple
     band_meeting:      { value: 'band_meeting',      label: 'Band Meeting',                 color: '#b366ff', group: 'business' },
@@ -696,17 +696,35 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         this.weekDaysForCurrentWeek = days;
     }
 
-    private getEventsForDate(date: Date): any[] {
-        const target = moment(date).format('YYYY-MM-DD');
+    getEventsForDate(date: Date): any[] {
+        const target = moment(date);
 
-        return (this.toolSet || []).filter((ev: any) => {
-            const raw = ev.start_at || ev.selected_date;
-            if (!raw) {
-                return false;
-            }
-            return moment(raw).format('YYYY-MM-DD') === target;
-        });
+        return (this.toolSet || [])
+            .filter((ev: any) => this.occursOnDate(ev, date))
+            .map((ev: any) => {
+                // Clone so we can put instance-specific data on it
+                const cloned = { ...ev };
+
+                const baseMoment = moment(ev.start_at || ev.selected_date);
+                if (baseMoment.isValid()) {
+                    // Use the same time-of-day, but on the target date
+                    const instanceMoment = target
+                        .clone()
+                        .hour(baseMoment.hour())
+                        .minute(baseMoment.minute())
+                        .second(baseMoment.second() || 0)
+                        .millisecond(0);
+
+                    // This is what the calendar should use for display
+                    cloned._instance_start_at = instanceMoment.toISOString();
+                } else {
+                    cloned._instance_start_at = ev.start_at || ev.selected_date || null;
+                }
+
+                return cloned;
+            });
     }
+
 
     // ---- calendar helpers for colours / labels ----
 
@@ -724,6 +742,21 @@ export class PlannerFormComponent implements OnInit, OnChanges {
 
     getSessionTypeLabel(type: string | null | undefined): string {
         return getSessionTypeMeta(type).label;
+    }
+
+    formatEventTime(ev: any): string {
+        const src = ev?._instance_start_at || ev?.start_at || ev?.selected_date;
+        if (!src) {
+            return '';
+        }
+
+        const m = moment(src);
+        if (!m.isValid()) {
+            return '';
+        }
+
+        const fmt = m.minute() === 0 ? 'h a' : 'h:mm a';
+        return m.format(fmt);
     }
 
     // -----------------------------------
@@ -762,4 +795,67 @@ export class PlannerFormComponent implements OnInit, OnChanges {
             this.openEvent(day.events[0]);
         }
     }
+
+    occursOnDate(ev: any, date: Date): boolean {
+      if (!ev) {
+          return false;
+      }
+
+      const rawStart = ev.start_at || ev.selected_date;
+      if (!rawStart) {
+          return false;
+      }
+
+      const start = moment(rawStart);
+      if (!start.isValid()) {
+          return false;
+      }
+
+      const target = moment(date).startOf('day');
+
+      // Non-recurring: simple same-day check
+      const isRecurring = !!ev.is_recurring;
+      if (!isRecurring || !ev.recurrence_freq) {
+          return target.isSame(start, 'day');
+      }
+
+      // If we have an end date, respect it
+      if (ev.recurrence_until) {
+          const until = moment(ev.recurrence_until).endOf('day');
+          if (!until.isValid() || target.isAfter(until, 'day')) {
+              return false;
+          }
+      }
+
+      // Recurring logic (v1: weekly)
+      const freq = String(ev.recurrence_freq).toLowerCase();
+
+      if (freq === 'weekly' || freq === 'biweekly') {
+          // Must be on or after the first date
+          if (target.isBefore(start, 'day')) {
+              return false;
+          }
+
+          // Same weekday as original start
+          if (target.day() !== start.day()) {
+              return false;
+          }
+
+          const diffDays = target.diff(start.clone().startOf('day'), 'days');
+
+          if (freq === 'weekly') {
+              // Every 7 days
+              return diffDays % 7 === 0;
+          }
+
+          if (freq === 'biweekly') {
+              // Every 14 days
+              return diffDays % 14 === 0;
+          }
+      }
+
+      // Unknown recurrence -> fall back to single date only
+      return target.isSame(start, 'day');
+  }
+
 }

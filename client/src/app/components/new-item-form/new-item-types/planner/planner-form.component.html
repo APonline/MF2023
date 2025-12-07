@@ -219,8 +219,9 @@
                                         [ngStyle]="getEventStyle(ev)"
                                         (click)="openEvent(ev, $event)">
                                         <span class="time">
-                                            {{ ev.start_at || ev.selected_date | date : 'shortTime' }}
+                                            {{ formatEventTime(ev) }}
                                         </span>
+
                                         <span class="title">
                                             {{ getSessionTypeLabel(ev.session_type) || 'Session' }}
                                         </span>
@@ -266,8 +267,9 @@
                                                 [ngStyle]="getEventStyle(ev)"
                                                 (click)="openEvent(ev, $event)">
                                                 <div class="time">
-                                                    {{ ev.start_at || ev.selected_date | date : 'shortTime' }}
+                                                    {{ formatEventTime(ev) }}
                                                 </div>
+
                                                 <div class="title">
                                                     {{ getSessionTypeLabel(ev.session_type) || 'Session' }}
                                                 </div>
@@ -280,7 +282,7 @@
                                         <!-- Empty state -->
                                         <ng-template #emptyState>
                                             <div class="empty-text">
-                                                No sessions yet – click Add to plan something
+                                                No sessions yet - click Add to plan something
                                             </div>
                                         </ng-template>
 
