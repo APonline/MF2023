@@ -134,6 +134,32 @@ exports[`delete${itemTopic}`] = async (req, res) => {
         );
 
         if (affectedRows === 1) {
+            // keep your original success shape if other code depends on it
+            return res.status(200).send({ result: [] });
+        } else {
+            return res.status(404).send({
+                result: null,
+                message: `${itemTopic} not found`
+            });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to delete ${itemTopic}! - ` + error.message
+        });
+    }
+};
+
+exports[`Xdelete${itemTopic}`] = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // set active = 0 instead of destroying the row
+        const [affectedRows] = await Item.update(
+            { active: 0 },
+            { where: { id } }
+        );
+
+        if (affectedRows === 1) {
             return res.status(200).send({ result: [] });
         } else {
             return res.status(404).send({

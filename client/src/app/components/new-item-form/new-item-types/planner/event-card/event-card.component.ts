@@ -3,18 +3,69 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MFService } from 'src/app/services/MF.service';
 
-interface TaskDialogSeed {
+/* ------------------------------------------------------------------
+ * Session type meta (colour + label) – keep in sync with PlannerForm
+ * ------------------------------------------------------------------ */
+
+interface SessionTypeMeta {
+    value: string;
+    label: string;
+    color: string;
+    group: string;
+}
+
+const SESSION_TYPE_META: { [key: string]: SessionTypeMeta } = {
+    // PERFORMANCE – red
+    gig:               { value: 'gig',               label: 'Gig',                          color: '#E74C3C', group: 'performance' },
+    soundcheck:        { value: 'soundcheck',        label: 'Soundcheck / Load-in',         color: '#E74C3C', group: 'performance' },
+    travel:            { value: 'travel',            label: 'Travel / Transit',             color: '#E74C3C', group: 'performance' },
+
+    // REHEARSAL – orange
+    rehearsal:         { value: 'rehearsal',         label: 'Jam / Rehearsal',              color: '#E67E22', group: 'rehearsal' },
+    tour_rehearsal:    { value: 'tour_rehearsal',    label: 'Tour Rehearsal',               color: '#E67E22', group: 'rehearsal' },
+    acoustic_rehearsal:{ value: 'acoustic_rehearsal',label: 'Acoustic Rehearsal',           color: '#E67E22', group: 'rehearsal' },
+
+    // STUDIO / CREATIVE – purple
+    studio:            { value: 'studio',            label: 'Studio Session',               color: '#9B59B6', group: 'studio' },
+    writing:           { value: 'writing',           label: 'Writing Session',              color: '#9B59B6', group: 'studio' },
+    preprod:           { value: 'preprod',           label: 'Pre-Production',               color: '#9B59B6', group: 'studio' },
+    tracking:          { value: 'tracking',          label: 'Tracking Session',             color: '#9B59B6', group: 'studio' },
+    overdub:           { value: 'overdub',           label: 'Overdub Session',              color: '#9B59B6', group: 'studio' },
+    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#9B59B6', group: 'studio' },
+    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#9B59B6', group: 'studio' },
+
+    // MEDIA / CONTENT – blue
+    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3498DB', group: 'media' },
+    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3498DB', group: 'media' },
+    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3498DB', group: 'media' },
+    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3498DB', group: 'media' },
+
+    // BUSINESS – green
+    band_meeting:      { value: 'band_meeting',      label: 'Band Meeting',                 color: '#2ECC71', group: 'business' },
+    management_meeting:{ value: 'management_meeting',label: 'Management Meeting',           color: '#2ECC71', group: 'business' },
+    marketing_planning:{ value: 'marketing_planning',label: 'Marketing / Release Planning', color: '#2ECC71', group: 'business' },
+
+    // OTHER – grey
+    other:             { value: 'other',             label: 'Other',                        color: '#95A5A6', group: 'other' }
+};
+
+function getSessionTypeMeta(type: string | null | undefined): SessionTypeMeta {
+    const key = (type || 'other').toLowerCase();
+    return SESSION_TYPE_META[key] || SESSION_TYPE_META['other'];
+}
+
+interface PlannerEventSeed {
     id?: number;
-    task?: string;
+    title?: string;
     description?: string;
-    status?: string;
-    column_key?: string;
-    completed_by?: string | Date | null;
-    date_completed?: string | Date | null;
+    session_type?: string;
+    start_at?: string | Date | null;
+    selected_date?: string | Date | null;   // legacy
+    duration_minutes?: number;              // in minutes; 0 = all day
+    location?: string;
+    attendees?: any;                        // string | string[] | ids
     owner_group?: number;
     owner_user?: number;
-    assigned_to?: number;
-    assigned_by?: number;
     active?: number;
     profile_url?: string;
     [key: string]: any;
@@ -28,121 +79,238 @@ interface TaskDialogSeed {
 export class EventCardComponent implements OnInit {
     form: FormGroup;
     action: 'Add' | 'Update' | 'Delete';
-    titleText = 'Task';
+    headerSubtitle = 'Session';
 
-    statuses = [
-        { value: 'backlog',     label: 'Backlog' },
-        { value: 'todo',        label: 'To Do' },
-        { value: 'in_progress', label: 'In Progress' },
-        { value: 'done',        label: 'Done' }
+    sessionTypes = Object.values(SESSION_TYPE_META);
+
+    // duration in minutes; 0 = all day
+    durationOptions = [
+        { value: 15,   label: '0.25 hr (15 min)' },
+        { value: 30,   label: '0.5 hr (30 min)' },
+        { value: 45,   label: '0.75 hr (45 min)' },
+        { value: 60,   label: '1 hr (60 min)' },
+        { value: 90,   label: '1.5 hr (90 min)' },
+        { value: 120,  label: '2 hr (120 min)' },
+        { value: 180,  label: '3 hr (180 min)' },
+        { value: 240,  label: '4 hr (240 min)' },
+        { value: 360,  label: '6 hr (360 min)' },
+        { value: 480,  label: '8 hr (480 min)' },
+        { value: 0,    label: 'All day' }
     ];
-    priority = [
-        { value: 'none',     label: 'None' },
-        { value: 'very_low',        label: 'Very Low' },
-        { value: 'low',        label: 'Low' },
-        { value: 'medium', label: 'Medium' },
-        { value: 'high',        label: 'High' },
-        { value: 'very_high',        label: 'Very High' },
-        { value: 'critical',        label: 'Critical' }
-    ];
 
-    setPriority(value: string): void {
-        this.form.get('priority')?.setValue(value);
-    }
-
-    get priorityValue(): string {
-        return this.form?.get('priority')?.value ?? 'none';
-    }
-
-    members = <any>[];
+    members: any[] = [];
 
     constructor(
         private fb: FormBuilder,
         public MF: MFService,
         private dialogRef: MatDialogRef<EventCardComponent, { event: string; data: any }>,
         @Inject(MAT_DIALOG_DATA) public data: any
-    ) {
+    ) {}
+
+    get sessionTypeColor(): string {
+        const type = this.form?.value?.session_type || 'other';
+        return getSessionTypeMeta(type).color;
+    }
+
+    get sessionTypeLabel(): string {
+        const type = this.form?.value?.session_type || 'other';
+        return getSessionTypeMeta(type).label;
     }
 
     ngOnInit(): void {
-        this.action = this.data.action;              // 'Add' | 'Update' | 'Delete'
-        const seed: TaskDialogSeed = (this.data.seed ?? this.data) || {};
+        console.log('[EventCard] init, data:', this.data);
 
-        this.titleText = this.action === 'Add' ? 'Create Task' : 'Edit Task';
+        this.action = this.data.action;  // 'Add' | 'Update' | 'Delete'
+        const seed: PlannerEventSeed = (this.data.seed ?? this.data) || {};
 
-        const defaultStatus = seed.status || seed.column_key || 'todo';
+        const rawStart = seed.start_at || seed.selected_date || this.data.start_at || null;
+        const { date, time } = this.splitDateTime(rawStart);
 
-        const defaultPriorities = seed.priority || '';
+        const defaultType = seed.session_type || 'other';
+        const defaultDuration = seed.duration_minutes ?? 120; // 2h default
+
+        const attendeesArray = this.normaliseAttendees(seed.attendees);
 
         this.form = this.fb.group({
             id: [seed.id],
-            task: [seed.task || '', Validators.required],
+            title: [seed.title || '', Validators.required],
             description: [seed.description || ''],
 
-            status: [defaultStatus, Validators.required],
-            priority: [defaultPriorities],
-            assigned_to: [seed.assigned_to ?? null, Validators.required],
-            column_key: [defaultStatus],
+            date: [date, Validators.required],
+            time: [time, Validators.required],
+            duration_minutes: [defaultDuration, [Validators.required, Validators.min(0)]],
+            session_type: [defaultType, Validators.required],
 
-            completed_by: [seed.completed_by || null],  
-            date_completed: [seed.date_completed || null],
+            location: [seed.location || ''],
+            attendees: [attendeesArray],
 
             owner_group: [seed.owner_group ?? this.data.artist_id ?? null],
             owner_user: [seed.owner_user ?? this.data.current_user_id ?? null],
-            assigned_by: [seed.assigned_by ?? this.data.current_user_id ?? null],
-
             active: [seed.active != null ? seed.active : 1],
             profile_url: [seed.profile_url || '']
         });
 
-        this.MF.getArtistMembers(this.data.artist_id).subscribe({
-            next: (result: any[]) => {
-                this.members = result || [];
-            },
-            error: (err) => {
-                console.error('Failed to load members', err);
-                this.members = [];
+        console.log('[EventCard] form initial value:', this.form.value);
+
+        this.updateHeaderSubtitle();
+
+        this.form.get('date')?.valueChanges.subscribe(() => this.updateHeaderSubtitle());
+        this.form.get('time')?.valueChanges.subscribe(() => this.updateHeaderSubtitle());
+
+        // load artist members for attendees select
+        if (this.data.artist_id) {
+            this.MF.getArtistMembers(this.data.artist_id).subscribe({
+                next: (result: any[]) => {
+                    this.members = result || [];
+                    console.log('[EventCard] members loaded:', this.members);
+                },
+                error: (err) => {
+                    console.error('[EventCard] Failed to load members', err);
+                    this.members = [];
+                }
+            });
+        }
+    }
+
+    /* ---------- Helpers ---------- */
+
+    private splitDateTime(raw: string | Date | null | undefined): { date: Date | null; time: string } {
+        if (!raw) {
+            const now = new Date();
+            now.setHours(19, 0, 0, 0);
+            return { date: now, time: '19:00' };
+        }
+
+        const d = new Date(raw);
+        if (isNaN(d.getTime())) {
+            const now = new Date();
+            now.setHours(19, 0, 0, 0);
+            return { date: now, time: '19:00' };
+        }
+
+        const hours = d.getHours().toString().padStart(2, '0');
+        const mins = d.getMinutes().toString().padStart(2, '0');
+
+        return { date: d, time: `${hours}:${mins}` };
+    }
+
+    private normaliseAttendees(att: any): any[] {
+        if (!att) {
+            return [];
+        }
+
+        if (Array.isArray(att)) {
+            return att;
+        }
+
+        try {
+            const parsed = JSON.parse(att);
+            if (Array.isArray(parsed)) {
+                return parsed;
             }
-        });
+        } catch (_) {}
+
+        if (typeof att === 'string') {
+            return att.split(',').map(x => x.trim()).filter(Boolean);
+        }
+
+        return [att];
+    }
+
+    private buildStartAt(): string | null {
+        const date: Date = this.form.value.date;
+        const time: string = this.form.value.time;
+
+        if (!date || !time) {
+            return null;
+        }
+
+        const [hStr, mStr] = time.split(':');
+        const h = parseInt(hStr || '0', 10);
+        const m = parseInt(mStr || '0', 10);
+
+        const dt = new Date(date);
+        dt.setHours(h, m, 0, 0);
+
+        return dt.toISOString();
+    }
+
+    private updateHeaderSubtitle(): void {
+        const date: Date = this.form?.value?.date;
+        const time: string = this.form?.value?.time;
+
+        if (!date || !time) {
+            this.headerSubtitle = this.action === 'Add' ? 'New session' : 'Edit session';
+            return;
+        }
+
+        const options: Intl.DateTimeFormatOptions = {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric'
+        };
+
+        const dStr = date.toLocaleDateString(undefined, options);
+        this.headerSubtitle = `${dStr} • ${time}`;
+    }
+
+    /* ---------- UI actions ---------- */
+
+    onSubmit(): void {
+        console.log('[EventCard] onSubmit fired, valid?', this.form.valid, 'value:', this.form.value);
+        this.save();
     }
 
     close(): void {
+        console.log('[EventCard] close()');
         this.dialogRef.close();
     }
 
     onArchive(): void {
+        console.log('[EventCard] onArchive()', this.form.value);
+
         if (!this.form.value.id) {
             this.dialogRef.close();
             return;
         }
 
         this.dialogRef.close({
-            event: 'delete',  
+            event: 'delete',
             data: this.form.value
         });
     }
 
     save(): void {
+        console.log('[EventCard] save() called, valid?', this.form.valid);
+
         if (this.form.invalid) {
             this.form.markAllAsTouched();
-            console.log('TASK FORM INVALID', this.form.value);
+            console.warn('[EventCard] form invalid, aborting save');
             return;
         }
 
         const value = { ...this.form.value };
 
-        // keep status + column_key synced
-        value.column_key = value.status;
+        const rawDuration = value.duration_minutes;
+        const durationMinutes = Number(rawDuration ?? 0);
+        value.duration_minutes = isNaN(durationMinutes) ? 0 : durationMinutes;
+
+        const start_at = this.buildStartAt();
+        value.start_at = start_at;
+        value.selected_date = start_at; // legacy compatibility
+
+        if (Array.isArray(value.attendees)) {
+            value.attendees = JSON.stringify(value.attendees);
+        }
 
         const event: 'create' | 'put' =
             this.action === 'Add' ? 'create' : 'put';
 
-        console.log('TASK SAVE OUT', event, value);
+        console.log('[EventCard] closing dialog with:', { event, data: value });
 
         this.dialogRef.close({
             event,
             data: value
         });
     }
-
 }

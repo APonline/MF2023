@@ -1,112 +1,156 @@
-<div class="task-card-dialog" [formGroup]="form" (ngSubmit)="save()">
+<form class="event-card-dialog" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- HEADER -->
+    <div class="event-card-header">
+        <div
+            class="event-card-icon-wrap"
+            [style.background-color]="sessionTypeColor">
+            <mat-icon class="event-card-icon">
+                event
+            </mat-icon>
+        </div>
 
-    <div class="task-card-header">
-        <mat-icon class="task-card-icon">assignment</mat-icon>
-        <div class="task-card-header-main">
+        <div class="event-card-header-main">
             <input
                 matInput
-                placeholder="Task title"
-                [formControl]="form.get('task')"
-                class="task-card-title-input" />
-            <div class="task-card-subtitle">
-                {{ titleText }}
+                placeholder="Session title"
+                [formControl]="form.get('title')"
+                class="event-card-title-input" />
+
+            <div class="event-card-subtitle">
+                {{ headerSubtitle }}
             </div>
         </div>
     </div>
 
+
+
     <mat-divider></mat-divider>
 
-    <div class="task-card-body">
-
-        <!-- Details row -->
-        <div class="task-card-section">
-            <div class="section-title">Details</div>
+    <!-- BODY -->
+    <div class="event-card-body">
+        <!-- SESSION DETAILS -->
+        <div class="event-card-section">
+            <div class="section-title">Session Details</div>
 
             <div class="details-grid">
-                <!-- Status / Column -->
+                <!-- Date -->
                 <mat-form-field appearance="fill">
-                    <mat-label>Status</mat-label>
-                    <mat-select formControlName="status">
-                        <mat-option *ngFor="let s of statuses" [value]="s.value">
-                            {{ s.label }}
+                    <mat-label>Date</mat-label>
+                    <input
+                        matInput
+                        [matDatepicker]="pickerDate"
+                        formControlName="date" />
+                    <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerDate></mat-datepicker>
+                </mat-form-field>
+
+                <!-- Time -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Start Time</mat-label>
+                    <input
+                        matInput
+                        type="time"
+                        formControlName="time" />
+                </mat-form-field>
+
+                <!-- Duration -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Duration</mat-label>
+                    <mat-select formControlName="duration_minutes">
+                        <mat-option
+                            *ngFor="let d of durationOptions"
+                            [value]="d.value">
+                            {{ d.label }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
 
+                <!-- Type -->
                 <mat-form-field appearance="fill">
-                    <mat-label>Assign To</mat-label>
-                    <mat-select formControlName="assigned_to">
-                        <mat-option *ngFor="let m of members" [value]="m.members.id">
-                            {{ m.members.first_name }}  {{ m.members.last_name }}
+                    <mat-label>Session Type</mat-label>
+                    <mat-select formControlName="session_type">
+                        <mat-option
+                            *ngFor="let t of sessionTypes"
+                            [value]="t.value">
+                            {{ t.label }}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+            </div>
+        </div>
 
-                <!-- Due date -->
+        <!-- LOCATION & PEOPLE -->
+        <div class="event-card-section">
+            <div class="section-title">Location & People</div>
+
+            <div class="details-grid two-columns">
                 <mat-form-field appearance="fill">
-                    <mat-label>Due date</mat-label>
-                    <input matInput [matDatepicker]="pickerDue" formControlName="completed_by">
-                    <mat-datepicker-toggle matSuffix [for]="pickerDue"></mat-datepicker-toggle>
-                    <mat-datepicker #pickerDue></mat-datepicker>
+                    <mat-label>Location</mat-label>
+                    <input
+                        matInput
+                        placeholder="Venue, studio, address..."
+                        formControlName="location" />
                 </mat-form-field>
 
-                <!-- Completed date (read-only if you want) -->
                 <mat-form-field appearance="fill">
-                    <mat-label>Completed</mat-label>
-                    <input matInput [matDatepicker]="pickerDone" formControlName="date_completed">
-                    <mat-datepicker-toggle matSuffix [for]="pickerDone"></mat-datepicker-toggle>
-                    <mat-datepicker #pickerDone></mat-datepicker>
+                    <mat-label>Attendees</mat-label>
+                    <mat-select formControlName="attendees" multiple>
+                        <mat-option
+                            *ngFor="let m of members"
+                            [value]="m.members?.id || m.id">
+                            {{ m.members?.first_name || m.first_name }}
+                            {{ m.members?.last_name || m.last_name }}
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
         </div>
 
-        <div class="task-card-section">
-            <div class="section-title">Priority</div>
-
-            <div class="priority-strip">
-                <div
-                    class="priority-pill"
-                    *ngFor="let p of priority"
-                    [ngClass]="['priority-' + p.value, priorityValue === p.value ? 'is-active' : '']"
-                    (click)="setPriority(p.value)">
-                    <span class="dot"></span>
-                    <span class="label">{{ p.label }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Description -->
-        <div class="task-card-section">
-            <div class="section-title">Description</div>
+        <!-- NOTES -->
+        <div class="event-card-section">
+            <div class="section-title">Notes</div>
             <mat-form-field appearance="fill" class="full-width">
                 <textarea
                     matInput
                     rows="5"
-                    placeholder="Add a more detailed description..."
+                    placeholder="Any extra info, setlist notes, who's bringing what..."
                     formControlName="description">
                 </textarea>
             </mat-form-field>
         </div>
-
-        <!-- (Optional) you can add comments/activity here later -->
-
     </div>
 
     <mat-divider></mat-divider>
 
-    <div class="task-card-actions">
+    <!-- ACTIONS -->
+    <div class="event-card-actions">
         <div class="left-actions">
-            <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">
-                {{ action === 'Add' ? 'Create' : 'Save' }}
+            <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="form.invalid">
+                {{ action === 'Add' ? 'Create Session' : 'Save Changes' }}
             </button>
-            <button mat-raised-button color="accent" class="dalmatian" (click)="close()">Cancel</button>
+
+            <button
+                mat-raised-button
+                color="accent"
+                class="dalmatian"
+                type="button"
+                (click)="close()">
+                Cancel
+            </button>
         </div>
 
         <div class="right-actions" *ngIf="form.get('id')?.value">
-            <button mat-stroked-button color="warn" (click)="onArchive()">
-                Archive
+            <button
+                mat-stroked-button
+                color="warn"
+                type="button"
+                (click)="onArchive()">
+                Delete Session
             </button>
         </div>
     </div>
-
-</div>
+</form>

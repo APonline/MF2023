@@ -24,6 +24,9 @@ module.exports = (sequelize, Sequelize) => {
             title: {
                 type: Sequelize.STRING
             },
+            session_type: {
+                type: Sequelize.STRING
+            },
             description: {
                 type: Sequelize.STRING
             },

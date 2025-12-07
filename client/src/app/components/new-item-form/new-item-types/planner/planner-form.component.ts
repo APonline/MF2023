@@ -20,7 +20,6 @@ import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 import moment from 'moment';
-import { NewItemUpdateComponent } from '../../../new-item-update/new-item-update.component';
 
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
@@ -37,6 +36,7 @@ import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
 import { VidoesService } from 'src/app/services/videos.service';
 import { PlannerService } from 'src/app/services/planner.service';
+import { ArtistActivityService } from 'src/app/services/artist_activity.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -44,6 +44,58 @@ import { MatTableDataSource } from '@angular/material/table';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MFService } from 'src/app/services/MF.service';
 import { planner } from 'src/app/models/planner.model';
+import { EventCardComponent } from './event-card/event-card.component';
+
+/* ------------------------------------------------------------------
+ * Session type meta (colour + label) – keep in sync with EventCard
+ * ------------------------------------------------------------------ */
+
+interface SessionTypeMeta {
+    value: string;
+    label: string;
+    color: string;
+    group: string;
+}
+
+const SESSION_TYPE_META: { [key: string]: SessionTypeMeta } = {
+    // PERFORMANCE – red
+    gig:               { value: 'gig',               label: 'Gig',                          color: '#ff4d4d', group: 'performance' },
+    soundcheck:        { value: 'soundcheck',        label: 'Soundcheck / Load-in',         color: '#ff4d4d', group: 'performance' },
+    travel:            { value: 'travel',            label: 'Travel / Transit',             color: '#ff4d4d', group: 'performance' },
+
+    // PRACTICE & PREP – orange
+    rehearsal:         { value: 'rehearsal',         label: 'Jam / Rehearsal',              color: '#ff9a3c', group: 'practice' },
+    tour_rehearsal:    { value: 'tour_rehearsal',    label: 'Tour Rehearsal',               color: '#ff9a3c', group: 'practice' },
+    acoustic_rehearsal:{ value: 'acoustic_rehearsal',label: 'Acoustic Rehearsal',           color: '#ff9a3c', group: 'practice' },
+
+    // STUDIO / CONTENT – blue
+    studio:            { value: 'studio',            label: 'Studio Session',               color: '#3aa5ff', group: 'studio' },
+    writing:           { value: 'writing',           label: 'Writing Session',              color: '#3aa5ff', group: 'studio' },
+    preprod:           { value: 'preprod',           label: 'Pre-Production',               color: '#3aa5ff', group: 'studio' },
+    tracking:          { value: 'tracking',          label: 'Tracking Session',             color: '#3aa5ff', group: 'studio' },
+    overdub:           { value: 'overdub',           label: 'Overdub Session',              color: '#3aa5ff', group: 'studio' },
+    mix_review:        { value: 'mix_review',        label: 'Mix Review',                   color: '#3aa5ff', group: 'studio' },
+    mastering_review:  { value: 'mastering_review',  label: 'Mastering Review',             color: '#3aa5ff', group: 'studio' },
+
+    video_shoot:       { value: 'video_shoot',       label: 'Video Shoot',                  color: '#3aa5ff', group: 'studio' },
+    photoshoot:        { value: 'photoshoot',        label: 'Photoshoot',                   color: '#3aa5ff', group: 'studio' },
+    content_day:       { value: 'content_day',       label: 'Content Capture / Social Day', color: '#3aa5ff', group: 'studio' },
+    interview:         { value: 'interview',         label: 'Interview / Press',            color: '#3aa5ff', group: 'studio' },
+
+    // BUSINESS – purple
+    band_meeting:      { value: 'band_meeting',      label: 'Band Meeting',                 color: '#b366ff', group: 'business' },
+    management_meeting:{ value: 'management_meeting',label: 'Management Meeting',           color: '#b366ff', group: 'business' },
+    marketing_planning:{ value: 'marketing_planning',label: 'Marketing / Release Planning', color: '#b366ff', group: 'business' },
+
+    // OTHER – grey
+    other:             { value: 'other',             label: 'Other',                        color: '#7a7a7a', group: 'other' }
+};
+
+
+function getSessionTypeMeta(type: string | null | undefined): SessionTypeMeta {
+    const key = (type || 'other').toLowerCase();
+    return SESSION_TYPE_META[key] || SESSION_TYPE_META['other'];
+}
 
 @Component({
     selector: 'app-plannerForm',
@@ -66,6 +118,7 @@ export class PlannerFormComponent implements OnInit, OnChanges {
     @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
     currentUser: any;
+    currentUserId: number | null = null;
     imageKey = '';
 
     displayedColumns: string[] = [];
@@ -103,9 +156,14 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         label: string;
         date: Date;
         events: any[];
+        isToday?: boolean;
     }[] = [];
 
     weekDays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // --- deep-link state (like Contacts) ---
+    private deepLinkSessionId: number | null = null;
+    private deepLinkHandled = false;
 
     constructor(
         public dialog: MatDialog,
@@ -119,7 +177,6 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         private authenticationService: AuthenticationService,
         public MF: MFService,
 
-        // dynamic service injections (needed for this[service] trick)
         private imagesService: ImagesService,
         private albumsService: AlbumsService,
         private artistsLinksService: ArtistsLinksService,
@@ -132,8 +189,13 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         private socialsService: SocialsService,
         private songsService: SongsService,
         private vidoesService: VidoesService,
+
+        private artistActivityService: ArtistActivityService,
         private plannerService: PlannerService
-    ) {}
+    ) {
+        this.currentUser = this.authenticationService.currentUserValue || null;
+        this.currentUserId = this.currentUser?.id ?? null;
+    }
 
     // -----------------------------------
     // Lifecycle
@@ -141,6 +203,12 @@ export class PlannerFormComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.imageKey = this.MF.buildImageKey(this.toolName);
+
+        // --- routing: read ?sessionId= from query params (deep link) ---
+        this.route.queryParamMap.subscribe(params => {
+            const id = params.get('sessionId');
+            this.deepLinkSessionId = id ? +id : null;
+        });
 
         this.artistsService.get(this.groupId).subscribe(res => {
             this.artist = res;
@@ -173,10 +241,7 @@ export class PlannerFormComponent implements OnInit, OnChanges {
                 this.dataSource = this.dataSource.filter(value => value.id !== this.res);
             }
 
-            if (this.table) {
-                this.table.renderRows();
-            }
-
+            this.table?.renderRows();
             this.toolSet = this.dataSource;
             this.buildCalendar();
         }
@@ -202,6 +267,16 @@ export class PlannerFormComponent implements OnInit, OnChanges {
             this[this.tool] = res;
             this.toolSet = this[this.tool];
             this.setSettings(this.toolSet);
+
+            // --- deep-link: auto-open sessionId if present (and only once) ---
+            if (this.deepLinkSessionId && !this.deepLinkHandled && Array.isArray(this.toolSet)) {
+                const match = this.toolSet.find((s: any) => s.id === this.deepLinkSessionId);
+
+                if (match) {
+                    this.deepLinkHandled = true;
+                    setTimeout(() => this.openDialog('Update', match), 0);
+                }
+            }
         });
     }
 
@@ -218,6 +293,7 @@ export class PlannerFormComponent implements OnInit, OnChanges {
 
         // columns
         this.displayedColumns = [];
+
         this.displayedColumns.push('action');
         form['action'] = new FormControl('');
         newForm['action'] = '';
@@ -253,6 +329,11 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         this.displayedColumns.push('attendees');
         form['attendees'] = new FormControl('');
         newForm['attendees'] = '';
+
+        // session_type column (for completeness)
+        this.displayedColumns.push('session_type');
+        form['session_type'] = new FormControl('');
+        newForm['session_type'] = '';
 
         // NOTE: still using selected_date for now; backend can later switch to start_at
         this.displayedColumns.push('selected_date');
@@ -290,28 +371,228 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         });
     }
 
-    openDialog(action: string, obj: any): void {
-        obj.action = action;
-        obj.tool = this.toolName;
+    // -----------------------------------
+    // Dialog + persistence
+    // -----------------------------------
 
-        const dialogRef = this.dialog.open(NewItemUpdateComponent, {
+    openDialog(action: string, row: any): void {
+        const seed = this.MF
+            .compose(row || {})
+            .with({
+                owner_group: this.artist?.id,
+                owner_user: row?.owner_user ?? this.currentUser?.id ?? this.currentUserId,
+                group: this.artist?.name
+            })
+            .done();
+
+        console.log('[PlannerForm] openDialog()', action, 'seed:', seed);
+
+        const dialogRef = this.dialog.open(EventCardComponent, {
             panelClass: 'dialog-box',
-            width: '85%',
-            height: '80vh',
-            data: obj
+            width: '640px',
+            data: {
+                action,
+                seed,
+                artist_id: this.artist?.id,
+                current_user_id: this.currentUser?.id ?? this.currentUserId
+            }
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                result.data.profile_url =
-                    this.artist?.profile_url +
-                    '-' +
-                    result.data.title.replace(/\+s/g, '').toLowerCase();
+            console.log('[PlannerForm] dialog closed, raw result:', result);
+            if (!result) return;
 
-                result.data.owner_group = this.artist?.id;
+            const raw   = result.data || {};
+            const evt   = (result.event || action || '').toString().toLowerCase();
+            const rowId = row?.id ?? null;
+            const rawId = raw?.id ?? null;
+            const hasId = !!(rawId ?? rowId);
 
-                this.activeItem.emit({ action: result.event, data: result.data });
+            let op: 'create' | 'update' | 'delete';
+            if (evt === 'delete')      op = 'delete';
+            else if (!hasId)           op = 'create';
+            else                       op = 'update';
+
+            const targetId = (rawId ?? rowId) || null;
+
+            // duration_minutes -> duration for backend
+            const durationMinutes = Number(raw.duration_minutes ?? raw.duration ?? 0);
+
+            // helper to build deep link
+            const buildDeepLink = (id: number | null, src: any): string | null => {
+                if (!id) return null;
+
+                const title = src.title || 'session';
+                const titleSlug = title
+                    .toString()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .toLowerCase();
+
+                const handle      = this.artist?.profile_url || `@${this.group}`;
+                const featurePath = (this.toolName || 'planner').toLowerCase();
+                const baseLink    =
+                    `/projects/new-edit/${this.groupId}/${this.group}/${featurePath}`;
+
+                return `${baseLink}?sessionId=${id}&slug=${handle}-${titleSlug}`;
+            };
+
+            // base payload: force owner_user + duration
+            const baseCore = this.MF
+                .compose(raw)
+                .with({
+                    id: targetId || undefined,
+                    owner_group: this.artist?.id,
+                    owner_user: raw.owner_user ?? this.currentUser.id,
+                    duration: isNaN(durationMinutes) ? 0 : durationMinutes,
+                    active: op === 'delete' ? 0 : 1
+                })
+                .done();
+
+            console.log('[PlannerForm] baseCore before persist:', baseCore);
+
+            let persist$;
+
+            if (op === 'create') {
+                persist$ = this.plannerService.create(baseCore);
+            } else if (op === 'update') {
+                if (!targetId) {
+                    this.alertService.error('Unable to update session (no id).');
+                    return;
+                }
+
+                const deepLink = buildDeepLink(targetId, baseCore);
+                const payload = {
+                    ...baseCore,
+                    profile_url: deepLink || baseCore.profile_url
+                };
+
+                persist$ = this.plannerService.update(targetId, payload);
+            } else {
+                if (!targetId) {
+                    this.alertService.error('Unable to delete session (no id).');
+                    return;
+                }
+                persist$ = this.plannerService.delete(targetId);
             }
+
+            persist$.subscribe({
+                next: (serverRes: any) => {
+                    console.log('[PlannerForm] serverRes from plannerService:', serverRes);
+
+                    let serverRow = serverRes;
+                    if (serverRow && serverRow.data) serverRow = serverRow.data;
+                    if (serverRow && serverRow.row)  serverRow = serverRow.row;
+                    if (serverRow && Array.isArray(serverRow.rows)) {
+                        serverRow = serverRow.rows[0];
+                    }
+
+                    let effectiveRow: any = {
+                        ...(baseCore || {}),
+                        ...(serverRow || {})
+                    };
+
+                    if (!effectiveRow.id && targetId) {
+                        effectiveRow.id = targetId;
+                    }
+
+                    // ensure we keep duration + duration_minutes in the UI row
+                    const effDuration = Number(
+                        effectiveRow.duration ?? effectiveRow.duration_minutes ?? durationMinutes
+                    );
+                    effectiveRow.duration = isNaN(effDuration) ? 0 : effDuration;
+                    effectiveRow.duration_minutes = effectiveRow.duration;
+
+                    // CREATE: patch profile_url once we know id
+                    if (op === 'create' && effectiveRow.id) {
+                        const deepLink = buildDeepLink(effectiveRow.id, effectiveRow);
+                        if (deepLink) {
+                            effectiveRow.profile_url = deepLink;
+                            this.plannerService
+                                .update(effectiveRow.id, {
+                                    id: effectiveRow.id,
+                                    profile_url: deepLink
+                                })
+                                .subscribe({
+                                    error: err =>
+                                        console.warn('[planner] profile_url patch failed', err)
+                                });
+                        }
+                    }
+
+                    // update local arrays
+                    if (!Array.isArray(this.dataSource)) this.dataSource = [];
+                    if (!Array.isArray(this.toolSet)) this.toolSet = [];
+
+                    if (op === 'create') {
+                        this.dataSource = [...this.dataSource, effectiveRow];
+                        this.toolSet    = [...this.toolSet, effectiveRow];
+                    } else if (op === 'update') {
+                        this.dataSource = this.dataSource.map((s: any) =>
+                            s.id === effectiveRow.id ? { ...s, ...effectiveRow } : s
+                        );
+                        this.toolSet = this.toolSet.map((s: any) =>
+                            s.id === effectiveRow.id ? { ...s, ...effectiveRow } : s
+                        );
+                    } else if (op === 'delete') {
+                        this.dataSource = this.dataSource.filter(
+                            (s: any) => s.id !== effectiveRow.id
+                        );
+                        this.toolSet = this.toolSet.filter(
+                            (s: any) => s.id !== effectiveRow.id
+                        );
+                    }
+
+                    this.table?.renderRows?.();
+                    this.buildCalendar();
+
+                    // ---- activity (use session type + colour, not title/date) ----
+                    const typeMeta   = getSessionTypeMeta(effectiveRow.session_type);
+                    const typeLabel  = typeMeta.label;    // e.g. "Studio Session"
+                    const typeColor  = typeMeta.color;    // hex colour
+                    const typePhrase = `${typeLabel} session`;
+
+                    const actor = {
+                        id: this.currentUser?.id,
+                        username: this.currentUser?.username
+                    };
+
+                    const feature = {
+                        feature: (this.toolName || 'Session').replace(/s$/i, ''),
+                        extra: null
+                    };
+
+                    let verb: 'create' | 'update' | 'delete' = op;
+                    let verbText = '';
+                    if (verb === 'create')      verbText = 'created';
+                    else if (verb === 'update') verbText = 'updated';
+                    else if (verb === 'delete') verbText = 'deleted';
+
+                    const labelInner =
+                        `<span style="color:${typeColor}"><b>${typePhrase}</b></span>`;
+
+                    const activity =
+                        verb === 'delete' || !effectiveRow.profile_url
+                            ? `${verbText} a ${labelInner}`
+                            : `${verbText} a ` +
+                              `<a href="${effectiveRow.profile_url}" style="color:${typeColor}">${labelInner}</a>`;
+
+                    this.artistActivityService
+                        .logChange(activity, {
+                            actor,
+                            artistId: this.groupId,
+                            groupId: this.groupId,
+                            feature
+                        })
+                        .subscribe();
+
+                    this.activeItem.emit({ action: op, data: effectiveRow });
+                },
+                error: err => {
+                    console.error('[PlannerForm] Failed to persist session change', err);
+                    this.alertService.error('Unable to save session');
+                }
+            });
         });
     }
 
@@ -426,6 +707,28 @@ export class PlannerFormComponent implements OnInit, OnChanges {
             return moment(raw).format('YYYY-MM-DD') === target;
         });
     }
+
+    // ---- calendar helpers for colours / labels ----
+
+    getEventStyle(ev: any): { [k: string]: string } {
+        const meta  = getSessionTypeMeta(ev?.session_type);
+        const base  = meta.color || '#ff4d4d';
+        const grad  = `linear-gradient(135deg, ${base}, ${base}cc)`; // cc = ~80% alpha
+
+        return {
+            background: grad,
+            borderColor: base,
+            color: '#000'   // black text on coloured pill
+        };
+    }
+
+    getSessionTypeLabel(type: string | null | undefined): string {
+        return getSessionTypeMeta(type).label;
+    }
+
+    // -----------------------------------
+    // Calendar interactions
+    // -----------------------------------
 
     openAddForDate(date: Date, ev?: MouseEvent): void {
         if (ev) {

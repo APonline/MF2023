@@ -7,6 +7,7 @@ export class planner {
     attendees?: string;       // for now: comma string or JSON string
     title?: string;
     description?: string;
+    session_type?: string;
     location?: string;
     active?: number;
     profile_url?: string | null;
@@ -23,6 +24,7 @@ export class planner {
         'attendees',
         'title',
         'description',
+        'session_type',
         'location',
         'profile_url',
         'active',

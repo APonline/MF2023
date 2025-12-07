@@ -1,70 +1,86 @@
 /**********************************************
- * BASE DIALOG CONTAINER
+ * DIALOG CONTAINER OVERRIDE
  **********************************************/
-
- :host ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+:host ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
     background: transparent !important;
     box-shadow: none !important;
-    padding: 0; /* so our task-card-dialog controls the padding */
+    padding: 0;
 }
 
-.task-card-dialog {
+/**********************************************
+ * BASE
+ **********************************************/
+.event-card-dialog {
     min-width: 520px;
     min-height: 70vh;
-    max-height: calc(100vh - 222px);  /* leave a little breathing room */
-    height:100%;
+    max-height: calc(100vh - 222px);
+    height: 100%;
     padding: 18px 0 10px 0;
-    // background: radial-gradient(circle at top left, #252944 0%, #101018 45%, #050509 100%);
-        background: url(/assets/images/loginbk.jpg) !important;
-        background-size: cover!important;
+    background: url(/assets/images/loginbk.jpg) !important;
+    background-size: cover !important;
     color: #f5f5ff;
     border-radius: 18px;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.8);
-
     display: flex;
     flex-direction: column;
+    padding: 14px 20px 16px;
 }
 
 /**********************************************
  * HEADER
  **********************************************/
-.task-card-header {
+.event-card-header {
     display: flex;
     align-items: center;
-    padding: 0 24px 10px 24px;
+    gap: 12px;
+    margin-top: 4px;           
+    margin-bottom: 10px; 
 }
 
-.task-card-icon {
-    margin-right: 14px;
-    font-size: 32px;
-    padding: 4px 0px 0px 4px;
-    width: 35px;
-    height: 35px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #3f51b5, #7c4dff);
-    color: #ffffff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+/* The coloured square/pill */
+.event-card-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    /* color is set from [style.background-color] in template */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
 }
 
-.task-card-header-main {
+/* The calendar icon itself – always white/grey, never coloured bg */
+.event-card-icon {
+    color: #ffffff !important;   /* or #d0d0d0 if you want softer grey */
+    font-size: 24px;
+    margin: 0;
+    padding: 0;
+    background: transparent !important;
+    border-radius: 0 !important;
+}
+
+.event-card-header-main {
     flex: 1;
 }
 
-.task-card-title-input {
+.event-card-title-input {
     font-size: 22px;
     font-weight: 600;
     width: calc(100% - 25px);
     border-radius: 10px;
     padding: 6px 10px !important;
-    background: rgba(255, 255, 255, 0.04);
+    padding-top: 4px;
+    background: rgba(0, 0, 0, 0.55);
     color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
-.task-card-title-input::placeholder {
+.event-card-title-input::placeholder {
     color: rgba(255, 255, 255, 0.45);
 }
 
-.task-card-subtitle {
+.event-card-subtitle {
     font-size: 13px;
     opacity: 0.7;
     margin-top: 3px;
@@ -73,13 +89,15 @@
 /**********************************************
  * BODY + SECTIONS
  **********************************************/
-.task-card-body {
+.event-card-body {
     padding: 16px 24px 8px 24px;
+    padding-bottom: 0px;
+    padding-top: 0px;
     flex: 1;
     overflow-y: auto;
 }
 
-.task-card-section {
+.event-card-section {
     margin-bottom: 18px;
 }
 
@@ -99,34 +117,38 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+
+    &.two-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 /**********************************************
  * MAT FORM FIELD DARK STYLING
  **********************************************/
-.task-card-dialog .mat-form-field-appearance-fill .mat-form-field-flex {
-    background: rgba(255, 255, 255, 0.04);
+.event-card-dialog .mat-form-field-appearance-fill .mat-form-field-flex {
+    background: rgba(0, 0, 0, 0.55);
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.task-card-dialog .mat-form-field-appearance-fill .mat-form-field-outline {
+.event-card-dialog .mat-form-field-appearance-fill .mat-form-field-outline {
     display: none;
 }
 
-.task-card-dialog .mat-form-field-label,
-.task-card-dialog .mat-input-element,
-.task-card-dialog .mat-select-value,
-.task-card-dialog .mat-select-arrow {
+.event-card-dialog .mat-form-field-label,
+.event-card-dialog .mat-input-element,
+.event-card-dialog .mat-select-value,
+.event-card-dialog .mat-select-arrow {
     color: #f5f5ff;
 }
 
-.task-card-dialog .mat-form-field-subscript-wrapper {
+.event-card-dialog .mat-form-field-subscript-wrapper {
     color: #ff8a80;
 }
 
-/* Datepicker icons */
-.task-card-dialog .mat-icon-button {
+/* Datepicker / suffix icons */
+.event-card-dialog .mat-icon-button {
     color: rgba(255, 255, 255, 0.6);
 }
 
@@ -137,21 +159,21 @@
     width: 100%;
 }
 
-.task-card-dialog textarea.mat-input-element {
+.event-card-dialog textarea.mat-input-element {
     min-height: 200px;
 }
 
 /**********************************************
  * DIVIDERS
  **********************************************/
-.task-card-dialog mat-divider {
+.event-card-dialog mat-divider {
     border-top-color: rgba(255, 255, 255, 0.08);
 }
 
 /**********************************************
  * ACTIONS
  **********************************************/
-.task-card-actions {
+.event-card-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -164,23 +186,20 @@
     gap: 10px;
 }
 
-/* Primary button – make it pop */
-.task-card-dialog .mat-raised-button.mat-primary {
-    background: linear-gradient(135deg, #3f51b5, #7c4dff);
+.event-card-dialog .mat-raised-button.mat-primary {
+    background: linear-gradient(135deg, #ff0000, #f97676);
     color: #ffffff;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.7);
     border-radius: 999px;
     padding: 0 18px;
 }
 
-/* Flat buttons */
-.task-card-dialog .mat-button-base {
+.event-card-dialog .mat-button-base {
     text-transform: none;
     font-weight: 500;
 }
 
-/* Delete button outline */
-.task-card-dialog .mat-stroked-button.mat-warn {
+.event-card-dialog .mat-stroked-button.mat-warn {
     border-color: rgba(244, 67, 54, 0.7);
     color: #ff8a80;
 }
@@ -189,122 +208,29 @@
  * RESPONSIVE
  **********************************************/
 @media (max-width: 600px) {
-    .task-card-dialog {
+    .event-card-dialog {
         min-width: 100%;
         border-radius: 0;
     }
 
-    .details-grid {
+    .details-grid,
+    .details-grid.two-columns {
         grid-template-columns: 1fr;
     }
 }
 
-
-.priority-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.priority-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    cursor: pointer;
-    user-select: none;
-    opacity: 0.7;
-    transition: all 0.15s ease-out;
-    border: 1px solid transparent;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.priority-pill .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 6px;
-    background: #888;
-}
-
-.priority-pill .label {
-    letter-spacing: 0.03em;
-}
-
-/* Hover / active */
-.priority-pill:hover {
-    opacity: 1;
-    transform: translateY(-1px);
-}
-
-/* Selected state */
-.priority-pill.is-active {
-    opacity: 1;
-}
-
-/* Color mappings for each priority */
-.priority-none      { border-color: rgba(255, 255, 255, 0.06);}
-.priority-none .dot { background: #9e9e9e; }
-.priority-none.is-active {
-    background: rgb(255 255 255 / 40%);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
-}
-
-.priority-very_low      { border-color: rgba(129, 199, 132, 0.5);}
-.priority-very_low .dot { background: #81c784; }
-.priority-very_low.is-active {
-    background: rgb(129 199 132 / 40%);
-    box-shadow: 0 0 0 1px rgba(170, 255, 174, 0.8);
-}
-
-.priority-low      { border-color: rgba(76, 175, 80, 0.7);}
-.priority-low .dot { background: #4caf50; }
-.priority-low.is-active {
-    background: rgb(76 175 80 / 40%);
-    box-shadow: 0 0 0 1px rgba(104, 246, 109, 0.8);
-}
-
-.priority-medium      { border-color: rgba(255, 193, 7, 0.7); }
-.priority-medium .dot { background: #ffc107; }
-.priority-medium.is-active {
-    background: rgb(255 193 7 / 40%);
-    box-shadow: 0 0 0 1px rgba(255, 204, 50, 0.8);
-}
-
-.priority-high      { border-color: rgba(255, 152, 0, 0.9);}
-.priority-high .dot { background: #ff9800; }
-.priority-high.is-active {
-    background: rgb(244 67 54 / 40%);
-    box-shadow: 0 0 0 1px rgba(255, 174, 52, 0.8);
-}
-
-.priority-very_high      { border-color: rgba(244, 67, 54, 0.8);}
-.priority-very_high .dot { background: #f44336; }
-.priority-very_high.is-active {
-    background: rgb(244 67 54 / 40%);
-    box-shadow: 0 0 0 1px rgba(255, 88, 76, 0.8);
-}
-
-.priority-critical      { border-color: rgba(233, 30, 99, 0.9); }
-.priority-critical .dot { background: #e91e63; }
-.priority-critical.is-active {
-    background: rgb(233 30 99 / 40%);
-    box-shadow: 0 0 0 1px rgba(255, 64, 129, 0.8);
-}
-
+/* Dialog surface scroll behaviour */
 :host ::ng-deep .mat-mdc-dialog-surface {
-    max-height: 90vh;          /* still safe on smaller screens */
-    overflow-y: auto;          /* allow scroll if it ever needs it */
+    max-height: 90vh;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
-/* Firefox: hide scrollbar */
+/* Hide scrollbars visually */
 :host ::ng-deep .mat-mdc-dialog-surface {
     scrollbar-width: none;
 }
 
-/* WebKit: hide scrollbar */
 :host ::ng-deep .mat-mdc-dialog-surface::-webkit-scrollbar {
     width: 0;
     height: 0;
