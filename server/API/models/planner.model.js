@@ -27,6 +27,17 @@ module.exports = (sequelize, Sequelize) => {
             session_type: {
                 type: Sequelize.STRING
             },
+            // NEW: recurrence flags
+            is_recurring: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false
+            },
+            recurrence_freq: {
+                type: Sequelize.STRING    // e.g. "weekly"
+            },
+            recurrence_until: {
+                type: Sequelize.DATE      // optional end date
+            },
             description: {
                 type: Sequelize.STRING
             },

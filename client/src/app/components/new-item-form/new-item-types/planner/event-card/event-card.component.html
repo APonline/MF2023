@@ -22,8 +22,6 @@
         </div>
     </div>
 
-
-
     <mat-divider></mat-divider>
 
     <!-- BODY -->
@@ -77,11 +75,42 @@
                     </mat-select>
                 </mat-form-field>
             </div>
+
+            <!-- RECURRING CONTROLS -->
+            <div class="recurring-row">
+                <mat-checkbox formControlName="is_recurring">
+                    Recurring session
+                </mat-checkbox>
+
+                <mat-form-field
+                    appearance="fill"
+                    *ngIf="form.get('is_recurring')?.value">
+                    <mat-label>Repeat</mat-label>
+                    <mat-select formControlName="recurrence_freq">
+                        <mat-option value="weekly">
+                            Weekly (same day &amp; time)
+                        </mat-option>
+                        <!-- future: monthly, custom, etc -->
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                    appearance="fill"
+                    *ngIf="form.get('is_recurring')?.value">
+                    <mat-label>End date (optional)</mat-label>
+                    <input
+                        matInput
+                        [matDatepicker]="untilPicker"
+                        formControlName="recurrence_until" />
+                    <mat-datepicker-toggle matSuffix [for]="untilPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #untilPicker></mat-datepicker>
+                </mat-form-field>
+            </div>
         </div>
 
         <!-- LOCATION & PEOPLE -->
         <div class="event-card-section">
-            <div class="section-title">Location & People</div>
+            <div class="section-title">Location &amp; People</div>
 
             <div class="details-grid two-columns">
                 <mat-form-field appearance="fill">

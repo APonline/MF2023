@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MFService } from 'src/app/services/MF.service';
+import * as moment from 'moment';
 
 /* ------------------------------------------------------------------
  * Session type meta (colour + label) – keep in sync with PlannerForm
@@ -68,6 +69,10 @@ interface PlannerEventSeed {
     owner_user?: number;
     active?: number;
     profile_url?: string;
+    // NEW recurrence fields
+    is_recurring?: number | boolean;
+    recurrence_freq?: string | null;
+    recurrence_until?: string | Date | null;
     [key: string]: any;
 }
 
@@ -131,6 +136,16 @@ export class EventCardComponent implements OnInit {
 
         const attendeesArray = this.normaliseAttendees(seed.attendees);
 
+        const defaultIsRecurring =
+            typeof seed.is_recurring === 'boolean'
+                ? seed.is_recurring
+                : !!seed.is_recurring;
+
+        const defaultFreq = seed.recurrence_freq || 'weekly';
+        const defaultUntil = seed.recurrence_until
+            ? new Date(seed.recurrence_until as any)
+            : null;
+
         this.form = this.fb.group({
             id: [seed.id],
             title: [seed.title || '', Validators.required],
@@ -143,6 +158,11 @@ export class EventCardComponent implements OnInit {
 
             location: [seed.location || ''],
             attendees: [attendeesArray],
+
+            // recurrence
+            is_recurring: [defaultIsRecurring],
+            recurrence_freq: [defaultFreq],
+            recurrence_until: [defaultUntil],
 
             owner_group: [seed.owner_group ?? this.data.artist_id ?? null],
             owner_user: [seed.owner_user ?? this.data.current_user_id ?? null],
@@ -211,7 +231,7 @@ export class EventCardComponent implements OnInit {
         } catch (_) {}
 
         if (typeof att === 'string') {
-            return att.split(',').map(x => x.trim()).filter(Boolean);
+            return att.split(',').map((x: string) => x.trim()).filter(Boolean);
         }
 
         return [att];
@@ -240,18 +260,29 @@ export class EventCardComponent implements OnInit {
         const time: string = this.form?.value?.time;
 
         if (!date || !time) {
-            this.headerSubtitle = this.action === 'Add' ? 'New session' : 'Edit session';
+            this.headerSubtitle = this.action === 'Add'
+                ? 'New session'
+                : 'Edit session';
             return;
         }
 
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric'
-        };
+        // Date: "Wed, Dec 10"
+        const datePart = moment(date).format('ddd, MMM D');
 
-        const dStr = date.toLocaleDateString(undefined, options);
-        this.headerSubtitle = `${dStr} • ${time}`;
+        // Time: "7 pm" or "7:30 pm"
+        const timeMoment = moment(time, 'HH:mm');
+        let timePart = '';
+        if (timeMoment.isValid()) {
+            const fmt = timeMoment.minute() === 0 ? 'h A' : 'h:mm A';
+            timePart = timeMoment
+                .format(fmt)
+                .replace('AM', 'am')
+                .replace('PM', 'pm');
+        }
+
+        this.headerSubtitle = timePart
+            ? `${datePart} • ${timePart}`
+            : datePart;
     }
 
     /* ---------- UI actions ---------- */
@@ -289,7 +320,7 @@ export class EventCardComponent implements OnInit {
             return;
         }
 
-        const value = { ...this.form.value };
+        const value: any = { ...this.form.value };
 
         const rawDuration = value.duration_minutes;
         const durationMinutes = Number(rawDuration ?? 0);
@@ -298,6 +329,13 @@ export class EventCardComponent implements OnInit {
         const start_at = this.buildStartAt();
         value.start_at = start_at;
         value.selected_date = start_at; // legacy compatibility
+
+        // normalise recurring flags
+        value.is_recurring = value.is_recurring ? 1 : 0;
+
+        if (value.recurrence_until instanceof Date) {
+            value.recurrence_until = (value.recurrence_until as Date).toISOString();
+        }
 
         if (Array.isArray(value.attendees)) {
             value.attendees = JSON.stringify(value.attendees);

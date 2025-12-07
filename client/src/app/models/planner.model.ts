@@ -8,6 +8,10 @@ export class planner {
     title?: string;
     description?: string;
     session_type?: string;
+    // NEW: recurrence metadata
+    is_recurring?: number;            // 0/1 from API
+    recurrence_freq?: string | null;  // e.g. 'weekly'
+    recurrence_until?: string | null; // ISO datetime
     location?: string;
     active?: number;
     profile_url?: string | null;
@@ -25,6 +29,9 @@ export class planner {
         'title',
         'description',
         'session_type',
+        'is_recurring',
+        'recurrence_freq',
+        'recurrence_until',
         'location',
         'profile_url',
         'active',

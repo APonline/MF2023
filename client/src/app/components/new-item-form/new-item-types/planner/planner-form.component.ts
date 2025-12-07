@@ -713,7 +713,7 @@ export class PlannerFormComponent implements OnInit, OnChanges {
     getEventStyle(ev: any): { [k: string]: string } {
         const meta  = getSessionTypeMeta(ev?.session_type);
         const base  = meta.color || '#ff4d4d';
-        const grad  = `linear-gradient(135deg, ${base}, ${base}cc)`; // cc = ~80% alpha
+        const grad  = `linear-gradient(135deg, ${base}, ${base}cc)`; 
 
         return {
             background: grad,

@@ -90,7 +90,7 @@
  * BODY + SECTIONS
  **********************************************/
 .event-card-body {
-    padding: 16px 24px 8px 24px;
+    padding: 16px 0px 8px 0px;
     padding-bottom: 0px;
     padding-top: 0px;
     flex: 1;
@@ -235,4 +235,194 @@
     width: 0;
     height: 0;
     background: transparent;
+}
+
+
+.session-dialog {
+    .session-dialog-inner {
+        padding: 32px 40px 28px 40px;   // same left/right for everything
+    }
+
+    .session-header-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 8px;
+    }
+
+    .session-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: #8d9a9e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 4px; // small nudge down so it visually lines up
+    }
+
+    .session-title-field {
+        flex: 1;
+    }
+
+    .session-section-title {
+        margin-top: 18px;   // gives a bit of breathing room you were wanting
+        margin-bottom: 8px;
+        letter-spacing: 0.16em;
+        font-size: 11px;
+    }
+}
+
+
+/* ---------- Layout + alignment ---------- */
+
+.event-card-dialog {
+    /* Padding controls the left/right alignment for EVERYTHING */
+    padding: 28px 40px 24px 40px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #fff;
+}
+
+/* Header row (icon + title) */
+.event-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;  /* small gap before Session Details */
+}
+
+/* Icon block */
+.event-card-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px; /* nudges it down so it lines visually with title / section */
+}
+
+.event-card-icon {
+    font-size: 24px;
+    color: #ffffff;
+}
+
+/* Title + subtitle */
+.event-card-header-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Title input – dark pill */
+.event-card-title-input {
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.9);
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    &:focus {
+        border-color: #ff4d4d;
+        box-shadow: 0 0 0 1px rgba(255, 77, 77, 0.6);
+        background: rgba(0, 0, 0, 0.95);
+    }
+}
+
+.event-card-subtitle {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* Body / sections */
+.event-card-body {
+    margin-top: 4px;
+}
+
+.event-card-section {
+    margin-top: 18px;
+}
+
+.section-title {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+
+/* Grid layout for fields */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+
+    &.two-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Actions row */
+.event-card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.left-actions,
+.right-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* Make all fields in this dialog dark with red focus */
+:host ::ng-deep .event-card-dialog .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: rgba(0, 0, 0, 0.9);
+    --mdc-filled-text-field-focus-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-hover-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.55);
+}
+
+/* Select arrow / accents in red */
+:host ::ng-deep .event-card-dialog .mat-mdc-select-arrow {
+    color: #ff4d4d;
+}
+
+/* Options styling */
+:host ::ng-deep .mat-mdc-option.mdc-list-item--selected,
+:host ::ng-deep .mat-mdc-option.mdc-list-item--selected.mdc-list-item--activated {
+    background: rgba(255, 77, 77, 0.22);
+    color: #fff;
+}
+
+:host ::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+    background: rgba(255, 77, 77, 0.14);
+}
+
+.full-width textarea {
+    height: 52px!important;
 }
