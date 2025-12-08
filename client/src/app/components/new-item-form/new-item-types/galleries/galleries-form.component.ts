@@ -39,6 +39,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
   displayedColumns: string[] = [];
   dataSource=null;
   newRecord=null;
+  gallerySearch: string = '';
 
   @ViewChild(MatTable,{static:true}) table: MatTable<any>;
 
@@ -206,4 +207,40 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
             this.activeItem.emit({ action: result.event, data: cooked });
         });
   }
+
+  galleryMatchesSearch(g: any, term: string): boolean {
+    if (!term) return true;
+    const t = term.toLowerCase();
+    return (
+        (g.title || '').toLowerCase().includes(t) ||
+        (g.description || '').toLowerCase().includes(t) ||
+        (g.tags || '').toLowerCase().includes(t) ||
+        (g.genre || '').toLowerCase().includes(t)
+    );
+  }
+
+  // cover image helper – plug into your universal uploader later
+  getGalleryCover(g: any): string {
+      // if you have a real cover field later, use that:
+      // return g.cover_url || '/assets/images/default-gallery.jpg';
+      return '/assets/images/Gigs.jpg';
+  }
+
+  // open a gallery into your Images/Videos view or a future detail route
+  openGallery(g: any): void {
+      // Option A: route to a dedicated gallery page
+      // this.router.navigate(['/projects', this.groupId, this.group, 'gallery', g.id]);
+
+      // Option B: for now just open the edit dialog
+      this.openDialog('Update', g);
+  }
+
+  splitTags(tags: string | null | undefined): string[] {
+    if (!tags) return [];
+    return tags
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => !!t);
+  }
+
 }

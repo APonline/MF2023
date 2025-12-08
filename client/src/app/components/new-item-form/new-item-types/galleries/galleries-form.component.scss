@@ -1,219 +1,565 @@
+/**********************************************
+ * GALLERIES THEME TOKENS
+ **********************************************/
+$gallery-accent: #ff4d4d;
+$gallery-accent-soft: rgba(255, 77, 77, 0.7);
+
+/**********************************************
+ * BACKGROUND BLUR PANEL
+ **********************************************/
 .itemBK {
-  background-size: cover!important;
-  background-attachment: fixed!important;
-  background-repeat:no-repeat!important;
-  background-position: 50% 50%!important;
-  width:100%;
-  height:calc(100% - 70px);
-  margin-top: -70px;
-  position:absolute;
-  filter: blur(10px);
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+    background-position: 50% 50% !important;
+    width: 100%;
+    height: calc(100% - 70px);
+    margin-top: -70px;
+    position: absolute;
+    filter: blur(10px);
 }
 
-// .itemBKGrid {
-//   background-attachment: fixed!important;
-//   background-image: url('/assets/images/grid.png') !important;
-//   width: 100%;
-//   height: 100%;
-//   position: absolute;
-//   top: 0px;
-// }
+.itemBKGrid {
+    /* Optional subtle grid overlay if you want it back */
+    /* background-image: url('/assets/images/grid.png') !important; */
+    background-attachment: fixed !important;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
 
+/**********************************************
+ * LEGACY NEW / EDIT FORM (TABLE VIEW)
+ **********************************************/
 #newEditForm {
-  // background-image: url("/assets/images/w2.jpg");
-  background-size: cover;
-  background-attachment: fixed;
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  display: flex;
-  justify-content: center;
+    background-size: cover;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    justify-content: center;
 
-  .content {
-    position:relative;
-    margin-top:25px;
+    .content {
+        position: relative;
+        margin-top: 25px;
 
-    .container {
-      overflow-x: auto;
+        .container {
+            overflow-x: auto;
+        }
     }
-  }
 
-  .masked-overflow {
-    /* scroll bar width, for use in mask calculations */
-    --scrollbar-width: 0px;
+    .masked-overflow {
+        --scrollbar-width: 0px;
+        --mask-height: 60px;
+        overflow-x: auto;
+        padding-right: 0;
 
-    /* mask fade distance, for use in mask calculations */
-    --mask-height: 60px;
+        --mask-image-content: linear-gradient(
+            to right,
+            transparent,
+            black 0,
+            black calc(100% - var(--mask-height)),
+            transparent
+        );
 
-    /* If content exceeds height of container, overflow! */
-    overflow-x: auto;
+        --mask-size-content: calc(100% - 0px) 100%;
+        --mask-image-scrollbar: linear-gradient(black, black);
+        --mask-size-scrollbar: 0px 100%;
 
-    /* Our height limit */
-    // height: 300px;
-
-    /* Need to make sure container has bottom space,
-  otherwise content at the bottom is always faded out */
-    // padding-bottom: var(--mask-height);
-
-    /* Keep some space between content and scrollbar */
-    padding-right: 0px;
-
-    /* The CSS mask */
-
-    /* The content mask is a linear gradient from top to bottom */
-    --mask-image-content: linear-gradient(
-        to right,
-        transparent,
-        black 0,
-        black calc(100% - var(--mask-height)),
-        transparent
-    );
-
-    /* Here we scale the content gradient to the width of the container
-  minus the scrollbar width. The height is the full container height */
-    --mask-size-content: calc(100% - 0px) 100%;
-
-    /* The scrollbar mask is a black pixel */
-    --mask-image-scrollbar: linear-gradient(black, black);
-
-    /* The width of our black pixel is the width of the scrollbar.
-  The height is the full container height */
-    --mask-size-scrollbar: 0px 100%;
-
-    /* Apply the mask image and mask size variables */
-    mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
-    mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
-
-    /* Position the content gradient in the top left, and the
-  scroll gradient in the top right */
-    mask-position: 0 0, 100% 0;
-
-    /* We don't repeat our mask images */
-    mask-repeat: no-repeat, no-repeat;
+        mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
+        mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
+        mask-position: 0 0, 100% 0;
+        mask-repeat: no-repeat, no-repeat;
+    }
 }
 
+/* Table styling (unchanged behaviour, just grouped) */
+tr,
+th,
+td {
+    width: 100%;
+    position: relative;
 }
 
-tr,th,td {
-  width: 100%;
-  position: relative;
+th p,
+td p {
+    padding: 6px 10px;
 }
-th p,td p {
-  padding:6px 10px;
-}
+
 th p {
-  line-height:56px;
-}
-#table {
-  min-width:1200px;
-  position:relative;
-}
-table {
-  white-space: nowrap;
-  width: -webkit-fill-available;
+    line-height: 56px;
 }
 
-tr, th, td {
-  min-width:100%;
-  width: auto;
+#table {
+    min-width: 1200px;
+    position: relative;
+}
+
+table {
+    white-space: nowrap;
+    width: -webkit-fill-available;
+}
+
+tr,
+th,
+td {
+    min-width: 100%;
+    width: auto;
 }
 
 th {
-  background-color:#5e5e5e;
+    background-color: #5e5e5e;
 }
 
-th p *{
-  color:#fff;
+th p * {
+    color: #fff;
 }
 
-th:first-child, td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 2;
+th:first-child,
+td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
 }
 
 tr:nth-child(odd) {
-  background-color:#fff;
+    background-color: #fff;
 }
+
 tr:nth-child(even) {
-  background-color:#ececec;
+    background-color: #ececec;
 }
 
-th.mat-header-cell:first-of-type, td.mat-cell:first-of-type, td.mat-footer-cell:first-of-type {
-  padding: 7px 24px;
-  border-bottom-color: transparent;
-  border:none;
-}
-th.mat-header-cell:nth-of-type(2), td.mat-cell:nth-of-type(2), td.mat-footer-cell:nth-of-type(2) {
-  padding-left:20px;
+th.mat-header-cell:first-of-type,
+td.mat-cell:first-of-type,
+td.mat-footer-cell:first-of-type {
+    padding: 7px 24px;
+    border-bottom-color: transparent;
+    border: none;
 }
 
-th.mat-header-cell:first-of-type:after, td.mat-cell:first-of-type:after {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  right: -12px;
-  top: 0;
-  pointer-events: none;
-  background-image: linear-gradient(to left, rgba(255,255,255,0), rgba(12, 12, 12, 0.3) 90%);
-  width: 12px;
-  height: 100%;
-  min-height:2em;
+th.mat-header-cell:nth-of-type(2),
+td.mat-cell:nth-of-type(2),
+td.mat-footer-cell:nth-of-type(2) {
+    padding-left: 20px;
+}
+
+th.mat-header-cell:first-of-type::after,
+td.mat-cell:first-of-type::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    right: -12px;
+    top: 0;
+    pointer-events: none;
+    background-image: linear-gradient(
+        to left,
+        rgba(255, 255, 255, 0),
+        rgba(12, 12, 12, 0.3) 90%
+    );
+    width: 12px;
+    height: 100%;
+    min-height: 2em;
 }
 
 td.mat-cell:first-of-type {
-  width:auto;
-  height: 34px;
+    width: auto;
+    height: 34px;
 }
 
 tr:nth-child(odd) td.mat-cell:first-of-type {
-  background-color:#fff;
-}
-tr:nth-child(even) td.mat-cell:first-of-type {
-  background-color:#ececec;
+    background-color: #fff;
 }
 
+tr:nth-child(even) td.mat-cell:first-of-type {
+    background-color: #ececec;
+}
 
 .headerTitle {
-  text-transform: capitalize;
+    text-transform: capitalize;
 }
 
-
-
+/* Ghost scrollbars for masked overflow */
 .masked-overflow {
-  scrollbar-width: thin; /* can also be normal, or none, to not render scrollbar */
-  scrollbar-color: transparent; /* foreground background */
+    scrollbar-width: thin;
+    scrollbar-color: transparent;
 }
 
-/* Webkit / Blink */
 .masked-overflow::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
 }
 
 .masked-overflow::-webkit-scrollbar-thumb {
-  background-color: transparent;
-  border-radius: 9999px; /* always round */
+    background-color: transparent;
+    border-radius: 9999px;
 }
 
 .masked-overflow::-webkit-scrollbar-track {
-  background-color: transparent;
+    background-color: transparent;
 }
 
-
 .material-icons {
-  cursor:pointer;
+    cursor: pointer;
 }
 
 .goback {
-  margin: 10px 0 50px 0;
+    margin: 10px 0 50px 0;
 }
 
-.add-new{
-  position:absolute;
-  top:0px;
-  right: 0px;
+.add-new {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .mild-container {
-  position:relative;
+    position: relative;
+}
+
+/**********************************************
+ * GALLERY CARD VIEW (MUSEFACTORY STYLE)
+ **********************************************/
+.gallery-shell {
+    padding: 24px 40px 32px;
+    color: #fff;
+    position: relative;
+
+    .goback {
+        margin: 10px 0 10px;
+    }
+}
+
+/* Header bar – matches Contacts / Tasks style */
+.gallery-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* base align at bottom */
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.gallery-page-header .left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: var(--alt-font);
+    color: #ffffff;
+}
+
+.page-sub {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.75;
+        color: #fff;
+}
+
+/* Right side: search + button anchored to same baseline */
+.gallery-page-header .right {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.page-search {
+    min-width: 260px;
+}
+
+.page-cta .material-icons {
+    margin-right: 6px;
+}
+
+/**********************************************
+ * MAIN GLASS PANEL
+ **********************************************/
+.gallery-main-panel {
+    background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.05),
+        rgba(0, 0, 0, 0.96)
+    );
+    border-radius: 28px;
+    padding: 20px 22px 24px;
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/**********************************************
+ * EMPTY STATE
+ **********************************************/
+.gallery-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 260px;
+}
+
+.empty-inner {
+    text-align: center;
+    max-width: 360px;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+}
+
+.empty-icon .material-icons {
+    font-size: 32px;
+}
+
+/**********************************************
+ * CARD GRID & CARDS
+ **********************************************/
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+/* Individual gallery card */
+.gallery-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.02),
+        rgba(0, 0, 0, 0.94)
+    );
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+    transition:
+        transform 120ms ease,
+        box-shadow 120ms ease,
+        border-color 120ms ease,
+        background 120ms ease;
+}
+
+.gallery-card:hover {
+    transform: translateY(-3px);
+    border-color: $gallery-accent-soft;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95);
+}
+
+/* Cover / hero image area */
+.gallery-cover {
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.gallery-cover-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 10px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.88)
+    );
+}
+
+/* Chips row */
+.gallery-chip-row {
+    display: flex;
+    gap: 6px;
+}
+
+.gallery-genre-chip,
+.gallery-views-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    background: rgba(0, 0, 0, 0.7);
+    line-height: 12px;
+}
+
+.gallery-genre-chip {
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.gallery-views-chip {
+    border: 1px solid $gallery-accent-soft;
+}
+
+.gallery-views-chip .tiny {
+    font-size: 13px;
+    margin-right: 3px;
+}
+
+/* Title / description */
+.gallery-title-block {
+    margin-top: 10px;
+}
+
+.card-title {
+    margin: 0 0 2px;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+}
+
+.card-sub {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Meta row (tags + updated text) */
+.gallery-meta-row {
+    padding: 8px 12px 0;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.tag-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.9;
+}
+
+.tag-row .tiny {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/**********************************************
+ * TAG PILLS (for splitTags)
+ **********************************************/
+.tags-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.tag-pill {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tags-text {
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.tags-text.muted {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.updated-text {
+    opacity: 0.6;
+    text-align: right;
+}
+
+/* Actions row */
+.gallery-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 12px 12px;
+}
+
+.gallery-card-actions .spacer {
+    flex: 1;
+}
+
+.gallery-card-actions button.mat-stroked-button {
+    border-radius: 999px;
+    background: #ffffff;
+    color: #000;
+    border-color: transparent;
+    padding: 0 16px;
+    font-size: 12px;
+}
+
+.gallery-card-actions button.mat-icon-button {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.gallery-card-actions button.mat-icon-button[color='warn'] {
+    color: $gallery-accent !important;
+}
+
+/**********************************************
+ * DARK MATERIAL INPUTS IN HEADER
+ **********************************************/
+:host ::ng-deep .gallery-shell .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: rgba(0, 0, 0, 0.85);
+    --mdc-filled-text-field-focus-active-indicator-color: #{$gallery-accent};
+    --mdc-filled-text-field-hover-active-indicator-color: #{$gallery-accent};
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
+}
+
+:host
+    ::ng-deep
+    .gallery-shell
+    .mat-mdc-form-field.mat-focused
+    .mdc-line-ripple::before,
+:host
+    ::ng-deep
+    .gallery-shell
+    .mat-mdc-form-field.mat-focused
+    .mdc-line-ripple::after {
+    border-bottom-color: $gallery-accent !important;
+}
+
+:host ::ng-deep .gallery-shell .mat-mdc-form-field-infix input {
+    color: #ffffff;
+}
+
+:host
+    ::ng-deep
+    .gallery-shell
+    .mat-mdc-form-field-infix
+    input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* Nudge the search + button down so they sit nicely with the subtitle */
+:host
+    ::ng-deep
+    .gallery-page-header
+    .page-search
+    .mat-mdc-text-field-wrapper {
+    transform: translateY(18px);
+}
+
+.gallery-page-header .page-cta {
+    transform: translateY(-5px);
 }

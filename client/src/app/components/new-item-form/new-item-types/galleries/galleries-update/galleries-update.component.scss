@@ -1,223 +1,363 @@
-ul {
-  width: 50%;
-  margin: 0 auto;
+/**********************************************
+ * TOKENS
+ **********************************************/
+$gallery-accent: #ff4d4d;
+$gallery-accent-soft: rgba(255, 77, 77, 0.75);
+
+/**********************************************
+ * ROOT CONTAINER – mirror contact dialog
+ **********************************************/
+.gallery-update-dialog {
+    min-width: 520px;
+    max-width: 880px;
+    padding: 32px 40px 28px;
+    border-radius: 30px;
+    background: url('/assets/images/leather-bk.jpg') center / cover no-repeat;
+    color: #ffffff;
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
-li {
-  display:flex;
-  flex-direction: row;
+/**********************************************
+ * HEADER – avatar ring + title like contacts
+ **********************************************/
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
 
-  p {
-    min-width:250px;
+.avatar-ring {
+    width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    padding: 3px;
+    background: radial-gradient(circle at 30% 0, #ffffff, transparent 55%);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.95),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    flex-shrink: 0;
+
+    &.warn {
+        background: radial-gradient(circle at 30% 0, #ff4d4d, transparent 55%);
+    }
+}
+
+.avatar-circle {
     width: 100%;
-    display:flex;
-    flex-direction: column;
+    height: 100%;
+    border-radius: inherit;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    text-align:right;
+
+    .material-icons {
+        font-size: 24px;
+        color: #ffffff;
+    }
+}
+
+.header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dialog-title {
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--alt-font);
+}
+
+.dialog-sub {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.8;
+    color: #ffffff;
+}
+
+.close-btn {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.7);
+
+    &:hover {
+        color: #ffffff;
+    }
+}
+
+/**********************************************
+ * BODY
+ **********************************************/
+.dialog-body {
+    margin-top: 4px;
+}
+
+/* Sections (DETAILS / CLASSIFICATION) */
+.section {
+    margin-top: 22px;
+
+    &:first-of-type {
+        margin-top: 8px;
+    }
+}
+
+.section-title {
+    margin: 0 0 10px;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+/* Field layout – same feel as contacts */
+.field-row {
+    display: grid;
+    gap: 14px 18px;
+
+    &.two-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        @media (max-width: 768px) {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.field-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.helper-text {
+    margin: 4px 0 0;
+    font-size: 11px;
+    opacity: 0.55;
+}
+
+/**********************************************
+ * DELETE BODY
+ **********************************************/
+.delete-body {
+    margin-top: 18px;
     font-size: 14px;
-    color: #0000008a;
-    margin-right: 15px;
-  }
 
-  div {
-    min-width:250px;
-    width:100%;
-  }
-
+    strong {
+        font-weight: 600;
+    }
 }
 
-@media (min-width:320px)  {
-  ul {
+/**********************************************
+ * FOOTER / ACTIONS – match contact layout
+ **********************************************/
+.dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.footer-left,
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn-secondary {
+    border-radius: 999px;
+    padding: 0 22px;
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    background: rgba(0, 0, 0, 0.6);
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.85);
+    }
+}
+
+.btn-primary {
+    border-radius: 999px;
+    padding: 0 24px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ff4d4d, #ff7a4d);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.85);
+
+    &:hover {
+        background: linear-gradient(135deg, #ff5f5f, #ff8b5b);
+    }
+}
+
+.btn-danger {
+    @extend .btn-primary;
+    background: linear-gradient(135deg, #ff1f3d, #ff7a4d);
+
+    &:hover {
+        background: linear-gradient(135deg, #ff364f, #ff8a5e);
+    }
+}
+
+/**********************************************
+ * MATERIAL FIELD OVERRIDES – match Contacts
+ **********************************************/
+:host ::ng-deep .gallery-update-dialog .mat-mdc-form-field {
     width: 100%;
-    margin: 0 auto;
-  }
-
-  li {
-    display:flex;
-    flex-direction: column;
-
-    p {
-      min-width:inherit;
-      width: 100%;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:left;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:inherit;
-    }
-
-  }
+    margin-bottom: 8px;
 }
 
-@media (min-width:801px)  {
-  ul {
-    width: 100%;
-    margin: 0 auto;
-  }
-
-  li {
-    display:flex;
-    flex-direction: column;
-
-    p {
-      min-width:inherit;
-      width: 100%;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:left;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:inherit;
-      width:100%;
-    }
-
-  }
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-@media (min-width:1200px) {
-  ul {
-    width: 50%;
-    margin: 0 auto;
-  }
-
-  li {
-    display:flex;
-    flex-direction: row;
-
-    p {
-      width:250px;
-      display:flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align:right;
-      font-size: 14px;
-      color: #0000008a;
-      margin-right: 15px;
-    }
-
-    div {
-      min-width:250px;
-      width:100%;
-    }
-
-  }
-}
-// .content {
-//   width:100%;
-//   min-height:450px;
-//   box-sizing: border-box;
-// }
-
-// #contact-form {
-//   display: flex;
-//   flex-direction: column;
-// }
-
-// textarea {
-//   min-height: 200px;
-// }
-
-
-// mat-form-field {
-//   width:100%;
-//   margin-right: 3px;
-// }
-// .form-box {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-wrap: wrap;
-//   flex-basis: 20%;
-//   margin-top:20px;
-// }
-// .form-box-horizontal {
-//   display:flex;
-//   justify-content: flex-start;
-//   flex-direction: row;
-
-//   mat-checkbox {
-//     margin-right:40px;
-//   }
-// }
-// .form-box-vertical {
-//   display:flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   min-height: 100px;
-//   margin-bottom: 10px;
-//   line-height: 33px;
-
-//   mat-radio-group {
-//     display:flex;
-//     justify-content: flex-start;
-
-//     mat-radio-button {
-//       margin-right:40px;
-//     }
-//   }
-// }
-// .mat-select {
-//   margin: 20px 0 ;
-//   max-width: 300px;
-// }
-
-// .submit {
-//   display:flex;
-//   justify-content: space-between;
-//   width:200px;
-// }
-
-// .user-reqs{
-//   width:100%;
-//   display: block;
-// }
-
-// :host ::ng-deep .user-reqs .glass {
-//   background:transparent!important;
-//   box-shadow: none;
-//   -moz-box-shadow: none;
-//   -webkit-box-shadow: none;
-//   backdrop-filter: none;
-//   -moz-backdrop-filter: none;
-//   -webkit-backdrop-filter: none;
-// }
-
-// table tr {
-//   display: flex;
-//   flex-direction: column;
-//   min-width: 500px;
-
-// }
-
-// td {
-//   width:100%;
-// }
-
-::ng-deep {
-
-  .mat-form-field {
-    width: 100%;
-  }
-
-  .mat-dialog-actions {
-    justify-content: center;
-  }
+/* colours / label tokens */
+:host ::ng-deep .gallery-update-dialog .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: #{$gallery-accent};
+    --mdc-filled-text-field-hover-active-indicator-color: #{$gallery-accent};
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
 }
 
+:host ::ng-deep .gallery-update-dialog .mat-mdc-form-field-infix input,
+:host ::ng-deep .gallery-update-dialog .mat-mdc-form-field-infix textarea {
+    color: #ffffff;
+    caret-color: #ffffff;
+}
+
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .mat-mdc-form-field-infix
+    input::placeholder,
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .mat-mdc-form-field-infix
+    textarea::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/**********************************************
+ * TAG CHIPS
+ **********************************************/
 app-tag-chips {
-  width: 100%;
+    display: block;
+    margin-top: 4px;
 }
 
-li app-tag-chips {
-  width: 100%;
+.gallery-update-dialog .dialog-divider {
+    height: 1px;
+    width: 100%;
+    margin: 0.4rem 0 0.6rem;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.18),
+        rgba(255, 255, 255, 0.06)
+    );
+}
+
+
+.mf-gallery-dialog .divider-actions {
+    margin-top: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+.mf-gallery-dialog .gallery-actions {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.mf-gallery-dialog .left-actions,
+.mf-gallery-dialog .right-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.mf-gallery-dialog .actions-spacer {
+    flex: 1 1 auto;
+}
+
+/* primary pill */
+.mf-gallery-dialog .primary {
+    padding-inline: 1.4rem;
+    font-weight: 600;
+}
+
+/* Cancel – stroked white pill */
+.mf-gallery-dialog .ghost.mat-mdc-button-base,
+.mf-gallery-dialog .ghost.mat-mdc-stroked-button {
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+}
+
+/* Archive – warn outline, like tasks */
+.mf-gallery-dialog .archive.mat-mdc-stroked-button.mat-warn {
+    // border-color: rgba(244, 67, 54, 0.7);
+    // color: #ff8a80;
+}
+
+.task-card-dialog .mat-stroked-button.mat-warn {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+
+/* Cancel – same outline look as tasks.dalmatian */
+:host ::ng-deep .mf-gallery-dialog .mat-raised-button.dalmatian {
+    background: transparent;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+    box-shadow: none;
+}
+
+/* Archive – same stroked warn styling as task dialog */
+:host ::ng-deep .mf-gallery-dialog .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+:host ::ng-deep .mat-stroked-button.archive {
+    border-color: rgba(244, 67, 54, 0.7);
+    color: #ff8a80;
+}
+
+.mf-gallery-dialog .mat-mdc-form-field.has-error 
+.mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    box-shadow: inset 0 0 0 1px #ff5252;
+}
+
+.mf-gallery-dialog .field-error {
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: #ff8a80;
 }

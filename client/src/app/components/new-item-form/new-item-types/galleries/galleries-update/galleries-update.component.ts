@@ -146,4 +146,15 @@ export class GalleriesUpdateComponent implements OnInit {
     this.selectedGenres = this.local_data[0]['genre'];
   }
 
+    archiveContact() {
+      // mirror how contacts archive works: flag inactive and return a distinct event
+      this.local_data[0].active = 0;
+
+      this.dialogRef.close({
+          event: 'Archive',
+          data: this.local_data[0]
+      });
+    }
+
+
 }

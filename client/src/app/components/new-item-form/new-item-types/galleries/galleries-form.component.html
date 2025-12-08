@@ -1,92 +1,270 @@
 <div id="newEditForm" class="page">
-  <div class="itemBK" [style.background]="'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' + imageKey + '.jpg)'"></div>
+    <div
+        class="itemBK"
+        [style.background]="'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 100%), url(/assets/images/' + imageKey + '.jpg)'">
+    </div>
     <div class="itemBKGrid"></div>
 
-  <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
-    <div class="goback page-top-cta">
-      <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-        Go Back
-      </button>
-    </div>
-
-    <div class="mild-container">
-      <h1 style="text-transform: capitalize;">{{toolName}}</h1>
-
-      <div class="add-new">
-        <button (click)="openDialog('Add',newRecord)" mat-raised-button color="primary">Add Row</button>
-      </div>
-
-      <div class="content masked-overflow">
-        <!-- app.component.html -->
-        <div class="container text-center">
-          <div id="table">
-            <table mat-table [dataSource]="dataSource" #mytable class="my-table mat-elevation-z8">
-              <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
-
-                <ng-template #actionTemplate>
-                  <ng-container matColumnDef="action">
-                    <tr>
-                      <th mat-header-cell *matHeaderCellDef style="flex-direction: row; justify-content: space-around;width:80px;">
-                        <p class="headerTitle" style="text-align:center;">
-                          <mat-label>Actions</mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element" class="action-link" style="flex-direction: row; justify-content: space-around;width:80px;">
-                        <ng-container *ngIf="element.id != 0; else noActionTemplate">
-
-
-                          <button id="editBtn" class="material-icons" title='Edit' (click)="openDialog('Update',element)">
-                            edit
-                          </button>
-                          <button id="cancelBtn" class="material-icons" title='Delete' (click)="openDialog('Delete',element)">
-                            delete
-                          </button>
-
-                        </ng-container>
-                        <ng-template #noActionTemplate>
-                          Rendering...
-                        </ng-template>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </ng-template>
-
-
-                <ng-container *ngIf="disCol != 'action'; else actionTemplate">
-                  <tr>
-                      <th mat-header-cell *matHeaderCellDef >
-                        <p class="headerTitle" *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
-                          <mat-label [for]="disCol">
-                                                  {{ disCol | removeUnderscore }}
-                          </mat-label>
-                        </p>
-                      </th>
-                      <td mat-cell *matCellDef="let element"  class="action-link">
-                        <p *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1 && element[disCol] != null">
-                          {{ (element[disCol].length > 30) ? (element[disCol] | slice:0:30) + '...' : element[disCol] }}
-                        </p>
-                      </td>
-                  </tr>
-                </ng-container>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </div>
+    <!-- LEGACY TABLE / ADMIN VIEW -->
+    <div class="glass" *ngIf="(MF.viewMode$ | async) === 'View'; else noLineView">
+        <div class="goback page-top-cta">
+            <button
+                [routerLink]="['/projects', groupId, group]"
+                id="goBack"
+                mat-raised-button
+                color="accent">
+                Go Back
+            </button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <ng-template #noLineView>
-    <div class="view-container">
-      <div class="goback page-top-cta">
-        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-          Go Back
-        </button>
-      </div>
-      <h1>poo</h1>
+        <div class="mild-container">
+            <h1 style="text-transform: capitalize;">{{ toolName }}</h1>
+
+            <div class="add-new">
+                <button
+                    (click)="openDialog('Add', newRecord)"
+                    mat-raised-button
+                    color="primary">
+                    Add Row
+                </button>
+            </div>
+
+            <div class="content masked-overflow">
+                <div class="container text-center">
+                    <div id="table">
+                        <table
+                            mat-table
+                            [dataSource]="dataSource"
+                            #mytable
+                            class="my-table mat-elevation-z8">
+
+                            <ng-container
+                                *ngFor="let disCol of displayedColumns; let colIndex = index"
+                                matColumnDef="{{ disCol }}">
+
+                                <!-- ACTION COLUMN TEMPLATE -->
+                                <ng-template #actionTemplate>
+                                    <ng-container matColumnDef="action">
+                                        <tr>
+                                            <th
+                                                mat-header-cell
+                                                *matHeaderCellDef
+                                                style="flex-direction: row; justify-content: space-around; width: 80px;">
+                                                <p class="headerTitle" style="text-align: center;">
+                                                    <mat-label>Actions</mat-label>
+                                                </p>
+                                            </th>
+                                            <td
+                                                mat-cell
+                                                *matCellDef="let element"
+                                                class="action-link"
+                                                style="flex-direction: row; justify-content: space-around; width: 80px;">
+                                                <ng-container *ngIf="element.id != 0; else noActionTemplate">
+                                                    <button
+                                                        id="editBtn"
+                                                        class="material-icons"
+                                                        title="Edit"
+                                                        (click)="openDialog('Update', element)">
+                                                        edit
+                                                    </button>
+                                                    <button
+                                                        id="cancelBtn"
+                                                        class="material-icons"
+                                                        title="Delete"
+                                                        (click)="openDialog('Delete', element)">
+                                                        delete
+                                                    </button>
+                                                </ng-container>
+                                                <ng-template #noActionTemplate>
+                                                    Rendering...
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-template>
+
+                                <!-- NORMAL COLUMNS -->
+                                <ng-container *ngIf="disCol != 'action'; else actionTemplate">
+                                    <tr>
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <p
+                                                class="headerTitle"
+                                                *ngIf="disCol != 'id' && disCol.indexOf('owner') === -1">
+                                                <mat-label [for]="disCol">
+                                                    {{ disCol | removeUnderscore }}
+                                                </mat-label>
+                                            </p>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element" class="action-link">
+                                            <p
+                                                *ngIf="
+                                                    disCol != 'id' &&
+                                                    disCol.indexOf('owner') === -1 &&
+                                                    element[disCol] != null
+                                                ">
+                                                {{
+                                                    (element[disCol].length > 30)
+                                                        ? (element[disCol] | slice: 0:30) + '...'
+                                                        : element[disCol]
+                                                }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </ng-template>
+
+    <!-- GALLERY MODE / CARD VIEW -->
+    <ng-template #noLineView>
+      <div class="gallery-shell">
+          <!-- GO BACK -->
+          <div class="goback page-top-cta">
+              <button
+                  [routerLink]="['/projects', groupId, group]"
+                  id="goBack"
+                  mat-raised-button
+                  color="accent">
+                  Go Back
+              </button>
+          </div>
+
+          <!-- PAGE HEADER (matches Contacts vibe) -->
+          <div class="gallery-page-header flex">
+              <div class="left flex">
+                  <h1 class="page-title">Galleries</h1>
+                  <p class="page-sub">
+                      Organise photos &amp; videos for galleries.
+                  </p>
+              </div>
+
+              <div class="right flex">
+                  <!-- Search -->
+                  <mat-form-field class="page-search" appearance="fill">
+                      <mat-label>Search galleries</mat-label>
+                      <input
+                          matInput
+                          [(ngModel)]="gallerySearch"
+                          placeholder="Title, tag, description..." />
+                  </mat-form-field>
+
+                  <!-- New gallery button -->
+                  <button
+                      mat-raised-button
+                      color="primary"
+                      class="page-cta"
+                      (click)="openDialog('Add', newRecord)">
+                      <span class="material-icons">add</span>
+                      New Gallery
+                  </button>
+              </div>
+          </div>
+
+          <!-- EMPTY STATE -->
+          <div class="gallery-empty" *ngIf="!toolSet?.length">
+              <div class="empty-inner">
+                  <div class="empty-icon">
+                      <span class="material-icons">photo_library</span>
+                  </div>
+                  <h2>No galleries yet</h2>
+                  <p>Create your first collection to group photos, live shots, lyric videos and more.</p>
+                  <button
+                      mat-raised-button
+                      color="primary"
+                      (click)="openDialog('Add', newRecord)">
+                      Create a gallery
+                  </button>
+              </div>
+          </div>
+
+          <!-- GRID -->
+          <div class="gallery-grid" *ngIf="toolSet?.length">
+              <div
+                  class="gallery-card"
+                  *ngFor="let g of toolSet | galleryFilter: gallerySearch"
+                  (click)="openGallery(g)">
+
+                  <!-- COVER IMAGE / GRADIENT -->
+                  <div
+                      class="gallery-cover"
+                      [ngStyle]="{
+                          'background-image':
+                              'linear-gradient(135deg, #111, #222), url(' + getGalleryCover(g) + ')'
+                      }">
+                      <div class="gallery-cover-overlay">
+                          <div class="gallery-chip-row">
+                              <span class="gallery-genre-chip" *ngIf="g.genre">
+                                  Genre: {{ g.genre }}
+                              </span>
+                              <span class="gallery-views-chip">
+                                  Views: {{ g.views || 0 }} 
+                              </span>
+                          </div>
+
+                          <div class="gallery-title-block">
+                              <h2 class="card-title">
+                                  {{ g.title || 'Untitled gallery' }}
+                              </h2>
+                              <p class="card-sub">
+                                  {{
+                                      (g.description || 'No description yet') | slice: 0: 80
+                                  }}<span *ngIf="(g.description || '').length > 80">…</span>
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- TAGS / META -->
+                  <div class="gallery-meta-row">
+                      <div class="tag-row" *ngIf="g.tags">
+                          <span class="material-icons tiny">sell</span>
+                          <div class="tags-pills">
+                              <span
+                                  class="tag-pill"
+                                  *ngFor="let tag of splitTags(g.tags)">
+                                  {{ tag }}
+                              </span>
+                          </div>
+                      </div>
+                      <div class="updated-text" *ngIf="g.updatedAt">
+                          Updated {{ g.updatedAt | date: 'MMM d, y' }}
+                      </div>
+                  </div>
+
+                  <!-- ACTIONS -->
+                  <div class="gallery-card-actions" (click)="$event.stopPropagation()">
+                      <button
+                          mat-stroked-button
+                          color="primary"
+                          (click)="openGallery(g)">
+                          Open
+                      </button>
+
+                      <span class="spacer"></span>
+
+                      <button
+                          mat-icon-button
+                          (click)="openDialog('Update', g)">
+                          <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                          mat-icon-button
+                          color="warn"
+                          (click)="openDialog('Delete', g)">
+                          <mat-icon>delete</mat-icon>
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </ng-template>
+
+
 </div>
