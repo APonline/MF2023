@@ -30,6 +30,9 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
+import { NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+
 @Component({
     selector: 'app-newItemForm',
     templateUrl: './new-item-form.component.html',
@@ -96,33 +99,50 @@ export class NewItemFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        /**
-         * Example URL:
-         *   /projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=@abysmalwhore-hopefukl
-         *
-         * router.url gives us the path + query (no protocol/host).
-         * We strip the query, then split on '/'.
-         */
-        const rawUrl = this.router.url;          // "/projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=..."
-        const [pathOnly] = rawUrl.split('?');    // "/projects/new-edit/12/abysmalwhore/tasks"
+        // const rawUrl = this.router.url;          // "/projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=..."
+        // const [pathOnly] = rawUrl.split('?');    // "/projects/new-edit/12/abysmalwhore/tasks"
 
+        // const parts = pathOnly.split('/').filter(Boolean);
+
+        // const projectId = parts[2] || null;
+        // const group = parts[3] || null;
+        // const tool = parts[4] || null;
+
+        // this.groupId = projectId;
+        // this.group = group ? group.replace(/_/g, ' ').replace(/@/g, '') : null;
+
+        // this.tool = tool || '';
+        // this.toolName = this.tool.replace(/_/g, ' ');
+
+        // this.loadData();
+        // Initial parse of the current URL
+        this.applyUrl(this.router.url);
+
+        // Watch for future navigation changes (same component reused)
+        this.router.events
+            .pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe((e: NavigationEnd) => {
+                this.applyUrl(e.urlAfterRedirects);
+            });
+    }
+
+    private applyUrl(url: string): void {
+        const [pathOnly] = url.split('?');
         const parts = pathOnly.split('/').filter(Boolean);
-        // parts => ["projects", "new-edit", "12", "abysmalwhore", "tasks"]
 
         const projectId = parts[2] || null;
-        const group = parts[3] || null;
-        const tool = parts[4] || null;
+        const group     = parts[3] || null;
+        const tool      = parts[4] || null;
 
         this.groupId = projectId;
-        // strip underscores and @ for the internal group key,
-        // the external "@handle" still lives on the artist.profile_url
         this.group = group ? group.replace(/_/g, ' ').replace(/@/g, '') : null;
-
         this.tool = tool || '';
         this.toolName = this.tool.replace(/_/g, ' ');
 
-        this.loadData();
+        // Reset table-update flag on navigation change
+        this.updateTable = false;
     }
+
 
     capitalizeWords(arr: string[]): string[] {
         return arr.map(word => {
