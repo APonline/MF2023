@@ -428,6 +428,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     margin: 0;
     font-size: 12px;
     opacity: 0.8;
+    color:#fff!important;
 }
 
 /* Meta row (tags + updated text) */
@@ -562,4 +563,14 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 
 .gallery-page-header .page-cta {
     transform: translateY(-5px);
+}
+/* make warn delete icon red instead of Angular Material pink */
+:host ::ng-deep .gallery-delete-btn.mat-mdc-icon-button.mat-warn {
+    color: #ff4d4d; /* icon uses currentColor */
+}
+
+/* nicer red ripple / hover */
+:host ::ng-deep .gallery-delete-btn.mat-mdc-icon-button.mat-warn
+    .mat-mdc-button-persistent-ripple::before {
+    background-color: rgba(255, 77, 77, 0.18);
 }

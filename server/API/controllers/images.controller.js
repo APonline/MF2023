@@ -6,6 +6,7 @@ let itemTopic = scriptName.charAt(0).toUpperCase() + scriptName.slice(1);
 let itemTitle = `${scriptName.slice(0, -1)}`;
 const Item = db[itemTitle];
 const Galleries = db.gallerie;
+const fileController = require("./file.controller");
 
 let datetime = new Date(); 
 
@@ -93,29 +94,66 @@ exports[`getAllFor${itemTopic}artist`] = async (req, res) => {
         });
     }
 }
+// images.controller.js
+
 exports[`getAllFor${itemTopic}gallery`] = async (req, res) => {
-    try{
-        let id =req.params.id;
-        let result = await Item.findAll({ 
-            where: { owner_group: id, active: 1 },
-            separate : true,
+    try {
+        let id = req.params.id;
+
+        let result = await Item.findAll({
+            where: { owner_gallery: id, active: 1 }, // 👈 key change
+            separate: true,
             limit: 9999,
             order: [
-                ['title', 'DESC']
+                ['id', 'ASC'] // oldest / first image in that gallery
             ]
         });
 
         if (result) {
-            return res.status(200).send( result );
-        }else{
+            return res.status(200).send(result);
+        } else {
             return res.status(500).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to get ${itemTopic}s! - `+ error.message
+            message: `Unable to get ${itemTopic}s! - ` + error.message
         });
     }
-}
+};
+exports[`getFirstFor${itemTopic}gallery`] = async (req, res) => {
+    try {
+        const galleryId = req.params.id;
+
+        // 🔹 first active image that belongs to this gallery
+        const image = await Item.findOne({
+            where: { owner_gallery: galleryId, active: 1 },
+            order: [["id", "ASC"]]
+        });
+
+        if (!image) {
+            return res.status(200).send(null);
+        }
+
+        // 🔹 build the same "display" thumb you use elsewhere
+        const group = 'artists/'+image.owner_group; // matches your folder layout
+        const type = "image";
+        const fileInfo = await fileController.getFileType(
+            image.location_url,
+            group,
+            type
+        );
+
+        return res.status(200).send({
+            ...image.toJSON(),
+            preview: fileInfo?.display || null   // data:image/... or icon
+        });
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to get first ${itemTopic} for gallery! - ${error.message}`
+        });
+    }
+};
+
 exports[`update${itemTopic}`] = async (req, res) => {
     try{
         let id =req.body.id;

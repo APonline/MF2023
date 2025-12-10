@@ -196,7 +196,7 @@
                       class="gallery-cover"
                       [ngStyle]="{
                           'background-image':
-                              'linear-gradient(135deg, #111, #222), url(' + getGalleryCover(g) + ')'
+                              'linear-gradient(135deg, rgba(17,17,17,.4), rgba(34,34,34,.2)), url(' + getGalleryCover(g) + ')'
                       }">
                       <div class="gallery-cover-overlay">
                           <div class="gallery-chip-row">
@@ -257,6 +257,7 @@
                       <button
                           mat-icon-button
                           color="warn"
+                          class="gallery-delete-btn"
                           (click)="openDialog('Delete', g)">
                           <mat-icon>delete</mat-icon>
                       </button>

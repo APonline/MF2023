@@ -18,6 +18,7 @@ module.exports = function(app) {
     app.get(`/api/v1/${itemTopic}`, controller[`getAll${baseName}s`]);
     app.get(`/api/v1/${itemTopic}/artist/:id`, controller[`getAllFor${baseName}artist`]);
     app.get(`/api/v1/${itemTopic}/gallery/:id`, controller[`getAllFor${baseName}gallery`]);
+    app.get(`/api/v1/${itemTopic}/gallery/:id/first`, controller[`getFirstFor${baseName}gallery`]);
     app.get(`/api/v1/${itemTopic}/:id`, controller[`get${baseName}`]);
     app.put(`/api/v1/${itemTopic}/:id`, controller[`update${baseName}`]);
     app.delete(`/api/v1/${itemTopic}/:id`, controller[`delete${baseName}`]);

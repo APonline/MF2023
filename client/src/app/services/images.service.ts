@@ -21,6 +21,10 @@ export class ImagesService {
     return this.http.get<any[]>(`${baseUrl}/artist/${id}`);
   }
 
+  getAllForGallery(id: any): Observable<any[]> {
+    return this.http.get<any[]>(`${baseUrl}/gallery/${id}`);
+}
+
   get(id: any): Observable<any> {
     return this.http.get(`${baseUrl}/${id}`);
   }
@@ -39,6 +43,10 @@ export class ImagesService {
 
   deleteAll(): Observable<any> {
     return this.http.delete(baseUrl);
+  }
+
+  getFirstForGallery(galleryId: any): Observable<any> {
+    return this.http.get<any>(`${baseUrl}/gallery/${galleryId}/first`);
   }
 
   // findByUsername(username: any): Observable<User[]> {

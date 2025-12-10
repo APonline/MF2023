@@ -82,6 +82,9 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     private deepLinkGalleryId: number | null = null;
     private deepLinkHandled = false;
 
+    private galleryCoverCache: { [galleryId: number]: string } = {};
+    private galleryCoverLoading: { [galleryId: number]: boolean } = {};
+
     constructor(
         public dialog: MatDialog,
         private formBuilder: FormBuilder,
@@ -419,17 +422,59 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
     }
 
     // cover image helper – plug into your universal uploader later
+    // cover image helper – pull first image in the gallery if available
+        // cover image helper – now pulls first image in that gallery
     getGalleryCover(g: any): string {
-        // if you have a real cover field later, use that:
-        // return g.cover_url || '/assets/images/default-gallery.jpg';
-        return '/assets/images/Gigs.jpg';
+        if (!g || !g.id) {
+            return '/assets/images/Gigs.jpg';
+        }
+
+        const id = g.id;
+
+        // already loaded → use it
+        if (this.galleryCoverCache[id]) {
+            return this.galleryCoverCache[id];
+        }
+
+        // temporary fallback while we fetch
+        this.galleryCoverCache[id] = '/assets/images/Gigs.jpg';
+
+        this.imagesService.getFirstForGallery(id).subscribe({
+            next: img => {
+                if (img && img.preview) {
+                    this.galleryCoverCache[id] = img.preview; // data:image/... from server
+                }
+            },
+            error: err => {
+                console.error('Failed to load gallery cover', err);
+            }
+        });
+
+        return this.galleryCoverCache[id];
     }
 
-    // open a gallery into your Images/Videos view or a future detail route
+    // open a gallery into the dialog + update the deep-link
+    // open a gallery into the Images feature, filtered by this gallery
     openGallery(g: any): void {
-        // For now just open the edit dialog
-        this.openDialog('Update', g);
+        if (!g) {
+            return;
+        }
+
+        const title = (g.title || 'gallery').toString().trim();
+        const slug = this.buildGallerySlug(title);  // already defined helper
+
+        this.router.navigate(
+            ['/projects/new-edit', this.groupId, this.group, 'images'],
+            {
+                queryParams: {
+                    galleryId: g.id,
+                    slug
+                }
+            }
+        );
     }
+
+
 
     splitTags(tags: string | null | undefined): string[] {
         if (!tags) return [];

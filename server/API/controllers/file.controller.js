@@ -113,11 +113,14 @@ const convertBase64 = async (path, type) => {
     } else if (documentTypes.includes(type)) {
         return "./assets/images/file.svg";
     } else if (imagesTypes.includes(type)) {
+        // 🔹 HERE is the updated bit
         const data = await sharp(path).resize({ width: 1000 }).toBuffer();
-        return `data:image/gif;base64,${data.toString("base64")}`;
+        const ext = String(type).toLowerCase();
+        const mime = ext === 'jpg' ? 'jpeg' : ext; // jpg -> jpeg
+        return `data:image/${mime};base64,${data.toString("base64")}`;
     }
 
-    // fallback thumbnail attempt + safe image return
+    // fallback stays as-is (optional to change)
     try {
         const data = await sharp(path).resize({ width: 1000 }).toBuffer();
         return `data:image/gif;base64,${data.toString("base64")}`;
@@ -125,6 +128,7 @@ const convertBase64 = async (path, type) => {
         return "./assets/images/file.svg";
     }
 };
+
 
 const getFileType = async (file, group, type) => {
     if (!file) return null;

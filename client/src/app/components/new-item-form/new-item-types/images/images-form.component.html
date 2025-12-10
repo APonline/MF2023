@@ -10,7 +10,10 @@
     </div>
 
     <div class="mild-container">
-      <h1 style="text-transform: capitalize;">{{toolName}}</h1>
+      <h1 style="text-transform: capitalize;">
+        {{toolName}}
+        <span *ngIf="selectedGallery"> · {{ selectedGallery.title }}</span>
+      </h1>
 
       <div class="add-new">
         <button (click)="openDialog('Add',newRecord)" mat-raised-button color="primary">Add Row</button>
@@ -83,13 +86,67 @@
   </div>
 
   <ng-template #noLineView>
-    <div class="view-container">
-      <div class="goback page-top-cta">
-        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-          Go Back
-        </button>
-      </div>
-      <h1>poo</h1>
+    <div class="view-container mf-images-view">
+        <div class="page-top-cta goback">
+            <button
+                [routerLink]="['/projects', groupId, group]"
+                id="goBack"
+                mat-raised-button
+                color="accent">
+                Go Back
+            </button>
+        </div>
+
+        <header class="images-header">
+            <h1 class="images-title">
+                {{ selectedGallery?.title || toolName }}
+            </h1>
+            <p class="images-sub">
+                {{ dataSource?.length || 0 }} file{{ (dataSource?.length || 0) === 1 ? '' : 's' }}
+                · click a tile to open the media viewer
+            </p>
+        </header>
+
+        <div *ngIf="dataSource?.length; else emptyGallery" class="images-grid">
+            <div
+                class="image-card"
+                *ngFor="let img of dataSource">
+                <button
+                    type="button"
+                    class="image-thumb"
+                    (click)="MF.openMediaPlayer(img)">
+                    <img
+                        [src]="img.preview"
+                        [alt]="img.title || 'Image'"
+                        loading="lazy" />
+
+                    <div class="image-overlay">
+                        <div class="image-text">
+                            <span class="image-title">
+                                {{ img.title || 'Untitled' }}
+                            </span>
+                            <span class="image-meta">
+                                {{ img.genre || 'Image' }}
+                                <span *ngIf="img.tags">&nbsp;· {{ img.tags }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <ng-template #emptyGallery>
+            <div class="images-empty">
+                <p>No media in this gallery yet.</p>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="openDialog('Add', newRecord)">
+                    Upload first image
+                </button>
+            </div>
+        </ng-template>
     </div>
   </ng-template>
+
 </div>
