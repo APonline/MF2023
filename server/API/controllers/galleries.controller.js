@@ -12,24 +12,32 @@ exports[`create${itemTopic}`] = async (req, res) => {
     try{
         let newItem = req.body;
 
-        let item = await Item.findOne({ where: { title: req.body.title } });
+        let result1 = await Item.findOne({ where: { id: newItem.id } });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.profile_url.replace(/\+s/g,'').toLowerCase() + "-" + num;
-        }
+        if (result1 == null) {
 
-        let result = await Item.create( newItem );
+            try {
+                let result = await Item.create( newItem );
 
-        if (result) {
-            return res.status(200).send( result );
+                if (result) {
+                    return res.status(200).send( result );
+                }else{
+                    return res.status(500).send({ result: null });
+                }
+
+            } catch (error) {
+                return res.status(500).send({
+                    message: `A Unable to create ${itemTopic}! - ` + error.message
+                });
+            }
+
         }else{
-            return res.status(500).send({ result: null });
+            return res.status(200).send({ result: null });
         }
     } catch (error) {
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
-        });
+            message: `B Unable to find ${itemTopic}! - ` + error.message
+        })
     }
 }
 exports[`get${itemTopic}`] = async (req, res) => {
@@ -98,6 +106,31 @@ exports[`update${itemTopic}`] = async (req, res) => {
     }
 }
 exports[`delete${itemTopic}`] = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // set active = 0 instead of destroying the row
+        const [affectedRows] = await Item.update(
+            { active: 0 },
+            { where: { id } }
+        );
+
+        if (affectedRows === 1) {
+            // keep your original success shape if other code depends on it
+            return res.status(200).send({ result: [] });
+        } else {
+            return res.status(404).send({
+                result: null,
+                message: `${itemTopic} not found`
+            });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to delete ${itemTopic}! - ` + error.message
+        });
+    }
+};
+exports[`Xdelete${itemTopic}`] = async (req, res) => {
     try{
         let id =req.params.id;
         await Item.destroy({ where: { id } })
