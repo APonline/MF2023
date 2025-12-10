@@ -1,6 +1,6 @@
 <div class="gallery-update-dialog mf-theme mf-gallery-dialog">
 
-  <!-- HEADER -->
+    <!-- HEADER -->
     <div class="dialog-header">
         <div class="avatar-ring">
             <div class="avatar-circle">
@@ -39,7 +39,7 @@
                         <mat-form-field appearance="fill">
                             <input
                                 matInput
-                                [(ngModel)]="local_data[0]['title']"
+                                [(ngModel)]="local_data[0].title"
                                 placeholder="Gallery name" />
                         </mat-form-field>
                     </div>
@@ -51,7 +51,7 @@
                             <textarea
                                 matInput
                                 rows="3"
-                                [(ngModel)]="local_data[0]['description']"
+                                [(ngModel)]="local_data[0].description"
                                 placeholder="Short description, vibe, purpose…">
                             </textarea>
                         </mat-form-field>
@@ -64,25 +64,47 @@
                 <h2 class="section-title">CLASSIFICATION</h2>
 
                 <div class="field-row two-col">
-                    <!-- Genre -->
+                    <!-- Gallery Type (curated genres) -->
                     <div class="field">
-                        <label class="field-label">Genre</label>
-                        <app-tag-chips
-                            (Tag)="getGenre($event)"
-                            [local_data]="local_data[0]['genre']"
-                            [chipType]="'Genre'">
-                        </app-tag-chips>
-                        <p class="helper-text">
-                            Rock, Pop, Metal, Acoustic…
-                        </p>
+                        <label class="field-label">Gallery Type</label>
+
+                        <mat-form-field appearance="fill" class="genre-select">
+                            <mat-select
+                                multiple
+                                [(ngModel)]="selectedGenres"
+                                (ngModelChange)="onGenresChange($event)"
+                                placeholder="Select gallery type">
+                                <mat-option
+                                    *ngFor="let g of galleryGenreOptions"
+                                    [value]="g.value">
+                                    <span
+                                        class="genre-pill genre-pill-option"
+                                        [ngClass]="'genre-' + g.value">
+                                        <span class="dot"></span>
+                                        <span class="label">
+                                            {{ g.label }}
+                                        </span>
+                                    </span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <!-- Selected badges under the field -->
+                        <div class="genre-badges" *ngIf="selectedGenres?.length">
+                            <span
+                                *ngFor="let val of selectedGenres"
+                                class="genre-badge"
+                                [ngClass]="'genre-' + val">
+                                {{ getGenreLabel(val) }}
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Tags -->
                     <div class="field">
-                        <label class="field-label">Tags</label>
                         <app-tag-chips
                             (Tag)="getTag($event)"
-                            [local_data]="local_data[0]['tags']"
+                            [local_data]="local_data[0].tags"
                             [chipType]="'Tags'">
                         </app-tag-chips>
                         <p class="helper-text">
@@ -105,7 +127,6 @@
                     {{ action === 'Add' ? 'Create' : 'Save' }}
                 </button>
 
-                <!-- fix typo + reuse same outlined cancel style as tasks -->
                 <button
                     mat-raised-button
                     color="accent"
@@ -117,7 +138,7 @@
 
             <span class="actions-spacer"></span>
 
-            <!-- only show Archive when editing an existing contact -->
+            <!-- only show Archive when editing an existing gallery -->
             <div class="right-actions" *ngIf="modUser">
                 <button
                     mat-stroked-button

@@ -267,10 +267,10 @@ $gallery-accent-soft: rgba(255, 77, 77, 0.75);
  **********************************************/
 app-tag-chips {
     display: block;
-    margin-top: 4px;
+    margin-top: -2px;
 }
 
-.gallery-update-dialog .dialog-divider {
+.gallery-update-dialog .gallery-divider {
     height: 1px;
     width: 100%;
     margin: 0.4rem 0 0.6rem;
@@ -282,8 +282,7 @@ app-tag-chips {
     );
 }
 
-
-.mf-gallery-dialog .divider-actions {
+.mf-gallery-dialog .gallery-actions {
     margin-top: 1rem;
     margin-bottom: 0.7rem;
 }
@@ -332,7 +331,7 @@ app-tag-chips {
     color: #ff8a80;
 }
 
-/* Cancel – same outline look as tasks.dalmatian */
+/* Cancel – same outline look as tasks */
 :host ::ng-deep .mf-gallery-dialog .mat-raised-button.dalmatian {
     background: transparent;
     border-radius: 999px;
@@ -351,8 +350,9 @@ app-tag-chips {
     color: #ff8a80;
 }
 
-.mf-gallery-dialog .mat-mdc-form-field.has-error 
-.mat-mdc-text-field-wrapper.mdc-text-field--filled {
+.mf-gallery-dialog
+    .mat-mdc-form-field.has-error
+    .mat-mdc-text-field-wrapper.mdc-text-field--filled {
     box-shadow: inset 0 0 0 1px #ff5252;
 }
 
@@ -360,4 +360,181 @@ app-tag-chips {
     margin-top: 4px;
     font-size: 0.78rem;
     color: #ff8a80;
+}
+
+/**********************************************
+ * GALLERY GENRE (TYPE) SELECT
+ **********************************************/
+.genre-select {
+    width: 100%;
+}
+
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select
+    .mat-mdc-select-trigger {
+    display: flex;
+    align-items: center;
+}
+
+/* pill inside the dropdown */
+.genre-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.genre-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.genre-pill .label {
+    opacity: 0.9;
+}
+
+/* chips shown below field */
+.genre-badges {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.genre-badge {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* tighten vertical spacing just for gallery type select */
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select.mat-mdc-form-field {
+    margin-bottom: 0px;
+}
+
+/* smaller gap from select → helper text, then helper → badges */
+.genre-select + .helper-text {
+    margin-top: 2px;
+}
+
+.genre-badges {
+    margin-top:2px; // was 6px
+}
+
+
+/* make gallery type text + placeholder white inside the select */
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select
+    .mat-mdc-select-value-text,
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select
+    .mat-mdc-select-placeholder {
+    color: #ffffff;
+}
+
+/* ensure the pill content in the trigger is also white */
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select
+    .genre-pill-option {
+    color: #ffffff;
+}
+/* classification row vertical alignment – nudge Tags up slightly */
+.section:last-of-type .field-row.two-col {
+    align-items: flex-start;
+}
+
+.section:last-of-type .field-row.two-col .field:nth-child(2) {
+    margin-top: -2px;  // small negative to pull Tags up
+}
+
+/**********************************************
+ * GENRE COLOUR MAPPING
+ **********************************************/
+.genre-live {
+    background: linear-gradient(135deg, #f97373, #ff4d4d);
+    box-shadow: 0 0 0 1px rgba(255, 167, 167, 0.5);
+}
+
+.genre-promo {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    box-shadow: 0 0 0 1px rgba(125, 179, 255, 0.5);
+}
+
+.genre-bts {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    box-shadow: 0 0 0 1px rgba(188, 134, 255, 0.5);
+}
+
+.genre-studio {
+    background: linear-gradient(135deg, #14b8a6, #0f766e);
+    box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.5);
+}
+
+.genre-rehearsal {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.5);
+}
+
+.genre-tour {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.5);
+}
+
+.genre-merch {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.5);
+}
+
+.genre-artwork {
+    background: linear-gradient(135deg, #f472b6, #ec4899);
+    box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.5);
+}
+
+.genre-coverConcept {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.5);
+}
+
+.genre-presskit {
+    background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+    color: #111827;
+    box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.5);
+}
+
+/* make gallery type select arrow white */
+:host
+    ::ng-deep
+    .gallery-update-dialog
+    .genre-select
+    .mat-mdc-select-arrow {
+    color: #ffffff;
+}
+
+
+:host ::ng-deep
+.mf-gallery-dialog app-tag-chips #tag-chips {
+  gap:initial!important;
 }
