@@ -464,7 +464,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
         const slug = this.buildGallerySlug(title);  // already defined helper
 
         this.router.navigate(
-            ['/projects/new-edit', this.groupId, this.group, 'images'],
+            ['/projects/new-edit', this.groupId, this.group, 'library'],
             {
                 queryParams: {
                     galleryId: g.id,

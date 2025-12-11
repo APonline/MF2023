@@ -64,7 +64,7 @@ import { CommentsFormComponent } from './components/new-item-form/new-item-types
 import { ContactsFormComponent } from './components/new-item-form/new-item-types/contacts/contacts-form.component';
 import { DocumentsFormComponent } from './components/new-item-form/new-item-types/documents/documents-form.component';
 import { GigsFormComponent } from './components/new-item-form/new-item-types/gigs/gigs-form.component';
-import { ImagesFormComponent } from './components/new-item-form/new-item-types/images/images-form.component';
+import { LibraryFormComponent } from './components/new-item-form/new-item-types//library/library-form.component';
 import { LyricsFormComponent } from './components/new-item-form/new-item-types/lyrics/lyrics-form.component';
 import { SocialsFormComponent } from './components/new-item-form/new-item-types/socials/socials-form.component';
 import { SongsFormComponent } from './components/new-item-form/new-item-types/songs/songs-form.component';
@@ -86,7 +86,7 @@ import { TagChipsComponent } from './components/tag-chips/tag-chips.component';
 import { ContactUpdateComponent } from './components/new-item-form/new-item-types/contacts/contact-update/contact-update.component';
 import { ArtistUpdateComponent } from './components/new-item-form/new-item-types/artist/artist-update/artist-update.component';
 import { GalleriesUpdateComponent } from './components/new-item-form/new-item-types/galleries/galleries-update/galleries-update.component';
-import { ImagesUpdateComponent } from './components/new-item-form/new-item-types/images/images-update/images-update.component';
+import { ImagesUpdateComponent } from './components/new-item-form/new-item-types/library/images-update/images-update.component';
 import { VideosUpdateComponent } from './components/new-item-form/new-item-types/videos/videos-update/videos-update.component';
 import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.component';
 import { TaskCardComponent } from './components/new-item-form/new-item-types/tasks/task-card/task-card.component';
@@ -136,7 +136,7 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     ContactsFormComponent,
     DocumentsFormComponent,
     GigsFormComponent,
-    ImagesFormComponent,
+    LibraryFormComponent,
     LyricsFormComponent,
     SocialsFormComponent,
     SongsFormComponent,

@@ -65,8 +65,8 @@ export class NewitemComponent implements OnInit {
         { name: 'Merch',             value: 'merch' },
         { name: 'Contacts',          value: 'contacts' },
         { name: 'Galleries',         value: 'galleries' },
-        { name: 'Images',            value: 'images' },
-        { name: 'Videos',            value: 'videos' }
+        { name: 'Library',           value: 'library' },
+        //{ name: 'Shared Assets',     value: 'shared_assets' }
     ];
 
     // tab group definitions
@@ -112,9 +112,9 @@ export class NewitemComponent implements OnInit {
             label: 'Media',
             key: 'media',
             tools: [
-                { name: 'Galleries', value: 'galleries' },
-                { name: 'Images',    value: 'images' },
-                { name: 'Videos',    value: 'videos' }
+                { name: 'Galleries',     value: 'galleries' },
+                { name: 'Library',       value: 'library' },
+                { name: 'Shared Assets', value: 'shared_assets' }
             ]
         }
     ];

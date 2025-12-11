@@ -99,23 +99,7 @@ export class NewItemFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        // const rawUrl = this.router.url;          // "/projects/new-edit/12/abysmalwhore/tasks?taskId=11&slug=..."
-        // const [pathOnly] = rawUrl.split('?');    // "/projects/new-edit/12/abysmalwhore/tasks"
 
-        // const parts = pathOnly.split('/').filter(Boolean);
-
-        // const projectId = parts[2] || null;
-        // const group = parts[3] || null;
-        // const tool = parts[4] || null;
-
-        // this.groupId = projectId;
-        // this.group = group ? group.replace(/_/g, ' ').replace(/@/g, '') : null;
-
-        // this.tool = tool || '';
-        // this.toolName = this.tool.replace(/_/g, ' ');
-
-        // this.loadData();
-        // Initial parse of the current URL
         this.applyUrl(this.router.url);
 
         // Watch for future navigation changes (same component reused)
