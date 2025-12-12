@@ -1,297 +1,690 @@
-.content {
-  height:100%;
+:host ::ng-deep .mat-dialog-container {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
 }
 
-.inner-content {
-  height: calc(100% - 45px);
-}
-
-ul {
-  width: 50%;
-  margin: 0 auto;
-}
-
-li {
-  display:flex;
-  flex-direction: row;
-
-  p {
-    width:250px;
-    display:flex;
+.media-update-dialog {
+    position: relative;
+    display: flex;
     flex-direction: column;
+    max-width: 820px;
+    height: 100%;
+    padding: 24px 28px 20px;
+    border-radius: 24px;
+    color: #f5f5f5;
+    overflow: hidden;
+}
+
+
+/* HEADER */
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.avatar-ring {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    text-align:right;
+    padding: 4px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 0, #ffffff, #ff4d4d);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #111;
+}
+
+.avatar-circle .material-icons {
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dialog-title {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.dialog-sub {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.dialog-divider {
+    margin: 16px 0 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dialog-body {
+    flex: 1;
+    min-height: 0;
+}
+
+/* STEPPER OVERRIDES */
+
+.media-stepper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* keep Angular Material happy but give it our style */
+::ng-deep .media-stepper.mat-horizontal-stepper {
+    background: transparent;
+}
+
+::ng-deep .media-stepper .mat-horizontal-stepper-header-container {
+    padding: 0 4px 10px;
+}
+
+::ng-deep .media-stepper .mat-step-header {
+    padding: 0 12px 4px;
+}
+
+::ng-deep .media-stepper .mat-step-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    background: #ff4d4d;
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.25);
+}
+
+::ng-deep .media-stepper .mat-step-header .mat-step-label {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+::ng-deep .media-stepper .mat-horizontal-content-container {
+    padding-top: 12px;
+    padding-bottom: 0;
+    height: calc(100% - 38px);
+}
+
+/* FORMS / FIELDS */
+
+.step-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.step-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); // 2 columns by default
+    gap: 18px 28px;
+    padding: 4px 4px 12px;
+    overflow-y: auto;
+    width: 100%;           // keep it inside the dialog
+    box-sizing: border-box;
+}
+
+.step-grid--single {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.field-control {
+    width: 100%;
+}
+
+.field-error {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #ff6b81;
+}
+
+/* full-width rows (Title + Description) */
+.field-full {
+    grid-column: 1 / -1;
+}
+
+/* half-width rows (Gallery + Tags) */
+.field-half {
+    grid-column: auto;
+}
+
+/* make sure inputs/textarea don't try to get wider than the grid */
+.field,
+.field .mat-mdc-form-field,
+.field .mat-form-field,
+.field .field-control {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* textarea behaviour */
+.field textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.chip-field {
+    width: 100%;
+}
+
+/* mat-form-field theme */
+::ng-deep .media-update-dialog .mat-form-field-appearance-fill .mat-form-field-flex {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+::ng-deep .media-update-dialog .mat-input-element,
+::ng-deep .media-update-dialog .mat-select-value {
+    color: #f5f5f5;
+}
+
+::ng-deep .media-update-dialog .mat-select-arrow {
+    color: #ffffff;
+}
+
+/* uploader */
+
+.uploader-shell {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* SUMMARY */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1.3fr);
+    gap: 16px 32px;
+    padding: 8px 4px 4px;
+    overflow-y: auto;
+}
+
+.summary-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary-column--media {
+    align-items: flex-start;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.summary-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.summary-value {
+    margin: 0;
     font-size: 14px;
-    color: #0000008a;
-    margin-right: 15px;
-  }
-
-  div {
-    width:250px;
-  }
-
+    color: #ffffff;
 }
 
-app-tag-chips {
-  width: 100%;
+.summary-media {
+    padding: 10px;
+    border-radius: 14px;
+    background: radial-gradient(circle at 10% 0, #333, #111);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
 }
 
-h4 {
-  color:red;
+#final-profile-image {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: 12px;
+    object-fit: cover;
 }
 
+/* ACTIONS */
 
-.box{
-
-  .list {
-    position:relative;
-    display:flex;
-    padding: 10px 0;
-    background: rgba(0,0,0, 0);
-    margin:3px 0;
-    cursor:pointer;
-    transition: 0.5s;
-    padding: 8px 20px;
-  }
-
-  .content {
+.step-actions {
+    margin-top: auto;
+    padding-top: 10px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-
-    h2{
-
-    }
-    h4 {
-      font-size: 1.2em;
-    }
-    p {
-      font-size: .7em;
-    }
-  }
-
-  .imgBox {
-    overflow:hidden;
-    position:relative;
-    width:60px;
-    height:60px;
-    border-radius: 50%;
-    margin-right:10px;
-
-    img {
-      position:absolute;
-      top:0px;
-      left:0px;
-      width:100%;
-      height:100%;
-      max-width:60px;
-    }
-  }
-
-  .list:hover {
-    background: rgba(64,64,64, .3);
-    box-shadow: -15px 30px 50px rgba(0,0,0,0.5);
-    z-index:886;
-    transform:scale(1.05) translateX(2px);
-  }
+    gap: 12px;
 }
 
-.step-card {
-  display:flex;
+.step-actions--split {
+    justify-content: space-between;
 }
 
-.step-card-actions {
-  display:flex;
-  justify-content: center;
-  min-width:100%;
-  // position:absolute;
-  bottom:20px;
-
-  button {
-    margin:0 20px;
-  }
-}
-::ng-deep {
-
-  .mat-dialog-actions {
-    justify-content: center;
-  }
-}
-
-.summary {
-
-  li {
-    margin-bottom:10px!important;
-  }
-}
-
-.summary-info {
-  width:100%!important;
-
-  p {
-    width:calc(100% - 20px);
-    text-align:left;
-    margin:10px;
-  }
-}
-
-#final-profile-image, #final-profile-banner-image {
-  max-height: 120px;
-  margin-top: 10px;
-}
-
-.row {
-
-}
-
-select {
-  padding: 8px 12px;
-  font-family: 'Thin_lc';
-  font-size: 20px;
-  letter-spacing: 1px;
-  border-radius: 6px;
-  cursor:pointer;
-
-  option {
-    cursor:pointer;
-  }
-}
-
-
-@media (min-width:320px)  {
-  .step-card {
-    flex-direction: column;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    height:100%;
-  }
-  .card-half {
-    width: 100%;
-  }
-  ul{
-    // height: 260px;
-    height:inherit;
-  }
-  .summary {
-    // height: 350px;
-  }
-  .center {
-    width:100%;
-  }
-  h3 {
-    text-align: center;
-    font-size: 12px;
-    margin-bottom: -40px;
-  }
-
-  ::ng-deep {
-    mat-stepper {
-      height: calc(100% - 110px);
-    }
-    .mat-horizontal-stepper-content:nth-child(3){
-      .step-card{
-        height: calc(100% - 130px);
-
-        .center {
-          height:100%;
-
-          li {
-            margin-bottom: 50px;
-          }
-        }
-      }
-    }
-  }
-
-  form {
-    height: calc(100% - 50px);
-  }
-
-  ::ng-deep {
-    .mat-stepper-horizontal {
-      margin-top: 8px;
-    }
-    .mat-horizontal-stepper-content {
-      height: calc(100% - 50px);
-      display: block;
-      position: relative;
-    }
-    .mat-horizontal-content-container {
-      height: calc(100% - 50px);
-    }
-    .mat-form-field {
-      width:100%;
-    }
-  }
-}
-@media (min-width:801px)  {
-  .step-card {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    flex-direction: column;
-  }
-  .card-half {
-    width: 100%;
-  }
-  ul{
-    // height: 260px;
-  }
-  .center {
-    width:100%;
-  }
-  h3 {
-    text-align: center;
-    font-size: 12px;
-    margin-bottom: -40px;
-  }
-  .summary {
-    // height: 350px;
-  }
-
-  // ::ng-deep {
-  //   mat-stepper {
-  //     height: calc(100% - 170px);
-  //   }
-  // }
-}
-@media (min-width:1200px) {
-  .step-card{
-    flex-direction: row;
-    height: calc(100% - 20px);
-  }
-  ::ng-deep {
-    .mat-horizontal-content-container {
-      height: calc(100% - 25px);
-    }
-    .mat-horizontal-stepper-content {
-      height: calc(100% - 50px);
-    }
-
-    .mat-horizontal-stepper-content:nth-child(3){
-      .step-card{
-        height: calc(100% - 80px);
-
-        .center {
-          height:100%;
-          width:50%!important;
-
-          li {
-            margin-bottom: 50px;
-          }
-        }
-      }
-    }
-  }
-  .card-half {
-    width:48%;
+.dialog-footer-actions {
+    margin-top: 14px;
     display: flex;
-    flex-direction: column;
-  }
-  .col-center {
-    height:100%;
-  }
-  ul {
-    height: inherit;
-    width:50%!important;
-  }
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.dialog-body--delete {
+    padding-top: 12px;
+}
+
+.delete-text {
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+/* LAYOUT: MOBILE */
+
+@media (max-width: 768px) {
+    .media-update-dialog {
+        max-width: 100%;
+        max-height: 100vh;
+        padding: 18px 16px 14px;
+        border-radius: 16px;
+    }
+
+    .dialog-header {
+        align-items: flex-start;
+    }
+
+    .dialog-title {
+        font-size: 17px;
+        letter-spacing: 0.24em;
+    }
+
+    .step-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .summary-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* stepper overall background */
+::ng-deep .media-stepper.mat-horizontal-stepper {
+    background: transparent;
+}
+
+/* header strip – subtle glass instead of solid white */
+::ng-deep .media-stepper .mat-horizontal-stepper-header-container {
+    padding: 0 4px 10px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0)
+    );
+}
+
+/* remove white from the content area */
+::ng-deep .media-stepper .mat-horizontal-content-container,
+::ng-deep .media-stepper .mat-horizontal-stepper-content {
+    background: transparent;
+}
+
+/* hide the default stepper line (or make it faint) */
+::ng-deep .media-stepper .mat-stepper-horizontal-line {
+    border-top-color: rgba(255, 255, 255, 0.18);
+}
+
+/* form field background */
+::ng-deep .media-update-dialog
+    .mat-form-field-appearance-fill
+    .mat-form-field-flex {
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* step “card” background */
+.step-grid,
+.summary-grid,
+.uploader-shell {
+    background: transparent;
+}
+
+/* labels + text already light, but just in case */
+::ng-deep .media-update-dialog .mat-input-element,
+::ng-deep .media-update-dialog .mat-select-value {
+    color: #f5f5f5;
+}
+/* HARD KILL all the stepper white backgrounds */
+
+:host ::ng-deep .mat-stepper-horizontal,
+:host ::ng-deep .mat-horizontal-stepper-content,
+:host ::ng-deep .mat-horizontal-content-container,
+:host ::ng-deep .mat-horizontal-stepper-wrapper,
+:host ::ng-deep .mat-step-header,
+:host ::ng-deep .mat-step-header .mat-step-label,
+:host ::ng-deep .mat-step-header .mat-step-label-selected {
+    background: transparent !important;
+}
+
+/* also remove any default panel/background around step content */
+:host ::ng-deep .mat-stepper-horizontal-line {
+    border-top-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+
+/* ===== GENRE SELECT LOOK (same as gallery dialog) ===== */
+
+.genre-select {
+    width: 100%;
+}
+
+:host
+    ::ng-deep
+    .media-update-dialog
+    .genre-select
+    .mat-mdc-select-trigger {
+    display: flex;
+    align-items: center;
+}
+
+/* pill inside dropdown */
+.genre-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.genre-pill .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.genre-pill .label {
+    opacity: 0.9;
+}
+
+/* chips under field */
+.genre-badges {
+    margin-top: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.genre-badge {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* make select text + placeholder white */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .genre-select
+    .mat-mdc-select-value-text,
+:host
+    ::ng-deep
+    .media-update-dialog
+    .genre-select
+    .mat-mdc-select-placeholder {
+    color: #ffffff;
+}
+
+/* pill content in trigger */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .genre-select
+    .genre-pill-option {
+    color: #ffffff;
+}
+
+/* white arrow */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .genre-select
+    .mat-mdc-select-arrow {
+    color: #ffffff;
+}
+
+/* colour variants */
+.genre-live {
+    background: linear-gradient(135deg, #f97373, #ff4d4d);
+    box-shadow: 0 0 0 1px rgba(255, 167, 167, 0.5);
+}
+
+.genre-promo {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    box-shadow: 0 0 0 1px rgba(125, 179, 255, 0.5);
+}
+
+.genre-bts {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    box-shadow: 0 0 0 1px rgba(188, 134, 255, 0.5);
+}
+
+.genre-studio {
+    background: linear-gradient(135deg, #14b8a6, #0f766e);
+    box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.5);
+}
+
+.genre-rehearsal {
+    background: linear-gradient(135deg, #22c55e, #15803d);
+    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.5);
+}
+
+.genre-tour {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.5);
+}
+
+.genre-merch {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.5);
+}
+
+.genre-artwork {
+    background: linear-gradient(135deg, #f472b6, #ec4899);
+    box-shadow: 0 0 0 1px rgba(244, 114, 182, 0.5);
+}
+
+.genre-coverConcept {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.5);
+}
+
+.genre-presskit {
+    background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+    color: #111827;
+    box-shadow: 0 0 0 1px rgba(229, 231, 235, 0.5);
+}
+/* DARK THEME FOR MEDIA FORM FIELDS – match Gallery dialog */
+
+:host ::ng-deep .media-update-dialog .mat-mdc-form-field {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+/* main container for filled text fields */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 0 0 0 rgba(0, 0, 0, 0); // no extra glow
+}
+
+/* colour tokens – text, label, underline, focus */
+:host ::ng-deep .media-update-dialog .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-hover-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
+}
+
+/* actual input + textarea text */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .mat-mdc-form-field-infix
+    input,
+:host
+    ::ng-deep
+    .media-update-dialog
+    .mat-mdc-form-field-infix
+    textarea {
+    color: #ffffff;
+    caret-color: #ffffff;
+}
+
+/* placeholder colour */
+:host
+    ::ng-deep
+    .media-update-dialog
+    .mat-mdc-form-field-infix
+    input::placeholder,
+:host
+    ::ng-deep
+    .media-update-dialog
+    .mat-mdc-form-field-infix
+    textarea::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+/**********************************************
+ * GALLERY SELECT – match genre styling
+ **********************************************/
+:host
+    ::ng-deep
+    .media-update-dialog
+    .gallery-select
+    .mat-mdc-select-value-text,
+:host
+    ::ng-deep
+    .media-update-dialog
+    .gallery-select
+    .mat-mdc-select-placeholder {
+    color: #ffffff;
+}
+
+:host
+    ::ng-deep
+    .media-update-dialog
+    .gallery-select
+    .mat-mdc-select-arrow {
+    color: #ffffff;
+}
+/**********************************************
+ * TAG CHIPS – kill the lone pink input
+ **********************************************/
+:host
+    ::ng-deep
+    .media-update-dialog
+    app-tag-chips .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* align colours with the other fields */
+:host
+    ::ng-deep
+    .media-update-dialog
+    app-tag-chips .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-hover-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
+}
+
+:host
+    ::ng-deep
+    .media-update-dialog
+    app-tag-chips .mat-mdc-form-field-infix input {
+      color: #ffffff;
+      caret-color: #ffffff;
+}
+
+:host
+    ::ng-deep
+    .media-update-dialog
+    app-tag-chips .mat-mdc-form-field-infix input::placeholder {
+      color: rgba(255, 255, 255, 0.55);
+}
+
+:host
+    ::ng-deep
+    .media-update-dialog
+    app-tag-chips #tag-chips {
+      margin-top: -6px;
+
+      p {
+        margin-bottom: -3px;
+      }
+}
+
+.single-row {
+  // display: grid;
+  // grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+.double-row {
+  gap:12px;
+  // grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 768px) {
+    .step-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .field-full,
+    .field-half {
+        grid-column: 1 / -1;
+    }
 }

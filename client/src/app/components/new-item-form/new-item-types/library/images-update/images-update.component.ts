@@ -56,10 +56,25 @@ export class ImagesUpdateComponent implements OnInit {
     profile_banner_image: [''],
   });
 
-  selectedTags= '';
-  selectedGenres= '';
-  galleries= [];
-  selectedGallery= '';
+  selectedTags = '';
+  selectedGenres: string[] = [];
+  galleries = [];
+  selectedGallery = '';
+
+  // same options as gallery type
+  galleryGenreOptions = [
+      { value: 'live',          label: 'Live Show' },
+      { value: 'promo',         label: 'Promo Photos' },
+      { value: 'bts',           label: 'Behind the Scenes' },
+      { value: 'studio',        label: 'Studio Session' },
+      { value: 'rehearsal',     label: 'Rehearsal' },
+      { value: 'tour',          label: 'Tour / On the Road' },
+      { value: 'merch',         label: 'Merch / Products' },
+      { value: 'artwork',       label: 'Artwork / Concepts' },
+      { value: 'coverConcept',  label: 'Cover Concepts' },
+      { value: 'presskit',      label: 'Press / Media Kit' }
+  ];
+
 
   constructor(
       private formBuilder: FormBuilder,
@@ -93,12 +108,33 @@ export class ImagesUpdateComponent implements OnInit {
 
     this.local_data = [{...data}];
 
+    // hydrate selectedGenres from existing record, if any
+    const rawGenre = (this.local_data[0].genre || '').toString();
+    if (rawGenre) {
+        this.selectedGenres = rawGenre
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
     this.currentGroup = {name: this.local_data[0].groupName, id: this.local_data[0].groupId };
 
-    this.galleriesService.getAllForArtist(this.local_data[0].groupId).subscribe(res => {
-      this.galleries = res;
-      this.selectedGallery = this.galleries.find(x => x.id == this.local_data[0].owner_gallery).id;
+    this.galleriesService
+    .getAllForArtist(this.local_data[0].groupId)
+    .subscribe(res => {
+        this.galleries = res || [];
+
+        // only try to pre-select if we actually have an owner_gallery value
+        if (this.local_data[0].owner_gallery) {
+            const match = this.galleries.find(
+                g => g.id === this.local_data[0].owner_gallery
+            );
+            this.selectedGallery = match ? match.id : null;
+        } else {
+            this.selectedGallery = null;
+        }
     });
+
 
     if(data.id != ''){
       this.modUser = true;
@@ -187,15 +223,29 @@ export class ImagesUpdateComponent implements OnInit {
     this.selectedTags = this.local_data[0]['tags'];
   }
 
-  getGenre(e) {
-    this.local_data[0]['genre'] = e
-    this.selectedGenres = this.local_data[0]['genre'];
-  }
-
   onChangeGallery(g){
     this.selectedGallery = this.galleries.find(x => x.id == g).title;
     this.local_data[0].owner_gallery = g;
   }
+
+  onGenresChange(values: string[]): void {
+    this.selectedGenres = values || [];
+    // store compact codes in the record; comma-separated string
+    this.local_data[0].genre = this.selectedGenres.join(',');
+  }
+
+  getGenreLabel(val: string): string {
+      const found = this.galleryGenreOptions.find(g => g.value === val);
+      return found ? found.label : val;
+  }
+
+  getGenresSummary(): string {
+      if (!this.selectedGenres || !this.selectedGenres.length) {
+          return this.local_data[0].genre ? this.local_data[0].genre : '—';
+      }
+      return this.selectedGenres.map(v => this.getGenreLabel(v)).join(', ');
+  }
+
 
 
 }
