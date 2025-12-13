@@ -100,60 +100,79 @@
 
         <!-- HEADER -->
         <header class="library-header">
-          <div>
-            <h1 class="library-title">
-                {{ selectedGallery?.title || toolName }}
-            </h1>
-          </div>
+            <div>
+                <h1 class="library-title">
+                    {{ selectedGallery?.title || toolName }}
+                </h1>
+                <p class="library-sub">
+                    <span>Click a tile to open the media viewer</span>
+                </p>
+            </div>
 
-                    <!-- GALLERY FILTER -->
-          <div class="library-filter">
-            <mat-form-field appearance="fill" class="gallery-filter-field">
-              <mat-label>Filter by gallery</mat-label>
-              <mat-select
-                  multiple
-                  [value]="selectedGalleryIds"
-                  (selectionChange)="onGalleryFilterChange($event.value)">
-                <mat-option *ngFor="let g of galleries" [value]="g.id">
-                  {{ g.title }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <div class="library-header-right">
+                <!-- GALLERY FILTER -->
+                <div class="library-filters">
+                    <mat-form-field
+                        class="kanban-sort gallery-filter-field"
+                        appearance="outline"
+                        floatLabel="always"
+                    >
+                        <mat-label>Filter by gallery</mat-label>
 
-            <button
-                mat-stroked-button
-                *ngIf="selectedGalleryIds?.length"
-                (click)="onGalleryFilterChange([])">
-              Clear
-            </button>
-          </div>
+                        <mat-select
+                            [(value)]="galleryFilterId"
+                            (selectionChange)="loadData()"
+                        >
+                            <mat-option [value]="null">All galleries</mat-option>
+                            <mat-option
+                                *ngFor="let g of galleries"
+                                [value]="g.id"
+                            >
+                                {{ g.title }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
 
+                    <button
+                        type="button"
+                        class="gallery-clear-btn"
+                        *ngIf="galleryFilterId"
+                        (click)="galleryFilterId = null; selectedGallery = null; loadData();"
+                    >
+                        <span class="material-icons">close</span>
+                        Clear
+                    </button>
+                </div>
 
-          <!-- TABS -->
-          <nav class="library-tabs">
-              <button
-                  type="button"
-                  class="library-tab"
-                  [class.active]="activeTab === 'images'"
-                  (click)="setActiveTab('images')">
-                  Images ({{ imageItems?.length || 0 }})
-              </button>
+                <!-- TABS -->
+                <nav class="library-tabs">
+                    <button
+                        type="button"
+                        class="library-tab"
+                        [class.active]="activeTab === 'images'"
+                        (click)="setActiveTab('images')"
+                    >
+                        Images ({{ imageItems?.length || 0 }})
+                    </button>
 
-              <button
-                  type="button"
-                  class="library-tab"
-                  [class.active]="activeTab === 'videos'"
-                  (click)="setActiveTab('videos')">
-                  Videos ({{ videoItems?.length || 0 }})
-              </button>
+                    <button
+                        type="button"
+                        class="library-tab"
+                        [class.active]="activeTab === 'videos'"
+                        (click)="setActiveTab('videos')"
+                    >
+                        Videos ({{ videoItems?.length || 0 }})
+                    </button>
 
-              <button
-                  mat-raised-button
-                  class="library-add-btn"
-                  (click)="openDialog('Add', newRecord)">
-                  + Add New
-              </button>
-          </nav>
+                    <button
+                        mat-raised-button
+                        class="library-add-btn"
+                        (click)="openDialog('Add', newRecord)"
+                    >
+                        + Add New
+                    </button>
+                </nav>
+            </div>
         </header>
 
         <!-- IMAGES GRID -->

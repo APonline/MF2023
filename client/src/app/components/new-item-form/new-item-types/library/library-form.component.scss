@@ -40,26 +40,11 @@
     }
 
     .masked-overflow {
-        /* scroll bar width, for use in mask calculations */
         --scrollbar-width: 0px;
-
-        /* mask fade distance, for use in mask calculations */
         --mask-height: 60px;
-
-        /* If content exceeds height of container, overflow! */
         overflow-x: auto;
-
-        /* Our height limit */
-        // height: 300px;
-
-        /* Need to make sure container has bottom space,
-           otherwise content at the bottom is always faded out */
-        // padding-bottom: var(--mask-height);
-
-        /* Keep some space between content and scrollbar */
         padding-right: 0;
 
-        /* The CSS mask */
         --mask-image-content: linear-gradient(
             to right,
             transparent,
@@ -68,24 +53,13 @@
             transparent
         );
 
-        /* Scale content gradient to width of the container minus scrollbar */
         --mask-size-content: calc(100% - 0px) 100%;
-
-        /* The scrollbar mask is a black pixel */
         --mask-image-scrollbar: linear-gradient(black, black);
-
-        /* Width of our black pixel is scrollbar width */
         --mask-size-scrollbar: 0px 100%;
 
-        /* Apply the mask image and mask size variables */
         mask-image: var(--mask-image-content), var(--mask-image-scrollbar);
         mask-size: var(--mask-size-content), var(--mask-size-scrollbar);
-
-        /* Position content gradient in the top left,
-           scrollbar gradient in the top right */
         mask-position: 0 0, 100% 0;
-
-        /* We don't repeat our mask images */
         mask-repeat: no-repeat, no-repeat;
     }
 }
@@ -199,7 +173,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 
 /* masked overflow scrollbars */
 .masked-overflow {
-    scrollbar-width: thin; /* normal | thin | none */
+    scrollbar-width: thin;
     scrollbar-color: transparent transparent;
 }
 
@@ -210,7 +184,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 
 .masked-overflow::-webkit-scrollbar-thumb {
     background-color: transparent;
-    border-radius: 9999px; /* always round */
+    border-radius: 9999px;
 }
 
 .masked-overflow::-webkit-scrollbar-track {
@@ -253,10 +227,6 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 
 /* ---------- GRID VIEW (VIEW MODE / LIBRARY) ---------- */
 
-/**
- * Main Library / Images view container
- * Used by noLineView with: <div class="view-container mf-images-view"> ... </div>
- */
 .mf-images-view,
 .mf-library-view {
     position: relative;
@@ -272,7 +242,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, .12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .library-title {
@@ -289,7 +259,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     color: #fff !important;
 }
 
-/* optional library tabs (if/when you add them in HTML) */
+/* tabs */
 .library-tabs {
     display: flex;
     align-items: center;
@@ -348,8 +318,6 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     overflow: hidden;
     background: rgba(0, 0, 0, 0.85);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
-    // width: 180px;
-    // height: 180px;
 }
 
 .image-thumb,
@@ -393,7 +361,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     background: linear-gradient(
         to top,
         rgba(0, 0, 0, 0.85),
-        rgba(0, 0, 0, 0.0) 55%
+        rgba(0, 0, 0, 0) 55%
     );
     opacity: 0;
     transition: opacity 0.2s ease-out;
@@ -427,7 +395,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     opacity: 1;
 }
 
-/* VIDEO PLAY BADGE (if you add it in HTML) */
+/* VIDEO PLAY BADGE */
 .media-play-overlay {
     position: absolute;
     inset: 0;
@@ -461,7 +429,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 
     p {
         margin-bottom: 12px;
-        color:#fff!important;
+        color: #fff !important;
     }
 }
 
@@ -477,7 +445,6 @@ tr:nth-child(even) td.mat-cell:first-of-type {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
 }
-
 
 .library-add-btn {
     background: #ffffff !important;
@@ -500,4 +467,205 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+}
+
+.library-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.library-header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.library-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================
+   GALLERY FILTER SELECT (PILL)
+   ============================ */
+
+/* make the filter a bit wider in Library */
+:host ::ng-deep .gallery-filter-field {
+    min-width: 220px;
+}
+
+/* dark pill wrapper around the select – same vibe as Kanban sort */
+:host ::ng-deep .gallery-filter-field .mat-mdc-text-field-wrapper {
+    height: 40px;
+    border-radius: 999px !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+    transform: none; /* no vertical offset */
+    background: #2b2b2b !important;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    align-items: center;
+    display: flex;
+}
+
+/* kill the outline stroke */
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__leading,
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__notch,
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__trailing {
+    border: none !important;
+}
+
+/* inner content box */
+:host ::ng-deep .gallery-filter-field .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* floating label ("Filter by gallery") */
+:host ::ng-deep .gallery-filter-field .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 11px;
+    transform: translateY(-2px);
+}
+
+/* selected value text */
+:host ::ng-deep .gallery-filter-field .mat-mdc-select-value,
+:host ::ng-deep .gallery-filter-field .mat-mdc-select-value-text {
+    color: #ffffff !important;
+    font-size: 0.9rem;
+}
+
+/* dropdown arrow */
+:host ::ng-deep .gallery-filter-field .mat-mdc-select-arrow {
+    color: #ffffff !important;
+}
+
+/* dark panel for the dropdown (shared with Kanban) */
+:host ::ng-deep .mat-mdc-select-panel {
+    background: #262626;
+    color: #ffffff;
+}
+
+/* Clear button – pill beside the select */
+.gallery-clear-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0 0.6rem;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.75);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    cursor: pointer;
+    line-height: 1;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.1s ease;
+
+    .material-icons {
+        font-size: 14px;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.55);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* header responsiveness */
+@media (max-width: 900px) {
+    .library-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .library-header-right {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+}
+
+/* Make Library select match Tasks dark pill */
+:host ::ng-deep .gallery-filter-field {
+    min-width: 220px;
+}
+
+/* main pill */
+:host ::ng-deep .gallery-filter-field .mat-mdc-text-field-wrapper {
+    height: 40px;
+    border-radius: 999px !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+    transform: translateY(0);                 /* no vertical offset */
+    background: #2b2b2b !important;           /* solid dark grey */
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+}
+
+/* kill the outline stroke */
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__leading,
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__notch,
+:host ::ng-deep .gallery-filter-field
+    .mdc-notched-outline__trailing {
+    border: none !important;
+}
+
+/* keep the infix tight */
+:host ::ng-deep .gallery-filter-field .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* label – small and parked at the top, always */
+:host ::ng-deep .gallery-filter-field .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 11px;
+    transform-origin: left top;
+    transform: translateY(-10px) scale(0.85);
+}
+
+/* selected value text */
+:host ::ng-deep .gallery-filter-field
+    .mat-mdc-select-value,
+:host ::ng-deep .gallery-filter-field
+    .mat-mdc-select-value-text {
+    color: #ffffff !important;
+    font-size: 0.9rem;
+}
+
+/* arrow */
+:host ::ng-deep .gallery-filter-field .mat-mdc-select-arrow {
+    color: #ffffff !important;
+}
+
+/* dropdown panel theme */
+:host ::ng-deep .mat-mdc-select-panel {
+    background: #262626;
+    color: #ffffff;
 }
