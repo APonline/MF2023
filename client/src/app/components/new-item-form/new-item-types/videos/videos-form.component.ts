@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 
 /* services - make dynamic somehow later */
 import { ArtistsService } from 'src/app/services/artists.service';
-import { VidoesService } from 'src/app/services/videos.service';
+import { VideosService } from 'src/app/services/videos.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -73,7 +73,7 @@ export class VideosFormComponent implements OnInit, OnChanges {
       private DialogService: DialogService,
       private alertService: AlertService,
       private artistsService: ArtistsService,
-      private videosService: VidoesService,
+      private videosService: VideosService,
       private galleriesService: GalleriesService,
       private uploadService: FileUploadService,
       private authenticationService: AuthenticationService,

@@ -30,7 +30,7 @@ import { FriendsService } from './services/friends.service';
 import { ImagesService } from './services/images.service';
 import { SocialsService } from './services/socials.service';
 import { SongsService } from './services/songs.service';
-import { VidoesService } from './services/videos.service';
+import { VideosService } from './services/videos.service';
 import { PlannerService } from './services/planner.service';
 import { DialogService } from './services/dialog.service';
 import { MFService } from './services/MF.service';
@@ -200,7 +200,7 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     ImagesService,
     SocialsService,
     SongsService,
-    VidoesService,
+    VideosService,
     PlannerService,
     DialogService,
     MFService

@@ -34,7 +34,7 @@ import { FriendsService } from 'src/app/services/friends.service';
 import { GigsService } from 'src/app/services/gigs.service';
 import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
+import { VideosService } from 'src/app/services/videos.service';
 import { PlannerService } from 'src/app/services/planner.service';
 import { ArtistActivityService } from 'src/app/services/artist_activity.service';
 
@@ -188,7 +188,7 @@ export class PlannerFormComponent implements OnInit, OnChanges {
         private gigsService: GigsService,
         private socialsService: SocialsService,
         private songsService: SongsService,
-        private vidoesService: VidoesService,
+        private VideosService: VideosService,
 
         private artistActivityService: ArtistActivityService,
         private plannerService: PlannerService

@@ -9,7 +9,7 @@ const signup = environment.apiUrl + 'auth/signup';
 @Injectable({
   providedIn: 'root'
 })
-export class VidoesService {
+export class VideosService {
 
   constructor(private http: HttpClient) { }
 

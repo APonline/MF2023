@@ -207,15 +207,29 @@ export class ImagesUpdateComponent implements OnInit {
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
 
-    if(e.field=='location_url'){
-      let group = this.data.groupId;
-      let type = this.local_data[0].location_url.split('.');
-      let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
-        this.local_data[0]['location_url_img'] = r[0].display;
-      });
-    }
+    if (e.field === 'location_url') {
+        const group  = this.data.groupId;
+        const parts  = (this.local_data[0].location_url || '').split('.');
+        const format = parts[parts.length - 1] || '';
 
+        this.uploadService
+            .getFile(0, this.local_data[0].location_url, 'artists/' + group, format)
+            .subscribe({
+                next: (r) => {
+                    if (r && r.length && r[0].display) {
+                        this.local_data[0]['location_url_img'] = r[0].display;
+                    } else {
+                        // fall back to raw path so the field isn’t undefined
+                        this.local_data[0]['location_url_img'] =
+                            this.local_data[0].location_url;
+                    }
+                },
+                error: () => {
+                    this.local_data[0]['location_url_img'] =
+                        this.local_data[0].location_url;
+                }
+            });
+    }
   }
 
   getTag(e) {

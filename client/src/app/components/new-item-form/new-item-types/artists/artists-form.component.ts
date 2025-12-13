@@ -23,7 +23,7 @@ import { FriendsService } from 'src/app/services/friends.service';
 import { GigsService } from 'src/app/services/gigs.service';
 import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
-import { VidoesService } from 'src/app/services/videos.service';
+import { VideosService } from 'src/app/services/videos.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -91,7 +91,7 @@ export class ArtistsFormComponent implements OnInit, OnChanges {
       private gigsService: GigsService,
       private socialsService: SocialsService,
       private songsService: SongsService,
-      private videosService: VidoesService,
+      private videosService: VideosService,
       private authenticationService: AuthenticationService
   ) {
 

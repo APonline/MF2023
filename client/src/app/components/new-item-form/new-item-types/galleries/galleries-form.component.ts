@@ -20,7 +20,7 @@ import moment from 'moment';
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { VidoesService } from 'src/app/services/videos.service';
+import { VideosService } from 'src/app/services/videos.service';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
 import { MatTable } from '@angular/material/table';
@@ -95,7 +95,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
         private imagesService: ImagesService,
         private artistsService: ArtistsService,
         private galleriesService: GalleriesService,
-        private videosService: VidoesService,
+        private videosService: VideosService,
         private authenticationService: AuthenticationService,
         private uploadService: FileUploadService,
         public MF: MFService,

@@ -10,29 +10,37 @@ const Galleries = db.gallerie;
 let datetime = new Date(); 
 
 exports[`create${itemTopic}`] = async (req, res) => {
-    try{
-        let newItem = req.body;
+    try {
+        const newItem = req.body || {};
 
-        let item = await Item.findOne({ where: { title: req.body.title } });
+        // ---- OPTIONAL: safe duplicate check by location_url ----
+        // If you still want to avoid exact duplicates:
+        if (newItem.location_url) {
+            const existing = await Item.findOne({
+                where: {
+                    // if you want per-artist uniqueness, uncomment owner_group:
+                    // owner_group: newItem.owner_group,
+                    location_url: newItem.location_url
+                }
+            });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.title.replace(/\+s/g,'').toLowerCase() + "_" + num;
+            if (existing) {
+                // just return the existing row instead of { result: null }
+                return res.status(200).send(existing);
+            }
         }
 
-        let result = await Item.create( newItem );
+        // ---- CREATE ----
+        const created = await Item.create(newItem);
 
-        if (result) {
-            return res.status(200).send( result );
-        }else{
-            return res.status(500).send({ result: null });
-        }
+        return res.status(200).send(created);
     } catch (error) {
+        console.error(`create${itemTopic} failed`, error);
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
+            message: `Unable to create ${itemTopic}! - ${error.message}`
         });
     }
-}
+};
 exports[`get${itemTopic}`] = async (req, res) => {
     try{
         let id =req.params.id;
@@ -128,6 +136,31 @@ exports[`update${itemTopic}`] = async (req, res) => {
     }
 }
 exports[`delete${itemTopic}`] = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // set active = 0 instead of destroying the row
+        const [affectedRows] = await Item.update(
+            { active: 0 },
+            { where: { id } }
+        );
+
+        if (affectedRows === 1) {
+            // keep your original success shape if other code depends on it
+            return res.status(200).send({ result: [] });
+        } else {
+            return res.status(404).send({
+                result: null,
+                message: `${itemTopic} not found`
+            });
+        }
+    } catch (error) {
+        return res.status(500).send({
+            message: `Unable to delete ${itemTopic}! - ` + error.message
+        });
+    }
+};
+exports[`Xdelete${itemTopic}`] = async (req, res) => {
     try{
         let id =req.params.id;
         await Item.destroy({ where: { id } })

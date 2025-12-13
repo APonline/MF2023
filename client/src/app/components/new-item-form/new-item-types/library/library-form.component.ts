@@ -11,19 +11,21 @@ import {
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
+import { MatTable } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+
 import { BehaviorSubject, Observable } from 'rxjs';
+
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 
 /* services - make dynamic somehow later */
 import { ImagesService } from 'src/app/services/images.service';
+import { VideosService } from 'src/app/services/videos.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-
-import { MatTable } from '@angular/material/table';
-import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
-import { MatTableDataSource } from '@angular/material/table';
 import { MFService } from 'src/app/services/MF.service';
 import { ImagesUpdateComponent } from './images-update/images-update.component';
 import { GalleriesService } from 'src/app/services/galleries.service';
@@ -101,6 +103,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         private DialogService: DialogService,
         private alertService: AlertService,
         private imagesService: ImagesService,
+        private videosService: VideosService,
         private artistsService: ArtistsService,
         private galleriesService: GalleriesService,
         private uploadService: FileUploadService,
@@ -143,7 +146,6 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                 }
             });
 
-
             this.loadData();
         });
     }
@@ -155,6 +157,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             return;
         }
 
+        // NOTE:
+        // This path is the legacy parent-driven CRUD. New internal CRUD
+        // uses createMediaRecord/updateMediaRecord/archiveMediaRecord.
         if (this.act === 'create') {
             Object.keys(this.res || {}).forEach(k => {
                 if (k === 'createdAt' || k === 'updatedAt' || k === 'active') {
@@ -193,11 +198,27 @@ export class LibraryFormComponent implements OnInit, OnChanges {
 
                     this.uploadService
                         .getFile(0, u.location_url, 'artists/' + group, format)
-                        .subscribe(r => {
-                            newRes.preview = r[0].display;
+                        .subscribe({
+                            next: r => {
+                                if (r && r.length && r[0].display) {
+                                    newRes.preview = r[0].display;
+                                } else {
+                                    newRes.preview = u.location_url;
+                                }
 
-                            this.dataSource.push(newRes);
-                            this.table.renderRows();
+                                this.dataSource.push(newRes);
+                                this.table.renderRows();
+                            },
+                            error: err => {
+                                console.error(
+                                    'Failed to hydrate preview for new legacy row',
+                                    err,
+                                    u
+                                );
+                                newRes.preview = u.location_url;
+                                this.dataSource.push(newRes);
+                                this.table.renderRows();
+                            }
                         });
                 });
             });
@@ -240,15 +261,34 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                         res.gallery = res.gallery.title;
                     }
 
-                    const typeParts = res.location_url.split('.');
-                    const format = typeParts[typeParts.length - 1];
+                    const loc = res.location_url || '';
+                    const typeParts = loc.split('.');
+                    const format = typeParts[typeParts.length - 1] || '';
                     const group = this.artist?.id;
 
-                    this.uploadService
-                        .getFile(0, res.location_url, 'artists/' + group, format)
-                        .subscribe(r => {
-                            res.preview = r[0].display;
-                        });
+                    if (!loc || !group) {
+                        res.preview = loc;
+                    } else {
+                        this.uploadService
+                            .getFile(0, loc, 'artists/' + group, format)
+                            .subscribe({
+                                next: r => {
+                                    if (r && r.length && r[0].display) {
+                                        res.preview = r[0].display;
+                                    } else {
+                                        res.preview = loc;
+                                    }
+                                },
+                                error: err => {
+                                    console.error(
+                                        'Failed to hydrate image preview in loadData',
+                                        err,
+                                        res
+                                    );
+                                    res.preview = loc;
+                                }
+                            });
+                    }
 
                     delete res.active;
                     delete res.createdAt;
@@ -286,15 +326,34 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                         res.gallery = res.gallery.title;
                     }
 
-                    const typeParts = res.location_url.split('.');
-                    const format = typeParts[typeParts.length - 1];
+                    const loc = res.location_url || '';
+                    const typeParts = loc.split('.');
+                    const format = typeParts[typeParts.length - 1] || '';
                     const group = this.artist?.id;
 
-                    this.uploadService
-                        .getFile(0, res.location_url, 'artists/' + group, format)
-                        .subscribe(r => {
-                            res.preview = r[0].display;
-                        });
+                    if (!loc || !group) {
+                        res.preview = loc;
+                    } else {
+                        this.uploadService
+                            .getFile(0, loc, 'artists/' + group, format)
+                            .subscribe({
+                                next: r => {
+                                    if (r && r.length && r[0].display) {
+                                        res.preview = r[0].display;
+                                    } else {
+                                        res.preview = loc;
+                                    }
+                                },
+                                error: err => {
+                                    console.error(
+                                        'Failed to hydrate video preview in loadData',
+                                        err,
+                                        res
+                                    );
+                                    res.preview = loc;
+                                }
+                            });
+                    }
 
                     delete res.active;
                     delete res.createdAt;
@@ -413,76 +472,298 @@ export class LibraryFormComponent implements OnInit, OnChanges {
     /**
      * Open create/update dialog for a media item
      * - rebuild slug + /projects deep link on every save
-     * - emit cooked record
-     * - on updates, persist profile_url directly
-     * - log artist activity
+     * - call internal CRUD (create/update/archive)
+     * - log artist activity with proper type (image/video)
      */
     openDialog(action: string, row: any): void {
+        const isVideo = this.activeTab === 'videos';
+
         const data = this.MF.buildDialogCtx({
             action,
-            toolName: 'Images',
+            toolName: isVideo ? 'Videos' : 'Images',
             artist: this.artist,
             currentUser: this.currentUser,
             seed: row
         });
 
-        this.MF
-            .openUpdateDialog<typeof data, { event: string; data: any }>(
-                ImagesUpdateComponent,
-                data
-            )
-            .subscribe(result => {
-                if (!result) {
+        this.MF.openUpdateDialog<typeof data, { event: string; data: any }>(
+            ImagesUpdateComponent,
+            data
+        )
+        .subscribe(result => {
+            if (!result) {
+                return;
+            }
+
+            const base = result.data || {};
+            const baseEvent = (result.event || '').toLowerCase();
+
+            // Normalize event
+            const isCreate = baseEvent === 'create' || baseEvent === 'add';
+            const isDelete = baseEvent === 'delete' || baseEvent === 'archive';
+
+            const title =
+                (base.title ?? row?.title ?? '').toString().trim() ||
+                (isVideo ? 'video' : 'image');
+            const rawId = base.id ?? row?.id;
+
+            const slug = this.buildMediaSlug(title);
+            const provisionalProfileUrl = this.buildMediaDeepLink(rawId, slug);
+
+            const cooked = this.MF
+                .compose(base)
+                .with({
+                    id: rawId,
+                    profile_url: provisionalProfileUrl,
+                    owner_group: this.artist?.id,
+                    owner_gallery: base.owner_gallery ?? row?.owner_gallery ?? null,
+                    active: 1,
+                    owner_user: this.currentUser.id,
+                    views: isCreate
+                        ? 0
+                        : (base.views ?? row?.views ?? 0)
+                })
+                .done();
+
+            if (isDelete) {
+                this.archiveMediaRecord(cooked);
+                return;
+            }
+
+            if (isCreate) {
+                this.createMediaRecord(cooked, slug);
+            } else {
+                this.updateMediaRecord(cooked, slug);
+            }
+        });
+    }
+
+    /**
+     * Choose the proper CRUD service based on activeTab.
+     */
+    private getMediaService(): ImagesService | VideosService {
+        return this.activeTab === 'videos'
+            ? this.videosService
+            : this.imagesService;
+    }
+
+    /**
+     * CREATE
+     */
+    private createMediaRecord(cooked: any, slug: string): void {
+        const svc     = this.getMediaService();
+        const isVideo = this.activeTab === 'videos';
+
+        const payload = { ...cooked };
+        delete payload.id; // backend will generate id
+
+        svc.create(payload).subscribe({
+            next: created => {
+                console.log('[Media create] raw response:', created);
+                const raw: any = created as any;
+
+                const id =
+                    raw.id ??
+                    raw.data?.id ??
+                    raw.data?.[0]?.id ??
+                    raw.data?.rows?.[0]?.id ??
+                    raw.insertId ??
+                    (Array.isArray(raw) ? raw[0]?.id : undefined);
+
+                if (!id) {
+                    console.warn(
+                        'Media create returned no id; leaving slug profile_url',
+                        created
+                    );
+
+                    const finalMedia = {
+                        ...(raw.data || raw),
+                        profile_url: this.buildMediaDeepLink(undefined, slug)
+                    };
+
+                    this.hydratePreview(finalMedia);
+                    this.finishCreateInCollections(finalMedia, isVideo);
+                    this.logArtistActivity('create', finalMedia);
+
+                    this.alertService.success(
+                        isVideo ? 'Video item created.' : 'Image item created.',
+                        true
+                    );
                     return;
                 }
 
-                const base = result.data || {};
-                const baseEvent = (result.event || '').toLowerCase();
-                const isCreate = baseEvent === 'create' || baseEvent === 'add';
+                const profile_url = this.buildMediaDeepLink(id, slug);
 
-                const title =
-                    (base.title ?? row?.title ?? '').toString().trim() || 'image';
+                const finalMedia = {
+                    ...(raw.data || raw),
+                    id,
+                    profile_url
+                };
 
-                const rawId = base.id ?? row?.id;
+                // persist the deep link now that we know the id
+                svc.update(id, { profile_url }).subscribe({
+                    error: err =>
+                        console.error(
+                            'Failed to update media profile_url after create',
+                            err
+                        )
+                });
 
-                const slug = this.buildMediaSlug(title);
-                const profile_url = this.buildMediaDeepLink(rawId, slug);
+                this.hydratePreview(finalMedia);
+                this.finishCreateInCollections(finalMedia, isVideo);
+                this.logArtistActivity('create', finalMedia);
 
-                const cooked = this.MF
-                    .compose(base)
-                    .with({
-                        id: rawId,
-                        profile_url,
-                        owner_group: this.artist?.id,
-                        owner_gallery: base.owner_gallery ?? row?.owner_gallery ?? null,
-                        active: 1,
-                        owner_user: this.currentUser.id,
-                        views: isCreate
-                            ? 0
-                            : (base.views ?? row?.views ?? 0)
-                    })
-                    .done();
+                this.alertService.success(
+                    isVideo ? 'Video item created.' : 'Image item created.',
+                    true
+                );
+            },
+            error: err => {
+                console.error('Media create failed', err, cooked);
+                this.alertService.error(
+                    isVideo ? 'Failed to create video item' : 'Failed to create image item',
+                    true
+                );
+            }
+        });
+    }
 
-                // for updates, push the new profile_url into DB right away
-                if (!isCreate && cooked.id) {
-                    this.imagesService
-                        .update(cooked.id, {
-                            id: cooked.id,
-                            profile_url
-                        })
-                        .subscribe({
-                            error: err =>
-                                console.error('Failed to update media profile_url', err)
-                        });
+
+    /**
+     * UPDATE
+     */
+    private updateMediaRecord(cooked: any, slug: string): void {
+        const svc = this.getMediaService();
+        const isVideo = this.activeTab === 'videos';
+
+        if (!cooked.id) {
+            console.warn('updateMediaRecord called without id', cooked);
+            return;
+        }
+
+        const profile_url = this.buildMediaDeepLink(cooked.id, slug);
+        const payload = { ...cooked, profile_url };
+
+        svc.update(cooked.id, payload).subscribe({
+            next: updated => {
+                const finalMedia = { ...updated, profile_url };
+
+                this.patchCollectionsWith(finalMedia);
+                this.hydratePreview(finalMedia);
+                this.logArtistActivity('update', finalMedia);
+
+                this.alertService.success(
+                    isVideo ? 'Video item updated.' : 'Image item updated.',
+                    true
+                );
+            },
+            error: err => {
+                console.error('Media update failed', err, payload);
+                this.alertService.error(
+                    isVideo ? 'Failed to update video item' : 'Failed to update image item',
+                    true
+                );
+            }
+        });
+    }
+
+    private archiveMediaRecord(media: any): void {
+        if (!media?.id) {
+            console.warn('archiveMediaRecord called with no id', media);
+            return;
+        }
+
+        const svc = this.getMediaService();
+        const isVideo = this.activeTab === 'videos';
+
+        const softPayload = { active: 0 };
+
+        svc.update(media.id, softPayload).subscribe({
+            next: () => {
+                if (isVideo) {
+                    this.videos = this.videos.filter(m => m.id !== media.id);
+                    this.videoItems = this.videoItems.filter(m => m.id !== media.id);
+                } else {
+                    this.toolSet = this.toolSet.filter(m => m.id !== media.id);
+                    this.images = this.images.filter(m => m.id !== media.id);
+                    this.imageItems = this.imageItems.filter(m => m.id !== media.id);
+                    this.dataSource = this.dataSource.filter(m => m.id !== media.id);
+                    this.table?.renderRows?.();
                 }
 
-                // parent handles create/put/delete persisting via activeItem
-                this.activeItem.emit({ action: result.event, data: cooked });
+                this.logArtistActivity('delete', media);
 
-                // activity log with fresh deep link
-                this.logArtistActivity(result.event, cooked);
+                this.alertService.success(
+                    isVideo ? 'Video archived.' : 'Image archived.',
+                    true
+                );
+            },
+            error: err => {
+                console.error('Archive failed', err);
+                this.alertService.error(
+                    isVideo ? 'Failed to archive video.' : 'Failed to archive image.',
+                    true
+                );
+            }
+        });
+    }
+
+
+
+    /**
+     * Hydrate .preview from file service (for both images + videos thumbnails)
+     */
+    private hydratePreview(media: any): void {
+        const loc = media.location_url || '';
+        if (!loc || !this.artist?.id) {
+            return;
+        }
+
+        const parts = loc.split('.');
+        const format = parts[parts.length - 1] || '';
+        const group = this.artist.id;
+
+        this.uploadService
+            .getFile(0, loc, 'artists/' + group, format)
+            .subscribe({
+                next: r => {
+                    if (r && r.length && r[0].display) {
+                        media.preview = r[0].display;
+                    } else {
+                        media.preview = loc;
+                    }
+                },
+                error: err => {
+                    console.error('Failed to hydrate media preview', err, media);
+                    media.preview = loc;
+                }
             });
     }
+
+    /**
+     * Patch existing in-memory collections with updated media.
+     */
+    private patchCollectionsWith(media: any): void {
+        const isVideo = this.activeTab === 'videos';
+
+        const patchRow = (row: any) => {
+            if (row.id === media.id) {
+                Object.assign(row, media);
+            }
+        };
+
+        if (isVideo) {
+            (this.videos || []).forEach(patchRow);
+            (this.videoItems || []).forEach(patchRow);
+        } else {
+            (this.toolSet || []).forEach(patchRow);
+            (this.images || []).forEach(patchRow);
+            (this.imageItems || []).forEach(patchRow);
+            (this.dataSource || []).forEach(patchRow);
+            this.table?.renderRows?.();
+        }
+    }
+
 
     /**
      * Build handle + title slug:
@@ -539,6 +820,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             verb = 'update';
         }
 
+        const isVideo = this.activeTab === 'videos';
+        const featureType = isVideo ? 'video' : 'image';
+
         let verbText = '';
         if (verb === 'create')      verbText = 'created';
         else if (verb === 'update') verbText = 'updated';
@@ -550,20 +834,20 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         };
 
         const feature = {
-            feature: 'image',
+            feature: featureType,
             extra: null
         };
 
-        const label = `<b style="color:#ff4d4d">${media?.title || 'image'}</b>`;
+        const label = `<b style="color:#ff4d4d">${media?.title || featureType}</b>`;
         const href = media?.profile_url || '';
 
         let activity: string;
 
         if (verb === 'delete' || !href) {
-            activity = `${verbText} an image ${label}`;
+            activity = `${verbText} a ${featureType} ${label}`;
         } else {
             activity =
-                `${verbText} an image ` +
+                `${verbText} a ${featureType} ` +
                 `<a href="${href}">` +
                 `${label}` +
                 `</a>`;
@@ -587,5 +871,21 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     });
                 }
             });
+    }
+
+    /**
+     * Helper to push a freshly-created media item into the appropriate collections.
+     */
+    private finishCreateInCollections(finalMedia: any, isVideo: boolean): void {
+        if (isVideo) {
+            this.videos.push(finalMedia);
+            this.videoItems = [...this.videos];
+        } else {
+            this.toolSet.push(finalMedia);
+            this.images.push(finalMedia);
+            this.imageItems = [...this.toolSet];
+            this.dataSource.push(finalMedia);
+            this.table?.renderRows?.();
+        }
     }
 }
