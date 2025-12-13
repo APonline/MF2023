@@ -251,9 +251,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     ? rows.filter(r => r.owner_gallery === this.galleryFilterId)
                     : rows;
 
-                this.toolSet = filtered;
-                this.images = filtered;
-                this.imageItems = filtered;
+                this.toolSet   = [...filtered];
+                this.images    = [...filtered];
+                this.imageItems = [...filtered];
 
                 // hydrate rows + previews for the admin table & grid
                 for (const res of this.toolSet) {
@@ -601,7 +601,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                 };
 
                 // persist the deep link now that we know the id
-                svc.update(id, { profile_url }).subscribe({
+                svc.update(id, { id, profile_url }).subscribe({
                     error: err =>
                         console.error(
                             'Failed to update media profile_url after create',
@@ -877,14 +877,46 @@ export class LibraryFormComponent implements OnInit, OnChanges {
      * Helper to push a freshly-created media item into the appropriate collections.
      */
     private finishCreateInCollections(finalMedia: any, isVideo: boolean): void {
+        // helper to compare rows
+        const key = (row: any) => row?.id ?? row?.location_url;
+
         if (isVideo) {
-            this.videos.push(finalMedia);
-            this.videoItems = [...this.videos];
+            // VIDEOS
+            const exists = (this.videos || []).some(m => key(m) === key(finalMedia));
+            if (!exists) {
+                this.videos = [...(this.videos || []), finalMedia];
+            }
+
+            const itemsExists = (this.videoItems || []).some(m => key(m) === key(finalMedia));
+            if (!itemsExists) {
+                this.videoItems = [...(this.videos || [])];
+            }
         } else {
-            this.toolSet.push(finalMedia);
-            this.images.push(finalMedia);
-            this.imageItems = [...this.toolSet];
-            this.dataSource.push(finalMedia);
+            // IMAGES
+            const alreadyInToolSet = (this.toolSet || []).some(m => key(m) === key(finalMedia));
+            if (!alreadyInToolSet) {
+                this.toolSet = [...(this.toolSet || []), finalMedia];
+            }
+
+            const alreadyInImages = (this.images || []).some(m => key(m) === key(finalMedia));
+            if (!alreadyInImages) {
+                this.images = [...(this.images || []), finalMedia];
+            }
+
+            // grid items
+            const alreadyInItems = (this.imageItems || []).some(m => key(m) === key(finalMedia));
+            if (!alreadyInItems) {
+                this.imageItems = [...(this.toolSet || [])];
+            }
+
+            // admin table datasource
+            if (Array.isArray(this.dataSource)) {
+                const alreadyInDs = this.dataSource.some((m: any) => key(m) === key(finalMedia));
+                if (!alreadyInDs) {
+                    this.dataSource = [...this.dataSource, finalMedia];
+                }
+            }
+
             this.table?.renderRows?.();
         }
     }
