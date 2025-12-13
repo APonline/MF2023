@@ -94,6 +94,10 @@ export class LibraryFormComponent implements OnInit, OnChanges {
     imageItems: any[] = [];
     videoItems: any[] = [];
 
+    allImages: any[] = [];
+    allVideos: any[] = [];
+    selectedGalleryIds: number[] = [];
+
     constructor(
         public dialog: MatDialog,
         private formBuilder: FormBuilder,
@@ -139,10 +143,12 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                 this.galleries = res || [];
 
                 if (this.galleryFilterId) {
+                    this.selectedGalleryIds = [this.galleryFilterId];
                     this.selectedGallery =
                         this.galleries.find(g => g.id === this.galleryFilterId) || null;
                 } else {
                     this.selectedGallery = null;
+                    this.selectedGalleryIds = [];
                 }
             });
 
@@ -247,24 +253,19 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             .subscribe(result => {
                 const rows = result.rows || [];
 
-                const filtered = this.galleryFilterId
-                    ? rows.filter(r => r.owner_gallery === this.galleryFilterId)
-                    : rows;
+                // keep a master copy of *all* images
+                this.allImages = rows;
 
-                this.toolSet   = [...filtered];
-                this.images    = [...filtered];
-                this.imageItems = [...filtered];
-
-                // hydrate rows + previews for the admin table & grid
-                for (const res of this.toolSet) {
+                // hydrate rows + previews for the admin table & grid (run on master set)
+                for (const res of this.allImages) {
                     if (res.gallery && res.gallery.title) {
                         res.gallery = res.gallery.title;
                     }
 
-                    const loc = res.location_url || '';
-                    const typeParts = loc.split('.');
-                    const format = typeParts[typeParts.length - 1] || '';
-                    const group = this.artist?.id;
+                    const loc   = res.location_url || '';
+                    const parts = loc.split('.');
+                    const format = parts[parts.length - 1] || '';
+                    const group  = this.artist?.id;
 
                     if (!loc || !group) {
                         res.preview = loc;
@@ -294,6 +295,22 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     delete res.createdAt;
                     delete res.updatedAt;
                 }
+
+                // decide which galleries are active:
+                //  - use multi-select (selectedGalleryIds) if set
+                //  - else fall back to single deep-link galleryFilterId
+                const ids =
+                    this.selectedGalleryIds && this.selectedGalleryIds.length
+                        ? this.selectedGalleryIds
+                        : (this.galleryFilterId ? [this.galleryFilterId] : null);
+
+                const filtered = ids
+                    ? this.allImages.filter(r => ids.includes(r.owner_gallery))
+                    : this.allImages;
+
+                this.toolSet    = [...filtered];
+                this.images     = [...filtered];
+                this.imageItems = [...filtered];
 
                 this.setSettings(this.toolSet);
 
@@ -326,10 +343,10 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                         res.gallery = res.gallery.title;
                     }
 
-                    const loc = res.location_url || '';
-                    const typeParts = loc.split('.');
-                    const format = typeParts[typeParts.length - 1] || '';
-                    const group = this.artist?.id;
+                    const loc   = res.location_url || '';
+                    const parts = loc.split('.');
+                    const format = parts[parts.length - 1] || '';
+                    const group  = this.artist?.id;
 
                     if (!loc || !group) {
                         res.preview = loc;
@@ -360,10 +377,47 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     delete res.updatedAt;
                 }
 
-                this.videos = filtered;
+                this.videos     = filtered;
                 this.videoItems = filtered;
             });
     }
+
+
+        /**
+     * Apply gallery filter to images using selectedGalleryIds.
+     * Empty array = all galleries.
+     */
+    private applyGalleryFilter(): void {
+        const ids = this.selectedGalleryIds && this.selectedGalleryIds.length
+            ? this.selectedGalleryIds
+            : null;
+
+        const filtered = ids
+            ? this.allImages.filter(r => ids.includes(r.owner_gallery))
+            : this.allImages;
+
+        this.toolSet    = [...filtered];
+        this.images     = [...filtered];
+        this.imageItems = [...filtered];
+
+        // refresh admin table datasource to match
+        this.setSettings(this.toolSet);
+    }
+
+    onGalleryFilterChange(ids: number[]): void {
+        this.selectedGalleryIds = ids || [];
+
+        if (this.selectedGalleryIds.length === 1) {
+            this.selectedGallery =
+                this.galleries.find(g => g.id === this.selectedGalleryIds[0]) || null;
+        } else {
+            // multiple / none selected → generic title
+            this.selectedGallery = null;
+        }
+
+        this.applyGalleryFilter();
+    }
+
 
     // 🔗 once images are present, open the deep-linked media item
     private handleMediaDeepLink(): void {
