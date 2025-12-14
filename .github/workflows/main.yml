@@ -41,3 +41,12 @@ jobs:
         run: |
           cd server/
           npm i
+
+      - name: Debug paths and timestamps
+        run: |
+          pwd
+          ls -la
+          ls -la client/dist || true
+          echo "LATEST build file:"
+          find client/dist -type f -printf '%TY-%Tm-%Td %TH:%TM:%TS %p\n' 2>/dev/null | sort | tail -5 || true
+
