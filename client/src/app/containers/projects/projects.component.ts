@@ -82,9 +82,9 @@ export class ProjectsContainer implements OnInit {
       obj.action = action,
       obj.tool = 'project'
 
-    const dialogRef = this.dialog.open(NewProjectUpdateComponent, {
+    const dialogRef = this.dialog.open(NewProjectUpdateComponent, { 
       panelClass: 'dialog-box',
-      width: '85%',
+      // width: '85%',
       height: '80vh',
       data:obj
     });

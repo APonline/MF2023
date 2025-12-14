@@ -1,265 +1,341 @@
-.content {
-  height:100%;
+:host {
+  display: flex;
 }
 
-.inner-content {
-  height: calc(100% - 45px);
+:host ::ng-deep .mat-dialog-container {
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
 }
 
-ul {
-  width: 50%;
-  margin: 0 auto;
-}
-
-li {
-  display:flex;
-  flex-direction: row;
-
-  p {
-    width:250px;
-    display:flex;
+.project-update-dialog {
+    position: relative;
+    display: flex;
     flex-direction: column;
+    max-width: 820px;
+    height: 100%;
+    padding: 24px 28px 20px;
+    border-radius: 24px;
+    color: #f5f5f5;
+    overflow: hidden;
+}
+
+/* HEADER */
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.avatar-ring {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    text-align:right;
+    padding: 4px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 0, #ffffff, #ff4d4d);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.avatar-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    background: #111;
+}
+
+.avatar-circle .material-icons {
+    font-size: 22px;
+    color: #ffffff;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dialog-title {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+}
+
+.dialog-sub {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.dialog-divider {
+    margin: 16px 0 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dialog-body {
+    flex: 1;
+    min-height: 0;
+}
+
+/* STEPPER OVERRIDES */
+.media-stepper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+:host ::ng-deep .media-stepper.mat-horizontal-stepper {
+    background: transparent;
+}
+
+:host ::ng-deep .media-stepper .mat-horizontal-stepper-header-container {
+    padding: 0 4px 10px;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0)
+    );
+}
+
+:host ::ng-deep .media-stepper .mat-step-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    background: #ff4d4d;
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.25);
+}
+
+:host ::ng-deep .media-stepper .mat-step-header .mat-step-label {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+:host ::ng-deep .media-stepper .mat-horizontal-content-container {
+    padding-top: 12px;
+    padding-bottom: 0;
+    height: calc(100% - 38px);
+}
+
+:host ::ng-deep .media-stepper .mat-stepper-horizontal-line {
+    border-top-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* FORMS / FIELDS */
+.step-form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.step-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 28px;
+    padding: 4px 4px 12px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+}
+
+.field-control {
+    width: 100%;
+}
+
+.field-error {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #ff6b81;
+}
+
+.field-full {
+    grid-column: 1 / -1;
+}
+
+.field-half {
+    grid-column: auto;
+}
+
+.chip-field {
+    width: 100%;
+}
+
+/* Mat form-field dark theme (MDC) */
+:host ::ng-deep .project-update-dialog .mat-mdc-form-field {
+    width: 100%;
+    margin-bottom: -8px;
+}
+
+:host ::ng-deep .project-update-dialog .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep .project-update-dialog .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-hover-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
+}
+
+:host ::ng-deep .project-update-dialog .mat-mdc-form-field-infix input,
+:host ::ng-deep .project-update-dialog .mat-mdc-form-field-infix textarea {
+    color: #ffffff;
+    caret-color: #ffffff;
+}
+
+:host ::ng-deep .project-update-dialog .mat-mdc-form-field-infix input::placeholder,
+:host ::ng-deep .project-update-dialog .mat-mdc-form-field-infix textarea::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* TAG CHIPS input styling so it matches */
+:host ::ng-deep .project-update-dialog app-tag-chips .mat-mdc-text-field-wrapper.mdc-text-field--filled {
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+:host ::ng-deep .project-update-dialog app-tag-chips .mat-mdc-text-field-wrapper {
+    --mdc-filled-text-field-container-color: transparent;
+    --mdc-filled-text-field-focus-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-hover-active-indicator-color: #ff4d4d;
+    --mdc-filled-text-field-input-text-color: #ffffff;
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6);
+}
+
+/* SUMMARY */
+.summary-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px 32px;
+    padding: 8px 4px 4px;
+    overflow-y: auto;
+}
+
+.summary-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.summary-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.summary-value {
+    margin: 0;
     font-size: 14px;
-    color: #0000008a;
-    margin-right: 15px;
-  }
-
-  div {
-    width:250px;
-  }
-
+    color: #ffffff;
 }
 
-app-tag-chips {
-  width: 100%;
-}
-
-h4 {
-  color:red;
-}
-
-
-.box{
-
-  .list {
-    position:relative;
-    display:flex;
-    padding: 10px 0;
-    background: rgba(0,0,0, 0);
-    margin:3px 0;
-    cursor:pointer;
-    transition: 0.5s;
-    padding: 8px 20px;
-  }
-
-  .content {
+/* ACTIONS */
+.step-actions {
+    margin-top: auto;
+    padding-top: 10px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
-
-    h2{
-
-    }
-    h4 {
-      font-size: 1.2em;
-    }
-    p {
-      font-size: .7em;
-    }
-  }
-
-  .imgBox {
-    overflow:hidden;
-    position:relative;
-    width:60px;
-    height:60px;
-    border-radius: 50%;
-    margin-right:10px;
-
-    img {
-      position:absolute;
-      top:0px;
-      left:0px;
-      width:100%;
-      height:100%;
-      max-width:60px;
-    }
-  }
-
-  .list:hover {
-    background: rgba(64,64,64, .3);
-    box-shadow: -15px 30px 50px rgba(0,0,0,0.5);
-    z-index:886;
-    transform:scale(1.05) translateX(2px);
-  }
+    gap: 12px;
 }
 
-
-.step-card-actions {
-  display:flex;
-  justify-content: center;
-  min-width:100%;
-  // position:absolute;
-  bottom:20px;
-
-  button {
-    margin:0 20px;
-  }
-}
-::ng-deep {
-
-  .mat-dialog-actions {
-    justify-content: center;
-  }
+.step-actions--split {
+    margin-top: 40px;
+    justify-content: space-between;
 }
 
-.summary-info {
-  width:100%!important;
-
-  p {
-    width:100%;
-    text-align:left;
-    margin:10px;
-  }
-}
-
-
-@media (min-width:320px)  {
-  .step-card {
-    flex-direction: column;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    height:100%;
-  }
-  .card-half {
-    width: 100%;
-  }
-  ul{
-    // height: 260px;
-    height:inherit;
-  }
-  .summary {
-    // height: 350px;
-  }
-  .center {
-    width:100%;
-  }
-  h3 {
-    text-align: center;
-    font-size: 12px;
-    margin-bottom: -40px;
-  }
-
-  ::ng-deep {
-    mat-stepper {
-      height: calc(100% - 110px);
-    }
-    .mat-horizontal-stepper-content:nth-child(3){
-      .step-card{
-        height: calc(100% - 130px);
-
-        .center {
-          height:100%;
-
-          li {
-            margin-bottom: 50px;
-          }
-        }
-      }
-    }
-  }
-
-  form {
-    height: calc(100% - 50px);
-  }
-
-  ::ng-deep {
-    .mat-stepper-horizontal {
-      margin-top: 8px;
-    }
-    .mat-horizontal-stepper-content {
-      height: 100%;
-      display: block;
-      position: relative;
-    }
-    .mat-horizontal-content-container {
-      height: calc(100% - 50px);
-    }
-    .mat-form-field {
-      width:100%;
-    }
-  }
-}
-@media (min-width:801px)  {
-  .step-card {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    flex-direction: column;
-  }
-  .card-half {
-    width: 100%;
-  }
-  ul{
-    // height: 260px;
-  }
-  .center {
-    width:100%;
-  }
-  h3 {
-    text-align: center;
-    font-size: 12px;
-    margin-bottom: -40px;
-  }
-  .summary {
-    // height: 350px;
-  }
-
-  // ::ng-deep {
-  //   mat-stepper {
-  //     height: calc(100% - 170px);
-  //   }
-  // }
-}
-@media (min-width:1200px) {
-  .step-card{
-    flex-direction: row;
-    height: calc(100% - 20px);
-  }
-  ::ng-deep {
-    .mat-horizontal-content-container {
-      height: calc(100% - 25px);
-    }
-    .mat-horizontal-stepper-content {
-      height: calc(100% - 50px);
-    }
-
-    .mat-horizontal-stepper-content:nth-child(3){
-      .step-card{
-        height: calc(100% - 80px);
-
-        .center {
-          height:100%;
-          width:50%!important;
-
-          li {
-            margin-bottom: 50px;
-          }
-        }
-      }
-    }
-  }
-  .card-half {
-    width:48%;
+.dialog-footer-actions {
+    margin-top: 14px;
     display: flex;
-    flex-direction: column;
-  }
-  .col-center {
-    height:100%;
-  }
-  ul {
-    height: inherit;
-    width:50%!important;
-  }
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .project-update-dialog {
+        max-width: 100%;
+        max-height: 100vh;
+        padding: 18px 16px 14px;
+        border-radius: 16px;
+    }
+
+    .dialog-title {
+        font-size: 17px;
+        letter-spacing: 0.24em;
+    }
+
+    .step-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .field-full,
+    .field-half {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ===== HARD KILL: MDC stepper container background (the white) ===== */
+:host ::ng-deep .project-update-dialog .media-stepper {
+    --mat-stepper-container-color: transparent;
+    --mat-stepper-header-container-color: transparent;
+    --mat-stepper-line-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Belt + suspenders: anything stepper-ish that still paints a background */
+:host ::ng-deep .project-update-dialog .media-stepper.mat-stepper-horizontal,
+:host ::ng-deep .project-update-dialog .media-stepper .mat-horizontal-stepper-wrapper,
+:host ::ng-deep .project-update-dialog .media-stepper .mat-horizontal-content-container,
+:host ::ng-deep .project-update-dialog .media-stepper .mat-horizontal-stepper-content,
+:host ::ng-deep .project-update-dialog .media-stepper .mat-step-header,
+:host ::ng-deep .project-update-dialog .media-stepper .mat-stepper-horizontal-line {
+    background: transparent !important;
+}
+/* ===== Constrain the dialog surface so it doesn't go mega wide ===== */
+:host ::ng-deep .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+    width: min(900px, calc(100vw - 32px));
+    max-width: 900px;
+    margin: 0 auto;
+    background: transparent; /* keep your leather backdrop visible */
+    box-shadow: none;
+    overflow: hidden;
+}
+
+/* Keep your inner shell behaving */
+.project-update-dialog {
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
 }

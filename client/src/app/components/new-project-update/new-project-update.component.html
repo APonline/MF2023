@@ -1,6 +1,5 @@
-
+<!-- 
 <div class="popup content mf-theme">
-  <!-- dialog-box.component.html -->
   <h1><strong>{{action}} {{tool}}</strong></h1>
   <br/>
  
@@ -59,32 +58,7 @@
           </div>
         </form>
       </mat-step>
-      <!-- <mat-step [stepControl]="secondFormGroup">
-        <form [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
-          <ng-template matStepLabel>Imagery</ng-template>
 
-          <div class="step-card">
-            <ul class="center">
-              <li>
-                <p><span>Profile Image</span></p>
-                <div>
-                  <app-upload-single formControlName="profile_image" (fileNew)="updateUploadValue($event)" [dir]="artist" [field]="'profile_image'" [file]="local_data[0]['profile_image']" [group]="currentGroup"></app-upload-single>
-                </div>
-              </li>
-              <li>
-                <p><span>Profile Banner Image</span></p>
-                <div>
-                  <app-upload-single formControlName="profile_banner_image" (fileNew)="updateUploadValue($event)" [dir]="artist" [field]="'profile_banner_image'" [file]="local_data[0]['profile_banner_image']" [group]="currentGroup"></app-upload-single>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <div class="step-card-actions">
-            <button mat-raised-button color="primary" matStepperNext>Next</button>
-          </div>
-        </form>
-      </mat-step> -->
       <mat-step>
         <ng-template matStepLabel>Done</ng-template>
 
@@ -106,13 +80,6 @@
               <div class="summary-info"><h4>Bio</h4><p>{{ local_data[0]['bio'] }}</p></div>
             </li>
           </ul>
-
-          <!-- <ul class="center summary row">
-            <li>
-            </li>
-            <li>
-            </li>
-          </ul> -->
         </div>
 
         <div class="step-card-actions" style="margin-top: -41px;">
@@ -137,4 +104,179 @@
       </div>
     </div>
   </ng-template>
+</div> -->
+
+<div class="project-update-dialog mf-theme">
+    <!-- HEADER -->
+    <div class="dialog-header">
+        <div class="avatar-ring">
+            <div class="avatar-circle">
+                <span class="material-icons">folder</span>
+            </div>
+        </div>
+
+        <div class="header-text">
+            <h1 class="dialog-title">
+                {{ action | uppercase }} {{ tool | titlecase }}
+            </h1>
+            <p class="dialog-sub">
+                Add or update your project details.
+            </p>
+        </div>
+    </div>
+
+    <div class="dialog-divider" *ngIf="action !== 'Delete'"></div>
+
+    <div class="dialog-body" *ngIf="action !== 'Delete'; else deleteTemplate">
+        <mat-stepper [linear]="isLinear" class="media-stepper" #stepper>
+            <!-- STEP 1 -->
+            <mat-step [stepControl]="firstFormGroup">
+                <form class="step-form" [formGroup]="firstFormGroup" *ngIf="firstFormGroup">
+                    <ng-template matStepLabel>Basic Info</ng-template>
+
+                    <div class="step-grid">
+                        <!-- NAME -->
+                        <div class="field field-full">
+                            <label class="field-label">Name</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <input
+                                    matInput
+                                    placeholder="My Band"
+                                    [(ngModel)]="local_data[0]['name']"
+                                    formControlName="name"
+                                    [ngClass]="{ 'is-invalid': submitted && f.name.errors }"
+                                />
+                            </mat-form-field>
+
+                            <div *ngIf="submitted && f.name.errors" class="field-error">
+                                <span *ngIf="f.name.errors.required">Name is required</span>
+                            </div>
+                        </div>
+
+                        <!-- GENRE (chips) -->
+                        <div class="field field-full">
+                            <div class="chip-field">
+                                <app-tag-chips
+                                    (Tag)="getGenre($event)"
+                                    [local_data]="local_data[0]['genre']"
+                                    [chipType]="'Genre'">
+                                </app-tag-chips>
+                            </div>
+                        </div>
+
+                        <!-- LOCATION -->
+                        <div class="field field-half">
+                            <label class="field-label">Location</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <input
+                                    matInput
+                                    placeholder="City, State/Prov"
+                                    [(ngModel)]="local_data[0]['location']"
+                                    formControlName="location"
+                                />
+                            </mat-form-field>
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <div class="field field-half">
+                            <label class="field-label">Description</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <input
+                                    matInput
+                                    placeholder="Creative originals project"
+                                    [(ngModel)]="local_data[0]['description']"
+                                    formControlName="description"
+                                />
+                            </mat-form-field>
+                        </div>
+
+                        <!-- BIO -->
+                        <div class="field field-full">
+                            <label class="field-label">Bio</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <textarea
+                                    matInput
+                                    rows="3"
+                                    cdkTextareaAutosize
+                                    cdkAutosizeMinRows="2"
+                                    cdkAutosizeMaxRows="6"
+                                    placeholder="Back in the year..."
+                                    [(ngModel)]="local_data[0]['bio']"
+                                    formControlName="bio"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            (click)="submitted = true"
+                            matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 2 -->
+            <mat-step>
+                <ng-template matStepLabel>Done</ng-template>
+
+                <div class="step-form">
+                    <div class="summary-grid">
+                        <div class="summary-column">
+                            <div class="summary-item">
+                                <span class="summary-label">Name</span>
+                                <p class="summary-value">{{ local_data[0]['name'] || '—' }}</p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Genre</span>
+                                <p class="summary-value">{{ local_data[0]['genre'] || '—' }}</p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Location</span>
+                                <p class="summary-value">{{ local_data[0]['location'] || '—' }}</p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Description</span>
+                                <p class="summary-value">{{ local_data[0]['description'] || '—' }}</p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Bio</span>
+                                <p class="summary-value">{{ local_data[0]['bio'] || '—' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions step-actions--split">
+                        <button mat-raised-button color="accent" matStepperPrevious>Back</button>
+
+                        <div class="dialog-footer-actions">
+                            <button (click)="closeDialog()" mat-button>Cancel</button>
+                            <button (click)="doAction()" mat-raised-button color="primary">
+                                {{ action }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-step>
+        </mat-stepper>
+    </div>
+
+    <!-- DELETE STATE -->
+    <ng-template #deleteTemplate>
+        <div class="dialog-body dialog-body--delete">
+            <p class="delete-text">Are you sure?</p>
+
+            <div class="dialog-footer-actions">
+                <button (click)="doAction()" mat-raised-button color="warn">{{ action }}</button>
+                <button (click)="closeDialog()" mat-raised-button color="accent">Cancel</button>
+            </div>
+        </div>
+    </ng-template>
 </div>
