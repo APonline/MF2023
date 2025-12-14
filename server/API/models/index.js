@@ -176,25 +176,10 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 fs.readdirSync(__dirname).forEach((file) => {
-    if (file === "index.js") {
-        return;
-    }
-
-    const model = require(`./${file}`)(sequelize, Sequelize);
-    const base = file.split('.')[0];
-
-    let key = base;
-
-    if (key.endsWith('s')) {
-        key = key.slice(0, -1); 
-    }
-
-    db[key] = model;
-});
-
-if (db.library && !db.image) {
-    db.image = db.library;
-}
+  if(file != "index.js"){
+    db[`${file.split('.')[0].slice(0, -1)}`] = require(`./${file}`)(sequelize, Sequelize);
+  }
+})
 
 
 // User Based Roles
