@@ -16,11 +16,11 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
 @Component({
-  selector: 'app-videosUpdate',
-  templateUrl: './videos-update.component.html',
-  styleUrls: ['./videos-update.component.scss']
+  selector: 'app-libraryUpdate',
+  templateUrl: './library-update.component.html',
+  styleUrls: ['./library-update.component.scss']
  })
-export class VideosUpdateComponent implements OnInit {
+export class LibraryUpdateComponent implements OnInit {
   currentUser: any;
   @Input() record: any;
 
@@ -56,10 +56,25 @@ export class VideosUpdateComponent implements OnInit {
     profile_banner_image: [''],
   });
 
-  selectedTags= '';
-  selectedGenres= '';
-  galleries= [];
-  selectedGallery= '';
+  selectedTags = '';
+  selectedGenres: string[] = [];
+  galleries = [];
+  selectedGallery = '';
+
+  // same options as gallery type
+  galleryGenreOptions = [
+      { value: 'live',          label: 'Live Show' },
+      { value: 'promo',         label: 'Promo Photos' },
+      { value: 'bts',           label: 'Behind the Scenes' },
+      { value: 'studio',        label: 'Studio Session' },
+      { value: 'rehearsal',     label: 'Rehearsal' },
+      { value: 'tour',          label: 'Tour / On the Road' },
+      { value: 'merch',         label: 'Merch / Products' },
+      { value: 'artwork',       label: 'Artwork / Concepts' },
+      { value: 'coverConcept',  label: 'Cover Concepts' },
+      { value: 'presskit',      label: 'Press / Media Kit' }
+  ];
+
 
   constructor(
       private formBuilder: FormBuilder,
@@ -70,11 +85,12 @@ export class VideosUpdateComponent implements OnInit {
       private galleriesService: GalleriesService,
       private uploadService: FileUploadService,
       private authenticationService: AuthenticationService,
-      public dialogRef: MatDialogRef<VideosUpdateComponent>,
+      public dialogRef: MatDialogRef<LibraryUpdateComponent>,
       private cdr: ChangeDetectorRef,
       @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
+    console.log("DATA:: ",data, data.tool);
 
     this.action = data.action;
 
@@ -92,12 +108,33 @@ export class VideosUpdateComponent implements OnInit {
 
     this.local_data = [{...data}];
 
+    // hydrate selectedGenres from existing record, if any
+    const rawGenre = (this.local_data[0].genre || '').toString();
+    if (rawGenre) {
+        this.selectedGenres = rawGenre
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
     this.currentGroup = {name: this.local_data[0].groupName, id: this.local_data[0].groupId };
 
-    this.galleriesService.getAllForArtist(this.local_data[0].groupId).subscribe(res => {
-      this.galleries = res;
-      this.selectedGallery = this.galleries.find(x => x.id == this.local_data[0].owner_gallery).id;
+    this.galleriesService
+    .getAllForArtist(this.local_data[0].groupId)
+    .subscribe(res => {
+        this.galleries = res || [];
+
+        // only try to pre-select if we actually have an owner_gallery value
+        if (this.local_data[0].owner_gallery) {
+            const match = this.galleries.find(
+                g => g.id === this.local_data[0].owner_gallery
+            );
+            this.selectedGallery = match ? match.id : null;
+        } else {
+            this.selectedGallery = null;
+        }
     });
+
 
     if(data.id != ''){
       this.modUser = true;
@@ -127,17 +164,21 @@ export class VideosUpdateComponent implements OnInit {
     }
     let type = this.local_data[0].location_url.split('.');
     let ext = type[type.length - 1];
+    let galtitle = this.galleries.filter(r => r.id == this.local_data[0].owner_gallery)[0];
 
     let newEdits = {
       id: this.local_data[0].id,
       title: this.local_data[0].title,
       extension: ext,
+      user_owner: this.currentUser.id,
       owner_gallery: this.local_data[0].owner_gallery,
       description: this.local_data[0].description,
       genre: this.local_data[0].genre,
       tags: this.local_data[0].tags,
       views: 0,
       location_url: this.local_data[0].location_url,
+      active: 1,
+      gallery: galtitle.title
     };
 
     console.log('data: ',newEdits)
@@ -166,15 +207,29 @@ export class VideosUpdateComponent implements OnInit {
   updateUploadValue(e) {
     this.local_data[0][e.field] = e.val;
 
-    if(e.field=='location_url'){
-      let group = this.data.groupId;
-      let type = this.local_data[0].location_url.split('.');
-      let format = type[type.length - 1];
-       this.uploadService.getFile(0, this.local_data[0].location_url, 'artists/'+group, format).subscribe(r => {
-        this.local_data[0]['location_url_img'] = r[0].display;
-      });
-    }
+    if (e.field === 'location_url') {
+        const group  = this.data.groupId;
+        const parts  = (this.local_data[0].location_url || '').split('.');
+        const format = parts[parts.length - 1] || '';
 
+        this.uploadService
+            .getFile(0, this.local_data[0].location_url, 'artists/' + group, format)
+            .subscribe({
+                next: (r) => {
+                    if (r && r.length && r[0].display) {
+                        this.local_data[0]['location_url_img'] = r[0].display;
+                    } else {
+                        // fall back to raw path so the field isn’t undefined
+                        this.local_data[0]['location_url_img'] =
+                            this.local_data[0].location_url;
+                    }
+                },
+                error: () => {
+                    this.local_data[0]['location_url_img'] =
+                        this.local_data[0].location_url;
+                }
+            });
+    }
   }
 
   getTag(e) {
@@ -182,15 +237,29 @@ export class VideosUpdateComponent implements OnInit {
     this.selectedTags = this.local_data[0]['tags'];
   }
 
-  getGenre(e) {
-    this.local_data[0]['genre'] = e
-    this.selectedGenres = this.local_data[0]['genre'];
-  }
-
   onChangeGallery(g){
     this.selectedGallery = this.galleries.find(x => x.id == g).title;
     this.local_data[0].owner_gallery = g;
   }
+
+  onGenresChange(values: string[]): void {
+    this.selectedGenres = values || [];
+    // store compact codes in the record; comma-separated string
+    this.local_data[0].genre = this.selectedGenres.join(',');
+  }
+
+  getGenreLabel(val: string): string {
+      const found = this.galleryGenreOptions.find(g => g.value === val);
+      return found ? found.label : val;
+  }
+
+  getGenresSummary(): string {
+      if (!this.selectedGenres || !this.selectedGenres.length) {
+          return this.local_data[0].genre ? this.local_data[0].genre : '—';
+      }
+      return this.selectedGenres.map(v => this.getGenreLabel(v)).join(', ');
+  }
+
 
 
 }

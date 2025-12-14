@@ -18,9 +18,8 @@ import { environment } from 'src/environments/environment';
 import moment from 'moment';
 
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
+import { LibraryService } from 'src/app/services/library.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { VideosService } from 'src/app/services/videos.service';
 import { GalleriesService } from 'src/app/services/galleries.service';
 
 import { MatTable } from '@angular/material/table';
@@ -92,10 +91,9 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
         private user: UserService,
         private router: Router,
         private DialogService: DialogService,
-        private imagesService: ImagesService,
+        private libraryService: LibraryService,
         private artistsService: ArtistsService,
         private galleriesService: GalleriesService,
-        private videosService: VideosService,
         private authenticationService: AuthenticationService,
         private uploadService: FileUploadService,
         public MF: MFService,
@@ -439,7 +437,7 @@ export class GalleriesFormComponent implements OnInit, OnChanges {
         // temporary fallback while we fetch
         this.galleryCoverCache[id] = '/assets/images/Gigs.jpg';
 
-        this.imagesService.getFirstForGallery(id).subscribe({
+        this.libraryService.getFirstForGallery(id).subscribe({
             next: img => {
                 if (img && img.preview) {
                     this.galleryCoverCache[id] = img.preview; // data:image/... from server

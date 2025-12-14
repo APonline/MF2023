@@ -5,7 +5,7 @@ import { FileUploadService } from 'src/app/services/file-upload.service';
 
 import { AlertService } from '../../services/alert.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { ImagesService } from 'src/app/services/images.service';
+import { LibraryService } from 'src/app/services/library.service';
 import { AlbumsService } from 'src/app/services/albums.service';
 import { ArtistsLinksService } from 'src/app/services/artist_links.service';
 import { ArtistMembersService } from 'src/app/services/artist_members.service';
@@ -17,7 +17,6 @@ import { FriendsService } from 'src/app/services/friends.service';
 import { GigsService } from 'src/app/services/gigs.service';
 import { SocialsService } from 'src/app/services/socials.service';
 import { SongsService } from 'src/app/services/songs.service';
-import { VideosService } from 'src/app/services/videos.service';
 
 @Component({
   selector: 'app-upload-multi',
@@ -44,7 +43,7 @@ export class UploadFilesComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private uploadService: FileUploadService,
-    private imagesService: ImagesService,
+    private libraryService: LibraryService,
     private albumsService: AlbumsService,
     private artistLinksSerivce: ArtistsLinksService,
     private artistMemebersSerivce: ArtistMembersService,
@@ -56,7 +55,6 @@ export class UploadFilesComponent implements OnInit {
     private gigsService: GigsService,
     private socialsService: SocialsService,
     private songsService: SongsService,
-    private videosService: VideosService,
     private alertService: AlertService) {
       this.currentUser = this.authenticationService.currentUserValue;
       //this.currentGroup = this.authenticationService.currentUserValue;
@@ -162,15 +160,7 @@ export class UploadFilesComponent implements OnInit {
     obj['location'] = 'resources/static/assets/uploads/' + location;
 
 
-    if(this.videoTypes.indexOf(ext) !== -1){
-      this.videosService.create(obj).subscribe((res) => {
-        if(!res.message){
-          this.alertService.success('Item has been created!', true);
-        }else{
-          this.alertService.error('Item failed to be created!', true);
-        }
-      });
-    }
+
     if(this.audioTypes.indexOf(ext) !== -1){
       this.songsService.create(obj).subscribe((res) => {
         if(!res.message){
@@ -190,7 +180,7 @@ export class UploadFilesComponent implements OnInit {
       });
     }
     if(this.imagesTypes.indexOf(ext) !== -1){
-      this.imagesService.create(obj).subscribe((res) => {
+      this.libraryService.create(obj).subscribe((res) => {
         if(!res.message){
           this.alertService.success('Item has been created!', true);
         }else{

@@ -15,19 +15,16 @@ import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { BehaviorSubject, Observable } from 'rxjs';
-
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment';
 
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { VideosService } from 'src/app/services/videos.service';
+import { LibraryService } from 'src/app/services/library.service';
 import { ArtistsService } from 'src/app/services/artists.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MFService } from 'src/app/services/MF.service';
-import { ImagesUpdateComponent } from './images-update/images-update.component';
+import { LibraryUpdateComponent } from './library-update/library-update.component';
 import { GalleriesService } from 'src/app/services/galleries.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { ArtistActivityService } from 'src/app/services/artist_activity.service';
@@ -106,8 +103,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         private router: Router,
         private DialogService: DialogService,
         private alertService: AlertService,
-        private imagesService: ImagesService,
-        private videosService: VideosService,
+        private libraryService: LibraryService,
         private artistsService: ArtistsService,
         private galleriesService: GalleriesService,
         private uploadService: FileUploadService,
@@ -163,9 +159,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             return;
         }
 
-        // NOTE:
-        // This path is the legacy parent-driven CRUD. New internal CRUD
-        // uses createMediaRecord/updateMediaRecord/archiveMediaRecord.
+        // legacy parent-driven CRUD – new flow uses internal CRUD methods
         if (this.act === 'create') {
             Object.keys(this.res || {}).forEach(k => {
                 if (k === 'createdAt' || k === 'updatedAt' || k === 'active') {
@@ -181,7 +175,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     r => r.id === this.res.owner_gallery
                 );
 
-                this.imagesService.get(this.res.id).subscribe(u => {
+                this.libraryService.get(this.res.id).subscribe(u => {
                     const newRes: any = {
                         id: u.id,
                         owner_id: u.owner_id,
@@ -246,158 +240,144 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         }
     }
 
-    // mf-nov7 – load images (table + grid) and videos (grid only)
+    // --------------------------------------------------------------------
+    // Load library items once, then split into images/videos by extension
+    // --------------------------------------------------------------------
     async loadData(): Promise<void> {
-        // --- 1) IMAGES: still drive the table + image tab ---
-        this.MF.load('Images', { scope: 'allForArtist', artistId: this.groupId })
-            .subscribe(result => {
-                const rows = result.rows || [];
+        this.libraryService.getAllForArtist(this.groupId).subscribe(result => {
+            const rows = result.rows || result || [];
 
-                // keep a master copy of *all* images
-                this.allImages = rows;
+            // reset collections
+            this.allImages = [];
+            this.allVideos = [];
+            this.images = [];
+            this.videos = [];
+            this.imageItems = [];
+            this.videoItems = [];
 
-                // hydrate rows + previews for the admin table & grid (run on master set)
-                for (const res of this.allImages) {
-                    if (res.gallery && res.gallery.title) {
-                        res.gallery = res.gallery.title;
-                    }
-
-                    const loc   = res.location_url || '';
-                    const parts = loc.split('.');
-                    const format = parts[parts.length - 1] || '';
-                    const group  = this.artist?.id;
-
-                    if (!loc || !group) {
-                        res.preview = loc;
-                    } else {
-                        this.uploadService
-                            .getFile(0, loc, 'artists/' + group, format)
-                            .subscribe({
-                                next: r => {
-                                    if (r && r.length && r[0].display) {
-                                        res.preview = r[0].display;
-                                    } else {
-                                        res.preview = loc;
-                                    }
-                                },
-                                error: err => {
-                                    console.error(
-                                        'Failed to hydrate image preview in loadData',
-                                        err,
-                                        res
-                                    );
-                                    res.preview = loc;
-                                }
-                            });
-                    }
-
-                    delete res.active;
-                    delete res.createdAt;
-                    delete res.updatedAt;
+            for (const res of rows) {
+                // --- GALLERY TITLE NORMALIZATION ---
+                if (res.gallery && res.gallery.title) {
+                    res.gallery = res.gallery.title;
                 }
 
-                // decide which galleries are active:
-                //  - use multi-select (selectedGalleryIds) if set
-                //  - else fall back to single deep-link galleryFilterId
-                const ids =
-                    this.selectedGalleryIds && this.selectedGalleryIds.length
-                        ? this.selectedGalleryIds
-                        : (this.galleryFilterId ? [this.galleryFilterId] : null);
+                // --- EXTENSION NORMALISATION ---
+                let ext = (res.extension || '').toString().toLowerCase();
 
-                const filtered = ids
-                    ? this.allImages.filter(r => ids.includes(r.owner_gallery))
-                    : this.allImages;
-
-                this.toolSet    = [...filtered];
-                this.images     = [...filtered];
-                this.imageItems = [...filtered];
-
-                this.setSettings(this.toolSet);
-
-                // deep-link to a specific media item if requested
-                this.handleMediaDeepLink();
-
-                // otherwise, if we came from a gallery deep-link, open first media
-                if (
-                    !this.deepLinkHandled &&
-                    this.galleryFilterId &&
-                    this.toolSet.length &&
-                    !this.firstMediaOpened
-                ) {
-                    this.firstMediaOpened = true;
-                    this.MF.openMediaPlayer(this.toolSet[0]);
-                }
-            });
-
-        // --- 2) VIDEOS: view-only grid for now ---
-        this.MF.load('Videos', { scope: 'allForArtist', artistId: this.groupId })
-            .subscribe(result => {
-                const rows = result.rows || [];
-
-                const filtered = this.galleryFilterId
-                    ? rows.filter(r => r.owner_gallery === this.galleryFilterId)
-                    : rows;
-
-                for (const res of filtered) {
-                    if (res.gallery && res.gallery.title) {
-                        res.gallery = res.gallery.title;
-                    }
-
-                    const loc   = res.location_url || '';
-                    const parts = loc.split('.');
-                    const format = parts[parts.length - 1] || '';
-                    const group  = this.artist?.id;
-
-                    if (!loc || !group) {
-                        res.preview = loc;
-                    } else {
-                        this.uploadService
-                            .getFile(0, loc, 'artists/' + group, format)
-                            .subscribe({
-                                next: r => {
-                                    if (r && r.length && r[0].display) {
-                                        res.preview = r[0].display;
-                                    } else {
-                                        res.preview = loc;
-                                    }
-                                },
-                                error: err => {
-                                    console.error(
-                                        'Failed to hydrate video preview in loadData',
-                                        err,
-                                        res
-                                    );
-                                    res.preview = loc;
-                                }
-                            });
-                    }
-
-                    delete res.active;
-                    delete res.createdAt;
-                    delete res.updatedAt;
+                if (!ext && res.location_url) {
+                    const parts = res.location_url.split('.');
+                    ext = (parts[parts.length - 1] || '').toLowerCase();
+                    res.extension = ext; // keep it on the object
                 }
 
-                this.videos     = filtered;
-                this.videoItems = filtered;
-            });
+                // --- PREVIEW HYDRATION ---
+                const loc = res.location_url || '';
+                const group = this.artist?.id;
+
+                if (!loc || !group) {
+                    res.preview = loc;
+                } else {
+                    this.uploadService
+                        .getFile(0, loc, 'artists/' + group, ext)
+                        .subscribe({
+                            next: r => {
+                                res.preview =
+                                    r && r.length && r[0].display
+                                        ? r[0].display
+                                        : loc;
+                            },
+                            error: () => {
+                                res.preview = loc;
+                            }
+                        });
+                }
+
+                delete res.active;
+                delete res.createdAt;
+                delete res.updatedAt;
+
+                // --- EXTENSION SORTING ---
+                const imageExts = [
+                    'jpg',
+                    'jpeg',
+                    'png',
+                    'gif',
+                    'tiff',
+                    'svg',
+                    'webp',
+                    'bmp'
+                ];
+                const videoExts = ['mp4', 'mov', 'avi', 'mpeg', 'mkv', 'webm'];
+
+                const isImage = imageExts.includes(ext);
+                const isVideo = videoExts.includes(ext);
+
+                if (isImage) {
+                    this.allImages.push(res);
+                } else if (isVideo) {
+                    this.allVideos.push(res);
+                } else {
+                    // fallback for unknown/legacy: treat as image so it still shows up
+                    this.allImages.push(res);
+                }
+            }
+
+            // --- GALLERY FILTERING ---
+            const galleryIds =
+                this.selectedGalleryIds?.length
+                    ? this.selectedGalleryIds
+                    : this.galleryFilterId
+                    ? [this.galleryFilterId]
+                    : null;
+
+            const filterByGallery = (arr: any[]) =>
+                galleryIds
+                    ? arr.filter(r => galleryIds.includes(r.owner_gallery))
+                    : arr;
+
+            this.images = filterByGallery(this.allImages);
+            this.videos = filterByGallery(this.allVideos);
+
+            this.imageItems = [...this.images];
+            this.videoItems = [...this.videos];
+
+            // admin table uses images by default
+            this.toolSet = [...this.images];
+
+            this.setSettings(this.toolSet);
+
+            // deep-link handling
+            this.handleMediaDeepLink();
+
+            // auto-open first item if gallery deep-linked
+            if (
+                !this.deepLinkHandled &&
+                this.galleryFilterId &&
+                this.toolSet.length &&
+                !this.firstMediaOpened
+            ) {
+                this.firstMediaOpened = true;
+                this.MF.openMediaPlayer(this.toolSet[0]);
+            }
+        });
     }
 
-
-        /**
+    /**
      * Apply gallery filter to images using selectedGalleryIds.
      * Empty array = all galleries.
      */
     private applyGalleryFilter(): void {
-        const ids = this.selectedGalleryIds && this.selectedGalleryIds.length
-            ? this.selectedGalleryIds
-            : null;
+        const ids =
+            this.selectedGalleryIds && this.selectedGalleryIds.length
+                ? this.selectedGalleryIds
+                : null;
 
         const filtered = ids
             ? this.allImages.filter(r => ids.includes(r.owner_gallery))
             : this.allImages;
 
-        this.toolSet    = [...filtered];
-        this.images     = [...filtered];
+        this.toolSet = [...filtered];
+        this.images = [...filtered];
         this.imageItems = [...filtered];
 
         // refresh admin table datasource to match
@@ -409,7 +389,8 @@ export class LibraryFormComponent implements OnInit, OnChanges {
 
         if (this.selectedGalleryIds.length === 1) {
             this.selectedGallery =
-                this.galleries.find(g => g.id === this.selectedGalleryIds[0]) || null;
+                this.galleries.find(g => g.id === this.selectedGalleryIds[0]) ||
+                null;
         } else {
             // multiple / none selected → generic title
             this.selectedGallery = null;
@@ -418,10 +399,13 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         this.applyGalleryFilter();
     }
 
-
     // 🔗 once images are present, open the deep-linked media item
     private handleMediaDeepLink(): void {
-        if (this.deepLinkHandled || !this.deepLinkMediaId || !Array.isArray(this.toolSet)) {
+        if (
+            this.deepLinkHandled ||
+            !this.deepLinkMediaId ||
+            !Array.isArray(this.toolSet)
+        ) {
             return;
         }
 
@@ -541,10 +525,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         });
 
         this.MF.openUpdateDialog<typeof data, { event: string; data: any }>(
-            ImagesUpdateComponent,
+            LibraryUpdateComponent,
             data
-        )
-        .subscribe(result => {
+        ).subscribe(result => {
             if (!result) {
                 return;
             }
@@ -564,8 +547,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             const slug = this.buildMediaSlug(title);
             const provisionalProfileUrl = this.buildMediaDeepLink(rawId, slug);
 
-            const cooked = this.MF
-                .compose(base)
+            const cooked = this.MF.compose(base)
                 .with({
                     id: rawId,
                     profile_url: provisionalProfileUrl,
@@ -573,9 +555,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                     owner_gallery: base.owner_gallery ?? row?.owner_gallery ?? null,
                     active: 1,
                     owner_user: this.currentUser.id,
-                    views: isCreate
-                        ? 0
-                        : (base.views ?? row?.views ?? 0)
+                    views: isCreate ? 0 : base.views ?? row?.views ?? 0
                 })
                 .done();
 
@@ -595,17 +575,15 @@ export class LibraryFormComponent implements OnInit, OnChanges {
     /**
      * Choose the proper CRUD service based on activeTab.
      */
-    private getMediaService(): ImagesService | VideosService {
-        return this.activeTab === 'videos'
-            ? this.videosService
-            : this.imagesService;
+    private getMediaService(): LibraryService {
+        return this.libraryService;
     }
 
     /**
      * CREATE
      */
     private createMediaRecord(cooked: any, slug: string): void {
-        const svc     = this.getMediaService();
+        const svc = this.getMediaService();
         const isVideo = this.activeTab === 'videos';
 
         const payload = { ...cooked };
@@ -675,13 +653,14 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             error: err => {
                 console.error('Media create failed', err, cooked);
                 this.alertService.error(
-                    isVideo ? 'Failed to create video item' : 'Failed to create image item',
+                    isVideo
+                        ? 'Failed to create video item'
+                        : 'Failed to create image item',
                     true
                 );
             }
         });
     }
-
 
     /**
      * UPDATE
@@ -714,7 +693,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             error: err => {
                 console.error('Media update failed', err, payload);
                 this.alertService.error(
-                    isVideo ? 'Failed to update video item' : 'Failed to update image item',
+                    isVideo
+                        ? 'Failed to update video item'
+                        : 'Failed to update image item',
                     true
                 );
             }
@@ -761,8 +742,6 @@ export class LibraryFormComponent implements OnInit, OnChanges {
             }
         });
     }
-
-
 
     /**
      * Hydrate .preview from file service (for both images + videos thumbnails)
@@ -818,7 +797,6 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         }
     }
 
-
     /**
      * Build handle + title slug:
      *   handle: "@dronewolf"
@@ -834,9 +812,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         const mediaSlug = title
             .toString()
             .toLowerCase()
-            .replace(/[^\w\s-]/g, '')   // strip symbols
-            .replace(/\s+/g, '-')        // spaces → dash
-            .replace(/-+/g, '-');        // collapse dashes
+            .replace(/[^\w\s-]/g, '') // strip symbols
+            .replace(/\s+/g, '-') // spaces → dash
+            .replace(/-+/g, '-'); // collapse dashes
 
         return `${handle}-${mediaSlug}`;
     }
@@ -846,7 +824,10 @@ export class LibraryFormComponent implements OnInit, OnChanges {
      *   /projects/new-edit/<groupId>/<group>/library?mediaId=<id>&slug=<slug>
      * If we don't yet have an id (brand new record), we just return the slug.
      */
-    private buildMediaDeepLink(id: number | string | undefined, slug: string): string {
+    private buildMediaDeepLink(
+        id: number | string | undefined,
+        slug: string
+    ): string {
         if (!id) {
             return slug; // for brand-new records, until ID exists
         }
@@ -878,9 +859,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         const featureType = isVideo ? 'video' : 'image';
 
         let verbText = '';
-        if (verb === 'create')      verbText = 'created';
+        if (verb === 'create') verbText = 'created';
         else if (verb === 'update') verbText = 'updated';
-        else                        verbText = 'archived';
+        else verbText = 'archived';
 
         const actor = {
             id: this.currentUser?.id,
@@ -941,31 +922,41 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                 this.videos = [...(this.videos || []), finalMedia];
             }
 
-            const itemsExists = (this.videoItems || []).some(m => key(m) === key(finalMedia));
+            const itemsExists = (this.videoItems || []).some(
+                m => key(m) === key(finalMedia)
+            );
             if (!itemsExists) {
                 this.videoItems = [...(this.videos || [])];
             }
         } else {
             // IMAGES
-            const alreadyInToolSet = (this.toolSet || []).some(m => key(m) === key(finalMedia));
+            const alreadyInToolSet = (this.toolSet || []).some(
+                m => key(m) === key(finalMedia)
+            );
             if (!alreadyInToolSet) {
                 this.toolSet = [...(this.toolSet || []), finalMedia];
             }
 
-            const alreadyInImages = (this.images || []).some(m => key(m) === key(finalMedia));
+            const alreadyInImages = (this.images || []).some(
+                m => key(m) === key(finalMedia)
+            );
             if (!alreadyInImages) {
                 this.images = [...(this.images || []), finalMedia];
             }
 
             // grid items
-            const alreadyInItems = (this.imageItems || []).some(m => key(m) === key(finalMedia));
+            const alreadyInItems = (this.imageItems || []).some(
+                m => key(m) === key(finalMedia)
+            );
             if (!alreadyInItems) {
                 this.imageItems = [...(this.toolSet || [])];
             }
 
             // admin table datasource
             if (Array.isArray(this.dataSource)) {
-                const alreadyInDs = this.dataSource.some((m: any) => key(m) === key(finalMedia));
+                const alreadyInDs = this.dataSource.some(
+                    (m: any) => key(m) === key(finalMedia)
+                );
                 if (!alreadyInDs) {
                     this.dataSource = [...this.dataSource, finalMedia];
                 }

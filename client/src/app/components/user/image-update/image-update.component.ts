@@ -9,7 +9,7 @@ import { AlertService } from 'src/app/services/alert.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { FileUploadService } from 'src/app/services/file-upload.service';
-import { ImagesService } from 'src/app/services/images.service';
+import { LibraryService } from 'src/app/services/library.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CropperComponent, ImageCropperResult } from 'angular-cropperjs';
 
@@ -60,7 +60,7 @@ export class ImageUpdateComponent implements OnInit {
       private router: Router,
       private alertService: AlertService,
       private uploadService: FileUploadService,
-      private imagesService: ImagesService,
+      private libraryService: LibraryService,
       private sanitizer: DomSanitizer,
       private authenticationService: AuthenticationService,
       public dialogRef: MatDialogRef<ImageUpdateComponent>,
@@ -271,7 +271,7 @@ export class ImageUpdateComponent implements OnInit {
 
     if(this.imagesTypes.indexOf(ext) !== -1){
       obj['profile_url'] = '@' + this.currentGroup.name.replace(/\+s/g,'').toLowerCase() + '_image_' + name + '';
-      this.imagesService.create(obj).subscribe((res) => {
+      this.libraryService.create(obj).subscribe((res) => {
         if(!res.message){
           this.doAction();
           this.alertService.success('Profile Picture has been Updated!', true);

@@ -25,8 +25,7 @@ import { SocialsService } from 'src/app/services/socials.service';
 import { CommentsService } from 'src/app/services/comments.service';
 import { ContactsService } from 'src/app/services/contacts.service';
 import { GalleriesService } from 'src/app/services/galleries.service';
-import { ImagesService } from 'src/app/services/images.service';
-import { VideosService } from 'src/app/services/videos.service';
+import { LibraryService } from 'src/app/services/library.service';
 import { PlannerService } from 'src/app/services/planner.service';
 
 // MF Components
@@ -101,8 +100,7 @@ export class MFService {
         private commentsService: CommentsService,
         private contactsService: ContactsService,
         private galleriesService: GalleriesService,
-        private imagesService: ImagesService,
-        private videosService: VideosService,
+        private libraryService: LibraryService,
         private plannerService: PlannerService
     ) {
         this.svcByTool = {
@@ -119,8 +117,7 @@ export class MFService {
             contacts: this.contactsService,
             galleries: this.galleriesService,
             planner: this.plannerService,
-            images: this.imagesService,
-            videos: this.videosService,
+            library: this.libraryService,
         };
     }
 

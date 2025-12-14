@@ -10,19 +10,6 @@ import moment from 'moment';
 import { NewItemUpdateComponent } from '../new-item-update/new-item-update.component';
 
 /* services - make dynamic somehow later */
-import { ImagesService } from 'src/app/services/images.service';
-import { AlbumsService } from 'src/app/services/albums.service';
-import { ArtistsLinksService } from 'src/app/services/artist_links.service';
-import { ArtistMembersService } from 'src/app/services/artist_members.service';
-import { ArtistsService } from 'src/app/services/artists.service';
-import { CommentsService } from 'src/app/services/comments.service';
-import { ContactsService } from 'src/app/services/contacts.service';
-import { DocumentsService } from 'src/app/services/documents.service';
-import { FriendsService } from 'src/app/services/friends.service';
-import { GigsService } from 'src/app/services/gigs.service';
-import { SocialsService } from 'src/app/services/socials.service';
-import { SongsService } from 'src/app/services/songs.service';
-import { VideosService } from 'src/app/services/videos.service';
 
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -79,20 +66,6 @@ export class NewItemFormComponent implements OnInit {
         private router: Router,
         private DialogService: DialogService,
         private alertService: AlertService,
-        private galleriesService: GalleriesService,
-        private imagesService: ImagesService,
-        private albumsService: AlbumsService,
-        private artistLinksService: ArtistsLinksService,
-        private artistMembersService: ArtistMembersService,
-        private artistService: ArtistsService,
-        private commentsService: CommentsService,
-        private contactsService: ContactsService,
-        private documentsService: DocumentsService,
-        private friendsService: FriendsService,
-        private gigsService: GigsService,
-        private socialsService: SocialsService,
-        private songsService: SongsService,
-        private videosService: VideosService,
         private authenticationService: AuthenticationService
     ) {
         // this.currentUser = this.authenticationService.currentUserValue;

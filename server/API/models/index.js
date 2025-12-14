@@ -44,7 +44,7 @@ let makeMyAPIForMe = () => {
       result[i] != 'friends' &&
       result[i] != 'galleries' &&
       result[i] != 'gigs' &&
-      result[i] != 'images' &&
+      result[i] != 'librarys' &&
       result[i] != 'lyrics' &&
       result[i] != 'merch' &&
       result[i] != 'merch_categories' &&
@@ -54,8 +54,7 @@ let makeMyAPIForMe = () => {
       result[i] != 'songs' &&
       result[i] != 'tasks' &&
       result[i] != 'users' &&
-      result[i] != 'user_roles' &&  
-      result[i] != 'videos'){
+      result[i] != 'user_roles'){
         let cols = await sequelize.query(`SELECT COLUMN_NAME, DATA_TYPE  from INFORMATION_SCHEMA. COLUMNS where table_schema = 'MF2023' and table_name = '${result[i]}'`, { type: QueryTypes.SELECT });
         console.log(result[i]);
         console.log(cols);
@@ -177,10 +176,25 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 fs.readdirSync(__dirname).forEach((file) => {
-  if(file != "index.js"){
-    db[`${file.split('.')[0].slice(0, -1)}`] = require(`./${file}`)(sequelize, Sequelize);
-  }
-})
+    if (file === "index.js") {
+        return;
+    }
+
+    const model = require(`./${file}`)(sequelize, Sequelize);
+    const base = file.split('.')[0];
+
+    let key = base;
+
+    if (key.endsWith('s')) {
+        key = key.slice(0, -1); 
+    }
+
+    db[key] = model;
+});
+
+if (db.library && !db.image) {
+    db.image = db.library;
+}
 
 
 // User Based Roles
@@ -221,26 +235,13 @@ db['artist-member'].belongsTo(db.user, {
 });
 
 
-db['gallerie'].belongsTo(db.image, {
+db['gallerie'].belongsTo(db.library, {
   through: "galleries",
   foreignKey: "id",
-  as: 'images'
+  as: 'library'
 });
-db.image.belongsTo(db['gallerie'], {
-  through: "images",
-  targetKey: 'id',
-  sourceKey: 'owner_gallery',
-  foreignKey: "owner_gallery",
-  otherKey:"owner_gallery",
-  as: 'gallery'
-});
-db['gallerie'].belongsTo(db.video, {
-  through: "galleries",
-  foreignKey: "id",
-  as: 'videos'
-});
-db.video.belongsTo(db['gallerie'], {
-  through: "videos",
+db.library.belongsTo(db['gallerie'], {
+  through: "library",
   targetKey: 'id',
   sourceKey: 'owner_gallery',
   foreignKey: "owner_gallery",

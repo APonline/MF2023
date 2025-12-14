@@ -27,10 +27,9 @@ import { CommentsService } from './services/comments.service';
 import { ContactsService } from './services/contacts.service';
 import { DocumentsService } from './services/documents.service';
 import { FriendsService } from './services/friends.service';
-import { ImagesService } from './services/images.service';
+import { LibraryService } from './services/library.service';
 import { SocialsService } from './services/socials.service';
 import { SongsService } from './services/songs.service';
-import { VideosService } from './services/videos.service';
 import { PlannerService } from './services/planner.service';
 import { DialogService } from './services/dialog.service';
 import { MFService } from './services/MF.service';
@@ -68,7 +67,6 @@ import { LibraryFormComponent } from './components/new-item-form/new-item-types/
 import { LyricsFormComponent } from './components/new-item-form/new-item-types/lyrics/lyrics-form.component';
 import { SocialsFormComponent } from './components/new-item-form/new-item-types/socials/socials-form.component';
 import { SongsFormComponent } from './components/new-item-form/new-item-types/songs/songs-form.component';
-import { VideosFormComponent } from './components/new-item-form/new-item-types/videos/videos-form.component';
 import { ArtistFormComponent } from './components/new-item-form/new-item-types/artist/artist-form.component';
 import { GalleriesFormComponent } from './components/new-item-form/new-item-types/galleries/galleries-form.component';
 import { TasksFormComponent } from './components/new-item-form/new-item-types/tasks/tasks-form.component';
@@ -86,8 +84,7 @@ import { TagChipsComponent } from './components/tag-chips/tag-chips.component';
 import { ContactUpdateComponent } from './components/new-item-form/new-item-types/contacts/contact-update/contact-update.component';
 import { ArtistUpdateComponent } from './components/new-item-form/new-item-types/artist/artist-update/artist-update.component';
 import { GalleriesUpdateComponent } from './components/new-item-form/new-item-types/galleries/galleries-update/galleries-update.component';
-import { ImagesUpdateComponent } from './components/new-item-form/new-item-types/library/images-update/images-update.component';
-import { VideosUpdateComponent } from './components/new-item-form/new-item-types/videos/videos-update/videos-update.component';
+import { LibraryUpdateComponent } from './components/new-item-form/new-item-types/library/library-update/library-update.component';
 import { MediaplayerComponent } from './components/mediaplayer/mediaplayer.component';
 import { TaskCardComponent } from './components/new-item-form/new-item-types/tasks/task-card/task-card.component';
 import { LinksUpdateComponent } from './components/new-item-form/new-item-types/socials/links-update/links-update.component';
@@ -140,7 +137,6 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     LyricsFormComponent,
     SocialsFormComponent,
     SongsFormComponent,
-    VideosFormComponent,
     MessengerContainer,
     SettingsComponent,
     ProjectsContainer,
@@ -161,8 +157,7 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     ArtistUpdateComponent,
     ContactUpdateComponent,
     GalleriesUpdateComponent,
-    ImagesUpdateComponent,
-    VideosUpdateComponent,
+    LibraryUpdateComponent,
     MediaplayerComponent,
     LinksUpdateComponent,
     SocialsUpdateComponent,
@@ -197,10 +192,9 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     ContactsService,
     DocumentsService,
     FriendsService,
-    ImagesService,
+    LibraryService,
     SocialsService,
     SongsService,
-    VideosService,
     PlannerService,
     DialogService,
     MFService
