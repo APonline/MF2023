@@ -1,0 +1,222 @@
+<div class="media-update-dialog mf-theme">
+    <!-- HEADER -->
+    <div class="dialog-header">
+        <div class="avatar-ring">
+            <div class="avatar-circle">
+                <span class="material-icons">description</span>
+            </div>
+        </div>
+
+        <div class="header-text">
+            <h1 class="dialog-title">
+                {{ action | uppercase }} Document
+            </h1>
+            <p class="dialog-sub">
+                Add or update a document in your filing cabinet.
+            </p>
+        </div>
+    </div>
+
+    <div class="dialog-divider" *ngIf="action !== 'Delete'"></div>
+
+    <!-- MAIN STATE (ADD / UPDATE) -->
+    <div class="dialog-body" *ngIf="action !== 'Delete'; else deleteTemplate">
+        <mat-stepper [linear]="isLinear" class="media-stepper" #stepper>
+            <!-- STEP 1: INFO -->
+            <mat-step [stepControl]="firstFormGroup">
+                <form class="step-form" [formGroup]="firstFormGroup" *ngIf="firstFormGroup">
+                    <ng-template matStepLabel>Info</ng-template>
+
+                    <div class="single-row">
+                        <!-- TITLE -->
+                        <div class="field field-full">
+                            <label class="field-label">Title</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <input
+                                    matInput
+                                    placeholder="e.g. Setlist - Dec 14"
+                                    [(ngModel)]="local_data[0]['title']"
+                                    formControlName="title"
+                                    [ngClass]="{ 'is-invalid': submitted && f.title.errors }"
+                                />
+                            </mat-form-field>
+
+                            <div *ngIf="submitted && f.title.errors" class="field-error">
+                                <span *ngIf="f.title.errors.required">
+                                    Title is required
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <div class="field field-full">
+                            <label class="field-label">Description</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <textarea
+                                    matInput
+                                    rows="2"
+                                    placeholder="Optional notes..."
+                                    [(ngModel)]="local_data[0]['description']"
+                                    formControlName="description"
+                                ></textarea>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="step-grid">
+                        <!-- GENRE (bucket) -->
+                        <div class="field field-half">
+                            <label class="field-label">Genre (Bucket)</label>
+                            <mat-form-field appearance="fill" class="field-control">
+                                <mat-select
+                                    placeholder="Select a bucket"
+                                    [(ngModel)]="local_data[0]['genre']"
+                                    formControlName="genre"
+                                >
+                                    <mat-option *ngFor="let g of GENRES" [value]="g.value">
+                                        {{ g.label }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- OPTIONAL: leave empty or add a simple toggle later -->
+                        <div class="field field-half"></div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button mat-raised-button color="primary" (click)="submitted = true" matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 2: FILE -->
+            <mat-step [stepControl]="secondFormGroup">
+                <form class="step-form" [formGroup]="secondFormGroup" *ngIf="secondFormGroup">
+                    <ng-template matStepLabel>File</ng-template>
+
+                    <div class="step-grid step-grid--single">
+                        <div class="field">
+                            <label class="field-label">Document</label>
+
+                            <div class="uploader-shell">
+                                <app-upload-single
+                                    (fileNew)="updateUploadValue($event)"
+                                    [dir]="'artists'"
+                                    [field]="'location_url'"
+                                    [file]="local_data[0]['location_url']"
+                                    [group]="currentGroup"
+                                    [autoPersist]="false"
+                                ></app-upload-single>
+                            </div>
+
+                            <p class="field-hint" *ngIf="local_data[0]['location_url']">
+                                <span class="material-icons">link</span>
+                                {{ local_data[0]['location_url'] }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="step-actions step-actions--split">
+                        <button mat-raised-button color="accent" matStepperPrevious>
+                            Back
+                        </button>
+                        <button mat-raised-button color="primary" matStepperNext>
+                            Next
+                        </button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <!-- STEP 3: SUMMARY -->
+            <mat-step>
+                <ng-template matStepLabel>Done</ng-template>
+
+                <div class="step-form">
+                    <div class="summary-grid">
+                        <div class="summary-column">
+                            <div class="summary-item">
+                                <span class="summary-label">Title</span>
+                                <p class="summary-value">
+                                    {{ local_data[0]['title'] || '—' }}
+                                </p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Description</span>
+                                <p class="summary-value">
+                                    {{ local_data[0]['description'] || '—' }}
+                                </p>
+                            </div>
+
+                            <div class="summary-item">
+                                <span class="summary-label">Genre</span>
+                                <p class="summary-value">
+                                    {{ getGenreLabel(local_data[0]['genre']) || '—' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="summary-column summary-column--media">
+                            <div class="summary-item">
+                                <span class="summary-label">File</span>
+
+                                <div class="summary-media summary-media--doc">
+                                    <span class="material-icons">description</span>
+
+                                    <button
+                                        type="button"
+                                        class="doc-open-btn"
+                                        *ngIf="local_data[0]['location_url']"
+                                        (click)="openDoc(local_data[0]['location_url'])"
+                                    >
+                                        Open document
+                                    </button>
+
+                                    <p class="summary-hint" *ngIf="!local_data[0]['location_url']">
+                                        No file uploaded yet.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-actions step-actions--split">
+                        <button mat-raised-button color="accent" matStepperPrevious>
+                            Back
+                        </button>
+
+                        <div class="dialog-footer-actions">
+                            <button (click)="closeDialog()" mat-button>
+                                Cancel
+                            </button>
+                            <button (click)="doAction()" mat-raised-button color="primary">
+                                {{ action }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </mat-step>
+        </mat-stepper>
+    </div>
+
+    <!-- DELETE STATE -->
+    <ng-template #deleteTemplate>
+        <div class="dialog-body dialog-body--delete">
+            <p class="delete-text">
+                Are you sure you want to {{ action | lowercase }} this document?
+            </p>
+
+            <div class="dialog-footer-actions">
+                <button (click)="doAction()" mat-raised-button color="warn">
+                    {{ action }}
+                </button>
+                <button (click)="closeDialog()" mat-raised-button color="accent">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</div>

@@ -80,13 +80,94 @@
   </div>
 
   <ng-template #noLineView>
-    <div class="view-container">
-      <div class="goback page-top-cta">
-        <button [routerLink]="['/projects', groupId, group]" id="goBack" mat-raised-button color="accent">
-          Go Back
-        </button>
-      </div>
-      <h1>poo</h1>
+    <div class="view-container mf-documents-view">
+        <!-- TOP CTA -->
+        <div class="page-top-cta goback">
+            <button
+                [routerLink]="['/projects', groupId, group]"
+                id="goBack"
+                mat-raised-button
+                color="accent">
+                Go Back
+            </button>
+        </div>
+
+        <!-- HEADER -->
+        <header class="docs-header">
+            <div>
+                <h1 class="docs-title">{{ toolName }}</h1>
+                <p class="docs-sub">Bucketed filing cabinet — click a row to open the document.</p>
+            </div>
+
+            <div class="docs-header-right">
+                <div class="docs-filters">
+                    <mat-form-field appearance="outline" class="docs-filter-field" floatLabel="always">
+                        <mat-label>Genre</mat-label>
+                        <mat-select [(value)]="selectedGenre" (selectionChange)="onFiltersChanged()">
+                            <mat-option [value]="null">All genres</mat-option>
+                            <mat-option *ngFor="let g of GENRES" [value]="g.value">
+                                {{ g.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="docs-search-field" floatLabel="always">
+                        <mat-label>Search</mat-label>
+                        <input
+                            matInput
+                            [(ngModel)]="searchText"
+                            (input)="onFiltersChanged()"
+                            placeholder="title, description…" />
+                    </mat-form-field>
+
+                    <button
+                        mat-raised-button
+                        class="docs-add-btn"
+                        (click)="openDialog('Add', newRecord)">
+                        + Add New
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- BUCKET GRID -->
+        <section class="docs-buckets" *ngIf="bucketedDocs?.length; else emptyDocs">
+            <div class="bucket-card" *ngFor="let bucket of bucketedDocs">
+                <div class="bucket-head">
+                    <div class="bucket-title">
+                        <span class="material-icons bucket-ico">{{ bucket.icon }}</span>
+                        <span>{{ bucket.label }}</span>
+                    </div>
+
+                    <span class="bucket-count" [ngClass]="bucket.color">
+                        {{ bucket.items.length }}
+                    </span>
+                </div>
+
+                <div class="bucket-list">
+                    <button
+                        type="button"
+                        class="doc-row"
+                        *ngFor="let doc of bucket.items"
+                        (click)="onOpenDoc(doc)">
+                        <span class="doc-name">{{ doc.title || 'Untitled' }}</span>
+                        <span class="doc-meta">
+                            {{ (doc.description || '') }}
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <ng-template #emptyDocs>
+            <div class="docs-empty">
+                <p>No documents yet.</p>
+                <button mat-raised-button color="primary" (click)="openDialog('Add', newRecord)">
+                    Upload first document
+                </button>
+            </div>
+        </ng-template>
     </div>
   </ng-template>
+
 </div>

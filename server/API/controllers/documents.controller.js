@@ -9,29 +9,32 @@ const Item = db[itemTitle];
 let datetime = new Date(); 
 
 exports[`create${itemTopic}`] = async (req, res) => {
-    try{
-        let newItem = req.body;
+    try {
+        const newItem = req.body || {};
 
-        let item = await Item.findOne({ where: { title: req.body.title } });
+        // optional: avoid duplicate rows for same file
+        if (newItem.location_url) {
+            const existing = await Item.findOne({
+                where: {
+                    // if you want per-artist uniqueness, add owner_group here
+                    location_url: newItem.location_url
+                }
+            });
 
-        if (item != null) { 
-            var num = Math.floor(Math.random() * 90000) + 10000;
-            newItem['profile_url'] = req.body.title.replace(/\+s/g,'').toLowerCase() + "_" + num;
+            if (existing) {
+                return res.status(200).send(existing);
+            }
         }
 
-        let result = await Item.create( newItem );
-
-        if (result) {
-            return res.status(200).send( result );
-        }else{
-            return res.status(500).send({ result: null });
-        }
+        const created = await Item.create(newItem);
+        return res.status(200).send(created);
     } catch (error) {
+        console.error(`create${itemTopic} failed`, error);
         return res.status(500).send({
-            message: `Unable to create ${itemTopic}!`
+            message: `Unable to create ${itemTopic}! - ${error.message}`
         });
     }
-}
+};
 exports[`get${itemTopic}`] = async (req, res) => {
     try{
         let id =req.params.id;

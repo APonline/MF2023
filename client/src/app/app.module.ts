@@ -90,6 +90,7 @@ import { TaskCardComponent } from './components/new-item-form/new-item-types/tas
 import { LinksUpdateComponent } from './components/new-item-form/new-item-types/socials/links-update/links-update.component';
 import { SocialsUpdateComponent } from './components/new-item-form/new-item-types/socials/socials-update/socials-update.component';
 import { EventCardComponent } from './components/new-item-form/new-item-types/planner/event-card/event-card.component';
+import { DocumentsUpdateComponent } from './components/new-item-form/new-item-types/documents/documents-update/documents-update.component';
 
 
 // export const PICK_FORMATS = {
@@ -161,7 +162,8 @@ import { EventCardComponent } from './components/new-item-form/new-item-types/pl
     MediaplayerComponent,
     LinksUpdateComponent,
     SocialsUpdateComponent,
-    EventCardComponent
+    EventCardComponent,
+    DocumentsUpdateComponent
   ],
   imports: [
     AppRoutingModule,
