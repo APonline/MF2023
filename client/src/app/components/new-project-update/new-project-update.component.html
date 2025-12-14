@@ -3,7 +3,7 @@
   <!-- dialog-box.component.html -->
   <h1><strong>{{action}} {{tool}}</strong></h1>
   <br/>
-
+ 
   <div class="inner-content" *ngIf="action != 'Delete'; else elseTemplate">
     <mat-stepper [linear]="isLinear" #stepper>
       <mat-step [stepControl]="firstFormGroup">
