@@ -211,10 +211,19 @@
                                 </span>
                                 <div class="summary-media">
                                     <img
-                                        *ngIf="local_data[0]['location_url_img']"
+                                        *ngIf="
+                                            local_data[0]['location_url_img'] ||
+                                            local_data[0]['preview'] ||
+                                            local_data[0]['location_url']
+                                        "
                                         id="final-profile-image"
-                                        [src]="local_data[0]['location_url_img']"
-                                        [alt]="local_data[0]['title'] || 'Preview'" />
+                                        [src]="
+                                            local_data[0]['location_url_img'] ||
+                                            local_data[0]['preview'] ||
+                                            local_data[0]['location_url']
+                                        "
+                                        [alt]="local_data[0]['title'] || 'Preview'"
+                                    />
                                 </div>
                             </div>
                         </div>

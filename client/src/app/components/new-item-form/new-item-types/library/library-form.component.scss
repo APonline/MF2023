@@ -320,6 +320,22 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.85);
 }
 
+/* make image cards hover nicely + enable action icons */
+.image-card {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.65);
+
+        .image-actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+}
+
 .image-thumb,
 .video-thumb {
     all: unset;
@@ -393,6 +409,48 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 .image-card:hover .image-overlay,
 .video-card:hover .video-overlay {
     opacity: 1;
+}
+
+/* --- NEW: hover Edit / Archive buttons on image tiles --- */
+
+.image-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.icon-btn {
+    border: none;
+    outline: none;
+    padding: 4px 6px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    .material-icons {
+        font-size: 16px;
+        color: #ffffff;
+    }
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.9);
+    }
+}
+
+.icon-btn--danger {
+    background: rgba(239, 68, 68, 0.9);
+
+    &:hover {
+        background: rgba(239, 68, 68, 1);
+    }
 }
 
 /* VIDEO PLAY BADGE */
@@ -511,11 +569,17 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 }
 
 /* kill the outline stroke */
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__leading,
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__notch,
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__trailing {
     border: none !important;
 }
@@ -605,7 +669,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     }
 }
 
-/* Make Library select match Tasks dark pill */
+/* Make Library select match Tasks dark pill (dup safe but fine) */
 :host ::ng-deep .gallery-filter-field {
     min-width: 220px;
 }
@@ -616,19 +680,25 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     border-radius: 999px !important;
     padding: 0 12px !important;
     margin-top: 0 !important;
-    transform: translateY(0);                 /* no vertical offset */
-    background: #2b2b2b !important;           /* solid dark grey */
+    transform: translateY(0); /* no vertical offset */
+    background: #2b2b2b !important; /* solid dark grey */
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
     display: flex;
     align-items: center;
 }
 
 /* kill the outline stroke */
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__leading,
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__notch,
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mdc-notched-outline__trailing {
     border: none !important;
 }
@@ -651,9 +721,13 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 }
 
 /* selected value text */
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mat-mdc-select-value,
-:host ::ng-deep .gallery-filter-field
+:host
+    ::ng-deep
+    .gallery-filter-field
     .mat-mdc-select-value-text {
     color: #ffffff !important;
     font-size: 0.9rem;

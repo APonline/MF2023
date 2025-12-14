@@ -8,12 +8,13 @@ import {
     SimpleChanges,
     ViewChild
 } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { AuthenticationService } from '../../../../services/authentication.service';
 import { MatTable } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/services/alert.service';
@@ -22,7 +23,6 @@ import { environment } from 'src/environments/environment';
 /* services - make dynamic somehow later */
 import { LibraryService } from 'src/app/services/library.service';
 import { ArtistsService } from 'src/app/services/artists.service';
-import { DialogService } from 'src/app/services/dialog.service';
 import { MFService } from 'src/app/services/MF.service';
 import { LibraryUpdateComponent } from './library-update/library-update.component';
 import { GalleriesService } from 'src/app/services/galleries.service';
@@ -60,8 +60,11 @@ export class LibraryFormComponent implements OnInit, OnChanges {
     projectTypeClicked = false;
 
     thisUser: '';
-    toolSet: any = [];
+
+    // main image collection driving admin table + grid
+    toolSet: any[] = [];
     modelSet: any;
+
     @Input() group: string;
     @Input() groupId: string;
 
@@ -100,13 +103,12 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private user: UserService,
-        private router: Router,
-        private DialogService: DialogService,
         private alertService: AlertService,
         private libraryService: LibraryService,
         private artistsService: ArtistsService,
         private galleriesService: GalleriesService,
         private uploadService: FileUploadService,
+        private snackBar: MatSnackBar,
         private authenticationService: AuthenticationService,
         public MF: MFService,
         private artistActivityService: ArtistActivityService
@@ -560,7 +562,7 @@ export class LibraryFormComponent implements OnInit, OnChanges {
                 .done();
 
             if (isDelete) {
-                this.archiveMediaRecord(cooked);
+                this.confirmArchive(cooked);
                 return;
             }
 
@@ -577,6 +579,15 @@ export class LibraryFormComponent implements OnInit, OnChanges {
      */
     private getMediaService(): LibraryService {
         return this.libraryService;
+    }
+
+    /**
+     * Archive entry hook – right now we rely on the
+     * snackbar-with-Undo inside archiveMediaRecord.
+     * If you ever want a fancy custom dialog, wire it here.
+     */
+    private confirmArchive(media: any): void {
+        this.archiveMediaRecord(media);
     }
 
     /**
@@ -702,6 +713,9 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         });
     }
 
+    /**
+     * Archive a media row (soft delete = active: 0) with snackbar + Undo.
+     */
     private archiveMediaRecord(media: any): void {
         if (!media?.id) {
             console.warn('archiveMediaRecord called with no id', media);
@@ -711,32 +725,86 @@ export class LibraryFormComponent implements OnInit, OnChanges {
         const svc = this.getMediaService();
         const isVideo = this.activeTab === 'videos';
 
-        const softPayload = { active: 0 };
+        // Keep a copy so we can restore on Undo
+        const archived = { ...media };
 
-        svc.update(media.id, softPayload).subscribe({
+        svc.update(media.id, { active: 0 }).subscribe({
             next: () => {
+                // Remove from in-memory collections
                 if (isVideo) {
-                    this.videos = this.videos.filter(m => m.id !== media.id);
-                    this.videoItems = this.videoItems.filter(m => m.id !== media.id);
+                    this.videos = (this.videos || []).filter(m => m.id !== media.id);
+                    this.videoItems = (this.videoItems || []).filter(
+                        m => m.id !== media.id
+                    );
                 } else {
-                    this.toolSet = this.toolSet.filter(m => m.id !== media.id);
-                    this.images = this.images.filter(m => m.id !== media.id);
-                    this.imageItems = this.imageItems.filter(m => m.id !== media.id);
-                    this.dataSource = this.dataSource.filter(m => m.id !== media.id);
+                    this.toolSet = (this.toolSet || []).filter(m => m.id !== media.id);
+                    this.images = (this.images || []).filter(m => m.id !== media.id);
+                    this.imageItems = (this.imageItems || []).filter(
+                        m => m.id !== media.id
+                    );
+
+                    if (Array.isArray(this.dataSource)) {
+                        this.dataSource = this.dataSource.filter(
+                            (m: any) => m.id !== media.id
+                        );
+                    }
                     this.table?.renderRows?.();
                 }
 
-                this.logArtistActivity('delete', media);
+                this.logArtistActivity('delete', archived);
 
-                this.alertService.success(
-                    isVideo ? 'Video archived.' : 'Image archived.',
-                    true
+                // 🔔 subtle snackbar with Undo
+                const snackRef = this.snackBar.open(
+                    isVideo ? 'Video archived' : 'Image archived',
+                    'Undo',
+                    {
+                        duration: 5000,
+                        horizontalPosition: 'right',
+                        verticalPosition: 'bottom'
+                    }
                 );
+
+                snackRef.onAction().subscribe(() => {
+                    this.unarchiveMediaRecord(archived);
+                });
             },
             error: err => {
                 console.error('Archive failed', err);
                 this.alertService.error(
                     isVideo ? 'Failed to archive video.' : 'Failed to archive image.',
+                    true
+                );
+            }
+        });
+    }
+
+    /**
+     * Restore a previously archived media row (Undo from snackbar).
+     */
+    private unarchiveMediaRecord(media: any): void {
+        const svc = this.getMediaService();
+        const isVideo = this.activeTab === 'videos';
+
+        svc.update(media.id, { active: 1 }).subscribe({
+            next: () => {
+                if (isVideo) {
+                    this.videos = [...(this.videos || []), media];
+                    this.videoItems = [...(this.videoItems || []), media];
+                } else {
+                    this.toolSet = [...(this.toolSet || []), media];
+                    this.images = [...(this.images || []), media];
+                    this.imageItems = [...(this.imageItems || []), media];
+
+                    if (Array.isArray(this.dataSource)) {
+                        this.dataSource = [...this.dataSource, media];
+                    }
+                    this.table?.renderRows?.();
+                }
+            },
+            error: err => {
+                console.error('Undo archive failed', err);
+                this.alertService.error(
+                    isVideo ? 'Failed to restore video.' : 'Failed to restore image.',
                     true
                 );
             }
@@ -964,5 +1032,19 @@ export class LibraryFormComponent implements OnInit, OnChanges {
 
             this.table?.renderRows?.();
         }
+    }
+
+    onOpenMedia(item: any): void {
+        this.MF.openMediaPlayer(item);
+    }
+
+    onEditMedia(item: any, event: MouseEvent): void {
+        event.stopPropagation(); // don't trigger viewer
+        this.openDialog('Update', item);
+    }
+
+    onArchiveMedia(item: any, event: MouseEvent): void {
+        event.stopPropagation(); // don't trigger viewer
+        this.confirmArchive(item);
     }
 }

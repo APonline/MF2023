@@ -124,6 +124,37 @@ export class LibraryUpdateComponent implements OnInit {
 
         this.local_data = [{ ...data }];
 
+        const row = this.local_data[0];
+
+        // if caller already set it, keep it
+        if (!row.location_url_img) {
+            if (row.preview) {
+                // use hydrated preview from library grid
+                row.location_url_img = row.preview;
+            } else if (row.location_url && row.location_url !== 'default') {
+                const group = this.data.groupId;
+                const parts = (row.location_url as string).split('.');
+                const format = parts[parts.length - 1] || '';
+
+                this.uploadService
+                    .getFile(0, row.location_url, 'artists/' + group, format)
+                    .subscribe({
+                        next: r => {
+                            if (r && r.length && r[0].display) {
+                                row.location_url_img = r[0].display;
+                            } else {
+                                row.location_url_img = row.location_url;
+                            }
+                            this.cdr.markForCheck();
+                        },
+                        error: () => {
+                            row.location_url_img = row.location_url;
+                            this.cdr.markForCheck();
+                        }
+                    });
+            }
+        }
+
         // genres
         const rawGenre = (this.local_data[0].genre || '').toString();
         if (rawGenre) {

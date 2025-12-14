@@ -180,16 +180,16 @@
             <div *ngIf="imageItems?.length; else emptyImages" class="images-grid">
                 <div
                     class="image-card"
-                    *ngFor="let img of imageItems">
-                    <button
-                        type="button"
-                        class="image-thumb"
-                        (click)="MF.openMediaPlayer(img)">
+                    *ngFor="let img of imageItems"
+                    (click)="onOpenMedia(img)">
+                    
+                    <div class="image-thumb">
                         <img
                             [src]="img.preview"
                             [alt]="img.title || 'Image'"
                             loading="lazy" />
 
+                        <!-- overlay text (already had something like this) -->
                         <div class="image-overlay">
                             <div class="image-text">
                                 <span class="image-title">
@@ -201,7 +201,24 @@
                                 </span>
                             </div>
                         </div>
-                    </button>
+
+                        <!-- NEW: hover actions -->
+                        <div class="image-actions">
+                            <button
+                                type="button"
+                                class="icon-btn"
+                                (click)="onEditMedia(img, $event)">
+                                <span class="material-icons">edit</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="icon-btn icon-btn--danger"
+                                (click)="onArchiveMedia(img, $event)">
+                                <span class="material-icons">archive</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
