@@ -14,6 +14,7 @@ import { UserService } from 'src/app/services/user.service';
 import { FileUploadService } from 'src/app/services/file-upload.service';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { GalleriesService } from 'src/app/services/galleries.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-mediaplayer',
@@ -28,7 +29,7 @@ export class MediaplayerComponent implements OnInit {
   fileToDisplay = null;
   videoTypes = ['mov','mp4','avi','mpeg'];
   audioTypes = ['mp3','wav'];
-  documentTypes = ['pdf','word','xlsx','csv','xls'];
+  documentTypes = ['pdf','doc','docx','rtf','txt','word','xlsx','csv','xls'];
   imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
 
 
@@ -63,6 +64,14 @@ export class MediaplayerComponent implements OnInit {
       this.mediaType = 'music';
     }else if(this.documentTypes.indexOf(this.data.extension) >= 0){
       this.mediaType = 'document';
+
+      const group = this.data.owner_group || this.data.groupId;
+
+      this.fileToDisplay =
+          `${environment.apiUrl}files/raw/${this.data.location_url}` +
+          `?group=artists/${group}&type=${this.data.extension}`;
+
+      this.loaded = true;
     }else if(this.imagesTypes.indexOf(this.data.extension) >= 0){
       this.mediaType = 'image';
 

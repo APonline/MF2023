@@ -16,7 +16,7 @@ try {
 // file type groups
 const videoTypes = ["mov", "mp4", "avi", "mpeg", "mkv", "webm"];
 const audioTypes = ["mp3", "wav"];
-const documentTypes = ["pdf", "word", "xlsx", "csv", "xls"];
+const documentTypes = ['pdf','doc','docx','rtf','txt','word','xlsx','csv','xls'];
 const imagesTypes = ["jpg", "jpeg", "JPG", "png", "gif", "tiff", "svg", "webp", "bmp"];
 
 // base dir from server bootstrap
@@ -327,6 +327,44 @@ const getFile = async (req, res) => {
     }
 };
 
+const getRawFile = (req, res) => {
+    const fileName = req.params.name;
+    const group = req.query.group;
+    const ext = (req.query.type || "").toLowerCase();
+    const folder = getfileFormat(ext);
+
+    if (!group || !folder || !fileName) {
+        return res.status(400).send({ message: "Missing params." });
+    }
+
+    const fullPath = path.join(
+        __basedir,
+        "resources",
+        "static",
+        group,
+        folder,
+        fileName
+    );
+
+    if (!fs.existsSync(fullPath)) {
+        return res.status(404).send({ message: "File not found." });
+    }
+
+    // Try to render inline when possible
+    res.setHeader("Content-Disposition", "inline");
+
+    // Basic content-type mapping (good enough)
+    const mimeMap = {
+        pdf: "application/pdf",
+        rtf: "application/rtf",
+        txt: "text/plain",
+        csv: "text/csv"
+    };
+
+    res.type(mimeMap[ext] || "application/octet-stream");
+    return res.sendFile(fullPath);
+};
+
 /**
  * Stream video bytes with Range support.
  * Frontend usage:
@@ -412,6 +450,7 @@ module.exports = {
     upload,
     getListFiles,
     getFile,
+    getRawFile,
     streamVideo,
     download,
     getFileType,

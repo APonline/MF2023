@@ -198,12 +198,41 @@ export class DocumentsFormComponent implements OnInit, OnChanges {
   }
 
   // Open doc in a new tab (basic version)
-  public onOpenDoc(doc: any): void {
-      const loc = (doc?.location_url || '').toString().trim();
-      if (!loc) return;
+  // public onOpenDoc(doc: any): void {
+  //     const loc = (doc?.location_url || '').toString().trim();
+  //     if (!loc) return;
 
-      // If your backend stores relative paths, you can upgrade this later to use FileUploadService like Library does.
-      window.open(loc, '_blank');
+  //     window.open(loc, '_blank');
+  // }
+
+  public onOpenDoc(doc: any): void {
+    if (!doc) return;
+
+    // Make sure extension exists (mediaplayer relies on it)
+    const loc = (doc.location_url || '').toString().trim();
+    const ext =
+        (doc.extension || this.getExtensionFromLocation(loc) || '')
+            .toString()
+            .trim()
+            .toLowerCase();
+
+    const payload = {
+        ...doc,
+        tool: 'media',
+        extension: ext,
+        owner_group: doc.owner_group || this.groupId
+    };
+
+    this.MF.openMediaPlayer(payload);
+  }
+
+  private getExtensionFromLocation(location: string): string {
+      const loc = (location || '').toString().trim();
+      if (!loc) return '';
+
+      const clean = loc.split('?')[0].split('#')[0];
+      const parts = clean.split('.');
+      return (parts[parts.length - 1] || '').toLowerCase();
   }
 
   //mf-nov7

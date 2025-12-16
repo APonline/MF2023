@@ -350,6 +350,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color:#fff;
 }
 
 .doc-meta {
@@ -358,6 +359,7 @@ tr:nth-child(even) td.mat-cell:first-of-type {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color:#fff;
 }
 
 /* genre colours (simple + punchy) */
@@ -383,4 +385,94 @@ tr:nth-child(even) td.mat-cell:first-of-type {
 .docs-empty p {
   color:#fff;
   margin-bottom:20px;
+}
+
+/* -------------------------------------------
+   Search pill – match Tasks (kanban-search)
+------------------------------------------- */
+.docs-search {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+}
+
+.docs-search-icon {
+    font-size: 18px;
+    margin-right: 6px;
+    opacity: 0.85;
+}
+
+.docs-search input {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #fff;
+    font-size: 0.9rem;
+    min-width: 220px;
+}
+
+.docs-search input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* -------------------------------------------
+   Genre dropdown pill – match Tasks (kanban-sort)
+------------------------------------------- */
+:host ::ng-deep .docs-filter-field {
+    min-width: 210px;
+}
+
+/* wrapper */
+:host ::ng-deep .docs-filter-field .mat-mdc-text-field-wrapper {
+    height: 40px;
+    border-radius: 999px !important;
+    padding: 0 12px !important;
+    margin-top: 0 !important;
+    background: #2b2b2b !important;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    align-items: center;
+    display: flex;
+    margin-bottom: -20px;
+}
+
+/* remove outline stroke */
+:host ::ng-deep .docs-filter-field .mdc-notched-outline__leading,
+:host ::ng-deep .docs-filter-field .mdc-notched-outline__notch,
+:host ::ng-deep .docs-filter-field .mdc-notched-outline__trailing {
+    border: none !important;
+}
+
+:host ::ng-deep .docs-filter-field .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+/* label + value */
+:host ::ng-deep .docs-filter-field .mdc-floating-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:host ::ng-deep .docs-filter-field .mat-mdc-select-value,
+:host ::ng-deep .docs-filter-field .mat-mdc-select-value-text {
+    color: #ffffff !important;
+    font-size: 0.9rem;
+}
+
+:host ::ng-deep .docs-filter-field .mat-mdc-select-arrow {
+    color: #ffffff !important;
+}
+
+/* panel */
+:host ::ng-deep .mat-mdc-select-panel {
+    background: #262626;
+    color: #ffffff;
 }

@@ -145,8 +145,8 @@ export class MFService {
     openMediaPlayer(data: any) {
         const dialogRef = this.dialog.open(MediaplayerComponent, {
             panelClass: 'dialog-box',
-            width: '85%',
-            height: '80vh',
+            // width: '85%',
+            // height: '80vh',
             data: { ...data, tool: 'media' }
         });
         dialogRef.afterClosed().subscribe(() => {});

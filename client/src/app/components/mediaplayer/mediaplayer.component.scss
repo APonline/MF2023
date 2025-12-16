@@ -1,3 +1,11 @@
+:host {
+  padding:60px;
+  display: block;
+  text-align: center;
+  color: #fff;
+  line-height: 34px;
+}
+
 ::ng-deep {
   .mat-dialog-container:has(app-mediaplayer) {
     background: transparent;

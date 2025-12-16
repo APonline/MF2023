@@ -101,31 +101,31 @@
 
             <div class="docs-header-right">
                 <div class="docs-filters">
-                    <mat-form-field appearance="outline" class="docs-filter-field" floatLabel="always">
-                        <mat-label>Genre</mat-label>
-                        <mat-select [(value)]="selectedGenre" (selectionChange)="onFiltersChanged()">
-                            <mat-option [value]="null">All genres</mat-option>
-                            <mat-option *ngFor="let g of GENRES" [value]="g.value">
-                                {{ g.label }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                  <mat-form-field appearance="outline" class="docs-filter-field" floatLabel="always">
+                      <mat-label>Genre</mat-label>
+                      <mat-select [(value)]="selectedGenre" (selectionChange)="onFiltersChanged()">
+                          <mat-option [value]="null">All genres</mat-option>
+                          <mat-option *ngFor="let g of GENRES" [value]="g.value">
+                              {{ g.label }}
+                          </mat-option>
+                      </mat-select>
+                  </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="docs-search-field" floatLabel="always">
-                        <mat-label>Search</mat-label>
-                        <input
-                            matInput
-                            [(ngModel)]="searchText"
-                            (input)="onFiltersChanged()"
-                            placeholder="title, description…" />
-                    </mat-form-field>
-
-                    <button
-                        mat-raised-button
-                        class="docs-add-btn"
-                        (click)="openDialog('Add', newRecord)">
-                        + Add New
-                    </button>
+                  <div class="docs-search">
+                    <mat-icon class="docs-search-icon">search</mat-icon>
+                    <input
+                      type="text"
+                      placeholder="Filter documents..."
+                      [(ngModel)]="searchText"
+                      (ngModelChange)="onFiltersChanged()"
+                    />
+                  </div>
+                  <button
+                      mat-raised-button
+                      class="docs-add-btn"
+                      (click)="openDialog('Add', newRecord)">
+                      + Add New
+                  </button>
                 </div>
             </div>
         </header>

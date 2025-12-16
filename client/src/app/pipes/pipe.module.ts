@@ -6,6 +6,7 @@ import { SafePipe } from "./pipe-safeurl";
 import { KeysPipe } from "./pipe-keyvalue";
 import { SafeHtmlPipe } from "./pipe-safeHtml";
 import { GalleryFilterPipe } from "./pipe-gallery-filter";
+import { SafeUrlPipe } from "./pipe-safelink";
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { GalleryFilterPipe } from "./pipe-gallery-filter";
     SafePipe,
     KeysPipe,
     SafeHtmlPipe,
-    GalleryFilterPipe
+    GalleryFilterPipe,
+    SafeUrlPipe
   ],
   exports: [
     RemoveUnderscorePipe,
@@ -26,7 +28,8 @@ import { GalleryFilterPipe } from "./pipe-gallery-filter";
     SafePipe,
     KeysPipe,
     SafeHtmlPipe,
-    GalleryFilterPipe
+    GalleryFilterPipe,
+    SafeUrlPipe
   ]
 })
 export class PipeModule{}

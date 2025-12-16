@@ -14,7 +14,26 @@
   <div *ngIf="mediaType=='music'">
 
   </div>
-  <div *ngIf="mediaType=='document'">
+  <div *ngIf="mediaType === 'document'">
+    <ng-container *ngIf="data.extension === 'pdf'; else downloadDoc">
+      <iframe
+        class="doc-frame"
+        [src]="fileToDisplay | safeUrl"
+        width="100%"
+        height="100%">
+      </iframe>
+    </ng-container>
 
+    <ng-template #downloadDoc>
+      <div class="doc-download">
+        <span class="material-icons">description</span>
+        <div>
+          <div class="doc-name">{{ data.title || data.location_url }}</div>
+          <a [href]="fileToDisplay" target="_blank" rel="noopener">
+            Open / Download
+          </a>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </div>

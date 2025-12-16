@@ -7,6 +7,7 @@ let routes = (app) => {
   router.get("/api/v1/files/:name", controller.getFile);
   router.get("/api/v1/files/video/:name", controller.streamVideo);
   router.get("/api/v1/files", controller.getListFiles);
+  router.get("/api/v1/files/raw/:name", controller.getRawFile);
   router.get("/api/v1/files/download/:name", controller.download);
 
   app.use(router);
