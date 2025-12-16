@@ -27,10 +27,10 @@ export class MediaplayerComponent implements OnInit {
   loaded = false;
   mediaType = '';
   fileToDisplay = null;
-  videoTypes = ['mov','mp4','avi','mpeg'];
+  videoTypes = ["mov", "mp4", "avi", "mpeg", "mkv", "webm"];
   audioTypes = ['mp3','wav'];
   documentTypes = ['pdf','doc','docx','rtf','txt','word','xlsx','csv','xls'];
-  imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
+  imagesTypes = ["jpg", "jpeg", "JPG", "png", "gif", "tiff", "svg", "webp", "bmp"];
 
 
   constructor(

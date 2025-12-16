@@ -3,10 +3,10 @@ const fs = require('fs');
 const multer = require("multer");
 const maxSize = 20 * 1024 * 1024;
 
-let videoTypes = ['mov','mp4','avi','mpeg'];
+let videoTypes = ["mov", "mp4", "avi", "mpeg", "mkv", "webm"];
 let audioTypes = ['mp3','wav'];
-let documentTypes = ['pdf','word','xlsx','csv','xls'];
-let imagesTypes = ['jpg','jpeg','JPG','png','gif','tiff','svg'];
+let documentTypes = ['pdf','doc','docx','rtf','txt','word','xlsx','csv','xls'];
+let imagesTypes = ["jpg", "jpeg", "JPG", "png", "gif", "tiff", "svg", "webp", "bmp"];
 
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
