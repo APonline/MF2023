@@ -60,8 +60,8 @@ export class NewitemComponent implements OnInit {
         { name: 'Documents',         value: 'documents' },
         { name: 'Socials',           value: 'socials' },
         { name: 'Campaigns',         value: 'campaigns' },
-        { name: 'Comments',          value: 'comments' },
-        { name: 'Merch Categories',  value: 'merch_categories' },
+        //{ name: 'Comments',          value: 'comments' },
+        //{ name: 'Merch Categories',  value: 'merch_categories' },
         { name: 'Merch',             value: 'merch' },
         { name: 'Contacts',          value: 'contacts' },
         { name: 'Galleries',         value: 'galleries' },
@@ -96,7 +96,7 @@ export class NewitemComponent implements OnInit {
                 { name: 'Planner',   value: 'planner' },
                 { name: 'Tasks',     value: 'tasks' },
                 { name: 'Documents', value: 'documents' },
-                { name: 'Comments',  value: 'comments' }
+                //{ name: 'Comments',  value: 'comments' }
             ]
         },
         {
